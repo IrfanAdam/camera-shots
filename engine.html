@@ -171,9 +171,9 @@ function portPos(n,p){
 function drawPorts(n){if(!n||n!==hoverNode)return;
  for(const p of PORTS){const q=portPos(n,p),hot=!!(hoverPort&&hoverPort.node===n&&hoverPort.port===p);
   ctx.save();ctx.globalAlpha=hot?1:0.4;
-  ctx.beginPath();ctx.arc(q.x,q.y,hot?8:6,0,Math.PI*2);
-  ctx.fillStyle='#fff';ctx.fill();ctx.lineWidth=2;ctx.strokeStyle='#e8830c';ctx.stroke();ctx.restore()}}
-function portAt(mx,my){const R=12;
+  ctx.beginPath();ctx.arc(q.x,q.y,(hot?8:6)/cam.z,0,Math.PI*2);
+  ctx.fillStyle='#fff';ctx.fill();ctx.lineWidth=2/cam.z;ctx.strokeStyle='#e8830c';ctx.stroke();ctx.restore()}}
+function portAt(mx,my){const R=12/cam.z;
  const check=n=>{for(const p of PORTS){const q=portPos(n,p);if(Math.hypot(mx-q.x,my-q.y)<=R)return{node:n,port:p}}return null};
  if(pending!=null){for(let i=nodes.length-1;i>=0;i--){const hit=check(nodes[i]);if(hit)return hit}return null}
  if(!hoverNode)return null;return check(hoverNode)}
@@ -204,13 +204,13 @@ function drawConns(){for(const c of conns){const cur=_curveOf(c);if(!cur)continu
  ctx.moveTo(cur.p0.x,cur.p0.y);ctx.bezierCurveTo(cur.c1.x,cur.c1.y,cur.c2.x,cur.c2.y,cur.p3.x,cur.p3.y);ctx.stroke();
  _arrows(cur,c,col)}}
 function drawTemp(){if(!pending)return;const n=pending.node&&pending.node.id?pending.node:nodeById(pending.node);if(!n)return;
- const p0=portPos(n,pending.port),p3=mouse;
+ const p0=portPos(n,pending.port),p3=s2w(mouse.x,mouse.y);
  const[c1,c2]=_ctrl(p0,p3,_pdir(pending.port),[p3.x>=p0.x?-1:1,0]);
  ctx.save();ctx.strokeStyle='#e8830c';ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.beginPath();
  ctx.moveTo(p0.x,p0.y);ctx.bezierCurveTo(c1.x,c1.y,c2.x,c2.y,p3.x,p3.y);ctx.stroke();ctx.restore()}
 function _ptSeg(px,py,ax,ay,bx,by){const dx=bx-ax,dy=by-ay,L2=dx*dx+dy*dy;let t=L2?((px-ax)*dx+(py-ay)*dy)/L2:0;t=Math.max(0,Math.min(1,t));return Math.hypot(px-(ax+dx*t),py-(ay+dy*t))}
 function connAt(mx,my){for(let i=conns.length-1;i>=0;i--){const cur=_curveOf(conns[i]);if(!cur)continue;let prev=cur.p0;
- for(let s=1;s<=20;s++){const pt=_bz(cur.p0,cur.c1,cur.c2,cur.p3,s/20);if(_ptSeg(mx,my,prev.x,prev.y,pt.x,pt.y)<8)return conns[i];prev=pt}}return null}
+ for(let s=1;s<=20;s++){const pt=_bz(cur.p0,cur.c1,cur.c2,cur.p3,s/20);if(_ptSeg(mx,my,prev.x,prev.y,pt.x,pt.y)<8/cam.z)return conns[i];prev=pt}}return null}
 function onDrop(target){if(!pending)return null;if(!target||!target.node)return null;
  const c=addConn(pending.node,pending.port,target.node,target.port);pending=null;return c}
 /* ---- cards: image face, hover-reveal text sheet ---- */
@@ -274,39 +274,42 @@ function hidePicker(){apTarget=null;document.getElementById('arrowpick').hidden=
 document.querySelectorAll('#arrowpick button[data-end]').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();if(!apTarget)return;apTarget[b.dataset.end]=b.dataset.val;persist();draw();apRefresh()})});
 document.getElementById('apDel').addEventListener('click',e=>{e.stopPropagation();if(!apTarget)return;removeConn(apTarget.id);hidePicker();persist();draw()});
 /* ---- master draw ---- */
-function draw(){if(view==='scenes')return drawScenes();ctx.setTransform(DPR,0,0,DPR,0,0);ctx.clearRect(0,0,W,H);
- ctx.fillStyle='#1a2130';for(let x=0.5;x<W;x+=28)for(let y=0.5;y<H;y+=28)ctx.fillRect(x,y,1,1);
+function draw(){if(view==='scenes')return drawScenes();ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);ctx.restore();applyCam();
+ ctx.fillStyle='#1a2130';const _gs=28,_x0=Math.floor(cam.x/_gs)*_gs,_y0=Math.floor(cam.y/_gs)*_gs;
+ for(let x=_x0;x<cam.x+W/cam.z;x+=_gs)for(let y=_y0;y<cam.y+H/cam.z;y+=_gs)ctx.fillRect(x,y,1/cam.z,1/cam.z);
  conns=conns.filter(c=>nodeById(c.a.id)&&nodeById(c.b.id));
  drawConns();drawTemp();
- if(!nodes.length){ctx.fillStyle='#5b6577';ctx.font='14px system-ui';ctx.textAlign='center';
-  ctx.fillText('empty canvas — add a beat to start the sequence',W/2,H/2);return}
+ if(!nodes.length){ctx.fillStyle='#5b6577';ctx.font='14px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';
+  const _ec=s2w(W/2,H/2);ctx.fillText('empty canvas — add a beat to start the sequence',_ec.x,_ec.y);return}
  for(const n of nodes)drawCard(n);
  if(hoverNode)drawPorts(hoverNode)}
 /* ---- pointer wiring ---- */
-cv.addEventListener('pointerdown',e=>{const[mx,my]=pos(e);mouse={x:mx,y:my};if(view==='scenes'){const _w=s2w(mx,my);return scenePD(e,mx,my,_w.x,_w.y)}updateHover(mx,my);
+cv.addEventListener('pointerdown',e=>{const[mx,my]=pos(e);mouse={x:mx,y:my};if(view==='scenes'){const _w=s2w(mx,my);return scenePD(e,mx,my,_w.x,_w.y)}const _w=s2w(mx,my),wx=_w.x,wy=_w.y;updateHover(wx,wy);
  if(hoverPort){pending={node:hoverPort.node,port:hoverPort.port};selConn=null;hidePicker();selected=hoverPort.node;
   try{cv.setPointerCapture(e.pointerId)}catch(err){}cv.style.cursor='crosshair';draw();return}
- if(hoverNode&&imgBtnHit(hoverNode,mx,my)){selected=hoverNode;document.getElementById('filePick').click();return}
- const n=at(mx,my);
- if(n){clearTimeout(clickT);drag={n,dx:mx-n.x,dy:my-n.y,sx:mx,sy:my,moved:false};selected=n;hidePicker();selConn=null;
+ if(hoverNode&&imgBtnHit(hoverNode,wx,wy)){selected=hoverNode;document.getElementById('filePick').click();return}
+ const n=at(wx,wy);
+ if(n){clearTimeout(clickT);drag={n,dx:wx-n.x,dy:wy-n.y,sx:mx,sy:my,moved:false};selected=n;hidePicker();selConn=null;
   try{cv.setPointerCapture(e.pointerId)}catch(err){}cv.style.cursor='grabbing';draw();return}
- const c=connAt(mx,my);
+ const c=connAt(wx,wy);
  if(c){selConn=c;selected=null;showPicker(c,e.clientX,e.clientY);draw();return}
- selConn=null;selected=null;hidePicker();draw()});
+ selConn=null;selected=null;hidePicker();panDrag={sx:mx,sy:my};cv.style.cursor='grabbing';draw()});
 cv.addEventListener('pointermove',e=>{const[mx,my]=pos(e);mouse={x:mx,y:my};if(view==='scenes'){const _w=s2w(mx,my);return sceneMV(e,mx,my,_w.x,_w.y)}
- if(drag){if(Math.hypot(mx-drag.sx,my-drag.sy)>6)drag.moved=true;drag.n.x=Math.max(0,Math.min(W-drag.n.w,mx-drag.dx));drag.n.y=Math.max(0,Math.min(H-drag.n.h,my-drag.dy));draw();return}
- if(pending){hoverPort=portAt(mx,my);hoverNode=hoverPort?hoverPort.node:null;
+ if(panDrag){panBy(mx-panDrag.sx,my-panDrag.sy);panDrag={sx:mx,sy:my};draw();return}
+ const _w=s2w(mx,my),wx=_w.x,wy=_w.y;
+ if(drag){if(Math.hypot(mx-drag.sx,my-drag.sy)>6)drag.moved=true;const _bx=cam.x,_by=cam.y,_bw=W/cam.z,_bh=H/cam.z;drag.n.x=Math.max(_bx,Math.min(_bx+_bw-drag.n.w,wx-drag.dx));drag.n.y=Math.max(_by,Math.min(_by+_bh-drag.n.h,wy-drag.dy));draw();return}
+ if(pending){hoverPort=portAt(wx,wy);hoverNode=hoverPort?hoverPort.node:null;
   cv.style.cursor=hoverPort?'crosshair':'grab';draw();return}
- updateHover(mx,my);cv.style.cursor=hoverPort?'crosshair':'grab';draw()});
-cv.addEventListener('pointerup',e=>{if(view==='scenes'){const _p=pos(e),_w=s2w(_p[0],_p[1]);return sceneUP(e,_p[0],_p[1],_w.x,_w.y)}if(drag){const d=drag;persist();drag=null;cv.style.cursor='grab';
- if(!d.moved){const[ux,uy]=pos(e);if(at(ux,uy)===d.n){clearTimeout(clickT);clickT=setTimeout(()=>openDrawer(d.n),260)}}}
- if(pending){const[mx,my]=pos(e);mouse={x:mx,y:my};const t=portAt(mx,my);
+ updateHover(wx,wy);cv.style.cursor=hoverPort?'crosshair':'grab';draw()});
+cv.addEventListener('pointerup',e=>{if(view==='scenes'){const _p=pos(e),_w=s2w(_p[0],_p[1]);return sceneUP(e,_p[0],_p[1],_w.x,_w.y)}if(panDrag){panDrag=null;cv.style.cursor='grab';draw();return}if(drag){const d=drag;persist();drag=null;cv.style.cursor='grab';
+ if(!d.moved){const _u=pos(e),_uw=s2w(_u[0],_u[1]);if(at(_uw.x,_uw.y)===d.n){clearTimeout(clickT);clickT=setTimeout(()=>openDrawer(d.n),260)}}}
+ if(pending){const[mx,my]=pos(e);mouse={x:mx,y:my};const _w=s2w(mx,my);const t=portAt(_w.x,_w.y);
   if(t&&t.node){const c=onDrop(t);if(c){persist();flashHint('linked '+t.node.label)}else pending=null}
   else pending=null;
   hoverPort=null;cv.style.cursor='grab';draw()}});
-cv.addEventListener('dblclick',e=>{clearTimeout(clickT);const[mx,my]=pos(e);if(view==='scenes'){const _w=s2w(mx,my);const s=sceneAt(_w.x,_w.y);if(s)renameScene(s);return}const n=at(mx,my);if(!n)return;
+cv.addEventListener('dblclick',e=>{clearTimeout(clickT);const[mx,my]=pos(e);if(view==='scenes'){const _w=s2w(mx,my);const s=sceneAt(_w.x,_w.y);if(s)renameScene(s);return}const _dw=s2w(mx,my),n=at(_dw.x,_dw.y);if(!n)return;
  if(e.shiftKey)editNote(n);else editLabel(n)});
-addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();closeShotPicker();hidePicker();selConn=null;pending=null;draw()}
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();closeShotPicker();hidePicker();selConn=null;pending=null;panDrag=null;draw()}
  if((e.key==='Delete'||e.key==='Backspace')){if(view==='scenes'&&selStrip){const c=activeChapter();c.scenes=c.scenes.filter(x=>x!==selStrip);selStrip=null;const ids=new Set(c.scenes.map(s=>s.id));c.conns=(c.conns||[]).filter(cc=>ids.has(cc.a.id)&&ids.has(cc.b.id));conns=c.conns;persist();draw()}else if(selConn){removeConn(selConn.id);selConn=null;hidePicker();persist();draw()}}});
 /* ---- toolbar ---- */
 const filePick=document.getElementById('filePick');let pickTarget=null;
@@ -356,7 +359,7 @@ function attachZoom(){if(cv._zoomOn)return;cv._zoomOn=true;
   dy=Math.max(-100,Math.min(100,dy));dx=Math.max(-100,Math.min(100,dx));
   if(e.shiftKey){panBy(-(dx+dy),0);draw();return}
   const wx=mx/cam.z+cam.x,wy=my/cam.z+cam.y;
-  const nz=Math.max(0.25,Math.min(2,cam.z*Math.exp(-dy*0.0012)));
+  const nz=Math.max(0.25,Math.min(2,cam.z*Math.exp(-dy*0.0025)));
   cam.x=wx-mx/nz;cam.y=wy-my/nz;cam.z=nz;draw()},{passive:false})}
 function activeChapter(){let c=SCENES.chapters.find(c=>c.id===SCENES.active);if(!c){c=SCENES.chapters[0];if(c)SCENES.active=c.id}return c}
 function sceneById(id){const c=activeChapter();return c?c.scenes.find(s=>s.id===id):null}
