@@ -70,6 +70,46 @@ header .by{color:var(--mut);font-size:.8rem}
 #chapterbar button{font:inherit;font-size:.8rem;font-weight:600;color:var(--ink);background:#222a36;border:1px solid #313b4a;border-radius:8px;padding:.3rem .6rem;cursor:pointer}
 #chapterbar button:hover{border-color:var(--acc)}
 #chapterbar .sp{flex:1}
+#projBtn{border-color:#0f766e}
+#anchorRow{display:flex;gap:.5rem;align-items:center;font-size:.8rem;margin:.4rem 0;flex-wrap:wrap}
+#anchorRow code{background:#0b0e13;border:1px solid #0f766e;border-radius:6px;padding:.15rem .5rem;color:#5eead4;font-size:.78rem}
+#anchorRow button{background:transparent;border:1px solid #313b4a;border-radius:6px;color:#aab2c2;font-size:.75rem;padding:.2rem .55rem;cursor:pointer}
+#anchorRow button:hover{border-color:var(--acc);color:var(--ink)}
+#genPrompt{background:#e8830c;border:0;border-radius:7px;color:#111;font-weight:700;padding:.4rem .9rem;cursor:pointer;font-size:.83rem;margin:.4rem .4rem .4rem 0}
+#copyStub{background:transparent;border:1px solid #313b4a;border-radius:7px;color:#e8eaf0;padding:.4rem .9rem;cursor:pointer;font-size:.83rem;margin:.4rem 0}
+#copyStub:hover{border-color:var(--acc)}
+#promptPrev{background:#0b0e13;border:1px solid #262d38;border-radius:8px;padding:.6rem .7rem;font-size:.78rem;color:#c8cfdb;white-space:pre-wrap;margin:.4rem 0 .7rem;max-height:30vh;overflow:auto}
+.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);z-index:90}
+.modal[hidden]{display:none}
+.modal .box{background:#161b22;border:1px solid #313b4a;border-radius:12px;width:min(560px,94vw);max-height:88vh;overflow:auto;padding:1rem 1.2rem}
+.modal h2{font-size:1rem;margin-bottom:.2rem}
+.modal .sub{color:var(--mut);font-size:.8rem;margin-bottom:.8rem}
+.modal .dom{border:1px solid #262d38;border-radius:10px;padding:.7rem .8rem;margin-bottom:.7rem}
+.modal .dom.off{opacity:.55}
+.modal .dom-h{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:.88rem}
+.modal .dom-h label{margin-left:auto;font-weight:400;font-size:.78rem;color:#aab2c2;display:flex;gap:.35rem;align-items:center;cursor:pointer}
+.modal .ddesc{color:var(--mut);font-size:.78rem;margin:.35rem 0 .5rem}
+.modal .tok{display:flex;gap:.5rem;align-items:center;margin:.3rem 0;font-size:.8rem}
+.modal .tok span{width:110px;flex:none;color:#c8cfdb}
+.modal .tok select{flex:1;background:#222a36;color:#e8eaf0;border:1px solid #313b4a;border-radius:6px;padding:.28rem .4rem;font-size:.8rem;min-width:0}
+.modal .tdesc{color:var(--mut);font-size:.74rem;margin:0 0 .2rem 118px}
+.modal .row{display:flex;gap:.6rem;margin:.5rem 0}
+.modal .row input,.modal .row select{flex:1;background:#222a36;color:#e8eaf0;border:1px solid #313b4a;border-radius:6px;padding:.35rem .5rem;font:inherit;font-size:.82rem;min-width:0}
+.modal .tabs{display:flex;gap:.35rem;flex-wrap:wrap;margin:.5rem 0}
+.modal .tabs button{background:#222a36;border:1px solid #313b4a;border-radius:7px;color:#aab2c2;font-size:.76rem;padding:.28rem .6rem;cursor:pointer}
+.modal .tabs button.on{border-color:var(--acc);color:var(--acc)}
+.modal .out{background:#0b0e13;border:1px solid #262d38;border-radius:8px;padding:.6rem .7rem;font-size:.78rem;color:#c8cfdb;white-space:pre-wrap;min-height:4rem}
+.modal .frow{display:flex;gap:.6rem;align-items:center;margin:.6rem 0 .2rem}
+.modal .frow button{background:#222a36;border:1px solid #313b4a;border-radius:7px;color:#e8eaf0;padding:.35rem .9rem;cursor:pointer;font-size:.82rem}
+.modal .frow button:hover{border-color:var(--acc)}
+#pmCopy,#projClose{background:#e8830c!important;border:0!important;color:#111!important;font-weight:700}
+.modal .frow .note{color:var(--mut);font-size:.75rem}
+.modal .subh{font-size:.76rem;text-transform:uppercase;letter-spacing:.05em;color:#8b93a5;margin:.7rem 0 .1rem}
+.modal .tin{width:100%;box-sizing:border-box;background:#222a36;color:#e8eaf0;border:1px solid #313b4a;border-radius:6px;padding:.35rem .5rem;font:inherit;font-size:.82rem;margin:.25rem 0}
+#assetList{border-top:1px solid #262d38;margin-top:4px;padding-top:4px;max-height:220px;overflow:auto}
+#assetList .ah{color:#8b93a5;font-size:.72rem;padding:.3rem .6rem .1rem;text-transform:uppercase;letter-spacing:.04em}
+#assetList button{white-space:normal;text-align:left}
+#assetList button b{color:#5eead4;font-weight:600}
 </style></head><body>
 <header>
 <a class="back" href="index.html">← wiki</a>
@@ -78,7 +118,8 @@ header .by{color:var(--mut);font-size:.8rem}
 <button id="addNode">+ location</button>
 <button id="imgBtn" title="Upload an image onto the hovered card">🖼 image</button>
 <button id="urlBtn" title="Embed an image via URL or repo path">🔗 url</button>
-<span class="menu"><button id="dots" title="more">⋯</button><span id="menuDrop" hidden><button id="delSel">delete selected</button><button id="undoBtn">undo</button><button id="clear">clear canvas</button></span></span>
+<button id="projBtn" title="Project proprietary tokens — enable domains used in prompts">⚙ project</button>
+<span class="menu"><button id="dots" title="more">⋯</button><span id="menuDrop" hidden><button id="delSel">delete selected</button><button id="undoBtn">undo</button><button id="clear">clear canvas</button><div id="assetList"></div></span></span>
 </span>
 </header>
 <div id="main"><nav id="side">
@@ -101,16 +142,29 @@ header .by{color:var(--mut);font-size:.8rem}
 <img id="drawerImg" alt="">
 <div id="drawerStills"></div>
 <div class="dp"><h3 id="drawerTitle"></h3>
+<div id="anchorRow" hidden><code id="anchorCode"></code><button id="anchorVariant" title="Create variant (next letter)">+ variant</button><button id="anchorAssign" title="Assign a different anchor">assign</button></div>
 <div id="shotProps" hidden><label>chapter <select id="shotCh"></select></label><label>scene <select id="shotSc"></select></label><span>lane <b id="shotLane">—</b></span></div>
 <div id="slotBtns" hidden><button id="goShot">go to shot</button><button id="removeSlot">remove</button></div>
-<p>INT. MARKET — DAWN. A chase winds through crowded stalls as shutters roll open. Handheld wide, dust hanging in the air.</p>
-<code>prompt draft — replace me:
-wide handheld chase, dawn market,
-dust + motion blur, 24mm</code>
-<p>↑ dummy text for now — real prompt tooling lands here next.</p>
+<div id="promptPrev" title="Live prompt preview"></div>
+<div><button id="genPrompt">✨ generate prompt</button><button id="copyStub">copy stub</button></div>
+<p class="note" style="color:var(--mut);font-size:.78rem;margin:.5rem 0 0">Anchors lead every prompt. Domains enabled in ⚙ project feed the prompt; disabled domains contribute nothing.</p>
 <button id="drawerDel">delete</button>
 </div>
 </aside>
+<div id="projModal" class="modal" hidden><div class="box"><h2>⚙ Project tokens</h2>
+<div class="sub">Frames only — video/motion is deferred. A domain must be <b>enabled</b> here before it appears in prompts. Disabled = zero words, no fallbacks.</div>
+<div id="projDomains"></div>
+<div class="frow"><button id="projClose" class="modalClose">done</button><span class="note" id="projNote"></span></div>
+</div></div>
+<div id="promptModal" class="modal" hidden><div class="box"><h2 id="pmTitle">Generate prompt</h2>
+<div class="sub" id="pmAnchor"></div>
+<div id="pmFields"></div>
+<div hidden><div class="row"><input id="pmAction" placeholder="action — e.g. weaving through stalls" maxlength="140"><input id="pmMood" placeholder="mood — e.g. determined" maxlength="140"></div>
+<div class="row"><input id="pmNeg" placeholder="negative — e.g. blurry, extra limbs"></div></div>
+<div class="tabs" id="pmTabs"></div>
+<div class="out" id="pmOut"></div>
+<div class="frow"><button id="pmCopy">copy</button><button id="pmClose" class="modalClose">close</button><span class="note">Anchor + description first; tab only rewrites the tail.</span></div>
+</div></div>
 <div class="hint" id="hint">hover a card for dots · drag dot-to-dot to link · click a card for detail · Del deletes · Ctrl+Z undoes · double-click renames</div>
 <div id="toast" hidden><span id="toastMsg"></span><button id="toastBtn">Undo</button></div>
 <script>
@@ -126,42 +180,44 @@ let hoverNode=null,hoverPort=null,hoverScene=null,mouse={x:0,y:0},pending=null,s
 const PORTS=['t','r','b','l'];
 /* ---- storage (v2; migrates v1 click-links) ---- */
 const Store={
- key:'cse-engine-v3',
+ key:'cse-engine-v4',
  save(s){try{localStorage.setItem(this.key,JSON.stringify(s))}catch(e){flashHint('could not save locally (storage full?)')}},
- load(){try{const r=localStorage.getItem(this.key);if(r)return{ver:3,s:JSON.parse(r)};const o=localStorage.getItem('cse-engine-v2');return o?{ver:2,s:JSON.parse(o)}:null}catch(e){return null}},
- clear(){try{localStorage.removeItem(this.key);localStorage.removeItem('cse-engine-v2');localStorage.removeItem('cse-engine-v1')}catch(e){}}
+ load(){try{const r=localStorage.getItem(this.key);if(r)return{ver:4,s:JSON.parse(r)};const q=localStorage.getItem('cse-engine-v3');if(q)return{ver:3,s:JSON.parse(q)};const o=localStorage.getItem('cse-engine-v2');return o?{ver:2,s:JSON.parse(o)}:null}catch(e){return null}},
+ clear(){try{localStorage.removeItem(this.key);localStorage.removeItem('cse-engine-v3');localStorage.removeItem('cse-engine-v2');localStorage.removeItem('cse-engine-v1')}catch(e){}}
 };
 function flashHint(t){hintEl.textContent=t;clearTimeout(flashHint._t);flashHint._t=setTimeout(()=>hintEl.textContent=HINT_DEFAULT,2200)}
 let toastT=null;
 function showToast(msg){document.getElementById('toastMsg').textContent=msg;const t=document.getElementById('toast');t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,5000)}
 document.getElementById('toastBtn').onclick=()=>{document.getElementById('toast').hidden=true;undo()};
-function dataOf(list){return list.map(n=>({id:n.id,kind:n.kind,label:n.label,note:n.note||'',ch:n.ch??null,sc:n.sc??null,ln:n.ln??null,x:n.x,y:n.y,w:n.w,h:n.h,imgUrl:n.imgUrl||''}))}
-function revive(list){return(list||[]).map(n=>{const o={id:n.id,kind:n.kind==='arc'?'arc':n.kind==='shot'?'shot':'beat',label:String(n.label||'').slice(0,60)||'card',note:String(n.note||'').slice(0,300),ch:n.ch??null,sc:n.sc??null,ln:n.ln??null,x:+n.x||0,y:+n.y||0,w:+n.w||200,h:+n.h||190,imgUrl:n.imgUrl||'',img:null};if(o.imgUrl)loadImage(o,true);return o})}
+function dataOf(list){return list.map(n=>({id:n.id,kind:n.kind,label:n.label,note:n.note||'',anchor:n.anchor||'',ps:n.promptState||null,ch:n.ch??null,sc:n.sc??null,ln:n.ln??null,x:n.x,y:n.y,w:n.w,h:n.h,imgUrl:n.imgUrl||''}))}
+function revive(list){return(list||[]).map(n=>{const o={id:n.id,kind:n.kind==='arc'?'arc':n.kind==='shot'?'shot':'beat',label:String(n.label||'').slice(0,60)||'card',note:String(n.note||'').slice(0,300),anchor:String(n.anchor||''),promptState:n.ps||null,ch:n.ch??null,sc:n.sc??null,ln:n.ln??null,x:+n.x||0,y:+n.y||0,w:+n.w||200,h:+n.h||190,imgUrl:n.imgUrl||'',img:null};if(o.imgUrl)loadImage(o,true);return o})}
 function saveView(){if(VIEW_META[view])VIEWS[view]={nodes:dataOf(nodes),conns,seq,nextId,nextConnId}}
 function loadView(v){const d=VIEWS[v]||freshView();nodes=revive(d.nodes);conns=Array.isArray(d.conns)?d.conns.filter(c=>c&&c.a&&c.b&&nodes.some(n=>n.id===c.a.id)&&nodes.some(n=>n.id===c.b.id)):[];seq=d.seq||1;nextId=d.nextId||1;nextConnId=d.nextConnId||1;selected=nodes.length?nodes[nodes.length-1]:null;selConn=null;selStrip=null}
 function defaultScenes(){return{chapters:[{id:1,name:'Chapter 1',lanes:3,scenes:[],nextScene:1}],active:1}}
-function persist(){if(view==='scenes'){const _ac=activeChapter();if(_ac)_ac.conns=conns}saveView();Store.save({views:VIEWS,scenes:SCENES,ui:{view}})}
+function persist(){if(view==='scenes'){const _ac=activeChapter();if(_ac)_ac.conns=conns}saveView();Store.save({views:VIEWS,scenes:SCENES,project:PROJECT,tombs:TOMBSTONES,ui:{view}})}
 let UNDO=[];
-function snap(){try{UNDO.push(JSON.stringify({views:VIEWS,scenes:SCENES,view}));if(UNDO.length>50)UNDO.shift()}catch(e){}}
+function snap(){try{UNDO.push(JSON.stringify({views:VIEWS,scenes:SCENES,project:PROJECT,tombs:TOMBSTONES,view}));if(UNDO.length>50)UNDO.shift()}catch(e){}}
 function undo(){const s=UNDO.pop();if(!s){flashHint('nothing to undo');return}
  try{const d=JSON.parse(s);
   for(const k of['locations','props','cast','shots']){const v=d.views[k]||{};VIEWS[k]={nodes:revive(v.nodes),conns:v.conns||[],seq:v.seq||1,nextId:v.nextId||1,nextConnId:v.nextConnId||1}}
-  SCENES=d.scenes;view=d.view||'scenes';
+  SCENES=d.scenes;if(d.project&&d.project.domains)PROJECT=d.project;if(Array.isArray(d.tombs))TOMBSTONES=d.tombs;view=d.view||'scenes';
   selStrip=null;selConn=null;selected=null;pending=null;drag=null;dragS=null;panDrag=null;hidePicker();closeShotPicker();closeDrawer();
   if(view==='scenes'){const nc=activeChapter();conns=(nc&&nc.conns)||[]}else loadView(view);
   syncUI();persist();draw();flashHint('undone')}catch(e){flashHint('undo failed')}}
 function delSelected(){menuDrop.hidden=true;
- if(view==='scenes'&&selStrip){snap();const c=activeChapter();c.scenes=c.scenes.filter(x=>x!==selStrip);selStrip=null;const ids=new Set(c.scenes.map(s=>s.id));c.conns=(c.conns||[]).filter(cc=>ids.has(cc.a.id)&&ids.has(cc.b.id));conns=c.conns;persist();draw();closeDrawer();showToast('Scene deleted');return true}
+ if(view==='scenes'&&selStrip){snap();const c=activeChapter();if(selStrip.scAnchor)tombstone(selStrip.scAnchor);c.scenes=c.scenes.filter(x=>x!==selStrip);selStrip=null;const ids=new Set(c.scenes.map(s=>s.id));c.conns=(c.conns||[]).filter(cc=>ids.has(cc.a.id)&&ids.has(cc.b.id));conns=c.conns;persist();draw();closeDrawer();showToast('Scene deleted');return true}
  if(selConn){snap();removeConn(selConn.id);selConn=null;hidePicker();persist();draw();showToast('Link deleted');return true}
- if(view!=='scenes'&&selected&&nodeById(selected.id)){snap();const id=selected.id;nodes=nodes.filter(n=>n.id!==id);conns=conns.filter(c=>c.a.id!==id&&c.b.id!==id);selected=null;hidePicker();persist();draw();closeDrawer();showToast('Card deleted');return true}
+ if(view!=='scenes'&&selected&&nodeById(selected.id)){snap();const id=selected.id;const _dn=nodeById(id);if(_dn&&_dn.anchor)tombstone(_dn.anchor);nodes=nodes.filter(n=>n.id!==id);conns=conns.filter(c=>c.a.id!==id&&c.b.id!==id);selected=null;hidePicker();persist();draw();closeDrawer();showToast('Card deleted');return true}
  flashHint('nothing selected');return false}
 function restore(){const r=Store.load();
- if(r&&r.ver===3&&r.s){const s=r.s;
+ if(r&&(r.ver===4||r.ver===3)&&r.s){const s=r.s;
   for(const k of Object.keys(VIEWS))if(s.views&&s.views[k])VIEWS[k]=s.views[k];
   SCENES=(s.scenes&&Array.isArray(s.scenes.chapters)&&s.scenes.chapters.length)?s.scenes:defaultScenes();
+  PROJECT=(s.project&&s.project.domains)?s.project:defaultProject();
+  TOMBSTONES=Array.isArray(s.tombs)?s.tombs:[];
   if(!SCENES.chapters.some(c=>c.id===SCENES.active))SCENES.active=SCENES.chapters[0].id;
   view=(s.ui&&s.ui.view)||'scenes'}
- else{SCENES=defaultScenes();
+ else{SCENES=defaultScenes();PROJECT=defaultProject();TOMBSTONES=[];
   const leg=r&&r.s?r.s:null;
   if(leg&&Array.isArray(leg.nodes)&&leg.nodes.length){VIEWS.locations={nodes:leg.nodes,conns:Array.isArray(leg.conns)?leg.conns:[],nextConnId:leg.nextConnId||1,seq:leg.nodes.length+1,nextId:leg.nextId||leg.nodes.length+1};
    view='locations';setTimeout(()=>flashHint('previous canvas moved to Locations'),600)}
@@ -179,7 +235,7 @@ function restore(){const r=Store.load();
   for(const s of c.scenes){s.w=s.w||560;s.h=s.h||340;s.lanes=Math.max(1,Math.min(6,s.lanes||2));
    s.slots=(s.slots||[]).map(q=>({shot:(q.shot??q.shotId),lane:q.lane||0})).filter(q=>q.shot!=null)}
   const mx=Math.max(0,...c.scenes.map(s=>s.id));c.nextScene=Math.max(c.nextScene||1,mx+1)}
- if(VIEW_META[view])loadView(view);if(view==='scenes'){const _nc=activeChapter();conns=(_nc&&_nc.conns)||[]}syncShotMeta();
+ if(VIEW_META[view])loadView(view);if(view==='scenes'){const _nc=activeChapter();conns=(_nc&&_nc.conns)||[]}ensureAnchorsAll();syncShotMeta();
  syncUI()}
 function loadImage(n,silent){if(!n.imgUrl){n.img=null;return}const im=new Image();
  im.onload=()=>{n.img=im;fitCard(n);draw();if(!silent)persist()};
@@ -190,7 +246,8 @@ function loadImage(n,silent){if(!n.imgUrl){n.img=null;return}const im=new Image(
 function fit(){DPR=Math.min(2,devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);draw()}
 addEventListener('resize',fit);
 function addNode(){const m=VIEW_META[view]||VIEW_META.locations;const w=200,h=190;
- const n={id:nextId++,kind:'beat',label:m.one+' '+seq,note:'',x:40+Math.random()*Math.max(40,W-w-80),y:40+Math.random()*Math.max(40,H-h-80),w,h,imgUrl:'',img:null};
+ const n={id:nextId++,kind:'beat',label:m.one+' '+seq,note:'',anchor:'',promptState:null,x:40+Math.random()*Math.max(40,W-w-80),y:40+Math.random()*Math.max(40,H-h-80),w,h,imgUrl:'',img:null};
+ n.anchor=mintAnchor(KIND_PREFIX[view]||'AST',n.label);
  seq++;nodes.push(n);selected=n;persist();draw()}
 function nodeById(id){return nodes.find(n=>n.id===id)}
 function round(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
@@ -265,10 +322,14 @@ function drawCard(n){const x=n.x,y=n.y,w=n.w,h=n.h,hovered=n===hoverNode;
   ctx.fillStyle=g;ctx.fillRect(x,y,w,h);ctx.globalAlpha=0.22;ctx.fillStyle=kc;ctx.fillRect(x,y,w,h);ctx.globalAlpha=1;
   ctx.fillStyle=kc;ctx.font='44px system-ui,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.fillText(glyph,x+w/2,hovered?y+h*0.30:y+h/2)}
- if(n.kind==='shot'){const mt=shotMetaLine(n);ctx.fillStyle='rgba(10,13,18,.82)';round(x+6,y+6,w-12,20,6);ctx.fill();
+ if(n.kind==='shot'){const mt=(n.anchor?n.anchor+' · ':'')+shotMetaLine(n);ctx.fillStyle='rgba(10,13,18,.82)';round(x+6,y+6,w-12,20,6);ctx.fill();
   ctx.fillStyle='#c7cedb';ctx.font='11px system-ui,sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';
   let t=mt;const mw2=w-30;if(ctx.measureText(t).width>mw2){while(t.length&&ctx.measureText(t+'…').width>mw2)t=t.slice(0,-1);t+='…'}
   ctx.fillText(t,x+13,y+16)}
+ else{const at=(n.anchor||'no anchor')+' · '+String(n.label||'');ctx.fillStyle='rgba(10,13,18,.82)';round(x+6,y+6,w-12,20,6);ctx.fill();
+  ctx.fillStyle='#c7cedb';ctx.font='11px system-ui,sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';
+  let t2=at;const mw3=w-30;if(ctx.measureText(t2).width>mw3){while(t2.length&&ctx.measureText(t2+'…').width>mw3)t2=t2.slice(0,-1);t2+='…'}
+  ctx.fillText(t2,x+13,y+16)}
  if(hovered){const sh=Math.round(h*0.42),px=x+6,py=y+h-sh-6,pw=w-12;
   ctx.fillStyle='rgba(10,13,18,.88)';round(px,py,pw,sh,8);ctx.fill();
   ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.font='600 13px system-ui,sans-serif';ctx.fillStyle='#fff';
@@ -353,7 +414,7 @@ cv.addEventListener('pointerup',e=>{if(view==='scenes'){const _p=pos(e),_w=s2w(_
   hoverPort=null;cv.style.cursor='grab';draw()}});
 cv.addEventListener('dblclick',e=>{clearTimeout(clickT);const[mx,my]=pos(e);if(view==='scenes'){const _w=s2w(mx,my);const s=sceneAt(_w.x,_w.y);if(s)renameScene(s);return}const _dw=s2w(mx,my),n=at(_dw.x,_dw.y);if(!n)return;
  if(e.shiftKey)editNote(n);else editLabel(n)});
-addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();closeShotPicker();hidePicker();selConn=null;pending=null;panDrag=null;draw()}
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();closeShotPicker();hidePicker();closeProjectModal();closePromptModal();selConn=null;pending=null;panDrag=null;draw()}
  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();undo();return}
  if((e.key==='Delete'||e.key==='Backspace')){delSelected()}});
 /* ---- toolbar ---- */
@@ -393,6 +454,7 @@ function openDrawer(n){drawerSub=n;
   for(const im of n.images){const e=document.createElement('img');e.src=im.url;e.alt='';stills.appendChild(e)}}
  else{if(n.imgUrl){drawerImg.style.display='block';drawerImg.src=n.imgUrl}else drawerImg.style.display='none'}
  if(n.kind==='shot'&&view==='shots')populateShotProps(n);
+ renderAnchorRow(n);renderPromptPreview(n);
  drawer.classList.add('open');scrim.classList.add('open')}
 function openSlotDrawer(shotId,s,lane){const sh=shotById(shotId);if(!sh){selectShot(shotId);return}
  drawerSub=sh;openDrawer(sh);
@@ -426,9 +488,37 @@ document.getElementById('drawerDel').onclick=()=>{const n=drawerSub;
  if(n&&n.slots&&view==='scenes'&&activeChapter().scenes.includes(n)){selStrip=n;delSelected();return}
  if(n&&n.id!=null&&view!=='scenes'&&nodeById(n.id)){selected=n;delSelected();return}
  flashHint('nothing to delete')};
+/* ---- project + prompt wiring ---- */
+document.getElementById('projBtn').onclick=()=>openProjectModal();
+document.getElementById('projClose').onclick=()=>closeProjectModal();
+document.getElementById('projModal').addEventListener('click',e=>{if(e.target.id==='projModal')closeProjectModal()});
+document.getElementById('genPrompt').onclick=()=>{if(drawerSub)openPromptModal(drawerSub);else flashHint('open a card or scene first')};
+document.getElementById('copyStub').onclick=()=>{if(drawerSub)copyText(stubFor(drawerSub),'stub copied — anchor first');else flashHint('open a card or scene first')};
+document.getElementById('pmClose').onclick=()=>closePromptModal();
+document.getElementById('promptModal').addEventListener('click',e=>{if(e.target.id==='promptModal')closePromptModal()});
+document.getElementById('pmCopy').onclick=()=>{if(pmTarget)copyText(document.getElementById('pmOut').textContent,'prompt copied')};
+document.getElementById('pmAction').addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.action=e.target.value.slice(0,140);persist();renderPmOut()});
+document.getElementById('pmMood').addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.mood=e.target.value.slice(0,140);persist();renderPmOut()});
+document.getElementById('pmNeg').addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.neg=e.target.value;persist();renderPmOut()});
+document.getElementById('anchorVariant').onclick=()=>{const n=drawerSub;if(!n||!n.anchor||n.slots){flashHint('scenes carry no variant');return}
+ const m=n.anchor.match(/^(CHAR|LOC|PROP|SHOT)-([A-Z]{2,4})-([A-Z])(-[A-Za-z]{1,12})?$/);
+ if(!m){flashHint('anchor format not variantable');return}
+ const prefix=m[1],entity=m[2],state=m[4]||'';let nv='';
+ for(let v=65;v<=90;v++){const c=prefix+'-'+entity+'-'+String.fromCharCode(v)+state;if(!anchorTaken(c)){nv=c;break}}
+ if(!nv){flashHint('no free variant letter');return}
+ snap();const c={id:nextId++,kind:n.kind,label:n.label,note:n.note||'',anchor:nv,promptState:null,ch:null,sc:null,ln:null,x:n.x+24,y:n.y+24,w:n.w,h:n.h,imgUrl:n.imgUrl||'',img:null};
+ if(c.imgUrl)loadImage(c,true);nodes.push(c);selected=c;persist();draw();openDrawer(c);showToast('Variant '+nv)};
+document.getElementById('anchorAssign').onclick=()=>{const n=drawerSub;if(!n)return;
+ const cur=n.anchor||n.scAnchor||'';
+ const v=prompt('Anchor ('+(n.slots?'SC-':'CHAR|LOC|PROP|SHOT-')+'…):',cur||'');
+ if(v===null)return;const raw=v.trim().replace(/\s+/g,'-'),sg=raw.split('-');
+ const a=(sg.slice(0,3).join('-').toUpperCase()+(sg.length>3?'-'+sg.slice(3).join('-'):''));
+ if(!anchorValid(a)){flashHint('bad anchor format');return}
+ if(a!==cur&&anchorTaken(a)){flashHint('anchor taken');return}
+ snap();if(n.slots)n.scAnchor=a;else n.anchor=a;persist();draw();renderAnchorRow(n);renderPromptPreview(n);flashHint('anchor set: '+a)};
 /* ---- overflow menu ---- */
 const dots=document.getElementById('dots'),menuDrop=document.getElementById('menuDrop');
-dots.onclick=e=>{e.stopPropagation();menuDrop.hidden=!menuDrop.hidden};
+dots.onclick=e=>{e.stopPropagation();if(menuDrop.hidden)renderAssetMenu();menuDrop.hidden=!menuDrop.hidden};
 document.addEventListener('click',e=>{if(!menuDrop.hidden&&!e.target.closest('.menu'))menuDrop.hidden=true});
 /* ---- scenes: lane canvas ---- */
 let dragS=null;
@@ -466,7 +556,7 @@ function drawSceneBase(s,selected){const r=sceneRect(s),sel=!!selected;
  ctx.save();round(r.x,r.y,r.w,r.h,12);ctx.clip();ctx.fillStyle='#1b2230';ctx.fillRect(r.x,r.y,r.w,TITLE_H);
  ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(r.x,r.y+TITLE_H+.5);ctx.lineTo(r.x+r.w,r.y+TITLE_H+.5);ctx.stroke();ctx.restore();
  ctx.fillStyle='#e8eaf0';ctx.font='600 13px system-ui,sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';
- ctx.fillText(fitTitle(String(s.title||'Scene'),r.w-PAD*2-76),r.x+PAD,r.y+TITLE_H/2+1);
+ ctx.fillText(fitTitle((s.scAnchor?s.scAnchor+' · ':'')+String(s.title||'Scene'),r.w-PAD*2-76),r.x+PAD,r.y+TITLE_H/2+1);
  const badge=(s.lanes|0)+' lane'+((s.lanes|0)===1?'':'s');ctx.font='11px system-ui,sans-serif';
  const bw=ctx.measureText(badge).width+16,bx=r.x+r.w-bw-10,by=r.y+(TITLE_H-20)/2;
  ctx.save();round(bx,by,bw,20,10);ctx.fillStyle='#222a36';ctx.fill();
@@ -491,9 +581,10 @@ function allChapters(){try{if(typeof SCENES!=='undefined'&&SCENES&&Array.isArray
 var _slotImgCache={};
 function slotImg(url){if(!url)return null;let e=_slotImgCache[url];
  if(!e){e=new Image();e.src=url;e.onload=function(){try{draw()}catch(err){}};_slotImgCache[url]=e}return e}
-function shotById(id){try{if(typeof nodeById==='function'){const n=nodeById(id);if(n)return n}}catch(e){}
- try{if(VIEWS&&VIEWS.shots&&Array.isArray(VIEWS.shots.nodes)){const f=VIEWS.shots.nodes.find(function(n){return n&&n.id===id});if(f)return f}}catch(e){}
- try{if(typeof nodes!=='undefined'&&Array.isArray(nodes)){const g=nodes.find(function(n){return n&&n.id===id});if(g)return g}}catch(e){}return null}
+function shotById(id){try{if(VIEWS&&VIEWS.shots&&Array.isArray(VIEWS.shots.nodes)){const f=VIEWS.shots.nodes.find(function(n){return n&&n.id===id});if(f)return f}}catch(e){}
+ try{if(typeof nodeById==='function'){const n=nodeById(id);if(n&&n.kind==='shot')return n}}catch(e){}
+ try{if(typeof nodes!=='undefined'&&Array.isArray(nodes)){const g=nodes.find(function(n){return n&&n.id===id&&n.kind==='shot'});if(g)return g}}catch(e){}return null}
+function freshId(){let m=1;try{for(const k of Object.keys(VIEWS))for(const n of(VIEWS[k].nodes||[]))if(n&&n.id!=null)m=Math.max(m,n.id+1)}catch(e){}try{if(typeof nodes!=='undefined'&&Array.isArray(nodes))for(const n of nodes)if(n&&n.id!=null)m=Math.max(m,n.id+1)}catch(e){}return m}
 function slotsOfLane(s,lane){return(s.slots||[]).filter(function(q){return q&&q.lane===lane})}
 function drawSlots(s){const lanes=s.lanes||0;
  for(let lane=0;lane<lanes;lane++){const list=slotsOfLane(s,lane);
@@ -652,11 +743,12 @@ function sceneUP(e,sx,sy,wx,wy){
  if(dragS){sceneDragUp(wx,wy);draw();return}}
 function renameScene(s){const v=prompt('Scene title:',s.title||'');if(v!==null&&v.trim()){s.title=v.trim().slice(0,60);persist();draw()}}
 function addScene(){const c=activeChapter();if(!c)return null;const id=c.nextScene++;
- const s={id,title:'Scene '+id,x:40+((c.scenes.length*70)%400),y:60,w:560,h:340,lanes:2,slots:[]};
+ const s={id,title:'Scene '+id,scAnchor:'',x:40+((c.scenes.length*70)%400),y:60,w:560,h:340,lanes:2,slots:[]};
+ s.scAnchor=mintAnchor('SC',s.title);
  c.scenes.push(s);selStrip=s;persist();draw();return s}
 /* ---- views: sidebar + chapters ---- */
 function rebuildChapters(){const c=activeChapter(),sel=document.getElementById('chapterSel');sel.innerHTML='';
- for(const ch of SCENES.chapters){const o=document.createElement('option');o.value=ch.id;o.textContent=ch.name;if(ch.id===SCENES.active)o.selected=true;sel.appendChild(o)}
+ for(const ch of SCENES.chapters){const o=document.createElement('option');o.value=ch.id;o.textContent=(ch.chAnchor?ch.chAnchor+' · ':'')+(ch.name||('Chapter '+ch.id));if(ch.id===SCENES.active)o.selected=true;sel.appendChild(o)}
  document.getElementById('addLane').textContent='+ lane ('+((selStrip&&selStrip.lanes)||'—')+')'}
 function syncUI(){
  document.querySelectorAll('#side button').forEach(b=>b.classList.toggle('on',b.dataset.view===view));
@@ -673,12 +765,15 @@ document.getElementById('chapterSel').onchange=e=>{const oc=activeChapter();if(o
 document.getElementById('addChapter').onclick=()=>{
  const name=prompt('Chapter name:','Chapter '+(SCENES.chapters.length+1));if(name===null)return;
  const id=Math.max(0,...SCENES.chapters.map(c=>c.id))+1;
- SCENES.chapters.push({id,name:(name.trim()||'Chapter '+id).slice(0,40),lanes:3,scenes:[],nextScene:1});
+ const _nc={id,name:(name.trim()||'Chapter '+id).slice(0,40),lanes:3,scenes:[],nextScene:1,chAnchor:''};
+ _nc.chAnchor=mintAnchor('CH',_nc.name);
+ SCENES.chapters.push(_nc);
  SCENES.active=id;selStrip=null;persist();syncUI();draw()};
 document.getElementById('addLane').onclick=()=>{const s=selStrip;if(!s){flashHint('select a scene first');return}if(s.lanes>=6){flashHint('max 6 lanes');return}s.lanes++;s.h=Math.max(s.h,TITLE_H+PAD+s.lanes*(ROW_H+GAP)+PAD);persist();syncUI();draw()};
 document.getElementById('addScene').onclick=()=>addScene();
 function selectShot(id){setView('shots');selected=nodeById(id);hoverNode=null;draw()}
-function addShotNode(label,url,w,h){const n={id:nextId++,kind:'shot',label,note:'',ch:null,sc:null,ln:null,x:60+Math.random()*200,y:60+Math.random()*200,w:200,h:190,imgUrl:url,img:null};
+function addShotNode(label,url,w,h){const n={id:nextId++,kind:'shot',label,note:'',anchor:'',promptState:null,ch:null,sc:null,ln:null,x:60+Math.random()*200,y:60+Math.random()*200,w:200,h:190,imgUrl:url,img:null};
+ n.anchor=mintAnchor('SHOT',label);
  nodes.push(n);seq++;selected=n;loadImage(n);persist();draw()}
 function shotFromFile(file){if(!file)return;fileToDataURL(file).then(url=>{const im=new Image();
  im.onload=()=>addShotNode('Shot '+seq,url,im.naturalWidth,im.naturalHeight);
@@ -695,6 +790,158 @@ function migrateChapter(c){const old=c.scenes||[];
    slots.push({lane,slot:perLane[lane]++,shotId:id})}}
  const sections=[{id:1,title:(c.name||'Chapter')+' — board',x:40,y:20,w:600,h:lanes*160,lanes,slots}];
  return{shots,sections}}
+/* ---- project proprietary tokens (frames-only; video deferred) ---- */
+let PROJECT=null,TOMBSTONES=[];
+const KIND_PREFIX={locations:'LOC',props:'PROP',cast:'CHAR',shots:'SHOT'};
+const DOMAIN_ORDER=['camera','lens','framing','lighting','tone','style'];
+function defaultProject(){return{version:1,scope:'frames-only: stills. video/motion deferred.',domains:{
+camera:{label:'Camera',desc:'Capture body and exposure behavior for stills.',enabled:true,tokens:{
+camera_body:{label:'Camera body',desc:'Sensor character: dynamic range, color science, still texture.',values:['ARRI Alexa 35, large-format cinematic sensor','RED Komodo, compact cinema sensor','Sony Venice 2, full-frame cinema sensor','Canon EOS R5, full-frame stills hybrid','35mm film, Kodak Vision3 stock','Medium format, Hasselblad color science','Instant film, Polaroid 600 character'],sel:0},
+shutter_speed:{label:'Shutter speed',desc:'Motion smear inside a still: slow smears action, fast freezes it.',values:['1/24, heavy motion blur','1/48, standard cinematic motion blur','1/120, crisp with slight blur','1/250, frozen action'],sel:1},
+iso:{label:'ISO',desc:'Exposure sensitivity and noise floor: clean daylight vs gritty night grain.',values:['ISO 100, clean daylight','ISO 400, balanced','ISO 800, low-light capable','ISO 3200, gritty night'],sel:1}}},
+lens:{label:'Lens',desc:'Optics in front of the sensor: character, field of view, depth of field.',enabled:true,tokens:{
+lens_type:{label:'Lens',desc:'Optical personality: neutral, anamorphic, vintage.',values:['spherical prime, clean and sharp','anamorphic widescreen, oval bokeh and flares','macro 100mm, tiny detail enormous','tilt-shift, sliver of selective focus','vintage prime, soft glowing character'],sel:0},
+focal_length:{label:'Focal length',desc:'Field of view, full-frame equivalents: wide exaggerates, telephoto compresses.',values:['shot on 12mm extreme wide (full-frame)','shot on 18mm ultra-wide','shot on 24mm wide','shot on 35mm, natural coverage','shot on 50mm standard','shot on 85mm short telephoto, soft background','shot on 135mm telephoto compression','shot on 200mm long telephoto, stacked crowd'],sel:3},
+aperture:{label:'Aperture',desc:'Depth of field: wide open isolates, stopped down keeps all sharp.',values:['f/1.4, razor-thin focus','f/2.0, shallow focus, background melts soft','f/2.8, soft background separation','f/4.0, balanced depth','f/8.0, deep focus, sharp front to back','f/11, everything sharp'],sel:2}}},
+framing:{label:'Framing',desc:'Shot scale, camera angle, compositional geometry.',enabled:true,tokens:{
+shot_scale:{label:'Framing',desc:'How much of the subject fills the frame: wider is context, tighter is emotion.',values:['extreme wide shot, subject tiny in the landscape','wide shot, full body with room around','full shot, head to toe','medium wide, knees up','cowboy shot, mid-thigh up','medium shot, waist up','medium close-up, chest up','close-up, face fills the frame','extreme close-up on one detail','establishing wide that sets the location','single on one featured subject','two shot, both characters in frame','over-the-shoulder, oriented on the conversation','POV, seeing through the character\u2019s eyes','insert shot, tight detail of an object'],sel:3},
+camera_angle:{label:'Angle',desc:'Power dynamics: low empowers, high diminishes, dutch unnerves.',values:['eye-level camera, neutral','low angle looking up, powerful','high angle looking down, vulnerable','ground-level camera, textured and low','dutch tilt, canted uneasy horizon','overhead straight down, graphic geometry','aerial wide, landscape scale'],sel:0},
+composition:{label:'Composition',desc:'Subject placement: thirds, symmetry, negative space. Holds screen direction.',values:['rule-of-thirds composition','hold screen direction, 180-degree rule','lead room ahead of movement','centered symmetry','negative space, subject small in frame','foreground framing, layered depth'],sel:0}}},
+lighting:{label:'Lighting',desc:'Motivated light sources and time-of-day looks.',enabled:true,tokens:{
+lighting_setup:{label:'Setup',desc:'The key source and time of day every still shares.',values:['soft diffused light, flattering','golden-hour backlight, warm tone','blue-hour cool ambient','hard direct light, sharp shadows','night practicals with rim backlight, edge separation','key light from the side, shaping the face','soft fill, lifting the shadows','motivated light, justified by a visible source','practicals glowing in frame','day for night, daylight graded as night'],sel:0}}},
+tone:{label:'Tone / hue',desc:'Post-capture color: what the still looks like after the grade — not what lit the set. Lighting motivates; tone finishes.',enabled:true,tokens:{
+color_palette:{label:'Palette',desc:'Dominant hue family: what colors are in the frame?',values:['warm golden hues','teal-and-orange blockbuster','cool steel-blue hues','desaturated noir neutrals','high-contrast monochrome','pastel dream hues','earthy natural tones'],sel:0},
+color_grade:{label:'Grade',desc:'Curve on top of the palette: contrast, saturation, print emulation.',values:['natural balanced grade','cinematic contrast grade','bleach-bypass grit, silver and harsh','faded film emulation, lifted blacks','high-key airy grade','low-key moody grade'],sel:1},
+grain_texture:{label:'Grain',desc:'Physical finish: clean digital vs film grain vs halation glow.',values:['clean digital, no grain','fine 35mm grain','heavy 16mm grain','soft halation glow on highlights'],sel:1}}},
+style:{label:'Style',desc:'Global render preset applied to every still.',enabled:true,tokens:{
+style_preset:{label:'Preset',desc:'Master look: stock era, genre finish, or medium. One preset per project.',values:['photorealistic cinematic still','1970s film stock, warm and grainy','modern blockbuster, polished contrast','indie naturalism, available light','noir high-contrast black and white','documentary candid, unposed','anime-inspired frame, clean cel shading'],sel:0}}}}}}
+/* ---- anchors: PREFIX-ENTITY[-VARIANT][-STATE] ---- */
+function entityOf(label){const s=String(label||'').toUpperCase().replace(/[^A-Z]/g,'');return(s||'AST').slice(0,4)}
+function scEntityOf(title){const w=String(title||'').toUpperCase().split(/[^A-Z]+/).filter(Boolean);if(!w.length)return'GEN';return w.slice(0,2).map(x=>x.slice(0,3)).join('-')}
+function allAnchors(){const s=new Set(TOMBSTONES||[]);for(const k of Object.keys(VIEWS))for(const n of(VIEWS[k].nodes||[]))if(n.anchor)s.add(n.anchor);for(const c of allChapters()){if(c.chAnchor)s.add(c.chAnchor);for(const sc of(c.scenes||[]))if(sc.scAnchor)s.add(sc.scAnchor)}return s}
+function anchorTaken(a){return allAnchors().has(a)}
+function anchorValid(a){return/^(CHAR|LOC|PROP|SHOT)-[A-Z]{2,4}-[A-Z](-[A-Za-z]{1,12})?$/.test(a)||/^SC-[A-Z]{2,8}(-[A-Z]{2,8})?$/.test(a)||/^CH-[A-Z]{2,4}$/.test(a)}
+function mintAnchor(prefix,label){const taken=allAnchors();
+ if(prefix==='SC'){let e=scEntityOf(label),base='SC-'+e,i=2;while(taken.has(base)&&i<99)base='SC-'+e+'-'+(i++);return taken.has(base)?base+'-X':base}
+ if(prefix==='CH'){let e=entityOf(label),base='CH-'+e,i=2;while(taken.has(base)&&i<99)base='CH-'+e+(i++);return base}
+ const e=entityOf(label);for(let v=65;v<=90;v++){const c=prefix+'-'+e+'-'+String.fromCharCode(v);if(!taken.has(c))return c}return prefix+'-'+e+'-Z2'}
+function tombstone(a){if(a&&!TOMBSTONES.includes(a)){TOMBSTONES.push(a);if(TOMBSTONES.length>300)TOMBSTONES.shift()}}
+function ensureAnchorsAll(){for(const k of Object.keys(VIEWS)){const p=KIND_PREFIX[k]||'AST';for(const n of(VIEWS[k].nodes||[]))if(!n.anchor)n.anchor=mintAnchor(p,n.label)}for(const c of allChapters()){if(!c.chAnchor)c.chAnchor=mintAnchor('CH',c.name);for(const s of(c.scenes||[]))if(!s.scAnchor)s.scAnchor=mintAnchor('SC',s.title)}}
+/* ---- prompt assembly (deterministic, model-agnostic) ---- */
+const NEG_DEFAULT='blurry, deformed hands, extra limbs, watermark, text overlay';
+const TAILS={universal:{tail:'',negPre:'. Avoid: '},midjourney:{tail:' --ar 16:9 --q 2 --v 6.1',negPre:' --no '},sdxl:{tail:', masterpiece, best quality, photorealistic',negPre:''},flux:{tail:', ultra-detailed, natural skin texture, cinematic',negPre:''},dalle:{tail:'',negPre:'. Avoid: '}};
+const MODEL_TABS=[['universal','Universal'],['midjourney','Midjourney'],['sdxl','SDXL'],['flux','Flux'],['dalle','DALL·E 3']];
+function tokVal(tokId){for(const d of DOMAIN_ORDER){const D=PROJECT.domains[d];if(D&&D.tokens[tokId])return{dom:d,tok:D.tokens[tokId]}}return null}
+function effVal(tokId,ps){const f=tokVal(tokId);if(!f||!PROJECT.domains[f.dom].enabled)return'';const o=(ps&&ps.sels&&ps.sels[tokId]!=null)?ps.sels[tokId]:f.tok.sel;return f.tok.values[o]||''}
+function targetOf(n){
+ if(n&&n.slots){const slots=(n.slots||[]).map(q=>{const sh=shotById(q.shot);return sh&&sh.anchor?sh.anchor:null}).filter(Boolean);
+  return{anchor:n.scAnchor||'',entity:String(n.title||'Scene')+' scene'+(slots.length?', holding '+slots.join(', '):'')}}
+ if(n&&n.id!=null&&n.ch!=null&&n.ch!==undefined&&n.kind==='shot'&&view==='shots'){/*card*/}
+ const chN=n&&n.ch!=null?('ch'+n.ch+'/sc'+n.sc+'/ln'+(n.ln==null?'—':n.ln+1)):'';
+ return{anchor:(n&&n.anchor)||'',entity:[String((n&&(n.title||n.label))||'card'),n&&n.note?String(n.note):'',chN].filter(Boolean).join(', ')}}
+function buildPrompt(n,model){const t=targetOf(n);if(!t.anchor)return'⚠ assign an anchor first (drawer → assign).';
+ const ps=n&&n.id!=null?n.promptState:null,m=model||(ps&&ps.model)||'universal';
+ const D=(k)=>(ps&&ps.details&&ps.details[k]||'').trim();
+ const TK=(id)=>effVal(id,ps);
+ const EX=(id)=>{const o=EXTRA_OPTS[id];if(!o)return'';const i=(ps&&ps.sels&&ps.sels[id]!=null)?ps.sels[id]:o.def;return o.values[i]||''};
+ const subj=[D('descriptor'),t.entity,D('expression')].filter(Boolean).join(', ');
+ const ward=[D('wardrobe_top'),D('wardrobe_bottom'),D('wardrobe_feet')].filter(Boolean).join(', ');
+ const fram=[TK('shot_scale'),EX('aspect_ratio'),D('subject_scale'),D('visibility'),TK('composition')].filter(Boolean).join(', ');
+ const cam=[TK('camera_body'),EX('film_stock'),D('camera_position'),TK('camera_angle'),TK('lens_type'),TK('focal_length'),TK('aperture'),D('movement'),TK('shutter_speed'),TK('iso')].filter(Boolean).join(', ');
+ const light=[D('time_of_day'),D('light_quality'),TK('lighting_setup')].filter(Boolean).join(', ');
+ const color=[TK('color_palette'),TK('color_grade'),TK('grain_texture')].filter(Boolean).join(', ');
+ const env=[D('env_setting'),D('env_props')].filter(Boolean).join(', ');
+ const parts=[t.anchor,subj,fram,cam,light,color,TK('style_preset'),env];
+ const act=D('action')||((ps&&ps.action||'').trim()),mood=D('mood')||((ps&&ps.mood||'').trim());
+ if(ward)parts.push('wearing '+ward);
+ if(act)parts.push('doing '+act);if(mood)parts.push(mood+' mood');
+ let body=parts.filter(Boolean).join(', ');
+ const neg=(D('neg')||((ps&&ps.neg!=null)?ps.neg:NEG_DEFAULT)).trim(),T=TAILS[m]||TAILS.universal;
+ if(m==='midjourney'||m==='sdxl'||m==='flux'){let out=body+T.tail;if(neg&&m==='midjourney')out+=T.negPre+neg;return out}
+ if(neg)return body+T.tail+T.negPre+neg;return body+T.tail}
+function stubFor(n){const t=targetOf(n);if(!t.anchor)return'⚠ no anchor';
+ if(n&&n.slots){const slots=(n.slots||[]).map(q=>{const sh=shotById(q.shot);return(sh&&sh.anchor?sh.anchor:'?shot')+'@L'+(q.lane+1)});return t.anchor+' — '+String(n.title||'Scene')+(slots.length?' — '+slots.join(', '):'')}
+ return t.anchor+' — '+t.entity}
+function copyText(s,okMsg){const done=()=>flashHint(okMsg||'copied');try{if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(s).then(done,()=>{prompt('Copy:',s);done()})}catch(e){}prompt('Copy:',s);done()}
+/* ---- project modal ---- */
+function renderProjectModal(){const host=document.getElementById('projDomains');host.innerHTML='';
+ for(const d of DOMAIN_ORDER){const D=PROJECT.domains[d];const box=document.createElement('div');box.className='dom'+(D.enabled?'':' off');
+  const h=document.createElement('div');h.className='dom-h';h.textContent=D.label;
+  const lab=document.createElement('label');const cb=document.createElement('input');cb.type='checkbox';cb.checked=!!D.enabled;
+  cb.onchange=()=>{snap();D.enabled=cb.checked;persist();renderProjectModal();if(drawerSub)renderPromptPreview(drawerSub)};lab.appendChild(cb);lab.appendChild(document.createTextNode('enabled'));h.appendChild(lab);box.appendChild(h);
+  const dd=document.createElement('div');dd.className='ddesc';dd.textContent=D.desc+' '+(D.enabled?'Included in every prompt.':'Disabled — contributes zero words.');box.appendChild(dd);
+  for(const[tid,T]of Object.entries(D.tokens)){const row=document.createElement('div');row.className='tok';
+   const sp=document.createElement('span');sp.textContent=T.label;row.appendChild(sp);
+   const sel=document.createElement('select');sel.disabled=!D.enabled;
+   T.values.forEach((v,i)=>{const o=document.createElement('option');o.value=i;o.textContent=v;if(i===(T.sel||0))o.selected=true;sel.appendChild(o)});
+   sel.onchange=()=>{snap();T.sel=+sel.value;persist();if(drawerSub)renderPromptPreview(drawerSub)};row.appendChild(sel);box.appendChild(row);
+   const td=document.createElement('div');td.className='tdesc';td.textContent=T.desc;box.appendChild(td)}
+  host.appendChild(box)}
+ document.getElementById('projNote').textContent=DOMAIN_ORDER.filter(d=>PROJECT.domains[d].enabled).length+' of '+DOMAIN_ORDER.length+' domains enabled'}
+function openProjectModal(){renderProjectModal();document.getElementById('projModal').hidden=false}
+function closeProjectModal(){document.getElementById('projModal').hidden=true}
+/* ---- prompt modal (character exemplar, works for any card/scene) ---- */
+let pmTarget=null;
+function openPromptModal(n){pmTarget=n;const ps=n.promptState||(n.promptState={sels:{},action:'',mood:'',neg:NEG_DEFAULT,model:'universal'});
+ document.getElementById('pmTitle').textContent='Generate prompt — '+((n&&n.title)||(n&&n.label)||'card');
+ document.getElementById('pmAnchor').textContent=(n.anchor||n.scAnchor||'no anchor')+' · '+(n.note||n.title||n.label||'');
+ renderPmFields();renderPmTabs();syncPmInputs();renderPmOut();
+ document.getElementById('promptModal').hidden=false}
+function closePromptModal(){document.getElementById('promptModal').hidden=true;pmTarget=null}
+const EXTRA_OPTS={
+ aspect_ratio:{label:'Aspect ratio',values:['16:9 widescreen','2:3 vertical','4:5 portrait','1:1 square','21:9 ultrawide'],def:0},
+ film_stock:{label:'Film stock',desc:'Empty = clean digital capture; pick a stock to bake in its look.',values:['','Kodak Portra 400','Kodak Vision3 500T','Fujifilm 400H','Ilford HP5 black and white','Polaroid 600'],def:0}};
+const PM_TABS=[['subject','Subject'],['cine','Cinematography'],['capture','Capture'],['light','Lighting'],['color','Color'],['env','Environment'],['neg','Negative']];
+let pmTab='subject';
+function pmFieldTok(host,tid){const f=tokVal(tid);if(!f||!PROJECT.domains[f.dom].enabled)return;const ps=pmTarget.promptState||{};
+ const row=document.createElement('div');row.className='tok';const sp=document.createElement('span');sp.textContent=f.tok.label;row.appendChild(sp);
+ const sel=document.createElement('select');f.tok.values.forEach((v,i)=>{const o=document.createElement('option');o.value=i;o.textContent=v||'—';sel.appendChild(o)});
+ sel.value=(ps.sels&&ps.sels[tid]!=null)?ps.sels[tid]:(f.tok.sel||0);
+ sel.onchange=()=>{snap();pmTarget.promptState.sels[tid]=+sel.value;persist();renderPmOut();renderPromptPreview(pmTarget)};row.appendChild(sel);host.appendChild(row)}
+function pmFieldExtra(host,id){const o=EXTRA_OPTS[id];if(!o)return;const ps=pmTarget.promptState||{};
+ const row=document.createElement('div');row.className='tok';const sp=document.createElement('span');sp.textContent=o.label;row.appendChild(sp);
+ const sel=document.createElement('select');o.values.forEach((v,i)=>{const el=document.createElement('option');el.value=i;el.textContent=v||'—';sel.appendChild(el)});
+ sel.value=(ps.sels&&ps.sels[id]!=null)?ps.sels[id]:o.def;
+ sel.onchange=()=>{snap();pmTarget.promptState.sels[id]=+sel.value;persist();renderPmOut();renderPromptPreview(pmTarget)};row.appendChild(sel);host.appendChild(row);
+ if(o.desc){const d=document.createElement('div');d.className='tdesc';d.textContent=o.desc;host.appendChild(d)}}
+function pmFieldText(host,k,label,ph){const ps=pmTarget.promptState||{};ps.details=ps.details||{};
+ const inp=document.createElement('input');inp.className='tin';inp.placeholder=label+(ph?' — '+ph:'');inp.value=ps.details[k]||'';
+ inp.addEventListener('input',()=>{pmTarget.promptState.details[k]=inp.value;persist();renderPmOut()});host.appendChild(inp)}
+function pmSub(host,t){const d=document.createElement('div');d.className='subh';d.textContent=t;host.appendChild(d)}
+function renderPmFields(){const host=document.getElementById('pmFields');host.innerHTML='';if(!pmTarget)return;
+ const tabs=document.createElement('div');tabs.className='tabs';
+ for(const[id,lab]of PM_TABS){const b=document.createElement('button');b.textContent=lab;if(pmTab===id)b.classList.add('on');b.onclick=()=>{pmTab=id;renderPmFields()};tabs.appendChild(b)}
+ host.appendChild(tabs);
+ const g=document.createElement('div');host.appendChild(g);
+ if(pmTab==='subject'){pmFieldText(g,'descriptor','subject descriptor','East Asian woman, Tibetan highland features…');pmFieldText(g,'expression','expression','quiet confidence');pmSub(g,'wardrobe');pmFieldText(g,'wardrobe_top','top','oversized sage cashmere sweater');pmFieldText(g,'wardrobe_bottom','bottom','charcoal wide-leg trousers');pmFieldText(g,'wardrobe_feet','footwear','natural understated footwear');pmSub(g,'pose');pmFieldText(g,'action','action','one hand in pocket, body slightly turned');pmFieldText(g,'mood','mood','understated elegance')}
+ else if(pmTab==='cine'){pmSub(g,'framing');pmFieldTok(g,'shot_scale');pmFieldExtra(g,'aspect_ratio');pmFieldText(g,'subject_scale','subject scale','occupies 65–70% of image height');pmFieldText(g,'visibility','visibility','both legs, feet, shoes fully visible');pmFieldTok(g,'composition');pmSub(g,'camera');pmFieldText(g,'camera_position','camera position','pulled back several meters');pmFieldTok(g,'camera_angle');pmFieldTok(g,'lens_type');pmFieldTok(g,'focal_length');pmFieldTok(g,'aperture');pmFieldText(g,'movement','movement (video-deferred)','')}
+ else if(pmTab==='capture'){pmFieldTok(g,'camera_body');pmFieldExtra(g,'film_stock');pmFieldTok(g,'shutter_speed');pmFieldTok(g,'iso');pmFieldTok(g,'grain_texture')}
+ else if(pmTab==='light'){pmFieldText(g,'time_of_day','time of day','luminous overcast daylight');pmFieldText(g,'light_quality','quality','bright pale overcast sky');pmFieldTok(g,'lighting_setup')}
+ else if(pmTab==='color'){pmFieldTok(g,'color_palette');pmFieldTok(g,'color_grade')}
+ else if(pmTab==='env'){pmFieldText(g,'env_setting','setting','highland grassland, softly rolling hills');pmFieldText(g,'env_props','props','one or two cashmere goats beside her')}
+ else if(pmTab==='neg'){pmFieldText(g,'neg','negative','no text, logos, illustration, or CG');const d=document.createElement('div');d.className='tdesc';d.style.marginLeft='0';d.textContent='Default: '+NEG_DEFAULT;g.appendChild(d)}
+ if(!g.children.length)g.innerHTML='<div class="sub">All project tokens in this section are disabled — enable them in ⚙ project.</div>'}
+function renderPmTabs(){const host=document.getElementById('pmTabs');host.innerHTML='';const ps=pmTarget?pmTarget.promptState||{}:{};
+ for(const[id,lab]of MODEL_TABS){const b=document.createElement('button');b.textContent=lab;if((ps.model||'universal')===id)b.classList.add('on');
+  b.onclick=()=>{pmTarget.promptState.model=id;persist();renderPmTabs();renderPmOut()};host.appendChild(b)}}
+function syncPmInputs(){const ps=pmTarget.promptState||{};document.getElementById('pmAction').value=ps.action||'';document.getElementById('pmMood').value=ps.mood||'';document.getElementById('pmNeg').value=(ps.neg!=null?ps.neg:NEG_DEFAULT)}
+function renderPmOut(){document.getElementById('pmOut').textContent=pmTarget?buildPrompt(pmTarget):''}
+/* ---- drawer wiring ---- */
+function renderAnchorRow(n){const row=document.getElementById('anchorRow'),code=document.getElementById('anchorCode');
+ const a=n?n.anchor||n.scAnchor||'':'';if(!n||(!n.anchor&&!n.scAnchor)){row.hidden=n&&n.slots?false:true;code.textContent='no anchor';
+  document.getElementById('anchorVariant').style.display='none';document.getElementById('anchorAssign').style.display=n?'':'none';if(n&&n.slots)document.getElementById('anchorAssign').style.display='';return}
+ row.hidden=false;code.textContent=a;
+ document.getElementById('anchorVariant').style.display=(n&&n.slots)?'none':'';
+ document.getElementById('anchorAssign').style.display=''}
+function renderPromptPreview(n){document.getElementById('promptPrev').textContent=n?buildPrompt(n,'universal'):''}
+function renderAssetMenu(){const host=document.getElementById('assetList');host.innerHTML='';
+ const h=document.createElement('div');h.className='ah';host.appendChild(h);
+ const pick=(label,n,fn)=>{const b=document.createElement('button');const an=n.anchor||n.scAnchor||'?';b.innerHTML='';const bb=document.createElement('b');bb.textContent=an;b.appendChild(bb);b.appendChild(document.createTextNode(' '+(label||'')));b.onclick=e=>{e.stopPropagation();fn()};host.appendChild(b)};
+ if(view==='scenes'){h.textContent='assets — scenes · '+activeChapter().name;
+  for(const s of activeChapter().scenes)pick(s.title,s,()=>{selStrip=s;selected=null;menuDrop.hidden=true;openDrawer(s);draw()})}
+ else{const m=VIEW_META[view];h.textContent='assets — '+(m?m.one.toLowerCase()+'s':view);
+  for(const n of nodes)pick(n.label,n,()=>{selected=n;selStrip=null;menuDrop.hidden=true;hoverNode=n;openDrawer(n);draw()})}
+ if(!host.children.length+1||host.querySelectorAll('button').length===0){const d=document.createElement('div');d.className='ah';d.textContent='no assets yet';host.appendChild(d)}}
 attachZoom();
 restore();fit();
 </script></body></html>
