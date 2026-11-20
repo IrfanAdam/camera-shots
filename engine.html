@@ -45,12 +45,13 @@ header .by{color:var(--mut);font-size:.8rem}
 #removeSlot:hover{background:#e5484d;color:#fff}
 #scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s;z-index:70}
 #scrim.open{opacity:1;pointer-events:auto}
-#drawer{position:fixed;top:0;right:0;bottom:0;width:min(360px,92vw);background:#161b22;border-left:1px solid #313b4a;z-index:71;transform:translateX(105%);transition:transform .25s ease;display:flex;flex-direction:column}
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(360px,92vw);background:#161b22;border-left:1px solid #313b4a;border-radius:0;z-index:71;transform:translateX(105%);transition:transform .25s ease;display:flex;flex-direction:column}
 #drawer.open{transform:none}
 #drawer img{width:100%;max-height:46vh;object-fit:contain;background:#0b0e13;display:block}
 #drawerX{position:absolute;top:.6rem;right:.6rem;z-index:2;background:rgba(10,13,18,.72);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:50%;width:32px;height:32px;font-size:16px;line-height:1;cursor:pointer;backdrop-filter:blur(4px)}
 #drawerX:hover{border-color:var(--acc)}
-.dp{padding:.9rem 1.1rem;overflow:auto}
+.dp{padding:.8rem 1rem;overflow:auto;position:relative}
+.dp h3{margin:0 2rem .3rem 0;font-size:1rem}
 .dp h3{font-size:1rem;margin-bottom:.5rem}
 .dp p{color:var(--mut);font-size:.85rem;margin-bottom:.7rem}
 .dp code{display:block;background:#0b0e13;border:1px solid #262d38;border-radius:8px;padding:.6rem .7rem;font-size:.78rem;color:#c8cfdb;white-space:pre-wrap;margin-bottom:.7rem}
@@ -104,22 +105,42 @@ header .by{color:var(--mut);font-size:.8rem}
 .modal .frow button:hover{border-color:var(--acc)}
 #pmCopy,#projClose{background:#e8830c!important;border:0!important;color:#111!important;font-weight:700}
 #promptModal{align-items:stretch;justify-content:flex-end;background:rgba(0,0,0,.45)}
-#promptModal .box{width:min(1120px,96vw);height:92vh;max-height:none;border-radius:12px 0 0 12px;display:flex;gap:0;padding:0;overflow:hidden}
-.pm-nav{width:148px;flex:none;background:#141a22;border-right:1px solid #262d38;padding:.8rem .6rem;display:flex;flex-direction:column;gap:.25rem;overflow:auto}
-.pm-nav .pmtitle{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#8b93a5;margin-bottom:.4rem}
-.pm-nav button{background:transparent;border:1px solid transparent;border-radius:8px;color:#aab2c2;font-size:.82rem;text-align:left;padding:.45rem .6rem;cursor:pointer}
+#promptModal .box{width:min(1120px,96vw);height:92vh;max-height:none;border-radius:0;display:flex;gap:0;padding:0;overflow:hidden}
+.pm-nav{width:148px;flex:none;background:#10151c;border-right:1px solid #262d38;padding:.8rem 0;display:flex;flex-direction:column;gap:0;overflow:auto}
+.pm-nav .pmtitle{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#8b93a5;margin:0 .8rem .4rem}
+.pm-nav button{background:transparent;border:0;border-left:3px solid transparent;border-radius:0;color:#aab2c2;font-size:.84rem;text-align:left;padding:.55rem .8rem;cursor:pointer;width:100%}
 .pm-nav button:hover{color:#e8eaf0;background:#1b212b}
-.pm-nav button.on{border-color:var(--acc);color:var(--acc);background:#1b212b}
+.pm-nav button.on{border-left-color:var(--acc);color:var(--acc);background:#1b212b;font-weight:600}
 .pm-mid{flex:1.1;min-width:0;padding:.9rem 1rem;overflow:auto}
+.pmhead{display:flex;align-items:center;gap:.5rem}
+.pmhead h2{font-size:1rem;margin-bottom:.1rem}
+#pmX{margin-left:auto;background:transparent;border:1px solid #313b4a;border-radius:7px;color:#aab2c2;font-size:1rem;line-height:1;padding:.2rem .6rem;cursor:pointer}
+#pmX:hover{border-color:var(--acc);color:var(--ink)}
 .pm-mid h2{font-size:1rem;margin-bottom:.1rem}
-.pm-right{flex:1;min-width:0;background:#0b0e13;border-left:1px solid #262d38;position:relative;display:flex}
-#pmJson{flex:1;border:0;background:transparent;color:#c8cfdb;font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre;padding:.9rem 1rem;resize:none;outline:none}
+.pm-right{flex:1;min-width:0;background:#0b0e13;border-left:1px solid #262d38;position:relative;display:flex;flex-direction:column}
+#pmJson{flex:1;margin:0;padding:.9rem 1rem 1rem;overflow:auto;font:12px/1.55 ui-monospace,Menlo,monospace;white-space:pre;color:#c8cfdb}
 #pmCopyFloat{position:absolute;top:.6rem;right:.6rem;background:#e8830c;border:0;border-radius:7px;color:#111;font-weight:700;font-size:.78rem;padding:.35rem .8rem;cursor:pointer}
 #pmTabs{display:none}
 .pmdiv{border:0;border-top:1px solid #262d38;margin:.7rem 0}
+.jkey{color:#8b93a5}.jpunc{color:#4b5563}
+.jval{cursor:pointer;border-radius:4px;padding:0 2px}
+.jval:hover{background:#1b212b}
+.jval.tok{color:#c8cfdb}
+.jval.free{color:#fbbf24;font-style:italic}
+.jval.empty{opacity:.45}
+.jval.static{cursor:default}
+.jlegend{flex:none;border-top:1px solid #262d38;padding:.45rem .9rem;font-size:.72rem;color:#8b93a5;display:flex;gap:.4rem;align-items:center}
+.jlegend .sw{display:inline-block;width:.6rem;height:.6rem;border-radius:2px}
+.jlegend .sw.free{background:#fbbf24}.jlegend .sw.tok{background:#5b6472}
+@keyframes jflash{0%{background:rgba(232,131,12,.35);outline:1px solid #e8830c}100%{background:transparent}}
+.jflash{animation:jflash 1.1s ease-out 2}
+.filehide{position:fixed;left:-9999px;top:0;width:4px;height:4px;opacity:0}
+#drawerClose{position:absolute;top:.55rem;right:.6rem;background:transparent;border:1px solid #313b4a;border-radius:7px;color:#aab2c2;font-size:.95rem;line-height:1;padding:.2rem .55rem;cursor:pointer;z-index:2}
+#drawerClose:hover{border-color:var(--acc);color:var(--ink)}
 .modal .frow .note{color:var(--mut);font-size:.75rem}
 .modal .subh{font-size:.76rem;text-transform:uppercase;letter-spacing:.05em;color:#8b93a5;margin:.7rem 0 .1rem}
-.modal .tin{width:100%;box-sizing:border-box;background:#222a36;color:#e8eaf0;border:1px solid #313b4a;border-radius:6px;padding:.35rem .5rem;font:inherit;font-size:.82rem;margin:.25rem 0}
+.modal .tin{width:100%;box-sizing:border-box;background:#222a36;color:#fbbf24;border:1px solid #313b4a;border-left:3px solid #b45309;border-radius:6px;padding:.35rem .5rem;font:inherit;font-size:.82rem;margin:.25rem 0}
+.modal .tin::placeholder{color:#8b93a5;font-style:italic}
 #assetList{border-top:1px solid #262d38;margin-top:4px;padding-top:4px;max-height:220px;overflow:auto}
 #assetList .ah{color:#8b93a5;font-size:.72rem;padding:.3rem .6rem .1rem;text-transform:uppercase;letter-spacing:.04em}
 #assetList button{white-space:normal;text-align:left}
@@ -144,7 +165,7 @@ header .by{color:var(--mut);font-size:.8rem}
 <button data-view="props">Props</button>
 <button data-view="cast">Cast</button>
 </nav><div id="stage"><div id="chapterbar" hidden><span>Chapter</span><select id="chapterSel"></select><button id="addChapter">+ chapter</button><span class="sp"></span><button id="addLane">+ lane</button><button id="addScene">+ scene</button></div><canvas id="cv"></canvas></div></div>
-<input type="file" id="filePick" accept="image/*" hidden>
+<input type="file" id="filePick" accept="image/*" class="filehide">
 <div id="arrowpick" hidden>
 <div class="ap-row"><span class="ap-lab">end A</span><button type="button" data-end="endA" data-val="none" title="line, no head">─</button><button type="button" data-end="endA" data-val="arrow" title="arrow head">→</button></div>
 <div class="ap-row"><span class="ap-lab">end B</span><button type="button" data-end="endB" data-val="none" title="line, no head">─</button><button type="button" data-end="endB" data-val="arrow" title="arrow head">→</button></div>
@@ -155,7 +176,7 @@ header .by{color:var(--mut);font-size:.8rem}
 <button id="drawerX" title="close">×</button>
 <img id="drawerImg" alt="">
 <div id="drawerStills"></div>
-<div class="dp"><h3 id="drawerTitle"></h3>
+<div class="dp"><button id="drawerClose" title="dismiss">×</button><h3 id="drawerTitle"></h3>
 <div id="anchorRow" hidden><code id="anchorCode"></code><button id="anchorVariant" title="Create variant (next letter)">+ variant</button><button id="anchorAssign" title="Assign a different anchor">assign</button></div>
 <div id="shotProps" hidden><label>chapter <select id="shotCh"></select></label><label>scene <select id="shotSc"></select></label><span>lane <b id="shotLane">—</b></span></div>
 <div id="slotBtns" hidden><button id="goShot">go to shot</button><button id="removeSlot">remove</button></div>
@@ -172,7 +193,7 @@ header .by{color:var(--mut);font-size:.8rem}
 </div></div>
 <div id="promptModal" class="modal" hidden><div class="box">
 <nav class="pm-nav"><div class="pmtitle">prompt</div><div id="pmNav"></div></nav>
-<div class="pm-mid"><h2 id="pmTitle">Generate prompt</h2>
+<div class="pm-mid"><div class="pmhead"><h2 id="pmTitle">Generate prompt</h2><button id="pmX" title="dismiss">×</button></div>
 <div class="sub" id="pmAnchor"></div>
 <div id="pmFields"></div>
 <div hidden><div class="row"><input id="pmAction" placeholder="action" maxlength="140"><input id="pmMood" placeholder="mood" maxlength="140"></div>
@@ -181,7 +202,7 @@ header .by{color:var(--mut);font-size:.8rem}
 <div class="out" id="pmOut" hidden></div>
 <div class="frow"><button id="pmCopy" hidden>copy</button><button id="pmClose" class="modalClose">close</button><span class="note">Anchor first, then sections. Disabled project domains are omitted.</span></div>
 </div>
-<div class="pm-right"><textarea id="pmJson" readonly spellcheck="false"></textarea><button id="pmCopyFloat">copy</button></div>
+<div class="pm-right"><pre id="pmJson"></pre><button id="pmCopyFloat">copy</button><div class="jlegend"><span class="sw free"></span>your words<span class="sw tok"></span>project token · click a value to edit it</div></div>
 </div></div>
 <div class="hint" id="hint">hover a card for dots · drag dot-to-dot to link · click a card for detail · Del deletes · Ctrl+Z undoes · double-click renames</div>
 <div id="toast" hidden><span id="toastMsg"></span><button id="toastBtn">Undo</button></div>
@@ -514,8 +535,10 @@ document.getElementById('genPrompt').onclick=()=>{if(drawerSub)openPromptModal(d
 document.getElementById('copyStub').onclick=()=>{if(drawerSub)copyText(stubFor(drawerSub),'stub copied — anchor first');else flashHint('open a card or scene first')};
 document.getElementById('pmClose').onclick=()=>closePromptModal();
 document.getElementById('promptModal').addEventListener('click',e=>{if(e.target.id==='promptModal')closePromptModal()});
-document.getElementById('pmCopy').onclick=()=>{if(pmTarget)copyText(document.getElementById('pmJson').value,'prompt JSON copied')};
-document.getElementById('pmCopyFloat').onclick=()=>{if(pmTarget)copyText(document.getElementById('pmJson').value,'prompt JSON copied')};
+document.getElementById('pmCopy').onclick=()=>{if(pmJsonText)copyText(pmJsonText,'prompt JSON copied')};
+document.getElementById('pmCopyFloat').onclick=()=>{if(pmJsonText)copyText(pmJsonText,'prompt JSON copied')};
+document.getElementById('pmX').onclick=()=>closePromptModal();
+document.getElementById('drawerClose').onclick=()=>closeDrawer();
 document.getElementById('pmAction').addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.action=e.target.value.slice(0,140);persist();renderPmOut()});
 document.getElementById('pmMood').addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.mood=e.target.value.slice(0,140);persist();renderPmOut()});
 document.getElementById('pmNeg').addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.neg=e.target.value;persist();renderPmOut()});
@@ -908,17 +931,17 @@ const PM_TABS=[['subject','Subject'],['cine','Cinematography'],['capture','Captu
 let pmTab='subject';
 function pmFieldTok(host,tid){const f=tokVal(tid);if(!f||!PROJECT.domains[f.dom].enabled)return;const ps=pmTarget.promptState||{};
  const row=document.createElement('div');row.className='tok';const sp=document.createElement('span');sp.textContent=f.tok.label;row.appendChild(sp);
- const sel=document.createElement('select');f.tok.values.forEach((v,i)=>{const o=document.createElement('option');o.value=i;o.textContent=v||'—';sel.appendChild(o)});
+ const sel=document.createElement('select');sel.dataset.k=tid;f.tok.values.forEach((v,i)=>{const o=document.createElement('option');o.value=i;o.textContent=v||'—';sel.appendChild(o)});
  sel.value=(ps.sels&&ps.sels[tid]!=null)?ps.sels[tid]:(f.tok.sel||0);
  sel.onchange=()=>{snap();pmTarget.promptState.sels[tid]=+sel.value;persist();renderPmOut();renderPromptPreview(pmTarget)};row.appendChild(sel);host.appendChild(row)}
 function pmFieldExtra(host,id){const o=EXTRA_OPTS[id];if(!o)return;const ps=pmTarget.promptState||{};
  const row=document.createElement('div');row.className='tok';const sp=document.createElement('span');sp.textContent=o.label;row.appendChild(sp);
- const sel=document.createElement('select');o.values.forEach((v,i)=>{const el=document.createElement('option');el.value=i;el.textContent=v||'—';sel.appendChild(el)});
+ const sel=document.createElement('select');sel.dataset.k=id;o.values.forEach((v,i)=>{const el=document.createElement('option');el.value=i;el.textContent=v||'—';sel.appendChild(el)});
  sel.value=(ps.sels&&ps.sels[id]!=null)?ps.sels[id]:o.def;
  sel.onchange=()=>{snap();pmTarget.promptState.sels[id]=+sel.value;persist();renderPmOut();renderPromptPreview(pmTarget)};row.appendChild(sel);host.appendChild(row);
  if(o.desc){const d=document.createElement('div');d.className='tdesc';d.textContent=o.desc;host.appendChild(d)}}
 function pmFieldText(host,k,label,ph){const ps=pmTarget.promptState||{};ps.details=ps.details||{};
- const inp=document.createElement('input');inp.className='tin';inp.placeholder=label+(ph?' — '+ph:'');inp.value=ps.details[k]||'';
+ const inp=document.createElement('input');inp.className='tin';inp.dataset.k=k;inp.placeholder=label+(ph?' — '+ph:'');inp.value=ps.details[k]||'';
  inp.addEventListener('input',()=>{pmTarget.promptState.details[k]=inp.value;persist();renderPmOut()});host.appendChild(inp)}
 function pmDiv(host){const h=document.createElement('hr');h.className='pmdiv';host.appendChild(h)}
 function pmSub(host,t){const d=document.createElement('div');d.className='subh';d.textContent=t;host.appendChild(d)}
@@ -936,7 +959,45 @@ function renderPmFields(){const host=document.getElementById('pmFields');host.in
  if(!g.children.length)g.innerHTML='<div class="sub">All project tokens in this section are disabled — enable them in ⚙ project.</div>'}
 function syncPmInputs(){const ps=pmTarget?pmTarget.promptState||{}:{};try{document.getElementById('pmAction').value=ps.action||'';document.getElementById('pmMood').value=ps.mood||'';document.getElementById('pmNeg').value=(ps.neg!=null?ps.neg:NEG_DEFAULT)}catch(e){}}
 function renderPmTabs(){}
-function renderPmOut(){if(pmTarget)document.getElementById('pmJson').value=buildPrompt(pmTarget)}
+let pmJsonText='';
+function jValEl(tab,k,v,free){const s=document.createElement('span');
+ s.className='jval '+(free?'free':'tok')+((v==null||v==='')?' empty':'')+((!tab||!k)?' static':'');
+ s.textContent=(v==null||v==='')?'""':'"'+v+'"';
+ if(tab&&k){s.title=(free?'your words — click to edit in ':'project token — click to edit in ')+tab;
+  s.onclick=()=>{if(pmTab!==tab){pmTab=tab;renderPmFields()}
+   requestAnimationFrame(()=>{const el=document.querySelector('#pmFields [data-k="'+k+'"]');if(el){el.scrollIntoView({block:'nearest',behavior:'smooth'});el.classList.remove('jflash');void el.offsetWidth;el.classList.add('jflash');if(el.focus)try{el.focus({preventScroll:true})}catch(e){}}})}}
+ return s}
+function renderPmOut(){const box=document.getElementById('pmJson');box.innerHTML='';pmJsonText='';
+ const o=pmTarget?buildPromptJSON(pmTarget):null;
+ if(!o){box.textContent='⚠ assign an anchor first (drawer → assign).';return}
+ pmJsonText=JSON.stringify(o,null,2);
+ const K=t=>{const s=document.createElement('span');s.className='jkey';s.textContent='"'+t+'"';return s};
+ const C=t=>{const s=document.createElement('span');s.className='jpunc';s.textContent=t;return s};
+ const L=(dep,items)=>{const d=document.createElement('div');d.style.marginLeft=(dep*14)+'px';items.forEach(p=>d.appendChild(typeof p==='string'?document.createTextNode(p):p));box.appendChild(d)};
+ const sec=(dep,name,obj,map)=>{L(dep,[K(name),C(': {')]);for(const[k,v,tab,fk,free]of map)L(dep+1,[K(k),C(': '),jValEl(tab,fk,v,free),C(',')]);const last=box.lastChild;if(last&&last.lastChild)last.removeChild(last.lastChild);L(dep,[C('},')])};
+ box.appendChild(document.createTextNode('{'));
+ L(1,[K('anchor'),C(': '),jValEl(null,null,o.anchor,false),C(',')]);
+ L(1,[K('subject'),C(': {')]);
+ for(const[k,v]of[['descriptor',o.subject.descriptor],['expression',o.subject.expression],['action',o.subject.action],['mood',o.subject.mood]])L(2,[K(k),C(': '),jValEl('subject',k,v,1),C(',')]);
+ L(2,[K('wardrobe'),C(': {')]);
+ for(const[kk,vv,fk]of[['top',o.subject.wardrobe.top,'wardrobe_top'],['bottom',o.subject.wardrobe.bottom,'wardrobe_bottom'],['footwear',o.subject.wardrobe.footwear,'wardrobe_feet']])L(3,[K(kk),C(': '),jValEl('subject',fk,vv,1),C(',')]);
+ {const last=box.lastChild;if(last&&last.lastChild)last.removeChild(last.lastChild)}
+ L(2,[C('}')]);L(1,[C('},')]);
+ L(1,[K('cinematography'),C(': {')]);
+ L(2,[K('framing'),C(': {')]);
+ for(const[k,v,tab,fk,free]of[['shot_size',o.cinematography.framing.shot_size,'cine','shot_scale',0],['aspect_ratio',o.cinematography.framing.aspect_ratio,'cine','aspect_ratio',0],['composition',o.cinematography.framing.composition,'cine','composition',0],['subject_scale',o.cinematography.framing.subject_scale,'cine','subject_scale',1],['visibility',o.cinematography.framing.visibility,'cine','visibility',1]])L(3,[K(k),C(': '),jValEl(tab,fk,v,free),C(',')]);
+ {const last=box.lastChild;if(last&&last.lastChild)last.removeChild(last.lastChild)}
+ L(2,[C('},')]);
+ L(2,[K('camera'),C(': {')]);
+ for(const[k,v,tab,fk,free]of[['position',o.cinematography.camera.position,'cine','camera_position',1],['angle',o.cinematography.camera.angle,'cine','camera_angle',0],['movement',o.cinematography.camera.movement,'cine','movement',1],['lens',o.cinematography.camera.lens,'cine','focal_length',0],['aperture',o.cinematography.camera.aperture,'cine','aperture',0],['duration',o.cinematography.camera.duration,'cine','duration',1]])L(3,[K(k),C(': '),jValEl(tab,fk,v,free),C(',')]);
+ {const last=box.lastChild;if(last&&last.lastChild)last.removeChild(last.lastChild)}
+ L(2,[C('}')]);L(1,[C('},')]);
+ sec(1,'capture',0,[['camera_system',o.capture.camera_system,'capture','camera_body',0],['film_stock',o.capture.film_stock,'capture','film_stock',0],['shutter_speed',o.capture.shutter_speed,'capture','shutter_speed',0],['iso',o.capture.iso,'capture','iso',0],['texture',o.capture.texture,'capture','grain_texture',0]]);
+ sec(1,'lighting',0,[['time_of_day',o.lighting.time_of_day,'light','time_of_day',1],['quality',o.lighting.quality,'light','light_quality',1],['setup',o.lighting.setup,'light','lighting_setup',0]]);
+ sec(1,'color',0,[['palette',o.color.palette,'color','color_palette',0],['grade',o.color.grade,'color','color_grade',0]]);
+ sec(1,'environment',0,[['setting',o.environment.setting,'env','env_setting',1],['props',o.environment.props,'env','env_props',1]]);
+ L(1,[K('negative'),C(': '),jValEl('neg','neg',o.negative,1)]);
+ box.appendChild(document.createTextNode('}'))}
 /* ---- drawer wiring ---- */
 function renderAnchorRow(n){const row=document.getElementById('anchorRow'),code=document.getElementById('anchorCode');
  const a=n?n.anchor||n.scAnchor||'':'';if(!n||(!n.anchor&&!n.scAnchor)){row.hidden=n&&n.slots?false:true;code.textContent='no anchor';
