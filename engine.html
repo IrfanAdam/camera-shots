@@ -33,7 +33,7 @@ header .by{color:var(--mut);font-size:.8rem}
 #drawer{position:fixed;top:0;right:0;bottom:0;width:min(360px,92vw);background:#161b22;border-left:1px solid #313b4a;z-index:71;transform:translateX(105%);transition:transform .25s ease;display:flex;flex-direction:column}
 #drawer.open{transform:none}
 #drawer img{width:100%;max-height:46vh;object-fit:contain;background:#0b0e13;display:block}
-#drawerX{align-self:flex-end;margin:.5rem .6rem 0;background:#222a36;color:var(--ink);border:1px solid #313b4a;border-radius:8px;width:30px;height:30px;font-size:15px;line-height:1;cursor:pointer}
+#drawerX{position:absolute;top:.6rem;right:.6rem;z-index:2;background:rgba(10,13,18,.72);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:50%;width:32px;height:32px;font-size:16px;line-height:1;cursor:pointer;backdrop-filter:blur(4px)}
 #drawerX:hover{border-color:var(--acc)}
 .dp{padding:.9rem 1.1rem;overflow:auto}
 .dp h3{font-size:1rem;margin-bottom:.5rem}
