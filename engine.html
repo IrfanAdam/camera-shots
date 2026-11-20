@@ -33,6 +33,16 @@ header .by{color:var(--mut);font-size:.8rem}
 #toastBtn{background:#e8830c;border:0;border-radius:7px;color:#111;font-weight:700;padding:.32rem .8rem;cursor:pointer;font-size:.82rem}
 #drawerDel{background:transparent;border:1px solid #e5484d;color:#e5484d;border-radius:7px;padding:.3rem .8rem;cursor:pointer;font-size:.8rem;margin-top:.6rem}
 #drawerDel:hover{background:#e5484d;color:#fff}
+#shotProps{display:flex;gap:.7rem;align-items:center;font-size:.8rem;color:#aab2c2;margin:.5rem 0;flex-wrap:wrap}
+#shotProps[hidden]{display:none}
+#shotProps select{background:#222a36;color:#e8eaf0;border:1px solid #313b4a;border-radius:6px;padding:.25rem .4rem;font-size:.8rem;max-width:130px}
+#shotProps b{color:#e8eaf0}
+#slotBtns{display:flex;gap:.6rem;margin-top:.7rem}
+#slotBtns[hidden]{display:none}
+#slotBtns button{border-radius:7px;padding:.35rem .9rem;cursor:pointer;font-size:.82rem}
+#goShot{background:#e8830c;border:0;color:#111;font-weight:700}
+#removeSlot{background:transparent;border:1px solid #e5484d;color:#e5484d}
+#removeSlot:hover{background:#e5484d;color:#fff}
 #scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s;z-index:70}
 #scrim.open{opacity:1;pointer-events:auto}
 #drawer{position:fixed;top:0;right:0;bottom:0;width:min(360px,92vw);background:#161b22;border-left:1px solid #313b4a;z-index:71;transform:translateX(105%);transition:transform .25s ease;display:flex;flex-direction:column}
@@ -91,6 +101,8 @@ header .by{color:var(--mut);font-size:.8rem}
 <img id="drawerImg" alt="">
 <div id="drawerStills"></div>
 <div class="dp"><h3 id="drawerTitle"></h3>
+<div id="shotProps" hidden><label>chapter <select id="shotCh"></select></label><label>scene <select id="shotSc"></select></label><span>lane <b id="shotLane">—</b></span></div>
+<div id="slotBtns" hidden><button id="goShot">go to shot</button><button id="removeSlot">remove</button></div>
 <p>INT. MARKET — DAWN. A chase winds through crowded stalls as shutters roll open. Handheld wide, dust hanging in the air.</p>
 <code>prompt draft — replace me:
 wide handheld chase, dawn market,
@@ -123,8 +135,8 @@ function flashHint(t){hintEl.textContent=t;clearTimeout(flashHint._t);flashHint.
 let toastT=null;
 function showToast(msg){document.getElementById('toastMsg').textContent=msg;const t=document.getElementById('toast');t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,5000)}
 document.getElementById('toastBtn').onclick=()=>{document.getElementById('toast').hidden=true;undo()};
-function dataOf(list){return list.map(n=>({id:n.id,kind:n.kind,label:n.label,note:n.note||'',x:n.x,y:n.y,w:n.w,h:n.h,imgUrl:n.imgUrl||''}))}
-function revive(list){return(list||[]).map(n=>{const o={id:n.id,kind:n.kind==='arc'?'arc':n.kind==='shot'?'shot':'beat',label:String(n.label||'').slice(0,60)||'card',note:String(n.note||'').slice(0,300),x:+n.x||0,y:+n.y||0,w:+n.w||200,h:+n.h||190,imgUrl:n.imgUrl||'',img:null};if(o.imgUrl)loadImage(o,true);return o})}
+function dataOf(list){return list.map(n=>({id:n.id,kind:n.kind,label:n.label,note:n.note||'',ch:n.ch??null,sc:n.sc??null,ln:n.ln??null,x:n.x,y:n.y,w:n.w,h:n.h,imgUrl:n.imgUrl||''}))}
+function revive(list){return(list||[]).map(n=>{const o={id:n.id,kind:n.kind==='arc'?'arc':n.kind==='shot'?'shot':'beat',label:String(n.label||'').slice(0,60)||'card',note:String(n.note||'').slice(0,300),ch:n.ch??null,sc:n.sc??null,ln:n.ln??null,x:+n.x||0,y:+n.y||0,w:+n.w||200,h:+n.h||190,imgUrl:n.imgUrl||'',img:null};if(o.imgUrl)loadImage(o,true);return o})}
 function saveView(){if(VIEW_META[view])VIEWS[view]={nodes:dataOf(nodes),conns,seq,nextId,nextConnId}}
 function loadView(v){const d=VIEWS[v]||freshView();nodes=revive(d.nodes);conns=Array.isArray(d.conns)?d.conns.filter(c=>c&&c.a&&c.b&&nodes.some(n=>n.id===c.a.id)&&nodes.some(n=>n.id===c.b.id)):[];seq=d.seq||1;nextId=d.nextId||1;nextConnId=d.nextConnId||1;selected=nodes.length?nodes[nodes.length-1]:null;selConn=null;selStrip=null}
 function defaultScenes(){return{chapters:[{id:1,name:'Chapter 1',lanes:3,scenes:[],nextScene:1}],active:1}}
@@ -167,7 +179,7 @@ function restore(){const r=Store.load();
   for(const s of c.scenes){s.w=s.w||560;s.h=s.h||340;s.lanes=Math.max(1,Math.min(6,s.lanes||2));
    s.slots=(s.slots||[]).map(q=>({shot:(q.shot??q.shotId),lane:q.lane||0})).filter(q=>q.shot!=null)}
   const mx=Math.max(0,...c.scenes.map(s=>s.id));c.nextScene=Math.max(c.nextScene||1,mx+1)}
- if(VIEW_META[view])loadView(view);if(view==='scenes'){const _nc=activeChapter();conns=(_nc&&_nc.conns)||[]}
+ if(VIEW_META[view])loadView(view);if(view==='scenes'){const _nc=activeChapter();conns=(_nc&&_nc.conns)||[]}syncShotMeta();
  syncUI()}
 function loadImage(n,silent){if(!n.imgUrl){n.img=null;return}const im=new Image();
  im.onload=()=>{n.img=im;fitCard(n);draw();if(!silent)persist()};
@@ -239,6 +251,10 @@ function onDrop(target){if(!pending)return null;if(!target||!target.node)return 
  const c=addConn(pending.node,pending.port,target.node,target.port);pending=null;return c}
 /* ---- cards: image face, hover-reveal text sheet ---- */
 function imgBtnHit(n,mx,my){return mx>=n.x+n.w-28&&mx<=n.x+n.w-4&&my>=n.y+4&&my<=n.y+28}
+function shotMetaLine(n){let ch='—',sc='—';try{
+ const c=(SCENES.chapters||[]).find(c=>c.id===n.ch);if(c){ch=c.name||('Chapter '+c.id);
+  const s=(c.scenes||[]).find(s=>s.id===n.sc);if(s)sc=s.title||('Scene '+s.id)}}catch(e){}
+ const ln=(n.ln==null?'—':'L'+(n.ln+1));return ch+' · '+sc+' · '+ln}
 function drawCard(n){const x=n.x,y=n.y,w=n.w,h=n.h,hovered=n===hoverNode;
  const kc=n.kind==='arc'?'#7c3aed':n.kind==='shot'?'#e8830c':'#0f766e',glyph=n.kind==='arc'?'◈':n.kind==='shot'?'▣':'◆';
  ctx.save();round(x,y,w,h,10);ctx.clip();
@@ -249,6 +265,10 @@ function drawCard(n){const x=n.x,y=n.y,w=n.w,h=n.h,hovered=n===hoverNode;
   ctx.fillStyle=g;ctx.fillRect(x,y,w,h);ctx.globalAlpha=0.22;ctx.fillStyle=kc;ctx.fillRect(x,y,w,h);ctx.globalAlpha=1;
   ctx.fillStyle=kc;ctx.font='44px system-ui,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.fillText(glyph,x+w/2,hovered?y+h*0.30:y+h/2)}
+ if(n.kind==='shot'){const mt=shotMetaLine(n);ctx.fillStyle='rgba(10,13,18,.82)';round(x+6,y+6,w-12,20,6);ctx.fill();
+  ctx.fillStyle='#c7cedb';ctx.font='11px system-ui,sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';
+  let t=mt;const mw2=w-30;if(ctx.measureText(t).width>mw2){while(t.length&&ctx.measureText(t+'…').width>mw2)t=t.slice(0,-1);t+='…'}
+  ctx.fillText(t,x+13,y+16)}
  if(hovered){const sh=Math.round(h*0.42),px=x+6,py=y+h-sh-6,pw=w-12;
   ctx.fillStyle='rgba(10,13,18,.88)';round(px,py,pw,sh,8);ctx.fill();
   ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.font='600 13px system-ui,sans-serif';ctx.fillStyle='#fff';
@@ -364,14 +384,43 @@ document.getElementById('undoBtn').onclick=()=>{menuDrop.hidden=true;undo()};
 /* ---- drawer ---- */
 const drawer=document.getElementById('drawer'),scrim=document.getElementById('scrim'),drawerImg=document.getElementById('drawerImg'),drawerTitle=document.getElementById('drawerTitle');
 let drawerSub=null;
-function openDrawer(n){drawerSub=n;drawerTitle.textContent=n.title||n.label||'card';
+function openDrawer(n){drawerSub=n;
+ document.getElementById('slotBtns').hidden=true;document.getElementById('shotProps').hidden=true;document.getElementById('drawerDel').style.display='';
+ drawerTitle.textContent=n.title||n.label||'card';
  const stills=document.getElementById('drawerStills');stills.innerHTML='';
  if(n.images){drawerImg.style.display='none';
   if(!n.images.length)stills.innerHTML='<p style="color:var(--mut);font-size:.85rem">No stills yet — select the scene, then 🖼 image or 🔗 url.</p>';
   for(const im of n.images){const e=document.createElement('img');e.src=im.url;e.alt='';stills.appendChild(e)}}
  else{if(n.imgUrl){drawerImg.style.display='block';drawerImg.src=n.imgUrl}else drawerImg.style.display='none'}
+ if(n.kind==='shot'&&view==='shots')populateShotProps(n);
  drawer.classList.add('open');scrim.classList.add('open')}
+function openSlotDrawer(shotId,s,lane){const sh=shotById(shotId);if(!sh){selectShot(shotId);return}
+ drawerSub=sh;openDrawer(sh);
+ document.getElementById('slotBtns').hidden=false;document.getElementById('drawerDel').style.display='none';
+ document.getElementById('goShot').onclick=()=>{closeDrawer();selectShot(shotId)};
+ document.getElementById('removeSlot').onclick=()=>{unassignSlot(s,shotId);closeDrawer()}}
 function closeDrawer(){drawer.classList.remove('open');scrim.classList.remove('open')}
+function populateShotProps(n){const sp=document.getElementById('shotProps'),chS=document.getElementById('shotCh'),scS=document.getElementById('shotSc');
+ sp.hidden=false;chS.innerHTML='';
+ for(const c of(SCENES.chapters||[])){const o=document.createElement('option');o.value=c.id;o.textContent=c.name||('Chapter '+c.id);chS.appendChild(o)}
+ if(n.ch!=null)chS.value=n.ch;
+ const fillSc=()=>{const cid=+chS.value,cc=(SCENES.chapters||[]).find(c=>c.id===cid);scS.innerHTML='';
+  for(const s of((cc&&cc.scenes)||[])){const o=document.createElement('option');o.value=s.id;o.textContent=s.title||('Scene '+s.id);scS.appendChild(o)}
+  if(n.sc!=null)scS.value=n.sc;
+  document.getElementById('shotLane').textContent=n.ln==null?'—':'Lane '+(n.ln+1)};
+ fillSc();
+ chS.onchange=()=>{fillSc();const cid=+chS.value,cc=(SCENES.chapters||[]).find(c=>c.id===cid),list=(cc&&cc.scenes)||[];
+  if(!list.some(s=>s.id===n.sc)&&list.length)moveShot(n,cid,list[0].id);else{n.ch=cid;persist();draw()}};
+ scS.onchange=()=>moveShot(n,+chS.value,+scS.value)}
+function moveShot(shot,chId,scId){const ch=(SCENES.chapters||[]).find(c=>c.id===chId);if(!ch){flashHint('no chapter');return}
+ const sc=(ch.scenes||[]).find(s=>s.id===scId);if(!sc){flashHint('no scene');return}
+ let L=Math.max(0,Math.min((sc.lanes||1)-1,shot.ln==null?0:shot.ln));
+ for(const c of allChapters())for(const s2 of(c.scenes||[]))if(s2&&Array.isArray(s2.slots))s2.slots=s2.slots.filter(q=>q&&q.shot!==shot.id);
+ if((sc.slots||[]).some(q=>q&&q.lane===L)){L=-1;
+  for(let i=0;i<(sc.lanes||1);i++)if(!(sc.slots||[]).some(q=>q&&q.lane===i)){L=i;break}
+  if(L<0){flashHint('scene is full');syncShotMeta();persist();draw();return}}
+ sc.slots=sc.slots||[];sc.slots.push({shot:shot.id,lane:L});
+ shot.ch=chId;shot.sc=scId;shot.ln=L;persist();draw();populateShotProps(shot)}
 document.getElementById('drawerX').onclick=closeDrawer;scrim.onclick=closeDrawer;
 document.getElementById('drawerDel').onclick=()=>{const n=drawerSub;
  if(n&&n.slots&&view==='scenes'&&activeChapter().scenes.includes(n)){selStrip=n;delSelected();return}
@@ -451,9 +500,9 @@ function drawSlots(s){const lanes=s.lanes||0;
   for(let idx=0;idx<list.length;idx++){const entry=list[idx],r=slotRect(s,lane,idx);
    const node=shotById(entry.shot),url=node?(node.imgUrl||''):'',im=url?slotImg(url):null;
    ctx.save();round(r.x,r.y,r.w,r.h,8);ctx.clip();
-   if(im&&im.complete&&im.naturalWidth){const k=Math.max(r.w/im.naturalWidth,r.h/im.naturalHeight);
+   ctx.fillStyle='#222a36';ctx.fillRect(r.x,r.y,r.w,r.h);
+   if(im&&im.complete&&im.naturalWidth){const k=Math.min(r.w/im.naturalWidth,r.h/im.naturalHeight);
     const dw=im.naturalWidth*k,dh=im.naturalHeight*k;ctx.drawImage(im,r.x+(r.w-dw)/2,r.y+(r.h-dh)/2,dw,dh)}
-   else{ctx.fillStyle='#222a36';ctx.fillRect(r.x,r.y,r.w,r.h)}
    ctx.restore();
    ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=1;round(r.x+0.5,r.y+0.5,r.w-1,r.h-1,8);ctx.stroke();
    if(mouseW.x>=r.x&&mouseW.x<=r.x+r.w&&mouseW.y>=r.y&&mouseW.y<=r.y+r.h){
@@ -471,13 +520,17 @@ function slotAt(s,mx,my){const lanes=s.lanes||0;
    if(mx>=r.x&&mx<=r.x+r.w&&my>=r.y&&my<=r.y+r.h)return{shot:list[idx].shot,lane:lane,idx:idx}}}return null}
 function laneAtY(s,my){const n=s.lanes||0;
  for(let lane=0;lane<n;lane++){const top=s.y+TITLE_H+PAD+lane*(ROW_H+GAP);if(my>=top&&my<=top+ROW_H)return lane}return -1}
-function unassignSlot(s,shotId){s.slots=(s.slots||[]).filter(function(q){return q&&q.shot!==shotId});persist();draw()}
+function unassignSlot(s,shotId){s.slots=(s.slots||[]).filter(function(q){return q&&q.shot!==shotId});try{const sh=shotById(shotId);if(sh){sh.ch=null;sh.sc=null;sh.ln=null}}catch(e){}persist();draw()}
+function syncShotMeta(){try{
+ for(const n of((VIEWS.shots||{}).nodes||[]))if(n&&n.kind==='shot'){n.ch=null;n.sc=null;n.ln=null}
+ if(typeof nodes!=='undefined'&&Array.isArray(nodes))for(const n of nodes)if(n&&n.kind==='shot'){n.ch=null;n.sc=null;n.ln=null}
+ for(const c of allChapters())for(const s of(c.scenes||[]))for(const q of(s.slots||[])){if(!q)continue;const sh=shotById(q.shot);if(sh){sh.ch=c.id;sh.sc=s.id;sh.ln=q.lane}}}catch(e){}}
 function handleSlotClick(s,mx,my){const lanes=s.lanes||0;
  for(let lane=0;lane<lanes;lane++){const list=slotsOfLane(s,lane);
   for(let idx=0;idx<list.length;idx++){const xr=slotXRect(s,lane,idx);
    if(mx>=xr.x-3&&mx<=xr.x+xr.w+3&&my>=xr.y-3&&my<=xr.y+xr.h+3){unassignSlot(s,list[idx].shot);return true}}}
  const hit=slotAt(s,mx,my);
- if(hit){selectShot(hit.shot);return true}
+ if(hit){openSlotDrawer(hit.shot,s,hit.lane);return true}
  if(mx>=s.x&&mx<=s.x+s.w){const lane=laneAtY(s,my);
   if(lane>=0){const sa=w2s(mx,my);openShotPicker(s,lane,sa.x,sa.y);return true}}return false}
 var _shotPickEl=null,_shotPickOut=null,_shotPickEsc=null;
@@ -499,7 +552,8 @@ function openShotPicker(s,lane,anchorX,anchorY){closeShotPicker();let list=[];
   else{b.textContent=n.label||n.id;b.style.cssText+='color:#e8eaf0;font-size:11px;'}
   b.addEventListener('click',function(e){e.stopPropagation();const id=n.id;
    for(const ch of allChapters())for(const sc of(ch.scenes||[]))if(sc&&Array.isArray(sc.slots))sc.slots=sc.slots.filter(function(q){return q&&q.shot!==id});
-   s.slots=s.slots||[];s.slots.push({shot:id,lane:lane});persist();draw();closeShotPicker()});
+   s.slots=s.slots||[];s.slots.push({shot:id,lane:lane});
+   syncShotMeta();persist();draw();closeShotPicker()});
   el.appendChild(b)}
  document.body.appendChild(el);_shotPickEl=el;
  let lx=anchorX,ly=anchorY;
@@ -624,7 +678,7 @@ document.getElementById('addChapter').onclick=()=>{
 document.getElementById('addLane').onclick=()=>{const s=selStrip;if(!s){flashHint('select a scene first');return}if(s.lanes>=6){flashHint('max 6 lanes');return}s.lanes++;s.h=Math.max(s.h,TITLE_H+PAD+s.lanes*(ROW_H+GAP)+PAD);persist();syncUI();draw()};
 document.getElementById('addScene').onclick=()=>addScene();
 function selectShot(id){setView('shots');selected=nodeById(id);hoverNode=null;draw()}
-function addShotNode(label,url,w,h){const n={id:nextId++,kind:'shot',label,note:'',x:60+Math.random()*200,y:60+Math.random()*200,w:200,h:190,imgUrl:url,img:null};
+function addShotNode(label,url,w,h){const n={id:nextId++,kind:'shot',label,note:'',ch:null,sc:null,ln:null,x:60+Math.random()*200,y:60+Math.random()*200,w:200,h:190,imgUrl:url,img:null};
  nodes.push(n);seq++;selected=n;loadImage(n);persist();draw()}
 function shotFromFile(file){if(!file)return;fileToDataURL(file).then(url=>{const im=new Image();
  im.onload=()=>addShotNode('Shot '+seq,url,im.naturalWidth,im.naturalHeight);
