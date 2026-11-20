@@ -319,6 +319,12 @@ filePick.addEventListener('change',()=>{const f=filePick.files&&filePick.files[0
  if(pickTarget&&pickTarget.k==='new'){pickTarget=null;shotFromFile(f);return}
  const t=pickTarget?nodeById(pickTarget.id):null;pickTarget=null;
  if(!t){flashHint('hover a card first');return}attachFile(t,f)});
+document.addEventListener('paste',e=>{const items=(e.clipboardData&&e.clipboardData.items)||[];
+ for(const it of items){if(it.type&&it.type.startsWith('image/')){const f=it.getAsFile();if(!f)continue;
+  e.preventDefault();
+  if(view==='scenes'){shotFromFile(f);flashHint('pasted to Shots Composer');return}
+  if(selected&&nodeById(selected.id)){attachFile(selected,f);return}
+  addNode();attachFile(selected,f);return}}});
 document.getElementById('urlBtn').onclick=()=>{const t=toolbarCard();if(!t)return;
  if(view==='scenes'){const u=prompt('New shot image URL or repo path:');if(u===null||!u.trim())return;setView('shots');shotFromURL(u.trim());return}
  const cur=t.imgUrl&&!t.imgUrl.startsWith('data:')?t.imgUrl:'';
