@@ -23,6 +23,22 @@ header .by{color:var(--mut);font-size:.8rem}
 #arrowpick button.on{border-color:#e8830c;color:#e8830c}
 #arrowpick #apDel{align-self:stretch;color:#8b93a5}
 #arrowpick #apDel:hover{color:#e5484d;border-color:#e5484d}
+.menu{position:relative;display:inline-flex}
+#menuDrop{display:block;position:absolute;right:0;top:calc(100% + 6px);background:#161b22;border:1px solid #313b4a;border-radius:10px;padding:6px;min-width:150px;box-shadow:0 8px 24px rgba(0,0,0,.45);z-index:60}
+#menuDrop[hidden]{display:none}
+#menuDrop button{width:100%;text-align:left;font:inherit;font-size:.82rem;color:#e8eaf0;background:transparent;border:0;border-radius:7px;padding:.4rem .6rem;cursor:pointer;white-space:nowrap}
+#menuDrop button:hover{background:#222a36;color:#e5484d}
+#scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s;z-index:70}
+#scrim.open{opacity:1;pointer-events:auto}
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(360px,92vw);background:#161b22;border-left:1px solid #313b4a;z-index:71;transform:translateX(105%);transition:transform .25s ease;display:flex;flex-direction:column}
+#drawer.open{transform:none}
+#drawer img{width:100%;max-height:46vh;object-fit:contain;background:#0b0e13;display:block}
+#drawerX{align-self:flex-end;margin:.5rem .6rem 0;background:#222a36;color:var(--ink);border:1px solid #313b4a;border-radius:8px;width:30px;height:30px;font-size:15px;line-height:1;cursor:pointer}
+#drawerX:hover{border-color:var(--acc)}
+.dp{padding:.9rem 1.1rem;overflow:auto}
+.dp h3{font-size:1rem;margin-bottom:.5rem}
+.dp p{color:var(--mut);font-size:.85rem;margin-bottom:.7rem}
+.dp code{display:block;background:#0b0e13;border:1px solid #262d38;border-radius:8px;padding:.6rem .7rem;font-size:.78rem;color:#c8cfdb;white-space:pre-wrap;margin-bottom:.7rem}
 </style></head><body>
 <header>
 <a class="back" href="index.html">← wiki</a>
@@ -32,7 +48,7 @@ header .by{color:var(--mut);font-size:.8rem}
 <button id="addArc">+ arc</button>
 <button id="imgBtn" title="Upload an image onto the hovered card">🖼 image</button>
 <button id="urlBtn" title="Embed an image via URL or repo path">🔗 url</button>
-<button id="clear" class="warn">clear</button>
+<span class="menu"><button id="dots" title="more">⋯</button><span id="menuDrop" hidden><button id="clear">clear canvas</button></span></span>
 </span>
 </header>
 <canvas id="cv"></canvas>
@@ -42,12 +58,24 @@ header .by{color:var(--mut);font-size:.8rem}
 <div class="ap-row"><span class="ap-lab">end B</span><button type="button" data-end="endB" data-val="none" title="line, no head">─</button><button type="button" data-end="endB" data-val="arrow" title="arrow head">→</button></div>
 <button type="button" id="apDel" title="delete connector">delete</button>
 </div>
-<div class="hint" id="hint">hover a card for its dots · drag a dot to another dot to link · click a link for arrows · double-click renames, shift+double-click edits note</div>
+<div id="scrim"></div>
+<aside id="drawer" aria-label="card detail">
+<button id="drawerX" title="close">×</button>
+<img id="drawerImg" alt="">
+<div class="dp"><h3 id="drawerTitle"></h3>
+<p>INT. MARKET — DAWN. A chase winds through crowded stalls as shutters roll open. Handheld wide, dust hanging in the air.</p>
+<code>prompt draft — replace me:
+wide handheld chase, dawn market,
+dust + motion blur, 24mm</code>
+<p>↑ dummy text for now — real prompt tooling lands here next.</p>
+</div>
+</aside>
+<div class="hint" id="hint">hover a card for dots · drag dot-to-dot to link · click a card for detail · click a link for arrows · double-click renames</div>
 <script>
 const cv=document.getElementById('cv'),ctx=cv.getContext('2d'),hintEl=document.getElementById('hint');
 const HINT_DEFAULT=hintEl.textContent;
 let W,H,DPR,nodes=[],conns=[],nextConnId=1,seq={beat:0,arc:0},nextId=1;
-let hoverNode=null,hoverPort=null,mouse={x:0,y:0},pending=null,selConn=null,drag=null,selected=null;
+let hoverNode=null,hoverPort=null,mouse={x:0,y:0},pending=null,selConn=null,drag=null,selected=null,clickT=null;
 const PORTS=['t','r','b','l'];
 /* ---- storage (v2; migrates v1 click-links) ---- */
 const Store={
@@ -59,7 +87,7 @@ const Store={
 function flashHint(t){hintEl.textContent=t;clearTimeout(flashHint._t);flashHint._t=setTimeout(()=>hintEl.textContent=HINT_DEFAULT,2200)}
 function persist(){Store.save({nodes:nodes.map(n=>({id:n.id,kind:n.kind,label:n.label,note:n.note||'',x:n.x,y:n.y,imgUrl:n.imgUrl||''})),conns,seq,nextId,nextConnId})}
 function loadImage(n,silent){if(!n.imgUrl){n.img=null;return}const im=new Image();
- im.onload=()=>{n.img=im;draw();if(!silent)persist()};
+ im.onload=()=>{n.img=im;fitCard(n);draw();if(!silent)persist()};
  im.onerror=()=>{n.imgUrl='';n.img=null;draw();if(!silent)alert('Could not load that image URL.')};
  im.src=n.imgUrl;n.img=im;draw()}
 function restore(){const r=Store.load();if(!r||!r.s||!Array.isArray(r.s.nodes))return;const s=r.s;
@@ -78,6 +106,8 @@ function add(kind){seq[kind]++;const w=200,h=190;
  nodes.push(n);selected=n;persist();draw()}
 function nodeById(id){return nodes.find(n=>n.id===id)}
 function round(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+function fitCard(n){const im=n.img;if(!im||!im.naturalWidth)return;const w=200;
+ n.w=w;n.h=Math.max(110,Math.min(360,Math.round(w*im.naturalHeight/im.naturalWidth)))}
 function at(mx,my){for(let i=nodes.length-1;i>=0;i--){const n=nodes[i];if(mx>=n.x&&mx<=n.x+n.w&&my>=n.y&&my<=n.y+n.h)return n}return null}
 function pos(e){const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]}
 /* ---- ports (FigJam dots) ---- */
@@ -168,7 +198,7 @@ function drawCard(n){const x=n.x,y=n.y,w=n.w,h=n.h,hovered=n===hoverNode;
  else if(n===selected){ctx.strokeStyle='rgba(255,255,255,.45)';ctx.lineWidth=1;round(x+0.5,y+0.5,w-1,h-1,10);ctx.stroke()}
  else{ctx.strokeStyle='rgba(255,255,255,.10)';ctx.lineWidth=1;round(x+0.5,y+0.5,w-1,h-1,10);ctx.stroke()}}
 function attachFile(n,file){if(!file)return;fileToDataURL(file).then(url=>{n.imgUrl=url;loadImage(n)}).catch(()=>flashHint('could not read that image file'))}
-function attachURL(n,url){if(!url){n.imgUrl='';n.img=null;persist();draw();return}n.imgUrl=url;loadImage(n)}
+function attachURL(n,url){if(!url){n.imgUrl='';n.img=null;n.w=200;n.h=190;persist();draw();return}n.imgUrl=url;loadImage(n)}
 function fileToDataURL(file){return new Promise((resolve,reject)=>{
  const src=URL.createObjectURL(file),im=new Image();
  im.onload=()=>{try{const MAX=768;let w=im.naturalWidth,h=im.naturalHeight;const s=Math.min(1,MAX/Math.max(w,h));
@@ -206,24 +236,25 @@ cv.addEventListener('pointerdown',e=>{const[mx,my]=pos(e);mouse={x:mx,y:my};upda
   try{cv.setPointerCapture(e.pointerId)}catch(err){}cv.style.cursor='crosshair';draw();return}
  if(hoverNode&&imgBtnHit(hoverNode,mx,my)){selected=hoverNode;document.getElementById('filePick').click();return}
  const n=at(mx,my);
- if(n){drag={n,dx:mx-n.x,dy:my-n.y};selected=n;hidePicker();selConn=null;
+ if(n){clearTimeout(clickT);drag={n,dx:mx-n.x,dy:my-n.y,sx:mx,sy:my,moved:false};selected=n;hidePicker();selConn=null;
   try{cv.setPointerCapture(e.pointerId)}catch(err){}cv.style.cursor='grabbing';draw();return}
  const c=connAt(mx,my);
  if(c){selConn=c;selected=null;showPicker(c,e.clientX,e.clientY);draw();return}
  selConn=null;selected=null;hidePicker();draw()});
 cv.addEventListener('pointermove',e=>{const[mx,my]=pos(e);mouse={x:mx,y:my};
- if(drag){drag.n.x=Math.max(0,Math.min(W-drag.n.w,mx-drag.dx));drag.n.y=Math.max(0,Math.min(H-drag.n.h,my-drag.dy));draw();return}
+ if(drag){if(Math.hypot(mx-drag.sx,my-drag.sy)>6)drag.moved=true;drag.n.x=Math.max(0,Math.min(W-drag.n.w,mx-drag.dx));drag.n.y=Math.max(0,Math.min(H-drag.n.h,my-drag.dy));draw();return}
  if(pending){hoverPort=portAt(mx,my);hoverNode=hoverPort?hoverPort.node:null;
   cv.style.cursor=hoverPort?'crosshair':'grab';draw();return}
  updateHover(mx,my);cv.style.cursor=hoverPort?'crosshair':'grab';draw()});
-cv.addEventListener('pointerup',e=>{if(drag){persist();drag=null;cv.style.cursor='grab'}
+cv.addEventListener('pointerup',e=>{if(drag){const d=drag;persist();drag=null;cv.style.cursor='grab';
+ if(!d.moved){const[ux,uy]=pos(e);if(at(ux,uy)===d.n){clearTimeout(clickT);clickT=setTimeout(()=>openDrawer(d.n),260)}}}
  if(pending){const[mx,my]=pos(e);mouse={x:mx,y:my};const t=portAt(mx,my);
   if(t&&t.node){const c=onDrop(t);if(c){persist();flashHint('linked '+t.node.label)}else pending=null}
   else pending=null;
   hoverPort=null;cv.style.cursor='grab';draw()}});
-cv.addEventListener('dblclick',e=>{const[mx,my]=pos(e),n=at(mx,my);if(!n)return;
+cv.addEventListener('dblclick',e=>{clearTimeout(clickT);const[mx,my]=pos(e),n=at(mx,my);if(!n)return;
  if(e.shiftKey)editNote(n);else editLabel(n)});
-addEventListener('keydown',e=>{if(e.key==='Escape'){hidePicker();selConn=null;pending=null;draw()}
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();hidePicker();selConn=null;pending=null;draw()}
  if((e.key==='Delete'||e.key==='Backspace')&&selConn){removeConn(selConn.id);selConn=null;hidePicker();persist();draw()}});
 /* ---- toolbar ---- */
 const filePick=document.getElementById('filePick');let pickTarget=null;
@@ -237,6 +268,17 @@ document.getElementById('urlBtn').onclick=()=>{const t=toolbarCard();if(!t)retur
  if(v===null)return;attachURL(t,v.trim())};
 document.getElementById('addBeat').onclick=()=>add('beat');
 document.getElementById('addArc').onclick=()=>add('arc');
-document.getElementById('clear').onclick=()=>{if((nodes.length||conns.length)&&confirm('Clear the canvas?')){nodes=[];conns=[];selected=null;selConn=null;pending=null;hidePicker();Store.clear();draw()}};
+document.getElementById('clear').onclick=()=>{menuDrop.hidden=true;if((nodes.length||conns.length)&&confirm('Clear the canvas?')){nodes=[];conns=[];selected=null;selConn=null;pending=null;hidePicker();Store.clear();draw()}};
+/* ---- drawer ---- */
+const drawer=document.getElementById('drawer'),scrim=document.getElementById('scrim'),drawerImg=document.getElementById('drawerImg'),drawerTitle=document.getElementById('drawerTitle');
+function openDrawer(n){drawerTitle.textContent=n.label||'card';
+ if(n.imgUrl){drawerImg.style.display='block';drawerImg.src=n.imgUrl}else drawerImg.style.display='none';
+ drawer.classList.add('open');scrim.classList.add('open')}
+function closeDrawer(){drawer.classList.remove('open');scrim.classList.remove('open')}
+document.getElementById('drawerX').onclick=closeDrawer;scrim.onclick=closeDrawer;
+/* ---- overflow menu ---- */
+const dots=document.getElementById('dots'),menuDrop=document.getElementById('menuDrop');
+dots.onclick=e=>{e.stopPropagation();menuDrop.hidden=!menuDrop.hidden};
+document.addEventListener('click',e=>{if(!menuDrop.hidden&&!e.target.closest('.menu'))menuDrop.hidden=true});
 restore();fit();
 </script></body></html>
