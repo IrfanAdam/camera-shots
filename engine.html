@@ -104,18 +104,22 @@ header .by{color:var(--mut);font-size:.8rem}
 .modal .frow button{background:#222a36;border:1px solid #313b4a;border-radius:7px;color:#e8eaf0;padding:.35rem .9rem;cursor:pointer;font-size:.82rem}
 .modal .frow button:hover{border-color:var(--acc)}
 #pmCopy,#projClose{background:#e8830c!important;border:0!important;color:#111!important;font-weight:700}
-#promptModal{align-items:stretch;justify-content:flex-end;background:rgba(0,0,0,.45)}
-#promptModal .box{width:min(1120px,96vw);height:92vh;max-height:none;border-radius:0;display:flex;gap:0;padding:0;overflow:hidden}
+#promptModal{align-items:stretch;justify-content:flex-end;background:rgba(0,0,0,.45);visibility:hidden;transition:visibility 0s linear .25s}
+#promptModal.open{visibility:visible;transition-delay:0s}
+#promptModal[hidden]{display:flex;visibility:hidden}
+#promptModal.open[hidden]{visibility:visible}
+#promptModal .box{width:min(1120px,96vw);height:100vh;max-height:none;top:0;bottom:0;border-radius:0;display:flex;gap:0;padding:0;overflow:hidden;transform:translateX(105%);transition:transform .25s ease}
+#promptModal.open .box{transform:none}
+#pmBack{align-self:flex-start;margin:0 .8rem .5rem;background:transparent;border:0;color:#8b93a5;font-size:.84rem;cursor:pointer;padding:.15rem 0;text-align:left;width:auto}
+#pmBack:hover{color:#e8eaf0}
 .pm-nav{width:148px;flex:none;background:#10151c;border-right:1px solid #262d38;padding:.8rem 0;display:flex;flex-direction:column;gap:0;overflow:auto}
 .pm-nav .pmtitle{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#8b93a5;margin:0 .8rem .4rem}
-.pm-nav button{background:transparent;border:0;border-left:3px solid transparent;border-radius:0;color:#aab2c2;font-size:.84rem;text-align:left;padding:.55rem .8rem;cursor:pointer;width:100%}
-.pm-nav button:hover{color:#e8eaf0;background:#1b212b}
-.pm-nav button.on{border-left-color:var(--acc);color:var(--acc);background:#1b212b;font-weight:600}
+#pmNav button{background:transparent;border:0;border-left:3px solid transparent;border-radius:0;color:#aab2c2;font-size:.84rem;text-align:left;padding:.55rem .8rem;cursor:pointer;width:100%}
+#pmNav button:hover{color:#e8eaf0;background:#1b212b}
+#pmNav button.on{border-left-color:var(--acc);color:var(--acc);background:#1b212b;font-weight:600}
 .pm-mid{flex:1.1;min-width:0;padding:.9rem 1rem;overflow:auto}
 .pmhead{display:flex;align-items:center;gap:.5rem}
 .pmhead h2{font-size:1rem;margin-bottom:.1rem}
-#pmX{margin-left:auto;background:transparent;border:1px solid #313b4a;border-radius:7px;color:#aab2c2;font-size:1rem;line-height:1;padding:.2rem .6rem;cursor:pointer}
-#pmX:hover{border-color:var(--acc);color:var(--ink)}
 .pm-mid h2{font-size:1rem;margin-bottom:.1rem}
 .pm-right{flex:1;min-width:0;background:#0b0e13;border-left:1px solid #262d38;position:relative;display:flex;flex-direction:column}
 #pmJson{flex:1;margin:0;padding:.9rem 1rem 1rem;overflow:auto;font:12px/1.55 ui-monospace,Menlo,monospace;white-space:pre;color:#c8cfdb}
@@ -192,15 +196,15 @@ header .by{color:var(--mut);font-size:.8rem}
 <div class="frow"><button id="projClose" class="modalClose">done</button><span class="note" id="projNote"></span></div>
 </div></div>
 <div id="promptModal" class="modal" hidden><div class="box">
-<nav class="pm-nav"><div class="pmtitle">prompt</div><div id="pmNav"></div></nav>
-<div class="pm-mid"><div class="pmhead"><h2 id="pmTitle">Generate prompt</h2><button id="pmX" title="dismiss">×</button></div>
+<nav class="pm-nav"><button id="pmBack" title="dismiss">‹ back</button><div class="pmtitle">prompt</div><div id="pmNav"></div></nav>
+<div class="pm-mid"><div class="pmhead"><h2 id="pmTitle">Generate prompt</h2></div>
 <div class="sub" id="pmAnchor"></div>
 <div id="pmFields"></div>
 <div hidden><div class="row"><input id="pmAction" placeholder="action" maxlength="140"><input id="pmMood" placeholder="mood" maxlength="140"></div>
 <div class="row"><input id="pmNeg" placeholder="negative"></div></div>
 <div class="tabs" id="pmTabs"></div>
 <div class="out" id="pmOut" hidden></div>
-<div class="frow"><button id="pmCopy" hidden>copy</button><button id="pmClose" class="modalClose">close</button><span class="note">Anchor first, then sections. Disabled project domains are omitted.</span></div>
+<div class="frow"><button id="pmCopy" hidden>copy</button><span class="note">Anchor first, then sections. Disabled project domains are omitted.</span></div>
 </div>
 <div class="pm-right"><pre id="pmJson"></pre><button id="pmCopyFloat">copy</button><div class="jlegend"><span class="sw free"></span>your words<span class="sw tok"></span>project token · click a value to edit it</div></div>
 </div></div>
@@ -533,11 +537,10 @@ document.getElementById('projClose').onclick=()=>closeProjectModal();
 document.getElementById('projModal').addEventListener('click',e=>{if(e.target.id==='projModal')closeProjectModal()});
 document.getElementById('genPrompt').onclick=()=>{if(drawerSub)openPromptModal(drawerSub);else flashHint('open a card or scene first')};
 document.getElementById('copyStub').onclick=()=>{if(drawerSub)copyText(stubFor(drawerSub),'stub copied — anchor first');else flashHint('open a card or scene first')};
-document.getElementById('pmClose').onclick=()=>closePromptModal();
+document.getElementById('pmBack').onclick=()=>closePromptModal();
 document.getElementById('promptModal').addEventListener('click',e=>{if(e.target.id==='promptModal')closePromptModal()});
 document.getElementById('pmCopy').onclick=()=>{if(pmJsonText)copyText(pmJsonText,'prompt JSON copied')};
 document.getElementById('pmCopyFloat').onclick=()=>{if(pmJsonText)copyText(pmJsonText,'prompt JSON copied')};
-document.getElementById('pmX').onclick=()=>closePromptModal();
 document.getElementById('drawerClose').onclick=()=>closeDrawer();
 document.getElementById('pmAction').addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.action=e.target.value.slice(0,140);persist();renderPmOut()});
 document.getElementById('pmMood').addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.mood=e.target.value.slice(0,140);persist();renderPmOut()});
@@ -922,8 +925,8 @@ function openPromptModal(n){pmTarget=n;const ps=n.promptState||(n.promptState={s
  document.getElementById('pmTitle').textContent='Generate prompt — '+((n&&n.title)||(n&&n.label)||'card');
  document.getElementById('pmAnchor').textContent=(n.anchor||n.scAnchor||'no anchor')+' · '+(n.note||n.title||n.label||'');
  renderPmFields();renderPmTabs();syncPmInputs();renderPmOut();
- document.getElementById('promptModal').hidden=false}
-function closePromptModal(){document.getElementById('promptModal').hidden=true;pmTarget=null}
+ const pm=document.getElementById('promptModal');pm.hidden=false;requestAnimationFrame(()=>requestAnimationFrame(()=>pm.classList.add('open')))}
+function closePromptModal(){const pm=document.getElementById('promptModal');if(!pm)return;pm.classList.remove('open');pmTarget=null}
 const EXTRA_OPTS={
  aspect_ratio:{label:'Aspect ratio',values:['16:9 widescreen','2:3 vertical','4:5 portrait','1:1 square','21:9 ultrawide'],def:0},
  film_stock:{label:'Film stock',desc:'Empty = clean digital capture; pick a stock to bake in its look.',values:['','Kodak Portra 400','Kodak Vision3 500T','Fujifilm 400H','Ilford HP5 black and white','Polaroid 600'],def:0}};
