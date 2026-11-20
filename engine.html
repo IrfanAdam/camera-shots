@@ -351,12 +351,13 @@ function applyCam(){ctx.setTransform(DPR*cam.z,0,0,DPR*cam.z,-cam.x*cam.z*DPR,-c
 function panBy(dx,dy){cam.x-=dx/cam.z;cam.y-=dy/cam.z}
 function attachZoom(){if(cv._zoomOn)return;cv._zoomOn=true;
  cv.addEventListener('wheel',e=>{e.preventDefault();const[mx,my]=pos(e);
-  if(e.ctrlKey||e.metaKey){const wx=mx/cam.z+cam.x,wy=my/cam.z+cam.y;
-   const nz=Math.max(0.25,Math.min(2,cam.z*Math.exp(-e.deltaY*0.0015)));
-   cam.x=wx-mx/nz;cam.y=wy-my/nz;cam.z=nz}
-  else if(e.shiftKey)panBy(-(e.deltaX+e.deltaY),0);
-  else panBy(-e.deltaX,-e.deltaY);
-  draw()},{passive:false})}
+  let dy=e.deltaY,dx=e.deltaX;
+  if(e.deltaMode===1){dy*=16;dx*=16}
+  dy=Math.max(-100,Math.min(100,dy));dx=Math.max(-100,Math.min(100,dx));
+  if(e.shiftKey){panBy(-(dx+dy),0);draw();return}
+  const wx=mx/cam.z+cam.x,wy=my/cam.z+cam.y;
+  const nz=Math.max(0.25,Math.min(2,cam.z*Math.exp(-dy*0.0012)));
+  cam.x=wx-mx/nz;cam.y=wy-my/nz;cam.z=nz;draw()},{passive:false})}
 function activeChapter(){let c=SCENES.chapters.find(c=>c.id===SCENES.active);if(!c){c=SCENES.chapters[0];if(c)SCENES.active=c.id}return c}
 function sceneById(id){const c=activeChapter();return c?c.scenes.find(s=>s.id===id):null}
 function sceneRect(s){return{x:s.x,y:s.y,w:s.w,h:s.h}}
@@ -569,7 +570,7 @@ function syncUI(){
  if(view==='scenes')an.style.display='none';
  else{an.style.display='';an.textContent='+ '+(VIEW_META[view]?VIEW_META[view].one:'node').toLowerCase()}
  if(view==='scenes')rebuildChapters();
- hintEl.textContent=view==='scenes'?'drag scene · resize corner · + fills a lane slot · wheel zooms · drag dots to link · click a still opens Shots':HINT_DEFAULT}
+ hintEl.textContent=view==='scenes'?'wheel zooms · drag background pans · drag scene · resize corner · + fills lane slot · drag dots to link · click still opens Shots':HINT_DEFAULT}
 function setView(v){if(v!==view){if(view==='scenes'){const oc=activeChapter();if(oc)oc.conns=conns}saveView();view=v;selStrip=null;selConn=null;pending=null;selected=null;hidePicker();closeShotPicker();
  if(v==='scenes'){const nc=activeChapter();conns=(nc&&nc.conns)||[]}else if(VIEW_META[v])loadView(v)}syncUI();persist();draw()}
 document.querySelectorAll('#side button').forEach(b=>{b.onclick=()=>setView(b.dataset.view)});
