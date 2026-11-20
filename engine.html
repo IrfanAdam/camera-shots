@@ -122,7 +122,7 @@ function freshView(){return{nodes:[],conns:[],nextConnId:1,seq:1,nextId:1}}
 let VIEWS={locations:freshView(),props:freshView(),cast:freshView(),shots:freshView()};
 let SCENES={chapters:[],active:null};
 const VIEW_META={locations:{one:'Location'},props:{one:'Prop'},cast:{one:'Cast'},shots:{one:'Shot'}};
-let hoverNode=null,hoverPort=null,mouse={x:0,y:0},pending=null,selConn=null,drag=null,selected=null,clickT=null;
+let hoverNode=null,hoverPort=null,hoverScene=null,mouse={x:0,y:0},pending=null,selConn=null,drag=null,selected=null,clickT=null;
 const PORTS=['t','r','b','l'];
 /* ---- storage (v2; migrates v1 click-links) ---- */
 const Store={
@@ -577,12 +577,12 @@ function drawScenes(){ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0
  for(let gx=_x0;gx<_x1;gx+=_gs)for(let gy=_y0;gy<_y1;gy+=_gs)ctx.fillRect(gx,gy,1/cam.z,1/cam.z);
  for(const s of c.scenes){drawSceneBase(s,s===selStrip);drawSlots(s)}
  drawSceneConns(conns,isSceneId);drawSceneTemp();
- if(selStrip&&c.scenes.includes(selStrip))drawScenePorts(selStrip);
+ for(const s of c.scenes)drawScenePorts(s);
  const _lt='+ lane ('+((selStrip&&selStrip.lanes)||'—')+')';
  const _b=document.getElementById('addLane');if(_b.textContent!==_lt)_b.textContent=_lt}
 function scenePortPos(s,p){if(p==='t')return{x:s.x+s.w/2,y:s.y};
  if(p==='b')return{x:s.x+s.w/2,y:s.y+s.h};if(p==='l')return{x:s.x,y:s.y+s.h/2};return{x:s.x+s.w,y:s.y+s.h/2}}
-function drawScenePorts(s){if(s!==selStrip)return;
+function drawScenePorts(s){if(s!==selStrip&&s!==hoverScene&&!pending)return;
  for(const p of PORTS){const q=scenePortPos(s,p);
   const hot=!!(hoverPort&&hoverPort.node===s&&hoverPort.port===p)||!!(pending&&pending.node===s&&pending.port===p);
   ctx.save();ctx.globalAlpha=hot?1:0.4;ctx.beginPath();ctx.arc(q.x,q.y,(hot?8:6)/cam.z,0,Math.PI*2);
@@ -637,13 +637,13 @@ function scenePD(e,sx,sy,wx,wy){clearTimeout(clickT);closeShotPicker();
   sceneBodyDown(s,e,wx,wy);draw();return}
  const cc=sceneConnAt(wx,wy,isSceneId);
  if(cc){selConn=cc;showPicker(cc,e.clientX,e.clientY);draw();return}
- selStrip=null;selConn=null;hidePicker();pending=null;panDrag={sx,sy};cv.style.cursor='grabbing';draw()}
+ selStrip=null;selConn=null;hidePicker();pending=null;hoverScene=null;panDrag={sx,sy};cv.style.cursor='grabbing';draw()}
 function sceneMV(e,sx,sy,wx,wy){
  if(panDrag){panBy(sx-panDrag.sx,sy-panDrag.sy);panDrag={sx,sy};draw();return}
  if(pending){hoverPort=scenePortAt(wx,wy);draw();return}
  if(dragS){sceneDragMove(wx,wy);draw();return}
- hoverPort=null;const p=scenePortAt(wx,wy);
- cv.style.cursor=p?'crosshair':(sceneAt(wx,wy)?'grab':'default');draw()}
+ hoverPort=null;const p=scenePortAt(wx,wy);hoverScene=sceneAt(wx,wy);
+ cv.style.cursor=p?'crosshair':(hoverScene?'grab':'default');draw()}
 function sceneUP(e,sx,sy,wx,wy){
  if(panDrag){panDrag=null;cv.style.cursor='grab';draw();return}
  if(pending){const t=scenePortAt(wx,wy);
@@ -665,7 +665,7 @@ function syncUI(){
  if(view==='scenes')an.style.display='none';
  else{an.style.display='';an.textContent='+ '+(VIEW_META[view]?VIEW_META[view].one:'node').toLowerCase()}
  if(view==='scenes')rebuildChapters();
- hintEl.textContent=view==='scenes'?'wheel zooms · drag background pans · drag scene · resize corner · + fills lane slot · drag dots to link · click still opens Shots':HINT_DEFAULT}
+ hintEl.textContent=view==='scenes'?'wheel zooms · drag background pans · drag scene · resize corner · + fills lane slot · hover for dots · drag dot-to-dot to link · click still opens Shots':HINT_DEFAULT}
 function setView(v){if(v!==view){if(view==='scenes'){const oc=activeChapter();if(oc)oc.conns=conns}saveView();view=v;selStrip=null;selConn=null;pending=null;selected=null;hidePicker();closeShotPicker();
  if(v==='scenes'){const nc=activeChapter();conns=(nc&&nc.conns)||[]}else if(VIEW_META[v])loadView(v)}syncUI();persist();draw()}
 document.querySelectorAll('#side button').forEach(b=>{b.onclick=()=>setView(b.dataset.view)});
