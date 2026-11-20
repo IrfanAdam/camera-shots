@@ -11,6 +11,9 @@ body{background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,-apple-system
 .w{max-width:980px;margin:0 auto;padding:1.2rem}
 .top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem}
 .by{color:var(--mut);font-size:.85rem;white-space:nowrap}
+.hright{display:flex;align-items:center;gap:.6rem}
+.eng{font-size:.82rem;font-weight:600;color:#fff;background:var(--acc);padding:.32rem .8rem;border-radius:99px;text-decoration:none}
+.eng:hover{filter:brightness(1.1)}
 h1{font-size:1.6rem;letter-spacing:-.02em}.sub{color:var(--mut);font-size:.9rem;margin:.3rem 0 0}
 .sub a{color:var(--acc)}
 .controls{display:flex;gap:.5rem;margin:.8rem 0 .2rem;flex-wrap:wrap}
@@ -55,7 +58,7 @@ table.map{width:100%;border-collapse:collapse;font-size:.84rem;margin-top:.6rem}
 footer{margin:2rem 0 1rem;color:var(--mut);font-size:.78rem}
 @media(max-width:720px){.main{grid-template-columns:1fr}.list{flex-direction:row;max-height:none;overflow-x:auto;overflow-y:hidden}.count{width:100%}}
 </style></head><body><div class="w">
-<div class="top"><h1>Cinematography and Direction Wiki</h1><span class="by">by irfan</span></div>
+<div class="top"><h1>Cinematography and Direction Wiki</h1><span class="hright"><span class="by">by irfan</span><a class="eng" href="engine.html">engine →</a></span></div>
 <p class="sub">A working reference for how films are shot and directed. Pick a concept, see what it does for the story, watch it explained, and copy the prompt phrase to use it.</p>
 <div class="controls"><input id="search" type="search" placeholder="Filter this tab… (e.g. rack, golden, 180)" autocomplete="off"><button id="theme" title="Toggle light / dark">☾ theme</button></div>
 <div class="steps" id="steps"></div><div class="blurb" id="blurb"></div><div class="tabs" role="tablist" id="tabs"></div>

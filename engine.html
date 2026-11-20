@@ -1,0 +1,56 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Prompt Engine — Camera Shots</title><style>
+:root{--bg:#0e1116;--panel:#161b22;--ink:#e8eaf0;--mut:#8b93a5;--acc:#e8830c;--teal:#0f766e}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:.8rem;padding:.7rem 1rem;background:var(--panel);border-bottom:1px solid #262d38}
+header h1{font-size:1.05rem;letter-spacing:-.01em}
+header .by{color:var(--mut);font-size:.8rem}
+.back{color:var(--mut);text-decoration:none;font-size:.85rem}
+.back:hover{color:var(--ink)}
+.tools{margin-left:auto;display:flex;gap:.5rem}
+.tools button{font:inherit;font-size:.82rem;font-weight:600;color:var(--ink);background:#222a36;border:1px solid #313b4a;border-radius:8px;padding:.35rem .7rem;cursor:pointer}
+.tools button:hover{border-color:var(--acc)}
+.tools button.warn:hover{border-color:#e5484d}
+#cv{flex:1;width:100%;display:block;cursor:grab;touch-action:none}
+.hint{position:fixed;left:1rem;bottom:.8rem;color:var(--mut);font-size:.78rem;pointer-events:none}
+</style></head><body>
+<header>
+<a class="back" href="index.html">← wiki</a>
+<h1>Prompt Engine</h1><span class="by">storyboard the beats, not the pixels</span>
+<span class="tools">
+<button id="addBeat">+ beat</button>
+<button id="addArc">+ arc</button>
+<button id="clear" class="warn">clear</button>
+</span>
+</header>
+<canvas id="cv"></canvas>
+<div class="hint" id="hint">click + beat / + arc, drag cards to arrange · double-click a card to rename</div>
+<script>
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+let W,H,DPR,nodes=[],seq={beat:0,arc:0},drag=null;
+const COLORS={beat:'#0f766e',arc:'#7c3aed'};
+function fit(){DPR=Math.min(2,devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);draw()}
+addEventListener('resize',fit);
+function add(kind){seq[kind]++;const w=190,h=64;
+ nodes.push({kind,label:(kind==='beat'?'Beat ':'Arc ')+seq[kind],x:40+Math.random()*(W-w-80||40),y:40+Math.random()*(H-h-80||40),w,h});draw()}
+function draw(){ctx.clearRect(0,0,W,H);
+ ctx.fillStyle='#1a2130';for(let x=0.5;x<W;x+=28)for(let y=0.5;y<H;y+=28)ctx.fillRect(x,y,1,1);
+ if(!nodes.length){ctx.fillStyle='#5b6577';ctx.font='14px system-ui';ctx.textAlign='center';
+  ctx.fillText('empty canvas — add a beat to start the sequence',W/2,H/2);return}
+ for(const n of nodes){ctx.fillStyle=COLORS[n.kind];round(n.x,n.y,n.w,n.h,10);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.28)';ctx.fillRect(n.x,n.y+22,n.w,1);
+  ctx.fillStyle='rgba(255,255,255,.75)';ctx.font='10px system-ui';ctx.textAlign='left';ctx.fillText(n.kind.toUpperCase(),n.x+10,n.y+15);
+  ctx.fillStyle='#fff';ctx.font='600 13px system-ui';ctx.fillText(n.label,n.x+10,n.y+42)}}
+function round(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+function at(mx,my){for(let i=nodes.length-1;i>=0;i--){const n=nodes[i];if(mx>=n.x&&mx<=n.x+n.w&&my>=n.y&&my<=n.y+n.h)return n}return null}
+function pos(e){const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]}
+cv.addEventListener('pointerdown',e=>{const[mx,my]=pos(e),n=at(mx,my);if(n){drag={n,dx:mx-n.x,dy:my-n.y};cv.setPointerCapture(e.pointerId);cv.style.cursor='grabbing'}});
+cv.addEventListener('pointermove',e=>{if(!drag)return;const[mx,my]=pos(e);drag.n.x=Math.max(0,Math.min(W-drag.n.w,mx-drag.dx));drag.n.y=Math.max(0,Math.min(H-drag.n.h,my-drag.dy));draw()});
+cv.addEventListener('pointerup',()=>{drag=null;cv.style.cursor='grab'});
+cv.addEventListener('dblclick',e=>{const[mx,my]=pos(e),n=at(mx,my);if(!n)return;const v=prompt('Rename '+(n.kind==='beat'?'beat':'arc')+':',n.label);if(v&&v.trim()){n.label=v.trim().slice(0,40);draw()}});
+document.getElementById('addBeat').onclick=()=>add('beat');
+document.getElementById('addArc').onclick=()=>add('arc');
+document.getElementById('clear').onclick=()=>{if(nodes.length&&confirm('Clear the canvas?')){nodes=[];draw()}};
+fit();
+</script></body></html>
