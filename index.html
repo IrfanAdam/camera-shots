@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cinematography and Direction Wiki</title>
+<style>
+:root{--bg:#FAFAF8;--card:#fff;--ink:#16181D;--mut:#5B6270;--rule:#E1E3E8;--acc:#0B5D66;--acc2:#DDEFF1;--amb:#B86A00;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1213;--card:#151B1C;--ink:#ECF1F1;--mut:#9DAAAB;--rule:#243032;--acc:#5CC4D0;--acc2:#12383D;--amb:#F0A648}}
+:root[data-theme="dark"]{--bg:#0E1213;--card:#151B1C;--ink:#ECF1F1;--mut:#9DAAAB;--rule:#243032;--acc:#5CC4D0;--acc2:#12383D;--amb:#F0A648}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+.w{max-width:980px;margin:0 auto;padding:1.2rem}
+h1{font-size:1.6rem;letter-spacing:-.02em}.sub{color:var(--mut);font-size:.9rem;margin:.3rem 0 0}
+.sub a{color:var(--acc)}
+.controls{display:flex;gap:.5rem;margin:.8rem 0 .2rem;flex-wrap:wrap}
+#search{flex:1;min-width:180px;background:var(--card);border:1px solid var(--rule);color:var(--ink);border-radius:99px;padding:.5rem .9rem;font:inherit;font-size:.85rem}
+#theme{background:var(--card);border:1px solid var(--rule);color:var(--ink);border-radius:99px;padding:.5rem .9rem;font:inherit;font-size:.85rem;cursor:pointer}
+.tabs{display:flex;gap:.4rem;overflow-x:auto;padding-bottom:.4rem}
+.tab,.chip{border:1px solid var(--rule);background:var(--card);color:var(--ink);padding:.45rem .8rem;border-radius:99px;font:inherit;font-size:.85rem;cursor:pointer;white-space:nowrap}
+.tab[aria-selected=true],.chip[aria-selected=true]{background:var(--acc);color:var(--bg);border-color:var(--acc)}
+.main{display:grid;grid-template-columns:230px 1fr;gap:1rem;margin-top:.8rem}
+.list{display:flex;flex-direction:column;gap:.35rem;max-height:560px;overflow-y:auto}
+.list .chip{border-radius:8px;text-align:left}
+.count{font-size:.75rem;color:var(--mut);padding:.1rem .3rem}
+.panel{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:1.2rem;min-width:0}
+.viz{background:var(--acc2);border-radius:8px;display:flex;justify-content:center}
+.viz svg{width:100%;max-width:480px;height:auto}
+h2{font-size:1.25rem;margin:.9rem 0 .2rem}h2 small{color:var(--amb);font-size:.8rem;margin-left:.4rem}
+.k{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--acc);font-weight:700;margin-top:.8rem}
+p{font-size:.93rem}.ad{margin-top:.9rem;border-left:3px solid var(--amb);padding:.5rem .8rem;background:var(--acc2);font-size:.88rem}
+.note{margin-top:.9rem;border:1px dashed var(--acc);border-radius:8px;padding:.5rem .8rem;font-size:.85rem;color:var(--mut)}
+.go{display:inline-block;margin-top:.9rem;color:var(--acc);font-weight:600;text-decoration:none}.go:hover{text-decoration:underline}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:1rem}
+.nav button{background:none;border:1px solid var(--rule);color:var(--ink);padding:.4rem .9rem;border-radius:8px;cursor:pointer;font:inherit}
+.token{display:flex;gap:.5rem;align-items:center;margin-top:.9rem;background:var(--acc2);border:1px solid var(--rule);border-radius:8px;padding:.5rem .7rem;font-size:.85rem;flex-wrap:wrap}
+.token code{font-weight:800;color:var(--acc);letter-spacing:.02em}
+.token button{margin-left:auto;background:var(--acc);color:var(--bg);border:none;border-radius:99px;padding:.3rem .8rem;font:inherit;font-size:.78rem;cursor:pointer}
+table.map{width:100%;border-collapse:collapse;font-size:.84rem;margin-top:.6rem}
+.map th{text-align:left;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--acc);padding:.4rem .5rem;border-bottom:1px solid var(--rule)}
+.map td{padding:.4rem .5rem;border-bottom:1px solid var(--rule);vertical-align:top}
+.map td code{font-weight:700;color:var(--acc);white-space:nowrap}
+.map td button{background:none;border:1px solid var(--rule);color:var(--ink);border-radius:99px;padding:.15rem .6rem;font:inherit;font-size:.75rem;cursor:pointer;white-space:nowrap}
+.badge{font-size:.7rem;font-weight:800;letter-spacing:.08em;border-radius:99px;padding:.15rem .6rem;background:var(--amb);color:#fff}
+.badge.FREE{background:#2e7d46}.badge.PAID{background:#8a5cf6}.badge.UNVERIFIED{background:var(--mut)}
+.steps{display:flex;gap:.5rem;margin:.8rem 0 .2rem;flex-wrap:wrap}
+.step{font:inherit;font-weight:700;font-size:1.02rem;padding:.45rem .15rem;margin-right:1.1rem;border:none;border-bottom:2px solid transparent;background:none;color:var(--mut);cursor:pointer;border-radius:0}
+.step:hover{color:var(--ink)}
+.step.on{color:var(--ink);border-bottom-color:var(--amb)}
+.blurb{font-size:.82rem;color:var(--mut);margin:.1rem 0 .4rem}
+.yt{position:relative;aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden;margin-top:.5rem;cursor:pointer}
+.yt img{width:100%;height:100%;object-fit:cover;opacity:.85}
+.yt span{position:absolute;inset:0;margin:auto;width:60px;height:60px;border-radius:50%;background:var(--amb);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px}
+.yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+footer{margin:2rem 0 1rem;color:var(--mut);font-size:.78rem}
+@media(max-width:720px){.main{grid-template-columns:1fr}.list{flex-direction:row;max-height:none;overflow-x:auto;overflow-y:hidden}.count{width:100%}}
+</style></head><body><div class="w">
+<h1>Cinematography and Direction Wiki</h1>
+<p class="sub">A working reference for how films are shot and directed. Pick a concept, see what it does for the story, watch it explained, and copy the prompt phrase to use it.</p>
+<div class="controls"><input id="search" type="search" placeholder="Filter this tab… (e.g. rack, golden, 180)" autocomplete="off"><button id="theme" title="Toggle light / dark">☾ theme</button></div>
+<div class="steps" id="steps"></div><div class="blurb" id="blurb"></div><div class="tabs" role="tablist" id="tabs"></div>
+<div class="main"><div class="list" id="list"></div><div class="panel" id="panel"></div></div>
+<footer>Tip: ← → keys step through cards · / focuses filter · token copy gives you <code>CODE — prompt phrase</code> ready to paste. Direction tab: shoot order for the set.</footer>
+</div>
+<script>
+const B='https://www.studiobinder.com/blog/';
+const YT=q=>'https://www.youtube.com/results?search_query='+encodeURIComponent(q);
+const D={
+"Shot size":{t:'size',items:[
+["Extreme wide","EWS","Subject is tiny against the location. Makes the setting a character and conveys isolation or scale.","Opening a scene or showing someone overwhelmed by place.",B+'what-is-an-extreme-long-shot/',[22,95],"Empty stadium and bare facility openers."],
+["Wide / long","WS","Whole body visible with room above and below, so we read the surroundings and how the person fits in.","Keeping a subject in plain view amid a grander setting.",B+'wide-shot-camera-angles-movements-examples/',[48,62],""],
+["Full shot","FS","The body fills the frame head to toe while the scenery still has a say.","Action, group staging, or a character entrance.",B+'what-is-a-full-shot-in-film-definition/',[125,5],""],
+["Medium wide","MWS","A person framed from the knees up, surroundings still visible.","Bridge wide scenes and closer dialogue.",B+'what-is-a-medium-long-shot-in-film/',[185,3],""],
+["Cowboy","CS","From mid-thigh up, named for Westerns that kept the holster in frame.","Confrontation, posture, hands near the hip.",B+'cowboy-shot-examples-types-of-shots-in-film/',[235,5],""],
+["Medium","MS","Waist up. Versatile: the person is clear and the setting still reads.","Dialogue, fights that need geography, buffer before a close-up.",B+'medium-shot-examples/',[280,8],""],
+["Medium close-up","MCU","Chest up. Favors the face while keeping a little distance.","Conversation with some emotional reserve.",B+'medium-close-up-shot/',[430,8],""],
+["Close-up","CU","A part of the subject, often the face, fills the frame to reveal emotion and reaction.","Important moments and reactions.",B+'close-up-shot/',[760,8],""],
+["Extreme close-up","ECU","The tightest frame: eyes, mouth, a trigger. Small things become the focal point.","Detail that carries meaning.",B+'extreme-close-up-shot-definition/',[1700,-95],"Valve wheel, baton, hologram marker."],
+["Establishing","EST","Not a size but a role: an opening shot, usually wide, that sets where the scene happens.","Starting a scene or location.",B+'what-is-an-establishing-shot-definition-examples/',[40,70],""]]},
+"Framing":{t:'frame',items:[
+["Single","1S","One character featured clearly, even if others blur nearby.","Isolate one character's reaction or dialogue.",B+'types-of-camera-shot-frames-in-film/',[1,0],""],
+["Two shot","2S","Two characters share the frame, linking them and showing chemistry or power balance.","Long takes and blocking.",B+'two-shot-camera-angle-movement/',[2,0],"Handoff pairs."],
+["Shot reverse shot","SRS","Alternating over-shoulder angles carrying a conversation's reactions.","Standard dialogue coverage.",B+'shot-reverse-shot/',[2,1],""],
+["Over-the-hip shot","OTH","A low frame at holster level, favoring one side's draw.","Standoffs with guns in play.",B+'types-of-camera-shot-frames-in-film/',[1,1],""],
+["Three shot","3S","Three characters in frame, saving the cost of cutting between singles.","Groups and ensembles.",B+'types-of-camera-shot-frames-in-film/',[3,0],""],
+["Over the shoulder","OTS","One person seen from behind another's shoulder, giving orientation and connection.","Conversation scenes.",B+'over-the-shoulder-shot/',[1,1],""],
+["Point of view","POV","Shows exactly what a character sees, usually sandwiched between a look and a reaction.","Putting us inside a character.",B+'point-of-view-shot-camera-movement-angles/',[0,2],""],
+["Insert shot","INS","A tight detail of an object the characters handle or notice.","Show the clue, the weapon, the letter.",B+'insert-shot-film-example/',[1,0],""]]},
+"Focus":{t:'focus',note:"Rack focus pairs with the crab move — pull from baton to eyes mid-slide (Movement → Crab and more).",items:[
+["Rack focus","RF","Focus deliberately shifts from one subject to another to redirect attention.","Revealing, linking two things.",B+'rack-focus-shot-camera-movement-angles/',[0,7,14],"Palm to eyes; panel lights to face."],
+["Shallow focus","SF","Subject sharp, foreground and background soft. Emphasis through isolation.","Portraits and intensity.",B+'shallow-focus/',[7,0,7],""],
+["Deep focus","DF","Everything sharp, foreground to background. Lets the scene breathe.","Wide establishing and staging.",B+'deep-focus-shot-camera-movement-angle/',[0,0,0],"Sensors lighting up down the pipe."],
+["Tilt-shift","TS","A lens that tilts the plane of focus for selective, stylized sharpness.","Rare, dreamy distortion.",B+'what-is-a-tilt-shift-lens/',[10,0,10],""],
+["Soft focus","SO","Nothing is fully sharp, via lens flaw or filters. Dreamy.","Memory, dream.",B+'what-is-soft-focus-photography/',[3,3,3],""],
+["Split diopter","SD","Extra lens element keeps foreground and background sharp with the middle soft.","Stylized dual focus, use sparingly.",B+'split-diopter-lens/',[0,10,0],""]]},
+"Angle":{t:'angle',items:[
+["Eye level","EYE","Neutral, like meeting someone's gaze. Neither superior nor inferior.","Natural, honest moments.",B+'eye-level-camera-shot-angle/',[40,62,0],""],
+["Low angle","LOW","Camera looks up at the subject, signaling power.","Making someone imposing.",B+'low-angle-shot-camera-movement-angle/',[45,172,0],"Athletes in the blocks."],
+["High angle","HI","Camera looks down, often making a subject feel smaller.","Vulnerability, overview.",B+'high-angle-shot-camera-movement-angle/',[45,12,0],""],
+["Hip / knee / ground / shoulder","LVL","Camera height set at a body part — hip, knee, ground, or shoulder — not the eyes.","Grounded power low down, neutrality at the shoulder.",B+'types-of-camera-shot-angles-in-film/',[40,125,0],"Ground-level track and baton."],
+["Dutch tilt","DUT","Camera slanted so horizons tilt, creating disorientation.","Unease, a sense of being set up.",B+'dutch-angle-shot-camera-movement/',[40,62,12],""],
+["Overhead","BEV","Straight from high above, showing scale and movement.","Geometry and patterns.",B+'overhead-shot-bird-eye-view/',[100,8,0],"Lane lines and pipeline geometry."],
+["Aerial","AER","From a helicopter or drone to establish wide terrain.","Scale and location.",B+'aerial-shot-camera-movement-angle/',[20,10,0],"Track turning into pipeline."]]},
+"Movement":{t:'move',note:"Crab pairs with rack focus (Focus → RF). Push = Dolly: move the camera, don't zoom, so parallax sells the depth.",items:[
+["Static","LOCK","Locked camera. The performance and the environment do the work.","Calm, comedy, suspense.",B+'what-is-a-static-shot-definition/',[40,100,""],"The suspense hold."],
+["Dolly","DOLLY","Camera on a wheeled platform moves toward or away from the subject. A slow push-in beats a zoom: parallax sells the depth.","Smooth emphasis.",B+'dolly-shot-camera-movements/',[30,100,"M40 100 L120 100"],"Slow push-ins."],
+["Pull out / pull back","PULL","The camera retreats from the subject into widening space.","Detach, isolate, or end a scene.",B+'different-types-of-camera-movements-in-film/',[150,100,"M150 100 L60 100"],""],
+["Zoom","ZOOM","The lens changes focal length. The camera stays put.","Fast emphasis or reveal.",B+'what-is-a-zoom-shot-definition/',[40,100,"M60 85 L100 85 M60 115 L100 115"],""],
+["Crash zoom","CRASH","A violent snap-zoom punching into a shock reveal.","Punctuation: comedy, horror, sudden realization.",B+'what-is-a-zoom-shot-definition/',[40,100,"M60 75 L120 75 M60 100 L120 100 M60 125 L120 125"],""],
+["Dolly zoom","VERT","The camera moves while the lens zooms the opposite way, warping space.","Show dread or sudden realization visually.",B+'best-dolly-zoom-vertigo-effect/',[30,100,"M40 100 L100 100 M130 70 L130 130"],""],
+["Pan","PAN","Rotate the camera left or right on a fixed point.","Reveal or follow.",B+'what-is-a-camera-pan-definition/',[40,100,"M60 60 Q110 30 160 60"],""],
+["Tilt","TILT","Rotate up or down on a fixed point.","Reveal height.",B+'tilt-shot-in-film/',[40,100,"M110 50 Q130 100 110 150"],""],
+["Whip pan","WHIP","A very fast pan that smears into motion blur, often used to transition.","Energy and cuts.",B+'swish-pan-whip-pan-definition-film/',[40,100,"M50 100 L170 100 M70 90 L150 90 M70 110 L150 110"],""],
+["Tracking","TRACK","Camera travels with the subject, beside or behind.","Following action.",B+'tracking-shot-camera-movement-definition/',[30,150,"M30 150 L190 150"],"Sprint tracking, left to right."],
+["Arc","ARC","Camera circles the subject to show surroundings.","Revealing context.",B+'arc-shot-in-film-definition/',[40,100,"M70 160 Q40 100 70 40"],""],
+["Crab","MORE","A sideways tracking move where the camera slides left or right.","Follow action moving sideways across frame.",B+'different-types-of-camera-movements-in-film/',[40,100,"M40 100 L100 100"],"Rack-focus pairing: baton to eyes during the crab."],
+["Boom shot","BOOM","A vertical rise or drop on a crane arm, revealing grand scale.","Openings, finales, god's-eye reveals.",B+'what-is-a-boom-shot-definition-film/',[120,150,"M120 160 L120 40"],""],
+["Roll","ROLL","The camera spins on its long axis; the horizon tilts and turns.","Disorientation, panic, power flips.",B+'different-types-of-camera-movements-in-film/',[120,100,"M150 100 A30 30 0 1 1 149 99"],""]]},
+"Lens":{t:'lens',note:"Full-frame equivalents. On smaller sensors the same mm looks tighter (crop ≈1.5–1.6×): a 24mm behaves like ~35mm. When in doubt, go wider.",items:[
+["Extreme wide","12mm","Roughly 12 to 14mm on full frame: a huge sweep with strong stretch at the edges. On smaller sensors the same number looks less wide. Below this, lenses move into fisheye curvature.","Vast environments and immersive wides. Keep people centered, the camera level, and faces away from the lens.",B+'focal-length-camera-lenses-explained/',[122],"Empty stadium and pipeline-to-horizon world shots."],
+["Ultra-wide","18mm","A very wide view with stretched perspective: near things loom, far things shrink. Anything under roughly 23mm counts as ultra-wide.","Tight spaces, vast environments, dramatic scale.",B+'focal-length-camera-lenses-explained/',[100],"Aerial world shots."],
+["Wide","24mm","Wide with a big sense of space around the subject and slight depth exaggeration.","Setups, ground-level pushes, subject plus environment.",B+'focal-length-camera-lenses-explained/',[74],"Setup wides, blocks push, facility pushes."],
+["Wide-standard","35mm","Balanced coverage that feels close to what we naturally notice.","Tracking, general coverage, handheld work.",B+'focal-length-camera-lenses-explained/',[54],"Sprint tracking."],
+["Standard","50mm","Natural view with little distortion, close to how the eye frames a scene.","Dialogue, honest observational shots.",B+'focal-length-camera-lenses-explained/',[40],"Facility walk-throughs."],
+["Short telephoto","85mm","Compressed, flattering portrait look with the background melting soft.","Faces, pressure, isolating a subject.",B+'focal-length-camera-lenses-explained/',[24],"Suspense hold, waiting palm."],
+["Telephoto","135mm","Strong compression that pulls the background closer and isolates the subject.","Distant subjects, intense isolation.",B+'focal-length-camera-lenses-explained/',[15],""],
+["Long telephoto","200mm","Flattened depth: distant things stack up close together. Telephotos are generally above about 70mm.","Crowds, surveillance feel, sports.",B+'focal-length-camera-lenses-explained/',[10],"Crowd compression behind sprinters."],
+["Macro","100M","Built to focus very close, making small detail enormous with a razor-thin focus plane.","Props, texture, tiny details.",B+'different-types-camera-lenses-explained/',[20],"Baton, valve wheel, hologram marker."],
+["Anamorphic","ANA","A widescreen lens look with oval bokeh and horizontal flares. Squeezes a wide image onto the sensor.","A cinematic, widescreen feel.",B+'what-is-an-anamorphic-lens-definition/',[54],"Global look for the ad."],
+["Bokeh and flare","FX","Bokeh is the soft look of out-of-focus light; flare is light bleeding across the lens. Both shape mood.","Dawn backlight, golden stadium lights.",B+'what-is-bokeh-effect/',[40],"Golden light flaring into the lens."],
+["Prime vs zoom","P/Z","A prime lens has one fixed view; a zoom lens adjusts views.","Pick fixed quality or flexible framing.",B+'different-types-camera-lenses-explained/',[54],""]]},
+"Gear":{t:'gear',items:[
+["Tripod / sticks","STK","The default for static shots and simple pans and tilts.","Stable, simple coverage.",B+'what-is-a-tripod-definition/',["T"],""],
+["Slider","SLD","A short track that slides the camera smoothly on a tripod.","Subtle push and pull.",B+'types-of-camera-rigs-in-film/',["S"],""],
+["Handheld","HH","Operator holds the camera, bringing grit and nervous energy.","Intensity.",B+'handheld-shot-in-film-definition-examples/',["H"],""],
+["Steadicam","STD","A body-worn stabilizer for smooth moving shots.","Following through spaces.",B+'what-is-a-steadicam-shot/',["St"],""],
+["Gimbal","GIM","A compact motorized stabilizer for tight spaces.","Smooth and mobile.",B+'what-is-a-gimbal-stabilizer/',["G"],""],
+["Crane / jib","CRN","Sweeps the camera up and over a scene. Jibs are smaller and cheaper.","Opening and closing shots.",B+'crane-shot-definition/',["C"],"Lane to pipeline rise."],
+["Drone / wire","DRN","Flying or cable rigs that go where helicopters cannot.","Aerials, chases, live events.",B+'aerial-shot-camera-movement-angle/',["D"],""],
+["Jib","JIB","A small crane arm sweeping smooth arcs over the action.","Big moves on a smaller budget.",B+'types-of-camera-rigs-in-film/',["J"],""],
+["Snorricam","SNOR","A chest-locked rig: the face stays fixed while the world whirls.","Subjective panic or dizziness.",B+'types-of-camera-rigs-in-film/',["S"],""],
+["Wire rig","WIRE","A cable-spanned camera gliding fast over long distances.","Chases, flights, live events.",B+'types-of-camera-rigs-in-film/',["W"],""]]},
+"Light":{t:'light',note:"Pairs with Shot List Ep 12 (Ultimate Guide to Cinematic Lighting) — find it under Resources.",items:[
+["Key light","KEY","The main light that shapes the face and sets the contrast.","Start every lighting setup with this light.","https://www.videomaker.com/courses",'key',"Side key sculpts the face; front key flattens it."],
+["Fill light","FILL","A soft second light that lifts shadows cast by the key.","Soften shadows after placing the key.","https://www.videomaker.com/courses",'fill',"Often just bounce or a softbox; keep it dim to hold contrast."],
+["Rim / backlight","RIM","Hard source behind the subject that rims hair and shoulders, separating them from the background.","Separation at night or against dark sets.","https://www.videomaker.com/courses",'rim',"Rims hair and shoulders to split the subject from dark sets."],
+["Golden hour","GOLD","Low warm sun near sunrise or sunset. Long soft shadows, glowing skin.","Hero shots, backlit finals, the ad's victory light.","https://www.videomaker.com/courses",'gold',"The hero light: low sun, long shadows, glowing skin."],
+["Blue hour","BLUE","Cool dim ambient just after sunset. Everything goes steel-blue and quiet.","Isolation, night exteriors, calm before the floodlights.",YT('blue hour cinematography'),'blue',"Cool quiet before the action; let practicals pop warm."],
+["Soft diffused","SOFT","Large or bounced source: overcast sky, silk, softbox. Wraps instead of cutting.","Flattering faces, product detail, interviews.","https://www.videomaker.com/courses",'soft',"Overcast sky, silk, or softbox — wraps instead of cutting."],
+["Hard direct","HARD","Small or bare source: noon sun, bare bulb. Sharp-edged shadows.","Noir, interrogation, desert harshness.","https://www.videomaker.com/courses",'hard',"Noon sun or bare bulb; sharp-edged noir shadows."],
+["Practicals","PRAC","A lamp or light visible inside the shot itself.","Make lighting feel real and dress the set.","https://www.videomaker.com/courses",'prac',"Panels, lamps, holograms — motivate the light on screen."],
+["Motivated light","MOT","Light that feels justified by a source visible on screen.","Ground every setup in something real.",'https://www.videomaker.com/courses',"mot",""],
+["Day for night","D/N","Daylight shot underexposed and graded to read as night.","Night exteriors without night shoots.",YT('day for night cinematography'),"dn",""]]},
+"Composition":{t:'comp',note:"Screen direction is a promise: once a runner moves left-to-right, every cut must keep them moving left-to-right or the geography breaks.",items:[
+["Rule of thirds","RULE3","Place the subject on a third-line intersection, not dead center. Gives the frame somewhere to breathe.","Balanced, natural-looking frames.",YT('StudioBinder rule of thirds'),"thirds",""],
+["Screen direction (180°)","180R","Keep the camera on one side of the action axis so left and right stay consistent across cuts.","Any sequence with movement or dialogue.",YT('StudioBinder 180 degree rule'),"dir","Sprint tracking runs left to right — never flip it."],
+["Lead room","LEAD","Empty space ahead of a moving subject or gaze. The frame leads, the subject follows.","Running, looking, speaking off-camera.",YT('lead room cinematography'),"lead",""],
+["Symmetry","SYM","Center the subject with mirrored balance. Formal, deliberate, slightly uncanny.","Confrontation, ritual, order.",YT('symmetry cinematography Kubrick'),"sym",""],
+["Negative space","NEG","Dwarf the subject in empty frame: sky, wall, water. Loneliness or scale.","Isolation, awe, the tiny runner in the stadium.",YT('negative space cinematography'),"neg",""],
+["Foreground framing","FG","A foreground object layers depth around the subject.","Stage depth: shoot through doors, leaves, crowds.",YT('foreground framing cinematography'),"fg",""]]},
+"Editing":{t:'edit',items:[
+["Shot length","PACE","How long a shot breathes before the cut. Long holds build pressure; quick cuts build energy.","Pacing the scene's heartbeat.",YT('shot length pacing film editing'),"pace","The suspense hold plays long — don't cut early."],
+["Cut on motion","CUTM","Cut mid-gesture: a hand grabs, a foot lands. The motion masks the edit.","Invisible action continuity.",YT('cut on motion match on action'),"cut","Cut on the baton handoff, not before it."],
+["Match cut","MATCH","Bridge two scenes on a matched shape or motion: wheel to ring, stride to stride.","Poetic time or place jumps.",YT('match cut examples film'),"match","Valve wheel to hologram ring."],
+["The S3 hold","S3","A long held shot on one decisive moment, building suspense before the payoff.","Stretch one tense beat before a reveal.",YT('holding on a shot suspense filmmaking'),"s3","Hold the winning beat two seconds longer than feels safe."],
+["Cutaway","CUTW","A breather cut to a related detail, then back to the scene.","Reset attention without losing the thread.",YT('cutaway editing film'),"cutw",""]]},
+"Direction":{t:'frame',items:[
+["Intent","INTENT",'The story reason for a shot: what the viewer should feel or understand.','Name the job before choosing the frame.','https://www.studiobinder.com/blog/what-does-a-director-do/',[1,0],''],
+["Coverage","COVER",'All the angles that let a scene cut together: wides, singles, reverses, details.','Shoot more than the scene needs.','https://www.studiobinder.com/blog/film-coverage/',[2,0],''],
+["Shot list","SHOTL",'A planned list of every setup, in shoot order, so nothing is missed.','Plan setups before the shoot day.','https://www.studiobinder.com/blog/what-is-a-shot-list-example/',[1,0],''],
+["Blocking","BLOCK",'Where actors and camera move within the frame during a scene.','Stage movement before placing the camera.','https://www.studiobinder.com/blog/blocking-and-staging-scenes/',[2,0],''],
+["Screen direction + 180-degree rule","AXIS",'Keep the camera on one side of the action so direction stays consistent.','Never cross the line without reason.','https://www.studiobinder.com/blog/what-is-screen-direction-in-film/',[1,1],''],
+["Eyeline + shot reverse shot","EYEM",'Match where characters look with what they see, cutting look to reaction.','Cut the glance, then the reaction.','https://www.studiobinder.com/blog/what-is-an-eyeline-match/',[2,1],''],
+["Continuity","CONT",'Keep details consistent across cuts so the edit feels seamless.','Match every cut to the last.','https://www.studiobinder.com/blog/what-is-continuity-editing-in-film/',[1,0],''],
+["Beats","BEAT",'The small turns inside a scene: each moment shifts feeling or power.','Play one turn at a time.','https://www.studiobinder.com/blog/shot-reverse-shot-cutaways-coverage/',[1,0],''],
+["Always be prepared (ad example)","PREP",'A prepared crew lists setups, stages action, and holds direction on every cut.','Prep once, shoot with confidence.','https://www.studiobinder.com/blog/what-is-a-shot-list-example/',[1,0],'']]},
+"Prompt map":{t:'map'},
+"Resources":{t:'res',items:[
+["The Shot List (YouTube series)","FREE","StudioBinder's Shot List series (28 videos): shot sizes, framing, angles, depth of field, rigs, movement, lenses, close-ups. Each maps onto a tab here.","Learning every tab in order.",'https://www.youtube.com/playlist?list=PLEzQZpmbzckV0_a2QCO2qF9Yfe-LKSDha',["▶"],"Start with Ep 1 (shot sizes), then jump to your weakest tab."],
+["50+ Camera Shots guide","FREE","The written StudioBinder guide this explorer is remade from, with film stills for every entry.","Reading deeper on any card.",B+'ultimate-guide-to-camera-shots/',["≡"],""],
+["Storyteller's Guide to Lenses","FREE","Videomaker lessons: depth of field, bokeh, focal length and field of view, space compression. Best free match for Lens + Focus.","Lens and Focus tabs.",'https://www.videomaker.com/courses',["◉"],"Some lessons need a Plus membership."],
+["Lenses: how focus works","FREE","Videomaker article on focal length, focal distance, and depth of field.","Checking definitions fast.",'https://www.videomaker.com/how-to/technology/lenses-how-does-focus-work/',["◉"],""],
+["FilmSkills curricula","PAID","Camera-and-lens curriculum plus the Cinematography Master Course: focal length, f-stops, depth of field, on-set procedure.","Going pro on camera + lens.",'https://www.filmskills.com/cinematography-camera-and-lens/',["🎓"],"Master course is a paid product."],
+["SJSU cinematography notes","FREE","Plain academic lecture PDF: focal length, deep/shallow focus, racking focus. Good for verifying definitions.","Fact-checking the wiki.",'https://sjsu.edu/people/drew.todd/courses/c2/s0/CINEMATOGRAPHYLECTURE.pdf',["📄"],""],
+["Virtual Cameras (Pixar in a Box)","FREE","Khan Academy and Pixar's free lesson: how virtual cameras, lenses and staging work in animation — the same language as live action.","Borrow animation thinking for camera and lens.",'https://www.khanacademy.org/computing/pixar/virtual-cameras',["▶"],"Free; includes hands-on exercises."]]}};
+const PHRASE={EWS:"extreme wide shot, subject tiny in the landscape",WS:"wide shot, full body with room around",FS:"full shot, head to toe",MWS:"medium wide, knees up",CS:"cowboy shot, mid-thigh up",MS:"medium shot, waist up",MCU:"medium close-up, chest up",CU:"close-up, face fills the frame",ECU:"extreme close-up on one detail",EST:"establishing wide that sets the location",
+"1S":"single on one featured subject","2S":"two shot, both characters in frame","3S":"three shot, ensemble in frame",OTS:"over-the-shoulder, oriented on the conversation",POV:"POV, seeing through the character's eyes",
+RF:"rack focus from {A} to {B}",SF:"shallow focus, background melts soft",DF:"deep focus, sharp front to back",TS:"tilt-shift, sliver of selective focus",SO:"soft focus, dreamy glow",SD:"split diopter, near and far both sharp",
+EYE:"eye-level camera, neutral",LOW:"low angle looking up, powerful",HI:"high angle looking down, vulnerable",LVL:"ground-level camera, textured and low",DUT:"dutch tilt, canted uneasy horizon",BEV:"overhead straight down, graphic geometry",AER:"aerial wide, landscape scale",
+LOCK:"locked static camera, no movement",DOLLY:"slow dolly push-in toward subject",ZOOM:"zoom in — lens moves, camera stays",VERT:"dolly zoom, space warps (vertigo)",PAN:"pan left to right, reveal or follow",TILT:"tilt up, reveal height",WHIP:"whip pan, smeared fast transition",TRACK:"tracking with the subject, left to right",ARC:"arc around the subject",MORE:"crab move, camera slides sideways",
+"12mm":"shot on 12mm extreme wide (full-frame)","18mm":"shot on 18mm ultra-wide","24mm":"shot on 24mm wide","35mm":"shot on 35mm, natural coverage","50mm":"shot on 50mm standard","85mm":"shot on 85mm short telephoto, soft background","135mm":"shot on 135mm telephoto compression","200mm":"shot on 200mm long telephoto, stacked crowd","100M":"macro 100mm, tiny detail enormous",ANA:"anamorphic widescreen, oval bokeh and flares",FX:"golden backlight with bokeh and flare","P/Z":"prime vs zoom choice",
+STK:"on tripod, stable",SLD:"slider push, subtle glide",HH:"handheld, gritty energy",STD:"steadicam, floating follow",GIM:"gimbal, smooth and mobile",CRN:"crane rise up and over",DRN:"drone aerial",
+KEY:"key light from the side, shaping the face",FILL:"soft fill, lifting the shadows",RIM:"rim backlight, edge separation",GOLD:"golden-hour backlight, warm tone",BLUE:"blue-hour cool ambient",SOFT:"soft diffused light, flattering",HARD:"hard direct light, sharp shadows",PRAC:"practicals glowing in frame",
+RULE3:"rule-of-thirds composition","180R":"hold screen direction, 180-degree rule",LEAD:"lead room ahead of movement",SYM:"centered symmetry",NEG:"negative space, subject small in frame",
+PACE:"hold the shot, let it breathe",CUTM:"cut on motion",MATCH:"match cut across scenes",S3:"the S3 hold, suspense beat",INS:"insert shot, tight detail of an object",OTH:"over-the-hip shot, low at holster level",SRS:"shot reverse shot, alternating conversation angles",PULL:"pull out, camera retreats wider",BOOM:"boom up, vertical crane sweep",ROLL:"camera roll, horizon spins",CRASH:"crash zoom, violent snap-in",JIB:"jib arm, sweeping overhead arcs",SNOR:"snorricam, face locked while world moves",WIRE:"wire rig, cable glide over distance",MOT:"motivated light, justified by a visible source","D/N":"day for night, daylight graded as night",FG:"foreground framing, layered depth",CUTW:"cutaway, breather cut to a detail",INTENT:"direct with intent, every shot has a job",COVER:"full coverage, wides singles reverses details",SHOTL:"shot list, every setup planned",BLOCK:"blocked staging, actors and camera move together",AXIS:"hold screen direction, stay on one side",EYEM:"eyeline match, look then reaction",CONT:"continuity, details match across cuts",BEAT:"play the beat, one turn at a time",PREP:"always be prepared, plan stage and hold"};
+const fig=(x,y,h,c='currentColor')=>`<g transform="translate(${x-50*h/200},${y}) scale(${h/200})" fill="${c}"><circle cx="50" cy="20" r="14"/><rect x="30" y="38" width="40" height="70" rx="8"/><rect x="34" y="108" width="14" height="90" rx="5"/><rect x="52" y="108" width="14" height="90" rx="5"/></g>`;
+const V={
+size(p){const[h,t]=p;return`<svg viewBox="0 0 240 135"><defs><clipPath id="c"><rect width="240" height="135"/></clipPath></defs><rect width="240" height="135" fill="none" stroke="var(--acc)" stroke-width="2"/><g clip-path="url(#c)" style="color:var(--acc)">${fig(120,t,h)}</g></svg>`},
+frame(p){const[n,m]=p;let s='';if(m==2)s=`<circle cx="190" cy="68" r="22" fill="var(--amb)"/><text x="190" y="74" text-anchor="middle" font-size="18">&#128065;</text>`;else if(m==1)s=fig(70,28,95,'var(--mut)')+fig(150,25,100);else{const xs=n==1?[120]:n==2?[85,155]:[60,120,180];s=xs.map(x=>fig(x,20,110)).join('')}return`<svg viewBox="0 0 240 135" style="color:var(--acc)"><rect width="240" height="135" fill="none" stroke="var(--acc)" stroke-width="2"/>${s}</svg>`},
+focus(b){const f=b.map((v,i)=>`<filter id="f${i}"><feGaussianBlur stdDeviation="${v}"/></filter>`).join('');return`<svg viewBox="0 0 240 135"><defs>${f}</defs><circle cx="55" cy="95" r="26" fill="var(--amb)" filter="url(#f0)"/><circle cx="120" cy="68" r="20" fill="var(--acc)" filter="url(#f1)"/><circle cx="190" cy="42" r="14" fill="var(--mut)" filter="url(#f2)"/></svg>`},
+angle(p){const[cx,cy,d]=p,tx=190,ty=75,a=Math.atan2(ty-cy,tx-cx)*57.3;return`<svg viewBox="0 0 240 200"><line x1="0" y1="198" x2="240" y2="198" stroke="var(--mut)"/><g style="color:var(--acc)">${fig(tx,15,175)}</g><line x1="${cx}" y1="${cy}" x2="${tx}" y2="${ty}" stroke="var(--amb)" stroke-dasharray="4 3"/><g transform="translate(${cx},${cy}) rotate(${a+d})"><rect x="-14" y="-9" width="22" height="18" rx="3" fill="var(--amb)"/><path d="M8-6L18-11V11L8 6Z" fill="var(--amb)"/></g></svg>`},
+move(p){const[cx,cy,d]=p;return`<svg viewBox="0 0 240 200"><defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4 0 8Z" fill="var(--amb)"/></marker></defs><g style="color:var(--acc)">${fig(200,40,120)}</g>${d?`<path d="${d}" fill="none" stroke="var(--amb)" stroke-width="3" marker-end="url(#ar)"/>`:''}<g transform="translate(${cx},${cy})"><rect x="-14" y="-9" width="22" height="18" rx="3" fill="var(--amb)"/><path d="M8-6L18-11V11L8 6Z" fill="var(--amb)"/></g></svg>`},
+lens(p){const d=p[0],r=d*Math.PI/360,hh=Math.min(60,100*Math.tan(r)),H=Math.min(400,22/Math.tan(r));return`<svg viewBox="0 0 260 135"><defs><clipPath id="lc"><rect x="150" y="34" width="100" height="67"/></clipPath></defs><polygon points="20,68 120,${68-hh} 120,${68+hh}" fill="var(--acc)" opacity=".22"/><g transform="translate(14,60)"><rect width="14" height="16" rx="3" fill="var(--amb)"/></g><g style="color:var(--mut)">${fig(110,48,40)}</g><rect x="150" y="34" width="100" height="67" fill="none" stroke="var(--acc)" stroke-width="2"/><g clip-path="url(#lc)" style="color:var(--acc)">${fig(200,68-H*.3,H)}</g><text x="20" y="125" font-size="11" fill="var(--mut)">~${d}&deg; view</text></svg>`},
+gear(p){return`<svg viewBox="0 0 240 135"><circle cx="120" cy="68" r="46" fill="none" stroke="var(--acc)" stroke-width="3"/><text x="120" y="82" text-anchor="middle" font-size="40" font-weight="700" fill="var(--acc)">${p[0]}</text></svg>`},
+light(k){const S=(x,y,r,c,op=1)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" opacity="${op}"/>`,L=(x1,y1,x2,y2,c='var(--amb)',dash='4 3')=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-dasharray="${dash}"/>`;
+const subj=`<g style="color:var(--acc)">${fig(150,25,110)}</g>`;let inner='';
+if(k=='key')inner=S(45,35,16,'#fff')+L(55,42,120,70)+subj;
+else if(k=='fill')inner=S(45,100,20,'#9fc3d8',.55)+L(60,95,120,80,'var(--mut)')+subj;
+else if(k=='rim')inner=subj+S(195,30,13,'#F0A648')+L(185,38,160,60);
+else if(k=='gold')inner=`<rect width="240" height="135" fill="#F0A648" opacity=".14"/>`+S(200,95,22,'#F0A648')+L(185,88,160,75)+subj;
+else if(k=='blue')inner=`<rect width="240" height="135" fill="#5CC4D0" opacity=".13"/>`+S(200,30,14,'#5CC4D0')+subj;
+else if(k=='soft')inner=`<ellipse cx="120" cy="18" rx="90" ry="16" fill="#fff" opacity=".35"/>`+L(120,34,150,60,'var(--mut)')+subj;
+else if(k=='hard')inner=S(45,30,8,'#fff')+L(52,34,130,70,'#fff','0')+`<line x1="160" y1="60" x2="200" y2="110" stroke="var(--mut)" stroke-width="6"/>`+subj;
+else if(k=='mot')inner=S(45,35,16,'#fff')+L(55,42,120,70)+S(60,100,7,'#F0A648')+subj;
+else if(k=='dn')inner=`<rect width="240" height="135" fill="#101828" opacity=".55"/>`+S(200,30,12,'#fff')+subj;
+else inner=S(60,100,7,'#F0A648')+S(95,100,7,'#F0A648')+S(130,100,7,'#5CC4D0')+subj;
+return`<svg viewBox="0 0 240 135"><rect width="240" height="135" fill="none" stroke="var(--acc)" stroke-width="2"/>${inner}<text x="8" y="126" font-size="11" fill="var(--mut)">${k}</text></svg>`},
+comp(k){const F=`<rect width="240" height="135" fill="none" stroke="var(--acc)" stroke-width="2"/>`;let inner='';
+if(k=='thirds')inner=F+`<line x1="80" y1="0" x2="80" y2="135" stroke="var(--amb)"/><line x1="160" y1="0" x2="160" y2="135" stroke="var(--amb)"/><line x1="0" y1="45" x2="240" y2="45" stroke="var(--amb)"/><line x1="0" y1="90" x2="240" y2="90" stroke="var(--amb)"/><g style="color:var(--acc)">${fig(160,30,80)}</g>`;
+else if(k=='lead')inner=F+`<g style="color:var(--acc)">${fig(70,25,110)}</g><defs><marker id="ar2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4 0 8Z" fill="var(--amb)"/></marker></defs><line x1="120" y1="70" x2="210" y2="70" stroke="var(--amb)" stroke-width="3" marker-end="url(#ar2)"/>`;
+else if(k=='sym')inner=F+`<line x1="120" y1="0" x2="120" y2="135" stroke="var(--amb)" stroke-dasharray="4 3"/><g style="color:var(--acc)">${fig(80,25,100)}${fig(160,25,100)}</g>`;
+else if(k=='neg')inner=F+`<g style="color:var(--mut)" opacity=".8">${fig(195,70,45)}</g>`;
+else if(k=='fg')inner=F+`<ellipse cx="42" cy="98" rx="46" ry="62" fill="var(--mut)" opacity=".5"/><g style="color:var(--acc)">${fig(168,30,80)}</g>`;
+else inner=F+`<line x1="0" y1="120" x2="240" y2="120" stroke="var(--mut)"/><text x="8" y="112" font-size="11" fill="var(--mut)">axis — stay on this side</text><g style="color:var(--acc)">${fig(80,20,100)}${fig(170,20,100)}</g>`;
+return`<svg viewBox="0 0 240 135">${inner}</svg>`},
+edit(k){let inner='';const bar=(x,y,w,c='var(--acc)')=>`<rect x="${x}" y="${y}" width="${w}" height="26" rx="6" fill="${c}"/>`;
+if(k=='pace')inner=bar(15,20,150)+bar(15,55,60,'var(--mut)')+bar(15,90,210);
+else if(k=='cut')inner=bar(15,45,95)+`<text x="118" y="68" font-size="22" fill="var(--amb)">⚡</text>`+bar(140,45,85,'var(--amb)');
+else if(k=='match')inner=`<rect x="15" y="30" width="95" height="70" rx="8" fill="none" stroke="var(--acc)" stroke-width="2"/><circle cx="62" cy="65" r="20" fill="var(--acc)"/><rect x="130" y="30" width="95" height="70" rx="8" fill="none" stroke="var(--amb)" stroke-width="2"/><circle cx="177" cy="65" r="20" fill="var(--amb)"/>`;
+else if(k=='cutw')inner=bar(15,45,60)+bar(95,45,40,'var(--amb)')+bar(155,45,50);
+else inner=bar(15,45,210,'var(--amb)')+`<text x="20" y="63" font-size="14" font-weight="700" fill="var(--bg)">S3 HOLD</text>`;
+return`<svg viewBox="0 0 240 135">${inner}</svg>`},
+res(p){return`<svg viewBox="0 0 240 135"><circle cx="120" cy="68" r="46" fill="none" stroke="var(--amb)" stroke-width="3"/><text x="120" y="84" text-anchor="middle" font-size="38" fill="var(--amb)">${p[0]}</text></svg>`}};
+const EX={"Extreme wide":"Mad Max: Fury Road","Wide / long":"The Martian","Full shot":"Django Unchained","Medium wide":"The Usual Suspects","Cowboy":"The Good, the Bad and the Ugly","Medium":"Furious 7","Medium close-up":"No Country for Old Men","Close-up":"The Usual Suspects","Extreme close-up":"Black Swan","Single":"Iron Man","Two shot":"The Matrix Reloaded","Three shot":"Harry Potter and the Deathly Hallows","Over the shoulder":"Westworld","Point of view":"Being John Malkovich","Rack focus":"Casino Royale","Shallow focus":"The Night Of","Deep focus":"12 Angry Men","Tilt-shift":"A Serious Man","Soft focus":"Carrie","Split diopter":"Jaws","Eye level":"Forrest Gump","Low angle":"The Empire Strikes Back","High angle":"The Princess Bride","Hip / knee / ground / shoulder":"Reservoir Dogs","Dutch tilt":"Mission: Impossible","Overhead":"Eternal Sunshine of the Spotless Mind","Aerial":"Blade Runner","Static":"Step Brothers","Zoom":"The Shining","Dolly zoom":"Vertigo effect compilation","Pan":"Munich","Tilt":"The Grand Budapest Hotel","Whip pan":"La La Land","Tracking":"Paths of Glory","Arc":"The Dark Knight","Crab and more":"Oldboy"};
+const fmtT=t=>Math.floor(t/60)+':'+String(t%60).padStart(2,'0');
+const GROUPS=Object.keys(D).filter(k=>k!='Prompt map'&&k!='Resources');
+let tab=Object.keys(D)[0],idx=0,q='',mapGroup='All';
+const STEPS=[
+{name:'Intro',blurb:'Start here \u2014 plan the scene, copy tokens, find resources.',tabs:['Direction','Prompt map','Resources']},
+{name:'Shot language',blurb:'Pick the frame — size, who is in it, and from where.',tabs:['Shot size','Framing','Angle']},
+{name:'Lens and focus',blurb:'Glass and sharpness before rolling.',tabs:['Focus','Lens']},
+{name:'Movement and gear',blurb:'Moves and the rigs that make them.',tabs:['Movement','Gear']},
+{name:'Light',blurb:'Shape the face and the mood.',tabs:['Light']},
+{name:'Composition',blurb:'Place the subject in the frame.',tabs:['Composition']},
+{name:'Editing and pacing',blurb:'Join shots and set the pace.',tabs:['Editing']},
+
+
+];
+const TABVIDEO={'Shot size':'AyML8xuKfoc','Framing':'qQNiqzuXjoM','Angle':'wLfZL9PZI9k','Focus':'ZGNUqNFfD8M','Gear':'heJ9hWNb10g','Movement':'IiyBo-qLDeM','Lens':'uSsIqR3DuK8','Resources':'PLEzQZpmbzckV0_a2QCO2qF9Yfe-LKSDha'};
+const CV={
+"Shot size":{EWS:["AyML8xuKfoc",0,"Every Shot Size Explained [Shot List Ep 1]"],WS:["AyML8xuKfoc",262,"Every Shot Size Explained [Shot List Ep 1]"],FS:["AyML8xuKfoc",333,"Every Shot Size Explained [Shot List Ep 1]"],MWS:["AyML8xuKfoc",333,"Every Shot Size Explained [Shot List Ep 1]"],CS:["AyML8xuKfoc",386,"Every Shot Size Explained [Shot List Ep 1]"],MS:["AyML8xuKfoc",438,"Every Shot Size Explained [Shot List Ep 1]"],MCU:["VfaZXlJso-s",0,"Close-up Shots in Film"],CU:["VfaZXlJso-s",0,"Close-up Shots in Film"],ECU:["VfaZXlJso-s",0,"Close-up Shots in Film"],EST:["AyML8xuKfoc",84,"Every Shot Size Explained [Shot List Ep 1]"]},
+"Framing":{"1S":["qQNiqzuXjoM",0,"Camera Framing [Shot List Ep 2]"],"2S":["qQNiqzuXjoM",0,"Camera Framing [Shot List Ep 2]"],"3S":["qQNiqzuXjoM",0,"Camera Framing [Shot List Ep 2]"],OTS:["qQNiqzuXjoM",0,"Camera Framing [Shot List Ep 2]"],POV:["qQNiqzuXjoM",0,"Camera Framing [Shot List Ep 2]"],OTH:["qQNiqzuXjoM",0,"Camera Framing [Shot List Ep 2]"],INS:["qQNiqzuXjoM",0,"Camera Framing [Shot List Ep 2]"],SRS:["EBykqNDKbKY",0,"Shot Reverse Shot: Reaction Shots and Coverage"]},
+"Focus":{RF:["Kb8QmEZjcto",0,"The Rack Focus (Casino Royale)"],SF:["ZGNUqNFfD8M",212,"Depth of Field [Shot List Ep 4]"],DF:["ZGNUqNFfD8M",95,"Depth of Field [Shot List Ep 4]"],TS:["ZGNUqNFfD8M",730,"Depth of Field [Shot List Ep 4]"],SO:["ZGNUqNFfD8M",342,"Depth of Field [Shot List Ep 4]"],SD:["k6HkQvH5QvM",0,"How to Use a Split Diopter"]},
+"Angle":{EYE:["wLfZL9PZI9k",401,"Camera Angles [Shot List Ep 3]"],LOW:["wLfZL9PZI9k",75,"Camera Angles [Shot List Ep 3]"],HI:["wLfZL9PZI9k",148,"Camera Angles [Shot List Ep 3]"],LVL:["wLfZL9PZI9k",536,"Camera Angles [Shot List Ep 3]"],DUT:["R9FUEScjB1U",0,"How to Use the Dutch Angle"],BEV:["wLfZL9PZI9k",245,"Camera Angles [Shot List Ep 3]"],AER:["wLfZL9PZI9k",0,"Camera Angles [Shot List Ep 3]"]},
+"Movement":{LOCK:["IiyBo-qLDeM",78,"Camera Movement [Shot List Ep 6]"],DOLLY:["IiyBo-qLDeM",427,"Camera Movement [Shot List Ep 6]"],PULL:["IiyBo-qLDeM",545,"Camera Movement [Shot List Ep 6]"],ZOOM:["IiyBo-qLDeM",624,"Camera Movement [Shot List Ep 6]"],CRASH:["IiyBo-qLDeM",624,"Camera Movement [Shot List Ep 6]"],VERT:["9uwp-xksCAc",0,"Ultimate Guide to the Dolly Zoom"],PAN:["iAZvLA_K94w",0,"Panning & Tilting Camera Movements"],TILT:["iAZvLA_K94w",0,"Panning & Tilting Camera Movements"],WHIP:["ZhYvs7rrGnw",0,"Art of the Whip Pan"],TRACK:["6Kpr2MuKW0A",0,"Ultimate Guide to the Tracking Shot"],ARC:["IiyBo-qLDeM",1240,"Camera Movement [Shot List Ep 6]"],MORE:["IiyBo-qLDeM",1165,"Camera Movement [Shot List Ep 6]"],BOOM:["IiyBo-qLDeM",1367,"Camera Movement [Shot List Ep 6]"],ROLL:["IiyBo-qLDeM",0,"Camera Movement [Shot List Ep 6]"]},
+"Lens":{"12mm":["uSsIqR3DuK8",245,"Camera Lenses [Shot List Ep 7]"],"18mm":["uSsIqR3DuK8",245,"Camera Lenses [Shot List Ep 7]"],"24mm":["uSsIqR3DuK8",358,"Camera Lenses [Shot List Ep 7]"],"35mm":["uSsIqR3DuK8",358,"Camera Lenses [Shot List Ep 7]"],"50mm":["uSsIqR3DuK8",433,"Camera Lenses [Shot List Ep 7]"],"85mm":["uSsIqR3DuK8",531,"Camera Lenses [Shot List Ep 7]"],"135mm":["uSsIqR3DuK8",531,"Camera Lenses [Shot List Ep 7]"],"200mm":["uSsIqR3DuK8",531,"Camera Lenses [Shot List Ep 7]"],"100M":["uSsIqR3DuK8",649,"Camera Lenses [Shot List Ep 7]"],ANA:["iiiwihwJH5Y",0,"Anamorphic vs Spherical Lens"],FX:["SOrROvRx-XM",0,"Aperture & the Exposure Triangle"],"P/Z":["uSsIqR3DuK8",75,"Camera Lenses [Shot List Ep 7]"]},
+"Gear":{STK:["heJ9hWNb10g",208,"Camera Gear [Shot List Ep 5]"],SLD:["heJ9hWNb10g",655,"Camera Gear [Shot List Ep 5]"],HH:["heJ9hWNb10g",93,"Camera Gear [Shot List Ep 5]"],STD:["heJ9hWNb10g",760,"Camera Gear [Shot List Ep 5]"],GIM:["heJ9hWNb10g",760,"Camera Gear [Shot List Ep 5]"],CRN:["heJ9hWNb10g",433,"Camera Gear [Shot List Ep 5]"],DRN:["heJ9hWNb10g",1021,"Camera Gear [Shot List Ep 5]"],JIB:["heJ9hWNb10g",433,"Camera Gear [Shot List Ep 5]"],SNOR:["heJ9hWNb10g",846,"Camera Gear [Shot List Ep 5]"],WIRE:["heJ9hWNb10g",1021,"Camera Gear [Shot List Ep 5]"]},
+"Light":{KEY:["r2nD_knsNrc",115,"Cinematic Lighting [Shot List Ep 12]"],GOLD:["Q84VI9gYRuA",0,"Golden Hour in 4 Minutes"],BLUE:["sa05hak5ck8",0,"How & Why to Shoot Blue Hour"],"D/N":["1ctQIIl1PxY",0,"Day for Night, Explained (Insider)"],FILL:["n1EKLvdUSac",0,"Video Lighting with a Fill Light"],RIM:["r2nD_knsNrc",115,"Cinematic Lighting [Shot List Ep 12]"],SOFT:["r2nD_knsNrc",115,"Cinematic Lighting [Shot List Ep 12]"],HARD:["NzCXVfzQ-EI",0,"Chiaroscuro Lighting in Film"],PRAC:["G_0M_GHw9GI",0,"Deakins: the Art of Practical Lighting"],MOT:["X3906cbElbQ",0,"Motivated Lighting (Deakins examples)"]},
+"Composition":{RULE3:["hUmZldt0DTg",588,"Film Composition & Framing [Shot List Ep 11]"],"180R":["iW0bKUfvH2c",0,"The 180 Degree Rule in Film"],LEAD:["hUmZldt0DTg",417,"Film Composition & Framing [Shot List Ep 11]"],SYM:["hUmZldt0DTg",588,"Film Composition & Framing [Shot List Ep 11]"],NEG:["hUmZldt0DTg",417,"Film Composition & Framing [Shot List Ep 11]"],FG:["hUmZldt0DTg",499,"Film Composition & Framing [Shot List Ep 11]"]},
+"Editing":{PACE:["FVR8zz8ci2k",92,"6 Ways to Edit Any Scene"],CUTM:["FVR8zz8ci2k",940,"6 Ways to Edit Any Scene"],MATCH:["ptXlYulVAsM",0,"Creative Match Cut Examples"],S3:["FVR8zz8ci2k",0,"6 Ways to Edit Any Scene"],CUTW:["TKXBAaQB03U",0,"Scene Transitions [Shot List Ep 9]"]},
+"Direction":{COVER:["EBykqNDKbKY",0,"Shot Reverse Shot: Reaction Shots and Coverage"],INTENT:["kDzUx6t09tg",0,"Directing Advice from the Greats"],SHOTL:["BdyhNmVFXdw",0,"What is a Shot List?"],CONT:["d2fyviJHwWQ",0,"When Does Continuity Matter?"],BLOCK:["EqTn6lfRNow",0,"BTTF Uses Perfect Blocking"],AXIS:["iW0bKUfvH2c",0,"The 180 Degree Rule in Film"],EYEM:["65vDqKTkUPk",0,"The Filmmaking Rule You Never Notice"],BEAT:["FVR8zz8ci2k",0,"6 Ways to Edit Any Scene"]}};
+const stepOf=t=>(STEPS.find(s=>s.tabs.includes(t))||{name:'All'}).name;
+const $=id=>document.getElementById(id);
+const phrase=x=>PHRASE[x[1]]||x[1];
+function copyTxt(t,btn){const done=()=>{btn.textContent='Copied ✓';setTimeout(()=>btn.textContent='Copy',1200)};
+if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(done).catch(()=>fallback());else fallback();
+function fallback(){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(e){}ta.remove();done()}}
+function items(){const it=D[tab].items||[];if(!q)return it.map((x,i)=>[x,i]);
+const s=q.toLowerCase();return it.map((x,i)=>[x,i]).filter(([x])=>(x[0]+' '+x[1]+' '+x[2]+' '+x[3]).toLowerCase().includes(s))}
+function tokenBox(x){const p=phrase(x);return`<div class="token"><code>${x[1]}</code><span>${p}</span><button data-copy="${x[1]} — ${p}">Copy</button></div>`}
+function lesson(x){const cv=(CV[tab]||{})[x[1]];let id=null,t=0,label='';
+if(cv){id=cv[0];t=cv[1];label=cv[2]}else if(TABVIDEO[tab]){id=TABVIDEO[tab]}else{return`<div class="k">See it</div><p><a class="go" style="margin:0" target="_blank" rel="noopener" href="${YT(x[0]+' cinematography')}">Search clips: ${x[0]} cinematography &#9654;</a></p>`};
+if(id.indexOf('PL')===0)return`<div class="k">Lesson — watch in place</div><div class="yt" data-yt="${id}" data-t="0"><span>▶</span></div>`;
+if(cv){const when=t>0?` (from ${fmtT(t)})`:'';return`<div class="k">Watch: ${label}${when}</div><div class="yt" data-yt="${id}" data-t="${t}"><img loading="lazy" src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" alt="Video lesson"><span>▶</span></div>`}
+return`<div class="k">Lesson — watch in place</div><div class="yt" data-yt="${id}" data-t="0"><img loading="lazy" src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" alt="Video lesson"><span>▶</span></div>`}
+function playYt(y){const id=y.dataset.yt;const t=+y.dataset.t||0;const src=id.indexOf('PL')===0?('https://www.youtube-nocookie.com/embed/videoseries?list='+id):('https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0'+(t>0?'&start='+t:''));y.innerHTML=`<iframe src="${src}" title="Video lesson" allow="accelerometer; autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`}
+function card(x){const viz=V[D[tab].t](x[5]);
+const so=!((CV[tab]||{})[x[1]])&&!TABVIDEO[tab];const f=EX[x[0]];let see='';if(f)see+=`<div class="k">See it in</div><p>${f}</p>`;if(so)see+=`<div class="k">See it</div><p><a class="go" style="margin:0" target="_blank" rel="noopener" href="${YT(x[0]+' cinematography')}">Watch clips &#9654;</a></p>`;
+return`<div class="viz">${viz}</div><h2>${x[0]}<small>${x[1]}</small></h2><p>${x[2]}</p><div class="k">Use it when</div><p>${x[3]}</p>${see}${lesson(x)}${x[6]?`<div class="ad"><b>In your ad:</b> ${x[6]}</div>`:''}${D[tab].note?`<div class="note">${D[tab].note}</div>`:''}${tokenBox(x)}<a class="go" href="${x[4]}" target="_blank" rel="noopener">Read the full guide &rarr;</a><div class="nav"><button data-n="-1">&larr; Prev</button><span>${idx+1} / ${(D[tab].items||[]).length}</span><button data-n="1">Next &rarr;</button></div>`}
+function resCard(x){return`<div class="viz">${V.res(x[5])}</div><h2>${x[0]} <span class="badge ${x[1]}">${x[1]}</span></h2><p>${x[2]}</p><div class="k">Best for</div><p>${x[3]}</p>${lesson(x)}${x[6]?`<div class="ad"><b>Note:</b> ${x[6]}</div>`:''}${x[4]?`<a class="go" href="${x[4]}" target="_blank" rel="noopener">Open resource &rarr;</a>`:`<div class="note">No stable link — search the title; availability unconfirmed.</div>`}<div class="nav"><button data-n="-1">&larr; Prev</button><span>${idx+1} / ${(D[tab].items||[]).length}</span><button data-n="1">Next &rarr;</button></div>`}
+function mapRows(){let rows=[];GROUPS.forEach(g=>D[g].items.forEach(x=>rows.push({g:g,n:x[0],c:x[1],p:phrase(x)})));
+if(mapGroup!='All')rows=rows.filter(r=>r.g==mapGroup);
+if(q){const s=q.toLowerCase();rows=rows.filter(r=>(r.n+' '+r.c+' '+r.p).toLowerCase().includes(s))}
+return rows}
+function mapPanel(){const rows=mapRows();
+return`<div class="k" style="margin-top:0">Every token in one table — copy a phrase straight into a prompt · click a token to open its card</div>
+<table class="map"><tr><th>Group</th><th>Token</th><th>Prompt phrase</th><th></th></tr>
+${rows.map(r=>`<tr><td><button data-view="${r.g}" data-code="${r.c}" style="background:none;border:none;padding:0;font:inherit;font-size:.84rem;color:var(--mut);cursor:pointer;text-decoration:underline;text-underline-offset:2px">${r.g}</button></td><td><button data-view="${r.g}" data-code="${r.c}" style="background:none;border:none;padding:0;cursor:pointer"><code>${r.c}</code></button></td><td>${r.p}</td><td style="display:flex;gap:.35rem"><button data-copy="${r.c} — ${r.p}">Copy</button><button data-view="${r.g}" data-code="${r.c}" title="Open card in wiki">↗</button></td></tr>`).join('')||'<tr><td colspan="4">No matches.</td></tr>'}</table>
+<div class="nav"><span>${rows.length} tokens</span><button data-copyall="1">Copy all (${mapGroup})</button></div>`}
+function draw(){
+const curStep=stepOf(tab);
+$('steps').innerHTML=STEPS.map(s=>`<button class="step${s.name==curStep?' on':''}" data-step="${s.name}">${s.name}</button>`).join('');
+$('blurb').textContent=STEPS.find(s=>s.name==curStep).blurb;
+const pillTabs=STEPS.find(s=>s.name==curStep).tabs;
+const tabsEl=$('tabs');
+if(pillTabs.length<=1){tabsEl.innerHTML='';tabsEl.style.display='none'}else{tabsEl.style.display='';tabsEl.innerHTML=pillTabs.map(k=>`<button class="tab" role="tab" aria-selected="${k==tab}" data-t="${k}">${k}</button>`).join('')};
+const list=$('list'),panel=$('panel');
+if(tab=='Prompt map'){const gs=['All',...GROUPS];
+list.innerHTML=`<div class="count">${mapRows().length} tokens${mapGroup!='All'?' in '+mapGroup:''}</div>`+gs.map(g=>`<button class="chip" aria-selected="${g==mapGroup}" data-g="${g}">${g}</button>`).join('');
+panel.innerHTML=mapPanel();return}
+const fl=items();
+list.innerHTML=`<div class="count">${fl.length} / ${(D[tab].items||[]).length}</div>`+fl.map(([x,i])=>`<button class="chip" aria-selected="${i==idx}" data-i="${i}">${x[0]}</button>`).join('');
+const x=(D[tab].items||[])[idx];
+if(!x){panel.innerHTML='<p>No matches in this tab.</p>';return}
+panel.innerHTML=(tab=='Resources')?resCard(x):card(x);
+}
+document.addEventListener('click',e=>{const y=e.target.closest('.yt');if(y&&!y.querySelector('iframe')){playYt(y);return}const b=e.target.closest('button');if(!b)return;
+if(b.dataset.copy){copyTxt(b.dataset.copy,b);return}
+if(b.dataset.copyall){copyTxt(mapRows().map(r=>r.c+' — '+r.p).join('\n'),b);return}
+if(b.dataset.view){tab=b.dataset.view;const code=b.dataset.code;const arr=D[tab].items||[];const fi=arr.findIndex(x=>x[1]===code);idx=fi>=0?fi:0;q='';const se=$('search');if(se)se.value='';}
+else if(b.dataset.step){tab=STEPS.find(s=>s.name===b.dataset.step).tabs[0];idx=0}
+else if(b.dataset.t){tab=b.dataset.t;idx=0}
+else if(b.dataset.g){mapGroup=b.dataset.g}
+else if(b.dataset.i)idx=+b.dataset.i;
+else if(b.dataset.n){const n=(D[tab].items||[]).length;idx=(idx+ +b.dataset.n+n)%n}else return;draw()});
+$('search').addEventListener('input',e=>{q=e.target.value.trim();draw()});
+document.addEventListener('keydown',e=>{const ae=document.activeElement;const typing=ae&&/INPUT|TEXTAREA/.test(ae.tagName||'');
+if(e.key=='/'&&!typing){e.preventDefault();$('search').focus();return}
+if(typing||tab=='Prompt map')return;
+if(e.key=='ArrowRight'||e.key=='ArrowLeft'){const n=(D[tab].items||[]).length;idx=(idx+(e.key=='ArrowRight'?1:-1)+n)%n;draw()}});
+(function theme(){const s=localStorage.getItem('cse-theme');if(s)document.documentElement.dataset.theme=s;
+$('theme').onclick=()=>{const cur=document.documentElement.dataset.theme=='dark'?'light':'dark';document.documentElement.dataset.theme=cur;localStorage.setItem('cse-theme',cur)}})();
+draw();
+</script></body></html>
