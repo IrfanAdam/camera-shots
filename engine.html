@@ -103,6 +103,20 @@ header .by{color:var(--mut);font-size:.8rem}
 .modal .frow button{background:#222a36;border:1px solid #313b4a;border-radius:7px;color:#e8eaf0;padding:.35rem .9rem;cursor:pointer;font-size:.82rem}
 .modal .frow button:hover{border-color:var(--acc)}
 #pmCopy,#projClose{background:#e8830c!important;border:0!important;color:#111!important;font-weight:700}
+#promptModal{align-items:stretch;justify-content:flex-end;background:rgba(0,0,0,.45)}
+#promptModal .box{width:min(1120px,96vw);height:92vh;max-height:none;border-radius:12px 0 0 12px;display:flex;gap:0;padding:0;overflow:hidden}
+.pm-nav{width:148px;flex:none;background:#141a22;border-right:1px solid #262d38;padding:.8rem .6rem;display:flex;flex-direction:column;gap:.25rem;overflow:auto}
+.pm-nav .pmtitle{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#8b93a5;margin-bottom:.4rem}
+.pm-nav button{background:transparent;border:1px solid transparent;border-radius:8px;color:#aab2c2;font-size:.82rem;text-align:left;padding:.45rem .6rem;cursor:pointer}
+.pm-nav button:hover{color:#e8eaf0;background:#1b212b}
+.pm-nav button.on{border-color:var(--acc);color:var(--acc);background:#1b212b}
+.pm-mid{flex:1.1;min-width:0;padding:.9rem 1rem;overflow:auto}
+.pm-mid h2{font-size:1rem;margin-bottom:.1rem}
+.pm-right{flex:1;min-width:0;background:#0b0e13;border-left:1px solid #262d38;position:relative;display:flex}
+#pmJson{flex:1;border:0;background:transparent;color:#c8cfdb;font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre;padding:.9rem 1rem;resize:none;outline:none}
+#pmCopyFloat{position:absolute;top:.6rem;right:.6rem;background:#e8830c;border:0;border-radius:7px;color:#111;font-weight:700;font-size:.78rem;padding:.35rem .8rem;cursor:pointer}
+#pmTabs{display:none}
+.pmdiv{border:0;border-top:1px solid #262d38;margin:.7rem 0}
 .modal .frow .note{color:var(--mut);font-size:.75rem}
 .modal .subh{font-size:.76rem;text-transform:uppercase;letter-spacing:.05em;color:#8b93a5;margin:.7rem 0 .1rem}
 .modal .tin{width:100%;box-sizing:border-box;background:#222a36;color:#e8eaf0;border:1px solid #313b4a;border-radius:6px;padding:.35rem .5rem;font:inherit;font-size:.82rem;margin:.25rem 0}
@@ -156,14 +170,18 @@ header .by{color:var(--mut);font-size:.8rem}
 <div id="projDomains"></div>
 <div class="frow"><button id="projClose" class="modalClose">done</button><span class="note" id="projNote"></span></div>
 </div></div>
-<div id="promptModal" class="modal" hidden><div class="box"><h2 id="pmTitle">Generate prompt</h2>
+<div id="promptModal" class="modal" hidden><div class="box">
+<nav class="pm-nav"><div class="pmtitle">prompt</div><div id="pmNav"></div></nav>
+<div class="pm-mid"><h2 id="pmTitle">Generate prompt</h2>
 <div class="sub" id="pmAnchor"></div>
 <div id="pmFields"></div>
-<div hidden><div class="row"><input id="pmAction" placeholder="action — e.g. weaving through stalls" maxlength="140"><input id="pmMood" placeholder="mood — e.g. determined" maxlength="140"></div>
-<div class="row"><input id="pmNeg" placeholder="negative — e.g. blurry, extra limbs"></div></div>
+<div hidden><div class="row"><input id="pmAction" placeholder="action" maxlength="140"><input id="pmMood" placeholder="mood" maxlength="140"></div>
+<div class="row"><input id="pmNeg" placeholder="negative"></div></div>
 <div class="tabs" id="pmTabs"></div>
-<div class="out" id="pmOut"></div>
-<div class="frow"><button id="pmCopy">copy</button><button id="pmClose" class="modalClose">close</button><span class="note">Anchor + description first; tab only rewrites the tail.</span></div>
+<div class="out" id="pmOut" hidden></div>
+<div class="frow"><button id="pmCopy" hidden>copy</button><button id="pmClose" class="modalClose">close</button><span class="note">Anchor first, then sections. Disabled project domains are omitted.</span></div>
+</div>
+<div class="pm-right"><textarea id="pmJson" readonly spellcheck="false"></textarea><button id="pmCopyFloat">copy</button></div>
 </div></div>
 <div class="hint" id="hint">hover a card for dots · drag dot-to-dot to link · click a card for detail · Del deletes · Ctrl+Z undoes · double-click renames</div>
 <div id="toast" hidden><span id="toastMsg"></span><button id="toastBtn">Undo</button></div>
@@ -496,7 +514,8 @@ document.getElementById('genPrompt').onclick=()=>{if(drawerSub)openPromptModal(d
 document.getElementById('copyStub').onclick=()=>{if(drawerSub)copyText(stubFor(drawerSub),'stub copied — anchor first');else flashHint('open a card or scene first')};
 document.getElementById('pmClose').onclick=()=>closePromptModal();
 document.getElementById('promptModal').addEventListener('click',e=>{if(e.target.id==='promptModal')closePromptModal()});
-document.getElementById('pmCopy').onclick=()=>{if(pmTarget)copyText(document.getElementById('pmOut').textContent,'prompt copied')};
+document.getElementById('pmCopy').onclick=()=>{if(pmTarget)copyText(document.getElementById('pmJson').value,'prompt JSON copied')};
+document.getElementById('pmCopyFloat').onclick=()=>{if(pmTarget)copyText(document.getElementById('pmJson').value,'prompt JSON copied')};
 document.getElementById('pmAction').addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.action=e.target.value.slice(0,140);persist();renderPmOut()});
 document.getElementById('pmMood').addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.mood=e.target.value.slice(0,140);persist();renderPmOut()});
 document.getElementById('pmNeg').addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.neg=e.target.value;persist();renderPmOut()});
@@ -829,8 +848,6 @@ function tombstone(a){if(a&&!TOMBSTONES.includes(a)){TOMBSTONES.push(a);if(TOMBS
 function ensureAnchorsAll(){for(const k of Object.keys(VIEWS)){const p=KIND_PREFIX[k]||'AST';for(const n of(VIEWS[k].nodes||[]))if(!n.anchor)n.anchor=mintAnchor(p,n.label)}for(const c of allChapters()){if(!c.chAnchor)c.chAnchor=mintAnchor('CH',c.name);for(const s of(c.scenes||[]))if(!s.scAnchor)s.scAnchor=mintAnchor('SC',s.title)}}
 /* ---- prompt assembly (deterministic, model-agnostic) ---- */
 const NEG_DEFAULT='blurry, deformed hands, extra limbs, watermark, text overlay';
-const TAILS={universal:{tail:'',negPre:'. Avoid: '},midjourney:{tail:' --ar 16:9 --q 2 --v 6.1',negPre:' --no '},sdxl:{tail:', masterpiece, best quality, photorealistic',negPre:''},flux:{tail:', ultra-detailed, natural skin texture, cinematic',negPre:''},dalle:{tail:'',negPre:'. Avoid: '}};
-const MODEL_TABS=[['universal','Universal'],['midjourney','Midjourney'],['sdxl','SDXL'],['flux','Flux'],['dalle','DALL·E 3']];
 function tokVal(tokId){for(const d of DOMAIN_ORDER){const D=PROJECT.domains[d];if(D&&D.tokens[tokId])return{dom:d,tok:D.tokens[tokId]}}return null}
 function effVal(tokId,ps){const f=tokVal(tokId);if(!f||!PROJECT.domains[f.dom].enabled)return'';const o=(ps&&ps.sels&&ps.sels[tokId]!=null)?ps.sels[tokId]:f.tok.sel;return f.tok.values[o]||''}
 function targetOf(n){
@@ -839,26 +856,22 @@ function targetOf(n){
  if(n&&n.id!=null&&n.ch!=null&&n.ch!==undefined&&n.kind==='shot'&&view==='shots'){/*card*/}
  const chN=n&&n.ch!=null?('ch'+n.ch+'/sc'+n.sc+'/ln'+(n.ln==null?'—':n.ln+1)):'';
  return{anchor:(n&&n.anchor)||'',entity:[String((n&&(n.title||n.label))||'card'),n&&n.note?String(n.note):'',chN].filter(Boolean).join(', ')}}
-function buildPrompt(n,model){const t=targetOf(n);if(!t.anchor)return'⚠ assign an anchor first (drawer → assign).';
- const ps=n&&n.id!=null?n.promptState:null,m=model||(ps&&ps.model)||'universal';
+function buildPromptJSON(n){const t=targetOf(n);if(!t.anchor)return null;
+ const ps=n&&n.id!=null?n.promptState:null;
  const D=(k)=>(ps&&ps.details&&ps.details[k]||'').trim();
  const TK=(id)=>effVal(id,ps);
  const EX=(id)=>{const o=EXTRA_OPTS[id];if(!o)return'';const i=(ps&&ps.sels&&ps.sels[id]!=null)?ps.sels[id]:o.def;return o.values[i]||''};
- const subj=[D('descriptor'),t.entity,D('expression')].filter(Boolean).join(', ');
- const ward=[D('wardrobe_top'),D('wardrobe_bottom'),D('wardrobe_feet')].filter(Boolean).join(', ');
- const fram=[TK('shot_scale'),EX('aspect_ratio'),D('subject_scale'),D('visibility'),TK('composition')].filter(Boolean).join(', ');
- const cam=[TK('camera_body'),EX('film_stock'),D('camera_position'),TK('camera_angle'),TK('lens_type'),TK('focal_length'),TK('aperture'),D('movement'),TK('shutter_speed'),TK('iso')].filter(Boolean).join(', ');
- const light=[D('time_of_day'),D('light_quality'),TK('lighting_setup')].filter(Boolean).join(', ');
- const color=[TK('color_palette'),TK('color_grade'),TK('grain_texture')].filter(Boolean).join(', ');
- const env=[D('env_setting'),D('env_props')].filter(Boolean).join(', ');
- const parts=[t.anchor,subj,fram,cam,light,color,TK('style_preset'),env];
- const act=D('action')||((ps&&ps.action||'').trim()),mood=D('mood')||((ps&&ps.mood||'').trim());
- if(ward)parts.push('wearing '+ward);
- if(act)parts.push('doing '+act);if(mood)parts.push(mood+' mood');
- let body=parts.filter(Boolean).join(', ');
- const neg=(D('neg')||((ps&&ps.neg!=null)?ps.neg:NEG_DEFAULT)).trim(),T=TAILS[m]||TAILS.universal;
- if(m==='midjourney'||m==='sdxl'||m==='flux'){let out=body+T.tail;if(neg&&m==='midjourney')out+=T.negPre+neg;return out}
- if(neg)return body+T.tail+T.negPre+neg;return body+T.tail}
+ const lens=[TK('focal_length'),TK('lens_type')].filter(Boolean).join(', ');
+ const o={anchor:t.anchor};
+ o.subject={descriptor:(D('descriptor')||t.entity),expression:D('expression'),action:(D('action')||((ps&&ps.action||'').trim())),mood:(D('mood')||((ps&&ps.mood||'').trim())),wardrobe:{top:D('wardrobe_top'),bottom:D('wardrobe_bottom'),footwear:D('wardrobe_feet')}};
+ o.cinematography={framing:{shot_size:TK('shot_scale'),aspect_ratio:EX('aspect_ratio'),composition:TK('composition'),subject_scale:D('subject_scale'),visibility:D('visibility')},camera:{position:D('camera_position'),angle:TK('camera_angle'),movement:D('movement'),lens:lens,aperture:TK('aperture'),duration:D('duration')}};
+ o.capture={camera_system:TK('camera_body'),film_stock:EX('film_stock'),shutter_speed:TK('shutter_speed'),iso:TK('iso'),texture:TK('grain_texture')};
+ o.lighting={time_of_day:D('time_of_day'),quality:D('light_quality'),setup:TK('lighting_setup')};
+ o.color={palette:TK('color_palette'),grade:TK('color_grade')};
+ o.environment={setting:D('env_setting'),props:D('env_props')};
+ o.negative=(D('neg')||((ps&&ps.neg!=null)?ps.neg:NEG_DEFAULT)).trim();
+ return o}
+function buildPrompt(n){const o=buildPromptJSON(n);if(!o)return'⚠ assign an anchor first (drawer → assign).';return JSON.stringify(o,null,2)}
 function stubFor(n){const t=targetOf(n);if(!t.anchor)return'⚠ no anchor';
  if(n&&n.slots){const slots=(n.slots||[]).map(q=>{const sh=shotById(q.shot);return(sh&&sh.anchor?sh.anchor:'?shot')+'@L'+(q.lane+1)});return t.anchor+' — '+String(n.title||'Scene')+(slots.length?' — '+slots.join(', '):'')}
  return t.anchor+' — '+t.entity}
@@ -907,25 +920,23 @@ function pmFieldExtra(host,id){const o=EXTRA_OPTS[id];if(!o)return;const ps=pmTa
 function pmFieldText(host,k,label,ph){const ps=pmTarget.promptState||{};ps.details=ps.details||{};
  const inp=document.createElement('input');inp.className='tin';inp.placeholder=label+(ph?' — '+ph:'');inp.value=ps.details[k]||'';
  inp.addEventListener('input',()=>{pmTarget.promptState.details[k]=inp.value;persist();renderPmOut()});host.appendChild(inp)}
+function pmDiv(host){const h=document.createElement('hr');h.className='pmdiv';host.appendChild(h)}
 function pmSub(host,t){const d=document.createElement('div');d.className='subh';d.textContent=t;host.appendChild(d)}
 function renderPmFields(){const host=document.getElementById('pmFields');host.innerHTML='';if(!pmTarget)return;
- const tabs=document.createElement('div');tabs.className='tabs';
- for(const[id,lab]of PM_TABS){const b=document.createElement('button');b.textContent=lab;if(pmTab===id)b.classList.add('on');b.onclick=()=>{pmTab=id;renderPmFields()};tabs.appendChild(b)}
- host.appendChild(tabs);
+ const nav=document.getElementById('pmNav');nav.innerHTML='';
+ for(const[id,lab]of PM_TABS){const b=document.createElement('button');b.textContent=lab;if(pmTab===id)b.classList.add('on');b.onclick=()=>{pmTab=id;renderPmFields()};nav.appendChild(b)}
  const g=document.createElement('div');host.appendChild(g);
- if(pmTab==='subject'){pmFieldText(g,'descriptor','subject descriptor','East Asian woman, Tibetan highland features…');pmFieldText(g,'expression','expression','quiet confidence');pmSub(g,'wardrobe');pmFieldText(g,'wardrobe_top','top','oversized sage cashmere sweater');pmFieldText(g,'wardrobe_bottom','bottom','charcoal wide-leg trousers');pmFieldText(g,'wardrobe_feet','footwear','natural understated footwear');pmSub(g,'pose');pmFieldText(g,'action','action','one hand in pocket, body slightly turned');pmFieldText(g,'mood','mood','understated elegance')}
- else if(pmTab==='cine'){pmSub(g,'framing');pmFieldTok(g,'shot_scale');pmFieldExtra(g,'aspect_ratio');pmFieldText(g,'subject_scale','subject scale','occupies 65–70% of image height');pmFieldText(g,'visibility','visibility','both legs, feet, shoes fully visible');pmFieldTok(g,'composition');pmSub(g,'camera');pmFieldText(g,'camera_position','camera position','pulled back several meters');pmFieldTok(g,'camera_angle');pmFieldTok(g,'lens_type');pmFieldTok(g,'focal_length');pmFieldTok(g,'aperture');pmFieldText(g,'movement','movement (video-deferred)','')}
- else if(pmTab==='capture'){pmFieldTok(g,'camera_body');pmFieldExtra(g,'film_stock');pmFieldTok(g,'shutter_speed');pmFieldTok(g,'iso');pmFieldTok(g,'grain_texture')}
- else if(pmTab==='light'){pmFieldText(g,'time_of_day','time of day','luminous overcast daylight');pmFieldText(g,'light_quality','quality','bright pale overcast sky');pmFieldTok(g,'lighting_setup')}
+ if(pmTab==='subject'){pmFieldText(g,'descriptor','subject descriptor','East Asian woman, Tibetan highland features…');pmFieldText(g,'expression','expression','quiet confidence');pmDiv(g);pmSub(g,'wardrobe');pmFieldText(g,'wardrobe_top','top','oversized sage cashmere sweater');pmFieldText(g,'wardrobe_bottom','bottom','charcoal wide-leg trousers');pmFieldText(g,'wardrobe_feet','footwear','natural understated footwear');pmDiv(g);pmSub(g,'pose');pmFieldText(g,'action','action','one hand in pocket, body slightly turned');pmFieldText(g,'mood','mood','understated elegance')}
+ else if(pmTab==='cine'){pmSub(g,'framing');pmFieldTok(g,'shot_scale');pmFieldExtra(g,'aspect_ratio');pmFieldText(g,'subject_scale','subject scale','occupies 65–70% of image height');pmFieldText(g,'visibility','visibility','both legs, feet, shoes fully visible');pmFieldTok(g,'composition');pmDiv(g);pmSub(g,'camera');pmFieldText(g,'camera_position','camera position','pulled back several meters');pmFieldTok(g,'camera_angle');pmFieldTok(g,'lens_type');pmFieldTok(g,'focal_length');pmFieldTok(g,'aperture');pmFieldText(g,'movement','movement (video-deferred)','');pmFieldText(g,'duration','duration (video-deferred)','')}
+ else if(pmTab==='capture'){pmFieldTok(g,'camera_body');pmFieldExtra(g,'film_stock');pmDiv(g);pmSub(g,'exposure');pmFieldTok(g,'shutter_speed');pmFieldTok(g,'iso');pmFieldTok(g,'grain_texture')}
+ else if(pmTab==='light'){pmFieldText(g,'time_of_day','time of day','luminous overcast daylight');pmFieldText(g,'light_quality','quality','bright pale overcast sky');pmDiv(g);pmSub(g,'setup');pmFieldTok(g,'lighting_setup')}
  else if(pmTab==='color'){pmFieldTok(g,'color_palette');pmFieldTok(g,'color_grade')}
  else if(pmTab==='env'){pmFieldText(g,'env_setting','setting','highland grassland, softly rolling hills');pmFieldText(g,'env_props','props','one or two cashmere goats beside her')}
  else if(pmTab==='neg'){pmFieldText(g,'neg','negative','no text, logos, illustration, or CG');const d=document.createElement('div');d.className='tdesc';d.style.marginLeft='0';d.textContent='Default: '+NEG_DEFAULT;g.appendChild(d)}
  if(!g.children.length)g.innerHTML='<div class="sub">All project tokens in this section are disabled — enable them in ⚙ project.</div>'}
-function renderPmTabs(){const host=document.getElementById('pmTabs');host.innerHTML='';const ps=pmTarget?pmTarget.promptState||{}:{};
- for(const[id,lab]of MODEL_TABS){const b=document.createElement('button');b.textContent=lab;if((ps.model||'universal')===id)b.classList.add('on');
-  b.onclick=()=>{pmTarget.promptState.model=id;persist();renderPmTabs();renderPmOut()};host.appendChild(b)}}
-function syncPmInputs(){const ps=pmTarget.promptState||{};document.getElementById('pmAction').value=ps.action||'';document.getElementById('pmMood').value=ps.mood||'';document.getElementById('pmNeg').value=(ps.neg!=null?ps.neg:NEG_DEFAULT)}
-function renderPmOut(){document.getElementById('pmOut').textContent=pmTarget?buildPrompt(pmTarget):''}
+function syncPmInputs(){const ps=pmTarget?pmTarget.promptState||{}:{};try{document.getElementById('pmAction').value=ps.action||'';document.getElementById('pmMood').value=ps.mood||'';document.getElementById('pmNeg').value=(ps.neg!=null?ps.neg:NEG_DEFAULT)}catch(e){}}
+function renderPmTabs(){}
+function renderPmOut(){if(pmTarget)document.getElementById('pmJson').value=buildPrompt(pmTarget)}
 /* ---- drawer wiring ---- */
 function renderAnchorRow(n){const row=document.getElementById('anchorRow'),code=document.getElementById('anchorCode');
  const a=n?n.anchor||n.scAnchor||'':'';if(!n||(!n.anchor&&!n.scAnchor)){row.hidden=n&&n.slots?false:true;code.textContent='no anchor';
