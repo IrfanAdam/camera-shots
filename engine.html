@@ -201,9 +201,6 @@ function portAt(mx,my){const R=12/cam.z;
  const check=n=>{for(const p of PORTS){const q=portPos(n,p);if(Math.hypot(mx-q.x,my-q.y)<=R)return{node:n,port:p}}return null};
  if(pending!=null){for(let i=nodes.length-1;i>=0;i--){const hit=check(nodes[i]);if(hit)return hit}return null}
  if(!hoverNode)return null;return check(hoverNode)}
-function xBadgeRect(x,y,w){const z=22/cam.z,m=8/cam.z;return{x:x+w-m-z,y:y+m,w:z,h:z}}
-function inXBadge(r,wx,wy){return wx>=r.x&&wx<=r.x+r.w&&wy>=r.y&&wy<=r.y+r.h}
-function drawXBadge(r){ctx.save();ctx.beginPath();ctx.arc(r.x+r.w/2,r.y+r.h/2,r.w/2,0,Math.PI*2);ctx.fillStyle='#e5484d';ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=2/cam.z;ctx.beginPath();const m=r.w*0.28,cx=r.x+r.w/2,cy=r.y+r.h/2;ctx.moveTo(cx-m,cy-m);ctx.lineTo(cx+m,cy+m);ctx.moveTo(cx+m,cy-m);ctx.lineTo(cx-m,cy+m);ctx.stroke();ctx.restore()}
 function updateHover(mx,my){hoverNode=at(mx,my);hoverPort=portAt(mx,my)}
 /* ---- connections ---- */
 function _pdir(p){return p==='t'?[0,-1]:p==='b'?[0,1]:p==='l'?[-1,0]:[1,0]}
@@ -309,11 +306,9 @@ function draw(){if(view==='scenes')return drawScenes();ctx.save();ctx.setTransfo
  if(!nodes.length){ctx.fillStyle='#5b6577';ctx.font='14px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';
   const _ec=s2w(W/2,H/2);ctx.fillText('empty canvas — add a beat to start the sequence',_ec.x,_ec.y);return}
  for(const n of nodes)drawCard(n);
- const _bz=new Set();if(hoverNode)_bz.add(hoverNode);if(selected&&nodeById(selected.id))_bz.add(selected);for(const n of _bz)drawXBadge(xBadgeRect(n.x,n.y,n.w));
  if(hoverNode)drawPorts(hoverNode)}
 /* ---- pointer wiring ---- */
 cv.addEventListener('pointerdown',e=>{const[mx,my]=pos(e);mouse={x:mx,y:my};if(view==='scenes'){const _w=s2w(mx,my);return scenePD(e,mx,my,_w.x,_w.y)}const _w=s2w(mx,my),wx=_w.x,wy=_w.y;updateHover(wx,wy);
- if(hoverNode&&inXBadge(xBadgeRect(hoverNode.x,hoverNode.y,hoverNode.w),wx,wy)){selected=hoverNode;delSelected();draw();return}
  if(hoverPort){pending={node:hoverPort.node,port:hoverPort.port};selConn=null;hidePicker();selected=hoverPort.node;
   try{cv.setPointerCapture(e.pointerId)}catch(err){}cv.style.cursor='crosshair';draw();return}
  if(hoverNode&&imgBtnHit(hoverNode,wx,wy)){selected=hoverNode;document.getElementById('filePick').click();return}
@@ -529,7 +524,6 @@ function drawScenes(){ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0
  for(const s of c.scenes){drawSceneBase(s,s===selStrip);drawSlots(s)}
  drawSceneConns(conns,isSceneId);drawSceneTemp();
  if(selStrip&&c.scenes.includes(selStrip))drawScenePorts(selStrip);
- if(selStrip&&c.scenes.includes(selStrip))drawXBadge(xBadgeRect(selStrip.x,selStrip.y,selStrip.w));
  const _lt='+ lane ('+((selStrip&&selStrip.lanes)||'—')+')';
  const _b=document.getElementById('addLane');if(_b.textContent!==_lt)_b.textContent=_lt}
 function scenePortPos(s,p){if(p==='t')return{x:s.x+s.w/2,y:s.y};
@@ -582,7 +576,6 @@ function scenePD(e,sx,sy,wx,wy){clearTimeout(clickT);closeShotPicker();
  if(port){pending={node:port.node,port:port.port};selConn=null;hidePicker();
   try{cv.setPointerCapture(e.pointerId)}catch(err){}cv.style.cursor='crosshair';draw();return}
  const s=sceneAt(wx,wy);
- if(s&&s===selStrip&&inXBadge(xBadgeRect(s.x,s.y,s.w),wx,wy)){delSelected();draw();return}
  if(s){selStrip=s;
   const lane=plusHit(s,wx,wy);
   if(lane>=0){openShotPicker(s,lane,sx,sy);draw();return}
