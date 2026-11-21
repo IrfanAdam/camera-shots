@@ -76,10 +76,9 @@ header .by{color:var(--mut);font-size:.8rem}
 #anchorRow code{background:#0b0e13;border:1px solid #0f766e;border-radius:6px;padding:.15rem .5rem;color:#5eead4;font-size:.78rem}
 #anchorRow button{background:transparent;border:1px solid #313b4a;border-radius:6px;color:#aab2c2;font-size:.75rem;padding:.2rem .55rem;cursor:pointer}
 #anchorRow button:hover{border-color:var(--acc);color:var(--ink)}
-#genPrompt{background:#e8830c;border:0;border-radius:7px;color:#111;font-weight:700;padding:.4rem .9rem;cursor:pointer;font-size:.83rem;margin:.4rem .4rem .4rem 0}
 #copyStub{background:transparent;border:1px solid #313b4a;border-radius:7px;color:#e8eaf0;padding:.4rem .9rem;cursor:pointer;font-size:.83rem;margin:.4rem 0}
 #copyStub:hover{border-color:var(--acc)}
-#promptPrev{background:#0b0e13;border:1px solid #262d38;border-radius:8px;padding:.6rem .7rem;font-size:.78rem;color:#c8cfdb;white-space:pre-wrap;margin:.4rem 0 .7rem;max-height:30vh;overflow:auto}
+#promptPrev{background:#0b0e13;border:1px solid #262d38;border-radius:8px;padding:.6rem .7rem;font:11px/1.5 ui-monospace,Menlo,monospace;color:#c8cfdb;white-space:pre;margin:.4rem 0 .7rem;max-height:34vh;overflow:auto}
 .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);z-index:90}
 .modal[hidden]{display:none}
 .modal .box{background:#161b22;border:1px solid #313b4a;border-radius:12px;width:min(560px,94vw);max-height:88vh;overflow:auto;padding:1rem 1.2rem}
@@ -185,7 +184,7 @@ header .by{color:var(--mut);font-size:.8rem}
 <div id="shotProps" hidden><label>chapter <select id="shotCh"></select></label><label>scene <select id="shotSc"></select></label><span>lane <b id="shotLane">—</b></span></div>
 <div id="slotBtns" hidden><button id="goShot">go to shot</button><button id="removeSlot">remove</button></div>
 <div id="promptPrev" title="Live prompt preview"></div>
-<div><button id="genPrompt">✨ generate prompt</button><button id="copyStub">copy stub</button></div>
+<div><button id="copyStub">copy stub</button></div>
 <p class="note" style="color:var(--mut);font-size:.78rem;margin:.5rem 0 0">Anchors lead every prompt. Domains enabled in ⚙ project feed the prompt; disabled domains contribute nothing.</p>
 <button id="drawerDel">delete</button>
 </div>
@@ -535,7 +534,6 @@ document.getElementById('drawerDel').onclick=()=>{const n=drawerSub;
 document.getElementById('projBtn').onclick=()=>openProjectModal();
 document.getElementById('projClose').onclick=()=>closeProjectModal();
 document.getElementById('projModal').addEventListener('click',e=>{if(e.target.id==='projModal')closeProjectModal()});
-document.getElementById('genPrompt').onclick=()=>{if(drawerSub)openPromptModal(drawerSub);else flashHint('open a card or scene first')};
 document.getElementById('copyStub').onclick=()=>{if(drawerSub)copyText(stubFor(drawerSub),'stub copied — anchor first');else flashHint('open a card or scene first')};
 document.getElementById('pmBack').onclick=()=>closePromptModal();
 document.getElementById('promptModal').addEventListener('click',e=>{if(e.target.id==='promptModal')closePromptModal()});
@@ -921,11 +919,13 @@ function openProjectModal(){renderProjectModal();document.getElementById('projMo
 function closeProjectModal(){document.getElementById('projModal').hidden=true}
 /* ---- prompt modal (character exemplar, works for any card/scene) ---- */
 let pmTarget=null;
-function openPromptModal(n){pmTarget=n;const ps=n.promptState||(n.promptState={sels:{},action:'',mood:'',neg:NEG_DEFAULT,model:'universal'});
+function openPromptModal(n,hint){if(!n)return;drawerSub=n;pmTarget=n;const ps=n.promptState||(n.promptState={sels:{},action:'',mood:'',neg:NEG_DEFAULT,model:'universal'});
+ if(hint&&hint.tab)pmTab=hint.tab;
  document.getElementById('pmTitle').textContent='Generate prompt — '+((n&&n.title)||(n&&n.label)||'card');
  document.getElementById('pmAnchor').textContent=(n.anchor||n.scAnchor||'no anchor')+' · '+(n.note||n.title||n.label||'');
  renderPmFields();renderPmTabs();syncPmInputs();renderPmOut();
- const pm=document.getElementById('promptModal');pm.hidden=false;requestAnimationFrame(()=>requestAnimationFrame(()=>pm.classList.add('open')))}
+ const pm=document.getElementById('promptModal');pm.hidden=false;requestAnimationFrame(()=>requestAnimationFrame(()=>pm.classList.add('open')));
+ if(hint&&hint.tab)pmFocusField(hint.tab,hint.k||null)}
 function closePromptModal(){const pm=document.getElementById('promptModal');if(!pm)return;pm.classList.remove('open');pmTarget=null}
 const EXTRA_OPTS={
  aspect_ratio:{label:'Aspect ratio',values:['16:9 widescreen','2:3 vertical','4:5 portrait','1:1 square','21:9 ultrawide'],def:0},
@@ -945,7 +945,7 @@ function pmFieldExtra(host,id){const o=EXTRA_OPTS[id];if(!o)return;const ps=pmTa
  if(o.desc){const d=document.createElement('div');d.className='tdesc';d.textContent=o.desc;host.appendChild(d)}}
 function pmFieldText(host,k,label,ph){const ps=pmTarget.promptState||{};ps.details=ps.details||{};
  const inp=document.createElement('input');inp.className='tin';inp.dataset.k=k;inp.placeholder=label+(ph?' — '+ph:'');inp.value=ps.details[k]||'';
- inp.addEventListener('input',()=>{pmTarget.promptState.details[k]=inp.value;persist();renderPmOut()});host.appendChild(inp)}
+ inp.addEventListener('input',()=>{pmTarget.promptState.details[k]=inp.value;persist();renderPmOut();renderPromptPreview(pmTarget)});host.appendChild(inp)}
 function pmDiv(host){const h=document.createElement('hr');h.className='pmdiv';host.appendChild(h)}
 function pmSub(host,t){const d=document.createElement('div');d.className='subh';d.textContent=t;host.appendChild(d)}
 function renderPmFields(){const host=document.getElementById('pmFields');host.innerHTML='';if(!pmTarget)return;
@@ -963,44 +963,49 @@ function renderPmFields(){const host=document.getElementById('pmFields');host.in
 function syncPmInputs(){const ps=pmTarget?pmTarget.promptState||{}:{};try{document.getElementById('pmAction').value=ps.action||'';document.getElementById('pmMood').value=ps.mood||'';document.getElementById('pmNeg').value=(ps.neg!=null?ps.neg:NEG_DEFAULT)}catch(e){}}
 function renderPmTabs(){}
 let pmJsonText='';
-function jValEl(tab,k,v,free){const s=document.createElement('span');
+function jK(t){const s=document.createElement('span');s.className='jkey';s.textContent='"'+t+'"';return s}
+function jC(t){const s=document.createElement('span');s.className='jpunc';s.textContent=t;return s}
+function jLine(host,dep,items,step){const d=document.createElement('div');d.style.marginLeft=(dep*(step||14))+'px';items.forEach(p=>d.appendChild(typeof p==='string'?document.createTextNode(p):p));host.appendChild(d)}
+function pmFocusField(tab,k){if(!tab)return;if(pmTab!==tab){pmTab=tab;renderPmFields()}
+ requestAnimationFrame(()=>{if(!k)return;const el=document.querySelector('#pmFields [data-k="'+k+'"]');if(el){el.scrollIntoView({block:'nearest',behavior:'smooth'});el.classList.remove('jflash');void el.offsetWidth;el.classList.add('jflash');if(el.focus)try{el.focus({preventScroll:true})}catch(e){}}})}
+function jValEl(tab,k,v,free,node){const s=document.createElement('span');
  s.className='jval '+(free?'free':'tok')+((v==null||v==='')?' empty':'')+((!tab||!k)?' static':'');
  s.textContent=(v==null||v==='')?'""':'"'+v+'"';
  if(tab&&k){s.title=(free?'your words — click to edit in ':'project token — click to edit in ')+tab;
-  s.onclick=()=>{if(pmTab!==tab){pmTab=tab;renderPmFields()}
-   requestAnimationFrame(()=>{const el=document.querySelector('#pmFields [data-k="'+k+'"]');if(el){el.scrollIntoView({block:'nearest',behavior:'smooth'});el.classList.remove('jflash');void el.offsetWidth;el.classList.add('jflash');if(el.focus)try{el.focus({preventScroll:true})}catch(e){}}})}}
+  s.onclick=()=>{if(node&&node!==pmTarget)openPromptModal(node,{tab:tab,k:k});else pmFocusField(tab,k)}}
  return s}
+function jSec(host,dep,name,map,step,node){jLine(host,dep,[jK(name),jC(': {')],step);for(const[k,v,tab,fk,free]of map)jLine(host,dep+1,[jK(k),jC(': '),jValEl(tab,fk,v,free,node),jC(',')],step);const last=host.lastChild;if(last&&last.lastChild)last.removeChild(last.lastChild);jLine(host,dep,[jC('},')],step)}
+function buildJsonDom(host,n,node,step){const o=buildPromptJSON(n);if(!o)return null;
+ host.appendChild(document.createTextNode('{'));
+ jLine(host,1,[jK('anchor'),jC(': '),jValEl(null,null,o.anchor,false),jC(',')],step);
+ jLine(host,1,[jK('subject'),jC(': {')],step);
+ for(const[k,v]of[['descriptor',o.subject.descriptor],['expression',o.subject.expression],['action',o.subject.action],['mood',o.subject.mood]])jLine(host,2,[jK(k),jC(': '),jValEl('subject',k,v,1,node),jC(',')],step);
+ jLine(host,2,[jK('wardrobe'),jC(': {')],step);
+ for(const[kk,vv,fk]of[['top',o.subject.wardrobe.top,'wardrobe_top'],['bottom',o.subject.wardrobe.bottom,'wardrobe_bottom'],['footwear',o.subject.wardrobe.footwear,'wardrobe_feet']])jLine(host,3,[jK(kk),jC(': '),jValEl('subject',fk,vv,1,node),jC(',')],step);
+ {const last=host.lastChild;if(last&&last.lastChild)last.removeChild(last.lastChild)}
+ jLine(host,2,[jC('}')]);jLine(host,1,[jC('},')],step);
+ jLine(host,1,[jK('cinematography'),jC(': {')],step);
+ jLine(host,2,[jK('framing'),jC(': {')],step);
+ for(const[k,v,tab,fk,free]of[['shot_size',o.cinematography.framing.shot_size,'cine','shot_scale',0],['aspect_ratio',o.cinematography.framing.aspect_ratio,'cine','aspect_ratio',0],['composition',o.cinematography.framing.composition,'cine','composition',0],['subject_scale',o.cinematography.framing.subject_scale,'cine','subject_scale',1],['visibility',o.cinematography.framing.visibility,'cine','visibility',1]])jLine(host,3,[jK(k),jC(': '),jValEl(tab,fk,v,free,node),jC(',')],step);
+ {const last=host.lastChild;if(last&&last.lastChild)last.removeChild(last.lastChild)}
+ jLine(host,2,[jC('},')],step);
+ jLine(host,2,[jK('camera'),jC(': {')],step);
+ for(const[k,v,tab,fk,free]of[['position',o.cinematography.camera.position,'cine','camera_position',1],['angle',o.cinematography.camera.angle,'cine','camera_angle',0],['movement',o.cinematography.camera.movement,'cine','movement',1],['lens',o.cinematography.camera.lens,'cine','focal_length',0],['aperture',o.cinematography.camera.aperture,'cine','aperture',0],['duration',o.cinematography.camera.duration,'cine','duration',1]])jLine(host,3,[jK(k),jC(': '),jValEl(tab,fk,v,free,node),jC(',')],step);
+ {const last=host.lastChild;if(last&&last.lastChild)last.removeChild(last.lastChild)}
+ jLine(host,2,[jC('}')]);jLine(host,1,[jC('},')],step);
+ jSec(host,1,'capture',[['camera_system',o.capture.camera_system,'capture','camera_body',0],['film_stock',o.capture.film_stock,'capture','film_stock',0],['shutter_speed',o.capture.shutter_speed,'capture','shutter_speed',0],['iso',o.capture.iso,'capture','iso',0],['texture',o.capture.texture,'capture','grain_texture',0]],step,node);
+ jSec(host,1,'lighting',[['time_of_day',o.lighting.time_of_day,'light','time_of_day',1],['quality',o.lighting.quality,'light','light_quality',1],['setup',o.lighting.setup,'light','lighting_setup',0]],step,node);
+ jSec(host,1,'color',[['palette',o.color.palette,'color','color_palette',0],['grade',o.color.grade,'color','color_grade',0]],step,node);
+ jSec(host,1,'environment',[['setting',o.environment.setting,'env','env_setting',1],['props',o.environment.props,'env','env_props',1]],step,node);
+ jLine(host,1,[jK('negative'),jC(': '),jValEl('neg','neg',o.negative,1,node)],step);
+ host.appendChild(document.createTextNode('}'));
+ return o}
 function renderPmOut(){const box=document.getElementById('pmJson');box.innerHTML='';pmJsonText='';
- const o=pmTarget?buildPromptJSON(pmTarget):null;
+ if(!pmTarget){box.textContent='⚠ assign an anchor first (drawer → assign).';return}
+ const o=buildJsonDom(box,pmTarget,null,14);
  if(!o){box.textContent='⚠ assign an anchor first (drawer → assign).';return}
  pmJsonText=JSON.stringify(o,null,2);
- const K=t=>{const s=document.createElement('span');s.className='jkey';s.textContent='"'+t+'"';return s};
- const C=t=>{const s=document.createElement('span');s.className='jpunc';s.textContent=t;return s};
- const L=(dep,items)=>{const d=document.createElement('div');d.style.marginLeft=(dep*14)+'px';items.forEach(p=>d.appendChild(typeof p==='string'?document.createTextNode(p):p));box.appendChild(d)};
- const sec=(dep,name,obj,map)=>{L(dep,[K(name),C(': {')]);for(const[k,v,tab,fk,free]of map)L(dep+1,[K(k),C(': '),jValEl(tab,fk,v,free),C(',')]);const last=box.lastChild;if(last&&last.lastChild)last.removeChild(last.lastChild);L(dep,[C('},')])};
- box.appendChild(document.createTextNode('{'));
- L(1,[K('anchor'),C(': '),jValEl(null,null,o.anchor,false),C(',')]);
- L(1,[K('subject'),C(': {')]);
- for(const[k,v]of[['descriptor',o.subject.descriptor],['expression',o.subject.expression],['action',o.subject.action],['mood',o.subject.mood]])L(2,[K(k),C(': '),jValEl('subject',k,v,1),C(',')]);
- L(2,[K('wardrobe'),C(': {')]);
- for(const[kk,vv,fk]of[['top',o.subject.wardrobe.top,'wardrobe_top'],['bottom',o.subject.wardrobe.bottom,'wardrobe_bottom'],['footwear',o.subject.wardrobe.footwear,'wardrobe_feet']])L(3,[K(kk),C(': '),jValEl('subject',fk,vv,1),C(',')]);
- {const last=box.lastChild;if(last&&last.lastChild)last.removeChild(last.lastChild)}
- L(2,[C('}')]);L(1,[C('},')]);
- L(1,[K('cinematography'),C(': {')]);
- L(2,[K('framing'),C(': {')]);
- for(const[k,v,tab,fk,free]of[['shot_size',o.cinematography.framing.shot_size,'cine','shot_scale',0],['aspect_ratio',o.cinematography.framing.aspect_ratio,'cine','aspect_ratio',0],['composition',o.cinematography.framing.composition,'cine','composition',0],['subject_scale',o.cinematography.framing.subject_scale,'cine','subject_scale',1],['visibility',o.cinematography.framing.visibility,'cine','visibility',1]])L(3,[K(k),C(': '),jValEl(tab,fk,v,free),C(',')]);
- {const last=box.lastChild;if(last&&last.lastChild)last.removeChild(last.lastChild)}
- L(2,[C('},')]);
- L(2,[K('camera'),C(': {')]);
- for(const[k,v,tab,fk,free]of[['position',o.cinematography.camera.position,'cine','camera_position',1],['angle',o.cinematography.camera.angle,'cine','camera_angle',0],['movement',o.cinematography.camera.movement,'cine','movement',1],['lens',o.cinematography.camera.lens,'cine','focal_length',0],['aperture',o.cinematography.camera.aperture,'cine','aperture',0],['duration',o.cinematography.camera.duration,'cine','duration',1]])L(3,[K(k),C(': '),jValEl(tab,fk,v,free),C(',')]);
- {const last=box.lastChild;if(last&&last.lastChild)last.removeChild(last.lastChild)}
- L(2,[C('}')]);L(1,[C('},')]);
- sec(1,'capture',0,[['camera_system',o.capture.camera_system,'capture','camera_body',0],['film_stock',o.capture.film_stock,'capture','film_stock',0],['shutter_speed',o.capture.shutter_speed,'capture','shutter_speed',0],['iso',o.capture.iso,'capture','iso',0],['texture',o.capture.texture,'capture','grain_texture',0]]);
- sec(1,'lighting',0,[['time_of_day',o.lighting.time_of_day,'light','time_of_day',1],['quality',o.lighting.quality,'light','light_quality',1],['setup',o.lighting.setup,'light','lighting_setup',0]]);
- sec(1,'color',0,[['palette',o.color.palette,'color','color_palette',0],['grade',o.color.grade,'color','color_grade',0]]);
- sec(1,'environment',0,[['setting',o.environment.setting,'env','env_setting',1],['props',o.environment.props,'env','env_props',1]]);
- L(1,[K('negative'),C(': '),jValEl('neg','neg',o.negative,1)]);
- box.appendChild(document.createTextNode('}'))}
+}
 /* ---- drawer wiring ---- */
 function renderAnchorRow(n){const row=document.getElementById('anchorRow'),code=document.getElementById('anchorCode');
  const a=n?n.anchor||n.scAnchor||'':'';if(!n||(!n.anchor&&!n.scAnchor)){row.hidden=n&&n.slots?false:true;code.textContent='no anchor';
@@ -1008,7 +1013,10 @@ function renderAnchorRow(n){const row=document.getElementById('anchorRow'),code=
  row.hidden=false;code.textContent=a;
  document.getElementById('anchorVariant').style.display=(n&&n.slots)?'none':'';
  document.getElementById('anchorAssign').style.display=''}
-function renderPromptPreview(n){document.getElementById('promptPrev').textContent=n?buildPrompt(n,'universal'):''}
+function renderPromptPreview(n){const prev=document.getElementById('promptPrev');prev.innerHTML='';
+ if(!n)return;
+ const o=buildJsonDom(prev,n,n,10);
+ if(!o)prev.textContent='⚠ assign an anchor first (drawer → assign).'}
 function renderAssetMenu(){const host=document.getElementById('assetList');host.innerHTML='';
  const h=document.createElement('div');h.className='ah';host.appendChild(h);
  const pick=(label,n,fn)=>{const b=document.createElement('button');const an=n.anchor||n.scAnchor||'?';b.innerHTML='';const bb=document.createElement('b');bb.textContent=an;b.appendChild(bb);b.appendChild(document.createTextNode(' '+(label||'')));b.onclick=e=>{e.stopPropagation();fn()};host.appendChild(b)};
