@@ -45,9 +45,9 @@ header .by{color:var(--mut);font-size:.8rem}
 #removeSlot:hover{background:#e5484d;color:#fff}
 #scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s;z-index:70}
 #scrim.open{opacity:1;pointer-events:auto}
-#drawer{position:fixed;top:0;right:0;bottom:0;width:min(360px,92vw);background:#161b22;border-left:1px solid #313b4a;border-radius:0;z-index:71;transform:translateX(105%);transition:transform .28s ease,width .28s ease;display:flex;flex-direction:column}
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(360px,92vw);background:#161b22;border-left:1px solid #313b4a;border-radius:0;z-index:71;transform:translateX(105%);transition:transform .28s ease;display:flex;flex-direction:column}
 #drawer.open{transform:none}
-#drawer.editing{width:min(760px,94vw)}
+#drawer.editing{}
 #drawer img{width:100%;max-height:46vh;object-fit:contain;background:#0b0e13;display:block}
 #drawerX{position:absolute;top:.6rem;right:.6rem;z-index:2;background:rgba(10,13,18,.72);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:50%;width:32px;height:32px;font-size:16px;line-height:1;cursor:pointer;backdrop-filter:blur(4px)}
 #drawerX:hover{border-color:var(--acc)}
@@ -106,8 +106,10 @@ header .by{color:var(--mut);font-size:.8rem}
 .modal .frow button{background:#222a36;border:1px solid #313b4a;border-radius:7px;color:#e8eaf0;padding:.35rem .9rem;cursor:pointer;font-size:.82rem}
 .modal .frow button:hover{border-color:var(--acc)}
 #pmCopy,#projClose{background:#e8830c!important;border:0!important;color:#111!important;font-weight:700}
-#drawerEdit{display:none;flex-direction:column;min-height:0;opacity:0;transform:translateX(12px);transition:opacity .22s ease .06s,transform .22s ease .06s}
-#drawer.editing #drawerEdit{display:flex;opacity:1;transform:none}
+#editPanel{position:fixed;top:0;bottom:0;right:360px;width:min(400px,calc(100vw - 360px));background:#141922;border-left:1px solid #313b4a;border-right:1px solid #262d38;z-index:70;transform:translateX(40px);opacity:0;pointer-events:none;visibility:hidden;transition:transform .28s ease,opacity .22s ease .05s,visibility 0s .3s;display:flex;flex-direction:column}
+#drawer.editing ~ #editPanel{transform:none;opacity:1;pointer-events:auto;visibility:visible;transition:transform .28s ease,opacity .22s ease .05s}
+#drawerEdit{display:flex;flex-direction:column;min-height:0;flex:1;min-width:0}
+@media (max-width:760px){#editPanel{right:0;width:min(420px,100vw);z-index:72;border-left:0}}
 .edithead{display:flex;align-items:center;gap:.6rem;padding:.55rem 1rem .35rem}
 .edithead .pmtitle{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#8b93a5}
 .editbody{display:flex;gap:0;min-height:0;overflow:hidden}
@@ -116,12 +118,12 @@ header .by{color:var(--mut);font-size:.8rem}
 .pm-nav{width:148px;flex:none;background:#10151c;border-right:1px solid #262d38;padding:.8rem 0;display:flex;flex-direction:column;gap:0;overflow:auto}
 .pm-nav .pmtitle{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#8b93a5;margin:0 .8rem .4rem}
 #pmNav button{background:transparent;border:0;border-left:3px solid transparent;border-radius:0;color:#aab2c2;font-size:.84rem;text-align:left;padding:.55rem .8rem;cursor:pointer;width:100%;transition:transform .22s ease,opacity .22s ease;transition-delay:calc(.12s + var(--i,0)*18ms)}
-#drawer:not(.editing) #pmNav button{transform:translateX(-8px);opacity:0;transition-delay:0s}
+#drawer:not(.editing) ~ #editPanel #pmNav button{transform:translateX(-8px);opacity:0;transition-delay:0s}
 #pmNav button:hover{color:#e8eaf0;background:#1b212b}
 #pmNav button.on{border-left-color:var(--acc);color:var(--acc);background:#1b212b;font-weight:600}
 .pm-mid{flex:1;min-width:0;padding:.9rem 1rem;overflow:auto;transition:transform .24s ease .04s,opacity .2s ease .04s}
-#drawer:not(.editing) #pmMid{transform:translateX(12px);opacity:0;transition-delay:0s}
-#drawer.editing #pmMid{transform:none;opacity:1}
+#drawer:not(.editing) ~ #editPanel #pmMid{transform:translateX(12px);opacity:0;transition-delay:0s}
+#drawer.editing ~ #editPanel #pmMid{transform:none;opacity:1}
 .pmdiv{border:0;border-top:1px solid #262d38;margin:.7rem 0}
 .jkey{color:#8b93a5}.jpunc{color:#4b5563}
 .jval{cursor:pointer;border-radius:4px;padding:0 2px}
@@ -182,11 +184,11 @@ header .by{color:var(--mut);font-size:.8rem}
 <div id="slotBtns" hidden><button id="goShot">go to shot</button><button id="removeSlot">remove</button></div>
 <div id="promptPrev" title="Live prompt preview"></div>
 <div><button id="copyStub">copy stub</button><button id="pmCopy">copy</button></div>
-<div id="drawerEdit"><div class="edithead"><button id="pmBack" title="dismiss">close</button><div class="pmtitle">prompt</div></div><div class="editbody"><nav class="pm-nav"><div id="pmNav"></div></nav><div id="pmMid" class="pm-mid"><div id="pmFields"></div></div></div></div>
 <p class="note" style="color:var(--mut);font-size:.78rem;margin:.5rem 0 0">Anchors lead every prompt. Domains enabled in ⚙ project feed the prompt; disabled domains contribute nothing.</p>
 <button id="drawerDel">delete</button>
 </div>
 </aside>
+<aside id="editPanel" aria-label="prompt editor"><div id="drawerEdit"><div class="edithead"><button id="pmBack" title="dismiss">close</button><div class="pmtitle">prompt</div></div><div class="editbody"><nav class="pm-nav"><div id="pmNav"></div></nav><div id="pmMid" class="pm-mid"><div id="pmFields"></div></div></div></div></aside>
 <div id="projModal" class="modal" hidden><div class="box"><h2>⚙ Project tokens</h2>
 <div class="sub">Frames only — video/motion is deferred. A domain must be <b>enabled</b> here before it appears in prompts. Disabled = zero words, no fallbacks.</div>
 <div id="projDomains"></div>
