@@ -244,3 +244,12 @@
 - Nav top affordance says `close` and dismisses both panes.
 - Dim inputs rest muted but highlight on hover/focus and are clickable affordances.
 
+
+---
+
+## Shipped
+
+- Phase 1 (drawer live JSON + click-to-edit + drop generate) shipped e5f5486
+- Phase 2 (2-pane editor + staggered entrance) shipped 3a2e5f6
+- Phase 3 (close affordance + dim-input polish + cleanup) shipped b59260b
+- Honesty note: the Phase 2 editor screenshot was cross-contaminated by a sibling tab-hijack and the visual 2-pane proof was re-captured green in Phase 3 (p3-editor-close-hover.png, isolated session).
