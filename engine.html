@@ -112,6 +112,13 @@ header .by{color:var(--mut);font-size:.8rem}
 .modal .tok select:hover{border-color:#e8830c;background:#1e2632}
 .modal .tok select:focus{outline:none;border-color:#e8830c;background:#1e2632;box-shadow:0 0 0 2px rgba(232,131,12,.18)}
 .modal .tdesc{color:var(--mut);font-size:.74rem;margin:0 0 .2rem 118px}
+.modal .codes{display:flex;flex-direction:column;gap:.25rem;margin:.15rem 0 .35rem 118px}
+.modal .code-row{display:flex;gap:.5rem;align-items:center;font-size:.74rem;min-width:0}
+.modal .code-lab{flex:1;min-width:0;color:#8b93a5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.modal .code-row input{width:132px;flex:none;background:#222a36;color:#e8eaf0;border:1px solid #313b4a;border-radius:6px;padding:.22rem .4rem;font-size:.74rem;font-family:ui-monospace,Menlo,monospace;text-transform:uppercase}
+.modal .code-row input:hover{border-color:#e8830c}
+.modal .code-row input:focus{outline:none;border-color:#e8830c;box-shadow:0 0 0 2px rgba(232,131,12,.18)}
+.modal .code-row input:disabled{opacity:.5}
 .modal .row{display:flex;gap:.6rem;margin:.5rem 0}
 .modal .row input,.modal .row select{flex:1;background:#222a36;color:#e8eaf0;border:1px solid #313b4a;border-radius:6px;padding:.35rem .5rem;font:inherit;font-size:.82rem;min-width:0}
 .modal .tabs{display:flex;gap:.35rem;flex-wrap:wrap;margin:.5rem 0}
@@ -148,6 +155,9 @@ header .by{color:var(--mut);font-size:.8rem}
 #editPanel .tok select:hover{border-color:var(--acc);cursor:pointer}
 #editPanel .tok select:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 2px rgba(232,131,12,.18)}
 #editPanel .tdesc{color:var(--mut);font-size:.74rem;line-height:1.5;margin:0 0 4px 118px}
+#editPanel .tchip{flex:none;align-self:center;font-size:.68rem;font-weight:700;letter-spacing:.04em;color:var(--acc);background:rgba(232,131,12,.14);border:1px solid rgba(232,131,12,.5);border-radius:999px;padding:1px 8px;line-height:1.6;white-space:nowrap;cursor:default}
+#editPanel .tchip[hidden]{display:none}
+#editPanel .flab{display:block;font-size:.78rem;color:var(--mut);line-height:1.5;margin:0}
 #editPanel .subh{font-size:.76rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);line-height:1.5;margin:12px 0 4px}
 #editPanel .tin{display:block;width:100%;box-sizing:border-box;background:var(--bg);color:var(--ink);border:1px solid rgba(232,234,240,.14);border-left:3px solid var(--acc);border-radius:6px;padding:8px 12px;font:inherit;font-size:.84rem;line-height:1.5;min-height:38px;margin:0;cursor:pointer;transition:border-color .24s ease-out,background .24s ease-out}
 #editPanel .tin::placeholder{color:var(--mut);font-style:italic}
@@ -270,11 +280,12 @@ function delSelected(){menuDrop.hidden=true;
  if(selConn){snap();removeConn(selConn.id);selConn=null;hidePicker();persist();draw();showToast('Link deleted');return true}
  if(view!=='scenes'&&selected&&nodeById(selected.id)){snap();const id=selected.id;const _dn=nodeById(id);if(_dn&&_dn.anchor)tombstone(_dn.anchor);nodes=nodes.filter(n=>n.id!==id);conns=conns.filter(c=>c.a.id!==id&&c.b.id!==id);selected=null;hidePicker();persist();draw();closeDrawer();showToast('Card deleted');return true}
  flashHint('nothing selected');return false}
-function restore(){const r=Store.load();
+function restore(){const r=Store.load();let _migP=false;
  if(r&&(r.ver===4||r.ver===3)&&r.s){const s=r.s;
   for(const k of Object.keys(VIEWS))if(s.views&&s.views[k])VIEWS[k]=s.views[k];
   SCENES=(s.scenes&&Array.isArray(s.scenes.chapters)&&s.scenes.chapters.length)?s.scenes:defaultScenes();
   PROJECT=(s.project&&s.project.domains)?s.project:defaultProject();
+  try{_migP=migrateProject(PROJECT)}catch(e){_migP=false}
   TOMBSTONES=Array.isArray(s.tombs)?s.tombs:[];
   if(!SCENES.chapters.some(c=>c.id===SCENES.active))SCENES.active=SCENES.chapters[0].id;
   view=(s.ui&&s.ui.view)||'scenes'}
@@ -296,6 +307,7 @@ function restore(){const r=Store.load();
   for(const s of c.scenes){s.w=s.w||560;s.h=s.h||340;s.lanes=Math.max(1,Math.min(6,s.lanes||2));
    s.slots=(s.slots||[]).map(q=>({shot:(q.shot??q.shotId),lane:q.lane||0})).filter(q=>q.shot!=null)}
   const mx=Math.max(0,...c.scenes.map(s=>s.id));c.nextScene=Math.max(c.nextScene||1,mx+1)}
+ try{if(_migP)Store.save({views:VIEWS,scenes:SCENES,project:PROJECT,tombs:TOMBSTONES,ui:{view}})}catch(e){}
  if(VIEW_META[view])loadView(view);if(view==='scenes'){const _nc=activeChapter();conns=(_nc&&_nc.conns)||[]}ensureAnchorsAll();syncShotMeta();
  syncUI()}
 function loadImage(n,silent){if(!n.imgUrl){n.img=null;if(n)n.imgErr='';return}const im=new Image();n.imgErr='';
@@ -863,7 +875,9 @@ function migrateChapter(c){const old=c.scenes||[];
 let PROJECT=null,TOMBSTONES=[];
 const KIND_PREFIX={locations:'LOC',props:'PROP',cast:'CHAR',shots:'SHOT'};
 const DOMAIN_ORDER=['camera','lens','framing','lighting','tone','style'];
-function defaultProject(){return{version:1,scope:'frames-only: stills. video/motion deferred.',domains:{
+const BUILTIN_CODES={camera_body:{0:'ALEXA-35',1:'KOMODO',2:'VENICE-2',3:'EOS-R5',4:'VISION3-35',5:'HASSEL-MF',6:'POLA-600'},shutter_speed:{0:'SH-24',1:'SH-48',2:'SH-120',3:'SH-250'},iso:{0:'ISO-100',1:'ISO-400',2:'ISO-800',3:'ISO-3200'},lens_type:{0:'SPH-PRIME',1:'ANAMORPH',2:'MACRO-100',3:'TILT-SHIFT',4:'VINTAGE'},focal_length:{0:'FL-12',1:'FL-18',2:'FL-24',3:'FL-35',4:'FL-50',5:'FL-85',6:'FL-135',7:'FL-200'},aperture:{0:'F1-4',1:'F2-0',2:'F2-8',3:'F4-0',4:'F8-0',5:'F11'},shot_scale:{0:'XWS',1:'WS',2:'FS',3:'MW',4:'COWBOY',5:'MS',6:'MCU',7:'CU',8:'XCU',9:'ESTAB',10:'SINGLE',11:'TWO-SHOT',12:'OTS',13:'POV',14:'INSERT'},camera_angle:{0:'EYE',1:'LOW',2:'HIGH',3:'GROUND',4:'DUTCH',5:'TOP-DOWN',6:'AERIAL'},composition:{0:'THIRDS',1:'180-RULE',2:'LEAD-RM',3:'SYMM',4:'NEG-SPACE',5:'FG-FRAME'},lighting_setup:{0:'SOFT-DIFF',1:'GOLD-HR',2:'BLUE-HR',3:'HARD-DIR',4:'NIGHT-RIM',5:'SIDE-KEY',6:'SOFT-FILL',7:'MOTIVATED',8:'PRACT-IN',9:'DAY-NIGHT'},color_palette:{0:'WARM-GOLD',1:'TEAL-ORNG',2:'STEEL-BLU',3:'NOIR',4:'MONO-HC',5:'PASTEL',6:'EARTHY'},color_grade:{0:'NAT-GRADE',1:'CINE-CON',2:'BLEACH-BP',3:'FADED',4:'HI-KEY',5:'LO-KEY'},grain_texture:{0:'CLEAN',1:'GR-35',2:'GR-16',3:'HALATION'},style_preset:{0:'PHOTO-REAL',1:'STOCK-70S',2:'BLOCKBUST',3:'INDIE-NAT',4:'NOIR-BW',5:'DOCU-CAND',6:'ANIME-CEL'}};
+function migrateProject(P){if(!P||!P.domains)return false;let ch=false;for(const d of DOMAIN_ORDER){const D=P.domains[d];if(!D||!D.tokens)continue;for(const tid of Object.keys(D.tokens)){const T=D.tokens[tid],ref=BUILTIN_CODES[tid];if(!T||!ref)continue;if(!T.codes||typeof T.codes!=='object'||Array.isArray(T.codes)){T.codes={};ch=true}for(const k of Object.keys(ref)){if(T.codes[k]==null||T.codes[k]===''){T.codes[k]=ref[k];ch=true}}}}if(P.version!==2){P.version=2;ch=true}return ch}
+function defaultProject(){const P={version:2,scope:'frames-only: stills. video/motion deferred.',domains:{
 camera:{label:'Camera',desc:'Capture body and exposure behavior for stills.',enabled:true,tokens:{
 camera_body:{label:'Camera body',desc:'Sensor character: dynamic range, color science, still texture.',values:['ARRI Alexa 35, large-format cinematic sensor','RED Komodo, compact cinema sensor','Sony Venice 2, full-frame cinema sensor','Canon EOS R5, full-frame stills hybrid','35mm film, Kodak Vision3 stock','Medium format, Hasselblad color science','Instant film, Polaroid 600 character'],sel:0},
 shutter_speed:{label:'Shutter speed',desc:'Motion smear inside a still: slow smears action, fast freezes it.',values:['1/24, heavy motion blur','1/48, standard cinematic motion blur','1/120, crisp with slight blur','1/250, frozen action'],sel:1},
@@ -883,7 +897,7 @@ color_palette:{label:'Palette',desc:'Dominant hue family: what colors are in the
 color_grade:{label:'Grade',desc:'Curve on top of the palette: contrast, saturation, print emulation.',values:['natural balanced grade','cinematic contrast grade','bleach-bypass grit, silver and harsh','faded film emulation, lifted blacks','high-key airy grade','low-key moody grade'],sel:1},
 grain_texture:{label:'Grain',desc:'Physical finish: clean digital vs film grain vs halation glow.',values:['clean digital, no grain','fine 35mm grain','heavy 16mm grain','soft halation glow on highlights'],sel:1}}},
 style:{label:'Style',desc:'Global render preset applied to every still.',enabled:true,tokens:{
-style_preset:{label:'Preset',desc:'Master look: stock era, genre finish, or medium. One preset per project.',values:['photorealistic cinematic still','1970s film stock, warm and grainy','modern blockbuster, polished contrast','indie naturalism, available light','noir high-contrast black and white','documentary candid, unposed','anime-inspired frame, clean cel shading'],sel:0}}}}}}
+style_preset:{label:'Preset',desc:'Master look: stock era, genre finish, or medium. One preset per project.',values:['photorealistic cinematic still','1970s film stock, warm and grainy','modern blockbuster, polished contrast','indie naturalism, available light','noir high-contrast black and white','documentary candid, unposed','anime-inspired frame, clean cel shading'],sel:0}}}}};try{for(const tid of Object.keys(BUILTIN_CODES)){for(const d of DOMAIN_ORDER){const T=P.domains[d]&&P.domains[d].tokens[tid];if(T){T.codes=Object.assign({},BUILTIN_CODES[tid]);break}}}}catch(e){}return P}
 /* ---- anchors: PREFIX-ENTITY[-VARIANT][-STATE] ---- */
 function entityOf(label){const s=String(label||'').toUpperCase().replace(/[^A-Z]/g,'');return(s||'AST').slice(0,4)}
 function scEntityOf(title){const w=String(title||'').toUpperCase().split(/[^A-Z]+/).filter(Boolean);if(!w.length)return'GEN';return w.slice(0,2).map(x=>x.slice(0,3)).join('-')}
@@ -899,7 +913,7 @@ function ensureAnchorsAll(){for(const k of Object.keys(VIEWS)){const p=KIND_PREF
 /* ---- prompt assembly (deterministic, model-agnostic) ---- */
 const NEG_DEFAULT='blurry, deformed hands, extra limbs, watermark, text overlay';
 function tokVal(tokId){for(const d of DOMAIN_ORDER){const D=PROJECT.domains[d];if(D&&D.tokens[tokId])return{dom:d,tok:D.tokens[tokId]}}return null}
-function effVal(tokId,ps){const f=tokVal(tokId);if(!f||!PROJECT.domains[f.dom].enabled)return'';const o=(ps&&ps.sels&&ps.sels[tokId]!=null)?ps.sels[tokId]:f.tok.sel;return f.tok.values[o]||''}
+function effVal(tokId,ps){const f=tokVal(tokId);if(!f||!PROJECT.domains[f.dom].enabled)return'';const o=(ps&&ps.sels&&ps.sels[tokId]!=null)?ps.sels[tokId]:f.tok.sel;const c=f.tok.codes&&f.tok.codes[o];if(c!=null&&String(c).trim()!=='')return String(c).trim();return f.tok.values[o]||''}
 function targetOf(n){
  if(n&&n.slots){const slots=(n.slots||[]).map(q=>{const sh=shotById(q.shot);return sh&&sh.anchor?sh.anchor:null}).filter(Boolean);
   return{anchor:n.scAnchor||'',entity:String(n.title||'Scene')+' scene'+(slots.length?', holding '+slots.join(', '):'')}}
@@ -940,6 +954,13 @@ function renderProjectModal(){const host=document.getElementById('projDomains');
    const sel=document.createElement('select');sel.disabled=!D.enabled;
    T.values.forEach((v,i)=>{const o=document.createElement('option');o.value=i;o.textContent=v;if(i===(T.sel||0))o.selected=true;sel.appendChild(o)});
    sel.onchange=()=>{snap();T.sel=+sel.value;persist();if(drawerSub)renderPromptPreview(drawerSub)};row.appendChild(sel);box.appendChild(row);
+   const cw=document.createElement('div');cw.className='codes';
+   T.values.forEach((v,i)=>{const cr=document.createElement('div');cr.className='code-row';
+    const lb=document.createElement('span');lb.className='code-lab';lb.textContent=v;lb.title=v;cr.appendChild(lb);
+    const ci=document.createElement('input');ci.value=(T.codes&&T.codes[i]!=null)?T.codes[i]:'';ci.placeholder='CODE';ci.maxLength=12;ci.disabled=!D.enabled;ci.setAttribute('spellcheck','false');ci.setAttribute('autocomplete','off');
+    ci.onchange=()=>{const nv=String(ci.value||'').trim().toUpperCase();if(nv!==''&&!/^[A-Z0-9-]{2,12}$/.test(nv)){flashHint('code must be 2-12 chars: A-Z 0-9 -');ci.value=(T.codes&&T.codes[i])||'';return}snap();T.codes=T.codes||{};if(nv==='')delete T.codes[i];else T.codes[i]=nv;ci.value=nv;persist();if(drawerSub)renderPromptPreview(drawerSub)};
+    cr.appendChild(ci);cw.appendChild(cr)});
+   box.appendChild(cw);
    const td=document.createElement('div');td.className='tdesc';td.textContent=T.desc;box.appendChild(td)}
   host.appendChild(box)}
  document.getElementById('projNote').textContent=DOMAIN_ORDER.filter(d=>PROJECT.domains[d].enabled).length+' of '+DOMAIN_ORDER.length+' domains enabled'}
@@ -962,19 +983,25 @@ const EXTRA_OPTS={
  film_stock:{label:'Film stock',desc:'Empty = clean digital capture; pick a stock to bake in its look.',values:['','Kodak Portra 400','Kodak Vision3 500T','Fujifilm 400H','Ilford HP5 black and white','Polaroid 600'],def:0}};
 const PM_TABS=[['subject','Subject'],['cine','Cinematography'],['capture','Capture'],['light','Lighting'],['color','Color'],['env','Environment'],['neg','Negative']];
 let pmTab='subject';
+function tokCodeAt(tid,idx){try{const f=tokVal(tid);if(!f||!f.tok)return null;const c=f.tok.codes?f.tok.codes[idx]:null;return(c==null||c==='')?null:String(c)}catch(e){return null}}
+const TEXT_LABELS={descriptor:'Subject descriptor',expression:'Expression',wardrobe_top:'Wardrobe top',wardrobe_bottom:'Wardrobe bottom',wardrobe_feet:'Wardrobe footwear',action:'Action',mood:'Mood',subject_scale:'Subject scale',visibility:'Visibility',camera_position:'Camera position',movement:'Movement',duration:'Duration',time_of_day:'Time of day',light_quality:'Light quality',env_setting:'Environment setting',env_props:'Environment props',neg:'Negative prompt'};
 function pmFieldTok(host,tid){const f=tokVal(tid);if(!f||!PROJECT.domains[f.dom].enabled)return;const ps=pmTarget.promptState||{};
- const row=document.createElement('div');row.className='tok';const sp=document.createElement('span');sp.textContent=f.tok.label;row.appendChild(sp);
- const sel=document.createElement('select');sel.dataset.k=tid;f.tok.values.forEach((v,i)=>{const o=document.createElement('option');o.value=i;o.textContent=v||'—';sel.appendChild(o)});
- sel.value=(ps.sels&&ps.sels[tid]!=null)?ps.sels[tid]:(f.tok.sel||0);
- sel.onchange=()=>{snap();pmTarget.promptState.sels[tid]=+sel.value;persist();renderPmOut();renderPromptPreview(pmTarget)};row.appendChild(sel);host.appendChild(row)}
+ const row=document.createElement('div');row.className='tok';const sp=document.createElement('span');sp.textContent=f.tok.label;sp.title=f.tok.desc||f.tok.label;row.appendChild(sp);
+ const curIdx=(ps.sels&&ps.sels[tid]!=null)?ps.sels[tid]:(f.tok.sel||0);
+ const chip=document.createElement('span');chip.className='tchip';chip.dataset.chip=tid;const code0=tokCodeAt(tid,curIdx);chip.hidden=!code0;chip.textContent=code0||'';if(code0)chip.title=String(f.tok.values[curIdx]||'');row.appendChild(chip);
+ const sel=document.createElement('select');sel.dataset.k=tid;f.tok.values.forEach((v,i)=>{const o=document.createElement('option');o.value=i;const c=tokCodeAt(tid,i);o.textContent=(c?c+' — ':'')+(v||'—');sel.appendChild(o)});
+ sel.value=curIdx;
+ sel.onchange=()=>{snap();pmTarget.promptState.sels[tid]=+sel.value;persist();const c=tokCodeAt(tid,+sel.value);chip.hidden=!c;chip.textContent=c||'';chip.title=c?String(f.tok.values[+sel.value]||''):'';renderPmOut();renderPromptPreview(pmTarget)};row.appendChild(sel);host.appendChild(row)}
 function pmFieldExtra(host,id){const o=EXTRA_OPTS[id];if(!o)return;const ps=pmTarget.promptState||{};
- const row=document.createElement('div');row.className='tok';const sp=document.createElement('span');sp.textContent=o.label;row.appendChild(sp);
+ const row=document.createElement('div');row.className='tok';const sp=document.createElement('span');sp.textContent=o.label;sp.title=o.desc||o.label;row.appendChild(sp);
  const sel=document.createElement('select');sel.dataset.k=id;o.values.forEach((v,i)=>{const el=document.createElement('option');el.value=i;el.textContent=v||'—';sel.appendChild(el)});
  sel.value=(ps.sels&&ps.sels[id]!=null)?ps.sels[id]:o.def;
  sel.onchange=()=>{snap();pmTarget.promptState.sels[id]=+sel.value;persist();renderPmOut();renderPromptPreview(pmTarget)};row.appendChild(sel);host.appendChild(row);
  if(o.desc){const d=document.createElement('div');d.className='tdesc';d.textContent=o.desc;host.appendChild(d)}}
 function pmFieldText(host,k,label,ph){const ps=pmTarget.promptState||{};ps.details=ps.details||{};
- const inp=document.createElement('input');inp.className='tin';inp.dataset.k=k;inp.placeholder=label+(ph?' — '+ph:'');inp.value=ps.details[k]||'';inp.setAttribute('autocomplete','off');inp.setAttribute('spellcheck','false');
+ const full=TEXT_LABELS[k]||label;
+ const lab=document.createElement('label');lab.className='flab';lab.textContent=full;if(ph)lab.title=full+' — '+ph;host.appendChild(lab);
+ const inp=document.createElement('input');inp.className='tin';inp.dataset.k=k;inp.placeholder=full+(ph?' — '+ph:'');inp.title=full;inp.value=ps.details[k]||'';inp.setAttribute('autocomplete','off');inp.setAttribute('spellcheck','false');
  inp.addEventListener('input',()=>{pmTarget.promptState.details[k]=inp.value;persist();renderPmOut();renderPromptPreview(pmTarget);menUpdate(inp,k);slashUpdate(inp,k)});
  inp.addEventListener('keydown',e=>{if(menKey(inp,k,e))return;slashKey(inp,k,e)});
  inp.addEventListener('focus',()=>{menUpdate(inp,k);slashUpdate(inp,k)});
