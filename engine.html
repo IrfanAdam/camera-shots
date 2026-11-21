@@ -45,8 +45,9 @@ header .by{color:var(--mut);font-size:.8rem}
 #removeSlot:hover{background:#e5484d;color:#fff}
 #scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s;z-index:70}
 #scrim.open{opacity:1;pointer-events:auto}
-#drawer{position:fixed;top:0;right:0;bottom:0;width:min(360px,92vw);background:#161b22;border-left:1px solid #313b4a;border-radius:0;z-index:71;transform:translateX(105%);transition:transform .25s ease;display:flex;flex-direction:column}
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(360px,92vw);background:#161b22;border-left:1px solid #313b4a;border-radius:0;z-index:71;transform:translateX(105%);transition:transform .28s ease,width .28s ease;display:flex;flex-direction:column}
 #drawer.open{transform:none}
+#drawer.editing{width:min(760px,94vw)}
 #drawer img{width:100%;max-height:46vh;object-fit:contain;background:#0b0e13;display:block}
 #drawerX{position:absolute;top:.6rem;right:.6rem;z-index:2;background:rgba(10,13,18,.72);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:50%;width:32px;height:32px;font-size:16px;line-height:1;cursor:pointer;backdrop-filter:blur(4px)}
 #drawerX:hover{border-color:var(--acc)}
@@ -105,27 +106,22 @@ header .by{color:var(--mut);font-size:.8rem}
 .modal .frow button{background:#222a36;border:1px solid #313b4a;border-radius:7px;color:#e8eaf0;padding:.35rem .9rem;cursor:pointer;font-size:.82rem}
 .modal .frow button:hover{border-color:var(--acc)}
 #pmCopy,#projClose{background:#e8830c!important;border:0!important;color:#111!important;font-weight:700}
-#promptModal{align-items:stretch;justify-content:flex-end;background:rgba(0,0,0,.45);visibility:hidden;transition:visibility 0s linear .25s}
-#promptModal.open{visibility:visible;transition-delay:0s}
-#promptModal[hidden]{display:flex;visibility:hidden}
-#promptModal.open[hidden]{visibility:visible}
-#promptModal .box{width:min(760px,92vw);height:100vh;max-height:none;top:0;bottom:0;border-radius:0;display:flex;gap:0;padding:0;overflow:hidden;transform:translateX(105%);transition:transform .25s ease}
-#promptModal.open .box{transform:none}
+#drawerEdit{display:none;flex-direction:column;min-height:0;opacity:0;transform:translateX(12px);transition:opacity .22s ease .06s,transform .22s ease .06s}
+#drawer.editing #drawerEdit{display:flex;opacity:1;transform:none}
+.edithead{display:flex;align-items:center;gap:.6rem;padding:.55rem 1rem .35rem}
+.edithead .pmtitle{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#8b93a5}
+.editbody{display:flex;gap:0;min-height:0;overflow:hidden}
 #pmBack{align-self:flex-start;margin:0 .8rem .5rem;background:transparent;border:0;color:#8b93a5;font-size:.84rem;cursor:pointer;padding:.15rem 0;text-align:left;width:auto}
 #pmBack:hover{color:#e8eaf0}
 .pm-nav{width:148px;flex:none;background:#10151c;border-right:1px solid #262d38;padding:.8rem 0;display:flex;flex-direction:column;gap:0;overflow:auto}
 .pm-nav .pmtitle{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#8b93a5;margin:0 .8rem .4rem}
 #pmNav button{background:transparent;border:0;border-left:3px solid transparent;border-radius:0;color:#aab2c2;font-size:.84rem;text-align:left;padding:.55rem .8rem;cursor:pointer;width:100%;transition:transform .22s ease,opacity .22s ease;transition-delay:calc(.12s + var(--i,0)*18ms)}
-#promptModal:not(.open) #pmNav button{transform:translateX(-8px);opacity:0;transition-delay:0s}
+#drawer:not(.editing) #pmNav button{transform:translateX(-8px);opacity:0;transition-delay:0s}
 #pmNav button:hover{color:#e8eaf0;background:#1b212b}
 #pmNav button.on{border-left-color:var(--acc);color:var(--acc);background:#1b212b;font-weight:600}
 .pm-mid{flex:1;min-width:0;padding:.9rem 1rem;overflow:auto;transition:transform .24s ease .04s,opacity .2s ease .04s}
-#promptModal:not(.open) .pm-mid{transform:translateX(12px);opacity:0;transition-delay:0s}
-#promptModal.open .pm-mid{transform:none;opacity:1}
-.pmhead{display:flex;align-items:center;gap:.5rem}
-.pmhead h2{font-size:1rem;margin-bottom:.1rem}
-.pm-mid h2{font-size:1rem;margin-bottom:.1rem}
-#pmTabs{display:none}
+#drawer:not(.editing) #pmMid{transform:translateX(12px);opacity:0;transition-delay:0s}
+#drawer.editing #pmMid{transform:none;opacity:1}
 .pmdiv{border:0;border-top:1px solid #262d38;margin:.7rem 0}
 .jkey{color:#8b93a5}.jpunc{color:#4b5563}
 .jval{cursor:pointer;border-radius:4px;padding:0 2px}
@@ -185,7 +181,8 @@ header .by{color:var(--mut);font-size:.8rem}
 <div id="shotProps" hidden><label>chapter <select id="shotCh"></select></label><label>scene <select id="shotSc"></select></label><span>lane <b id="shotLane">—</b></span></div>
 <div id="slotBtns" hidden><button id="goShot">go to shot</button><button id="removeSlot">remove</button></div>
 <div id="promptPrev" title="Live prompt preview"></div>
-<div><button id="copyStub">copy stub</button></div>
+<div><button id="copyStub">copy stub</button><button id="pmCopy">copy</button></div>
+<div id="drawerEdit"><div class="edithead"><button id="pmBack" title="dismiss">close</button><div class="pmtitle">prompt</div></div><div class="editbody"><nav class="pm-nav"><div id="pmNav"></div></nav><div id="pmMid" class="pm-mid"><div id="pmFields"></div></div></div></div>
 <p class="note" style="color:var(--mut);font-size:.78rem;margin:.5rem 0 0">Anchors lead every prompt. Domains enabled in ⚙ project feed the prompt; disabled domains contribute nothing.</p>
 <button id="drawerDel">delete</button>
 </div>
@@ -194,18 +191,6 @@ header .by{color:var(--mut);font-size:.8rem}
 <div class="sub">Frames only — video/motion is deferred. A domain must be <b>enabled</b> here before it appears in prompts. Disabled = zero words, no fallbacks.</div>
 <div id="projDomains"></div>
 <div class="frow"><button id="projClose" class="modalClose">done</button><span class="note" id="projNote"></span></div>
-</div></div>
-<div id="promptModal" class="modal" hidden><div class="box">
-<nav class="pm-nav"><button id="pmBack" title="dismiss">close</button><div class="pmtitle">prompt</div><div id="pmNav"></div></nav>
-<div class="pm-mid"><div class="pmhead"><h2 id="pmTitle">Generate prompt</h2></div>
-<div class="sub" id="pmAnchor"></div>
-<div id="pmFields"></div>
-<div hidden><div class="row"><input id="pmAction" placeholder="action" maxlength="140"><input id="pmMood" placeholder="mood" maxlength="140"></div>
-<div class="row"><input id="pmNeg" placeholder="negative"></div></div>
-<div class="tabs" id="pmTabs"></div>
-<div class="out" id="pmOut" hidden></div>
-<div class="frow"><button id="pmCopy">copy</button><span class="note">Anchor first, then sections. Disabled project domains are omitted.</span></div>
-</div>
 </div></div>
 <div class="hint" id="hint">hover a card for dots · drag dot-to-dot to link · click a card for detail · Del deletes · Ctrl+Z undoes · double-click renames</div>
 <div id="toast" hidden><span id="toastMsg"></span><button id="toastBtn">Undo</button></div>
@@ -503,7 +488,7 @@ function openSlotDrawer(shotId,s,lane){const sh=shotById(shotId);if(!sh){selectS
  document.getElementById('slotBtns').hidden=false;document.getElementById('drawerDel').style.display='none';
  document.getElementById('goShot').onclick=()=>{closeDrawer();selectShot(shotId)};
  document.getElementById('removeSlot').onclick=()=>{unassignSlot(s,shotId);closeDrawer()}}
-function closeDrawer(){drawer.classList.remove('open');scrim.classList.remove('open')}
+function closeDrawer(){drawer.classList.remove('open');drawer.classList.remove('editing');scrim.classList.remove('open')}
 function populateShotProps(n){const sp=document.getElementById('shotProps'),chS=document.getElementById('shotCh'),scS=document.getElementById('shotSc');
  sp.hidden=false;chS.innerHTML='';
  for(const c of(SCENES.chapters||[])){const o=document.createElement('option');o.value=c.id;o.textContent=c.name||('Chapter '+c.id);chS.appendChild(o)}
@@ -535,13 +520,12 @@ document.getElementById('projBtn').onclick=()=>openProjectModal();
 document.getElementById('projClose').onclick=()=>closeProjectModal();
 document.getElementById('projModal').addEventListener('click',e=>{if(e.target.id==='projModal')closeProjectModal()});
 document.getElementById('copyStub').onclick=()=>{if(drawerSub)copyText(stubFor(drawerSub),'stub copied — anchor first');else flashHint('open a card or scene first')};
-document.getElementById('pmBack').onclick=()=>closePromptModal();
-document.getElementById('promptModal').addEventListener('click',e=>{if(e.target.id==='promptModal')closePromptModal()});
-document.getElementById('pmCopy').onclick=()=>{if(pmJsonText)copyText(pmJsonText,'prompt JSON copied')};
+{const _b=document.getElementById('pmBack');if(_b)_b.onclick=()=>closePromptModal()}
+{const _c=document.getElementById('pmCopy');if(_c)_c.onclick=()=>{if(pmJsonText)copyText(pmJsonText,'prompt JSON copied')}}
 document.getElementById('drawerClose').onclick=()=>closeDrawer();
-document.getElementById('pmAction').addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.action=e.target.value.slice(0,140);persist();renderPmOut()});
-document.getElementById('pmMood').addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.mood=e.target.value.slice(0,140);persist();renderPmOut()});
-document.getElementById('pmNeg').addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.neg=e.target.value;persist();renderPmOut()});
+{const _a=document.getElementById('pmAction');if(_a)_a.addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.action=e.target.value.slice(0,140);persist();renderPmOut()})}
+{const _m=document.getElementById('pmMood');if(_m)_m.addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.mood=e.target.value.slice(0,140);persist();renderPmOut()})}
+{const _g=document.getElementById('pmNeg');if(_g)_g.addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.neg=e.target.value;persist();renderPmOut()})}
 document.getElementById('anchorVariant').onclick=()=>{const n=drawerSub;if(!n||!n.anchor||n.slots){flashHint('scenes carry no variant');return}
  const m=n.anchor.match(/^(CHAR|LOC|PROP|SHOT)-([A-Z]{2,4})-([A-Z])(-[A-Za-z]{1,12})?$/);
  if(!m){flashHint('anchor format not variantable');return}
@@ -920,12 +904,14 @@ function closeProjectModal(){document.getElementById('projModal').hidden=true}
 let pmTarget=null;
 function openPromptModal(n,hint){if(!n)return;drawerSub=n;pmTarget=n;const ps=n.promptState||(n.promptState={sels:{},action:'',mood:'',neg:NEG_DEFAULT,model:'universal'});
  if(hint&&hint.tab)pmTab=hint.tab;
- document.getElementById('pmTitle').textContent='Generate prompt — '+((n&&n.title)||(n&&n.label)||'card');
- document.getElementById('pmAnchor').textContent=(n.anchor||n.scAnchor||'no anchor')+' · '+(n.note||n.title||n.label||'');
+ {const _t=document.getElementById('pmTitle');if(_t)_t.textContent='Generate prompt — '+((n&&n.title)||(n&&n.label)||'card')}
+ {const _a=document.getElementById('pmAnchor');if(_a)_a.textContent=(n.anchor||n.scAnchor||'no anchor')+' · '+(n.note||n.title||n.label||'')}
  renderPmFields();renderPmTabs();syncPmInputs();renderPmOut();
- const pm=document.getElementById('promptModal');pm.hidden=false;requestAnimationFrame(()=>requestAnimationFrame(()=>pm.classList.add('open')));
+ {const dw=document.getElementById('drawerEdit'),dr=document.getElementById('drawer');
+  if(dw&&dr){if(!dr.classList.contains('open')){dr.classList.add('open');document.getElementById('scrim').classList.add('open')}dr.classList.add('editing')}
+  else{const pm=document.getElementById('promptModal');if(pm){pm.hidden=false;requestAnimationFrame(()=>requestAnimationFrame(()=>pm.classList.add('open')))}}}
  if(hint&&hint.tab)pmFocusField(hint.tab,hint.k||null)}
-function closePromptModal(){const pm=document.getElementById('promptModal');if(!pm)return;pm.classList.remove('open');pmTarget=null;try{if(document.getElementById('drawer').classList.contains('open'))document.getElementById('drawerClose').focus({preventScroll:true})}catch(e){}}
+function closePromptModal(){const dr=document.getElementById('drawer');if(dr)dr.classList.remove('editing');const pm=document.getElementById('promptModal');if(pm)pm.classList.remove('open');pmTarget=null;try{if(dr&&dr.classList.contains('open'))document.getElementById('drawerClose').focus({preventScroll:true})}catch(e){}}
 const EXTRA_OPTS={
  aspect_ratio:{label:'Aspect ratio',values:['16:9 widescreen','2:3 vertical','4:5 portrait','1:1 square','21:9 ultrawide'],def:0},
  film_stock:{label:'Film stock',desc:'Empty = clean digital capture; pick a stock to bake in its look.',values:['','Kodak Portra 400','Kodak Vision3 500T','Fujifilm 400H','Ilford HP5 black and white','Polaroid 600'],def:0}};
@@ -959,7 +945,7 @@ function renderPmFields(){const host=document.getElementById('pmFields');host.in
  else if(pmTab==='env'){pmFieldText(g,'env_setting','setting','highland grassland, softly rolling hills');pmFieldText(g,'env_props','props','one or two cashmere goats beside her')}
  else if(pmTab==='neg'){pmFieldText(g,'neg','negative','no text, logos, illustration, or CG');const d=document.createElement('div');d.className='tdesc';d.style.marginLeft='0';d.textContent='Default: '+NEG_DEFAULT;g.appendChild(d)}
  if(!g.children.length)g.innerHTML='<div class="sub">All project tokens in this section are disabled — enable them in ⚙ project.</div>'}
-function syncPmInputs(){const ps=pmTarget?pmTarget.promptState||{}:{};try{document.getElementById('pmAction').value=ps.action||'';document.getElementById('pmMood').value=ps.mood||'';document.getElementById('pmNeg').value=(ps.neg!=null?ps.neg:NEG_DEFAULT)}catch(e){}}
+function syncPmInputs(){const ps=pmTarget?pmTarget.promptState||{}:{};try{const _a=document.getElementById('pmAction');if(_a)_a.value=ps.action||'';const _m=document.getElementById('pmMood');if(_m)_m.value=ps.mood||'';const _g=document.getElementById('pmNeg');if(_g)_g.value=(ps.neg!=null?ps.neg:NEG_DEFAULT)}catch(e){}}
 function renderPmTabs(){}
 let pmJsonText='';
 function jK(t){const s=document.createElement('span');s.className='jkey';s.textContent='"'+t+'"';return s}
