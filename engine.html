@@ -109,7 +109,7 @@ header .by{color:var(--mut);font-size:.8rem}
 .modal .frow{display:flex;gap:.6rem;align-items:center;margin:.6rem 0 .2rem}
 .modal .frow button{background:#222a36;border:1px solid #313b4a;border-radius:7px;color:#e8eaf0;padding:.35rem .9rem;cursor:pointer;font-size:.82rem}
 .modal .frow button:hover{border-color:var(--acc)}
-#pmCopy,#projClose{background:#e8830c!important;border:0!important;color:#111!important;font-weight:700}
+#projClose{background:#e8830c!important;border:0!important;color:#111!important;font-weight:700}
 #editPanel{position:fixed;top:0;bottom:0;right:360px;width:min(560px,calc(100vw - 360px));background:var(--panel);border-left:1px solid rgba(232,234,240,.12);border-right:0;z-index:70;transform:translateX(40px);opacity:0;pointer-events:none;visibility:hidden;transition:transform .32s cubic-bezier(0.22,1,0.36,1),opacity .24s ease-out,visibility 0s .32s;display:flex;flex-direction:column}
 #drawer.editing ~ #editPanel{transform:none;opacity:1;pointer-events:auto;visibility:visible;transition:transform .32s cubic-bezier(0.22,1,0.36,1),opacity .24s ease-out}
 #drawerEdit{display:flex;flex-direction:column;min-height:0;flex:1;min-width:0}
@@ -207,7 +207,7 @@ header .by{color:var(--mut);font-size:.8rem}
 <div id="shotProps" hidden><label>chapter <select id="shotCh"></select></label><label>scene <select id="shotSc"></select></label><span>lane <b id="shotLane">—</b></span></div>
 <div id="slotBtns" hidden><button id="goShot">go to shot</button><button id="removeSlot">remove</button></div>
 <div id="promptWrap"><div id="promptPrev" title="Live prompt preview"></div>
-<div id="promptBtnRow"><button id="copyStub">copy stub</button><button id="pmCopy">copy</button></div></div>
+<div id="promptBtnRow"><button id="copyStub">copy</button></div></div>
 <p class="note" style="color:var(--mut);font-size:.78rem;margin:.5rem 0 0">Anchors lead every prompt. Domains enabled in ⚙ project feed the prompt; disabled domains contribute nothing.</p>
 <button id="drawerDel">delete</button>
 </div>
@@ -550,7 +550,6 @@ document.getElementById('projClose').onclick=()=>closeProjectModal();
 document.getElementById('projModal').addEventListener('click',e=>{if(e.target.id==='projModal')closeProjectModal()});
 document.getElementById('copyStub').onclick=()=>{if(drawerSub)copyText(stubFor(drawerSub),'stub copied — anchor first');else flashHint('open a card or scene first')};
 {const _b=document.getElementById('pmBack');if(_b)_b.onclick=()=>closePromptModal()}
-{const _c=document.getElementById('pmCopy');if(_c)_c.onclick=()=>{if(pmJsonText)copyText(pmJsonText,'prompt JSON copied')}}
 document.getElementById('drawerClose').onclick=()=>closeDrawer();
 {const _a=document.getElementById('pmAction');if(_a)_a.addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.action=e.target.value.slice(0,140);persist();renderPmOut()})}
 {const _m=document.getElementById('pmMood');if(_m)_m.addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.mood=e.target.value.slice(0,140);persist();renderPmOut()})}
