@@ -286,9 +286,9 @@ function restore(){const r=Store.load();
   const mx=Math.max(0,...c.scenes.map(s=>s.id));c.nextScene=Math.max(c.nextScene||1,mx+1)}
  if(VIEW_META[view])loadView(view);if(view==='scenes'){const _nc=activeChapter();conns=(_nc&&_nc.conns)||[]}ensureAnchorsAll();syncShotMeta();
  syncUI()}
-function loadImage(n,silent){if(!n.imgUrl){n.img=null;return}const im=new Image();
- im.onload=()=>{n.img=im;fitCard(n);draw();if(!silent)persist()};
- im.onerror=()=>{n.imgUrl='';n.img=null;draw();if(!silent)alert('Could not load that image URL.')};
+function loadImage(n,silent){if(!n.imgUrl){n.img=null;if(n)n.imgErr='';return}const im=new Image();n.imgErr='';
+ im.onload=()=>{n.img=im;n.imgErr='';fitCard(n);draw();if(!silent)persist()};
+ im.onerror=()=>{n.imgErr=n.imgUrl;n.imgUrl='';n.img=null;draw();if(!silent)flashHint('could not load that image — check the URL or uploads/ file')};
  im.src=n.imgUrl;n.img=im;draw()}
 
 /* ---- canvas ---- */
@@ -498,10 +498,13 @@ function openDrawer(n){drawerSub=n;
  document.getElementById('slotBtns').hidden=true;document.getElementById('shotProps').hidden=true;document.getElementById('drawerDel').style.display='';
  drawerTitle.textContent=n.title||n.label||'card';
  const stills=document.getElementById('drawerStills');stills.innerHTML='';
+ let imgErr=document.getElementById('drawerImgErr');if(!imgErr){imgErr=document.createElement('p');imgErr.id='drawerImgErr';imgErr.style.cssText='color:var(--mut);font-size:.85rem;margin:.2rem 1.1rem 0;display:none';drawerImg.after(imgErr)}
+ imgErr.style.display='none';
  if(n.images){drawerImg.style.display='none';
   if(!n.images.length)stills.innerHTML='<p style="color:var(--mut);font-size:.85rem">No stills yet — select the scene, then 🖼 image or 🔗 url.</p>';
   for(const im of n.images){const e=document.createElement('img');e.src=im.url;e.alt='';stills.appendChild(e)}}
- else{if(n.imgUrl){drawerImg.style.display='block';drawerImg.src=n.imgUrl}else drawerImg.style.display='none'}
+ else{if(n.imgUrl){drawerImg.style.display='block';drawerImg.onerror=()=>{drawerImg.style.display='none';imgErr.style.display='block';imgErr.textContent='could not load '+(n.imgUrl.length>80?n.imgUrl.slice(0,80)+'…':n.imgUrl)+' — check the URL or uploads/ file'};drawerImg.src=n.imgUrl}else{drawerImg.style.display='none';drawerImg.removeAttribute('src')}}
+ if(n.imgErr&&!n.images){imgErr.style.display='block';imgErr.textContent='could not load '+(n.imgErr.length>80?n.imgErr.slice(0,80)+'…':n.imgErr)+' — check the URL or uploads/ file'}
  if(n.kind==='shot'&&view==='shots')populateShotProps(n);
  renderAnchorRow(n);renderPromptPreview(n);
  drawer.classList.add('open');scrim.classList.add('open')}
@@ -892,6 +895,8 @@ function buildPromptJSON(n){const t=targetOf(n);if(!t.anchor)return null;
  const EX=(id)=>{const o=EXTRA_OPTS[id];if(!o)return'';const i=(ps&&ps.sels&&ps.sels[id]!=null)?ps.sels[id]:o.def;return o.values[i]||''};
  const lens=[TK('focal_length'),TK('lens_type')].filter(Boolean).join(', ');
  const o={anchor:t.anchor};
+ const _img=(n&&n.images&&n.images[0]&&n.images[0].url)||(n&&n.imgUrl)||'';
+ if(_img)o.image=_img;
  o.subject={descriptor:(D('descriptor')||t.entity),expression:D('expression'),action:(D('action')||((ps&&ps.action||'').trim())),mood:(D('mood')||((ps&&ps.mood||'').trim())),wardrobe:{top:D('wardrobe_top'),bottom:D('wardrobe_bottom'),footwear:D('wardrobe_feet')}};
  o.cinematography={framing:{shot_size:TK('shot_scale'),aspect_ratio:EX('aspect_ratio'),composition:TK('composition'),subject_scale:D('subject_scale'),visibility:D('visibility')},camera:{position:D('camera_position'),angle:TK('camera_angle'),movement:D('movement'),lens:lens,aperture:TK('aperture'),duration:D('duration')}};
  o.capture={camera_system:TK('camera_body'),film_stock:EX('film_stock'),shutter_speed:TK('shutter_speed'),iso:TK('iso'),texture:TK('grain_texture')};
@@ -1010,6 +1015,7 @@ function jSec(host,dep,name,map,step,node){jLine(host,dep,[jK(name),jC(': {')],s
 function buildJsonDom(host,n,node,step){const o=buildPromptJSON(n);if(!o)return null;
  host.appendChild(document.createTextNode('{'));
  jLine(host,1,[jK('anchor'),jC(': '),jValEl(null,null,o.anchor,false),jC(',')],step);
+ if(o.image!=null)jLine(host,1,[jK('image'),jC(': '),jValEl(null,null,o.image,false),jC(',')],step);
  jLine(host,1,[jK('subject'),jC(': {')],step);
  for(const[k,v]of[['descriptor',o.subject.descriptor],['expression',o.subject.expression],['action',o.subject.action],['mood',o.subject.mood]])jLine(host,2,[jK(k),jC(': '),jValEl('subject',k,v,1,node),jC(',')],step);
  jLine(host,2,[jK('wardrobe'),jC(': {')],step);
