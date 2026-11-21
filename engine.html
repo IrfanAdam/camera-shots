@@ -33,6 +33,9 @@ header .by{color:var(--mut);font-size:.8rem}
 #toastBtn{background:#e8830c;border:0;border-radius:7px;color:#111;font-weight:700;padding:.32rem .8rem;cursor:pointer;font-size:.82rem}
 #drawerDel{background:transparent;border:1px solid #e5484d;color:#e5484d;border-radius:7px;padding:.3rem .8rem;cursor:pointer;font-size:.8rem;margin-top:.6rem}
 #drawerDel:hover{background:#e5484d;color:#fff}
+#drawerDel.armed{background:#e5484d;border-color:#e5484d;color:#fff;font-weight:700}
+#drawerDelCancel{background:transparent;border:1px solid var(--acc);color:var(--acc);border-radius:7px;padding:.3rem .8rem;cursor:pointer;font-size:.8rem;margin-top:.6rem;margin-left:.5rem}
+#drawerDelCancel:hover{background:var(--acc);color:#111}
 #shotProps{display:flex;gap:.7rem;align-items:center;font-size:.8rem;color:#aab2c2;margin:.5rem 0;flex-wrap:wrap}
 #shotProps[hidden]{display:none}
 #shotProps select{background:#222a36;color:#e8eaf0;border:1px solid #313b4a;border-radius:6px;padding:.25rem .4rem;font-size:.8rem;max-width:130px}
@@ -180,7 +183,7 @@ header .by{color:var(--mut);font-size:.8rem}
 <button id="imgBtn" title="Upload an image onto the hovered card">🖼 image</button>
 <button id="urlBtn" title="Embed an image via URL or repo path">🔗 url</button>
 <button id="projBtn" title="Project proprietary tokens — enable domains used in prompts">⚙ project</button>
-<span class="menu"><button id="dots" title="more">⋯</button><span id="menuDrop" hidden><button id="delSel">delete selected</button><button id="undoBtn">undo</button><button id="clear">clear canvas</button><div id="assetList"></div></span></span>
+<span class="menu"><button id="dots" title="more">⋯</button><span id="menuDrop" hidden><button id="undoBtn">undo</button><button id="clear">clear canvas</button><div id="assetList"></div></span></span>
 </span>
 </header>
 <div id="main"><nav id="side">
@@ -209,7 +212,7 @@ header .by{color:var(--mut);font-size:.8rem}
 <div id="promptWrap"><div id="promptPrev" title="Live prompt preview"></div>
 <div id="promptBtnRow"><button id="copyStub">copy</button></div></div>
 <p class="note" style="color:var(--mut);font-size:.78rem;margin:.5rem 0 0">Anchors lead every prompt. Domains enabled in ⚙ project feed the prompt; disabled domains contribute nothing.</p>
-<button id="drawerDel">delete</button>
+<button id="drawerDel">delete</button><button id="drawerDelCancel" hidden>cancel</button>
 </div>
 </aside>
 <aside id="editPanel" aria-label="prompt editor"><div id="drawerEdit"><div class="edithead"><button id="pmBack" title="dismiss">close</button><div class="pmtitle">prompt</div></div><div class="editbody"><nav class="pm-nav"><div id="pmNav"></div></nav><div id="pmMid" class="pm-mid"><div id="pmFields"></div></div></div></div></aside>
@@ -218,7 +221,7 @@ header .by{color:var(--mut);font-size:.8rem}
 <div id="projDomains"></div>
 <div class="frow"><button id="projClose" class="modalClose">done</button><span class="note" id="projNote"></span></div>
 </div></div>
-<div class="hint" id="hint">hover a card for dots · drag dot-to-dot to link · click a card for detail · Del deletes · Ctrl+Z undoes · double-click renames</div>
+<div class="hint" id="hint">hover a card for dots · drag dot-to-dot to link · click a card for detail · Ctrl+Z undoes · double-click renames</div>
 <div id="toast" hidden><span id="toastMsg"></span><button id="toastBtn">Undo</button></div>
 <script>
 const cv=document.getElementById('cv'),ctx=cv.getContext('2d'),hintEl=document.getElementById('hint');
@@ -468,8 +471,7 @@ cv.addEventListener('pointerup',e=>{if(view==='scenes'){const _p=pos(e),_w=s2w(_
 cv.addEventListener('dblclick',e=>{clearTimeout(clickT);const[mx,my]=pos(e);if(view==='scenes'){const _w=s2w(mx,my);const s=sceneAt(_w.x,_w.y);if(s)renameScene(s);return}const _dw=s2w(mx,my),n=at(_dw.x,_dw.y);if(!n)return;
  if(e.shiftKey)editNote(n);else editLabel(n)});
 addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();closeShotPicker();hidePicker();closeProjectModal();closePromptModal();selConn=null;pending=null;panDrag=null;draw()}
- if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();undo();return}
- if((e.key==='Delete'||e.key==='Backspace')){delSelected()}});
+ if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();undo();return}});
 /* ---- toolbar ---- */
 const filePick=document.getElementById('filePick');let pickTarget=null;
 function toolbarCard(){if(view==='scenes'){if(!selStrip){flashHint('select a scene first');return null}return selStrip}const t=hoverNode||selected;if(!t||!nodeById(t.id)){flashHint('hover a card first');return null}return t}
@@ -493,12 +495,11 @@ document.getElementById('addNode').onclick=()=>addNode();
 document.getElementById('clear').onclick=()=>{menuDrop.hidden=true;
  if(view==='scenes'){const ch=activeChapter();if(ch.scenes.length&&confirm('Clear this chapter?')){snap();ch.scenes=[];selStrip=null;persist();draw()}return}
  if((nodes.length||conns.length)&&confirm('Clear the canvas?')){snap();nodes=[];conns=[];selected=null;selConn=null;pending=null;hidePicker();Store.clear();draw()}};
-document.getElementById('delSel').onclick=()=>delSelected();
 document.getElementById('undoBtn').onclick=()=>{menuDrop.hidden=true;undo()};
 /* ---- drawer ---- */
 const drawer=document.getElementById('drawer'),scrim=document.getElementById('scrim'),drawerImg=document.getElementById('drawerImg'),drawerTitle=document.getElementById('drawerTitle');
 let drawerSub=null;
-function openDrawer(n){drawerSub=n;
+function openDrawer(n){drawerSub=n;disarmDrawerDel();
  document.getElementById('slotBtns').hidden=true;document.getElementById('shotProps').hidden=true;document.getElementById('drawerDel').style.display='';
  drawerTitle.textContent=n.title||n.label||'card';
  const stills=document.getElementById('drawerStills');stills.innerHTML='';
@@ -517,7 +518,7 @@ function openSlotDrawer(shotId,s,lane){const sh=shotById(shotId);if(!sh){selectS
  document.getElementById('slotBtns').hidden=false;document.getElementById('drawerDel').style.display='none';
  document.getElementById('goShot').onclick=()=>{closeDrawer();selectShot(shotId)};
  document.getElementById('removeSlot').onclick=()=>{unassignSlot(s,shotId);closeDrawer()}}
-function closeDrawer(){drawer.classList.remove('open');drawer.classList.remove('editing');scrim.classList.remove('open');pmTarget=null}
+function closeDrawer(){disarmDrawerDel();drawer.classList.remove('open');drawer.classList.remove('editing');scrim.classList.remove('open');pmTarget=null}
 function populateShotProps(n){const sp=document.getElementById('shotProps'),chS=document.getElementById('shotCh'),scS=document.getElementById('shotSc');
  sp.hidden=false;chS.innerHTML='';
  for(const c of(SCENES.chapters||[])){const o=document.createElement('option');o.value=c.id;o.textContent=c.name||('Chapter '+c.id);chS.appendChild(o)}
@@ -540,10 +541,15 @@ function moveShot(shot,chId,scId){const ch=(SCENES.chapters||[]).find(c=>c.id===
  sc.slots=sc.slots||[];sc.slots.push({shot:shot.id,lane:L});
  shot.ch=chId;shot.sc=scId;shot.ln=L;persist();draw();populateShotProps(shot)}
 document.getElementById('drawerX').onclick=closeDrawer;scrim.onclick=closeDrawer;
-document.getElementById('drawerDel').onclick=()=>{const n=drawerSub;
+let drawerDelArmed=false;
+function disarmDrawerDel(){drawerDelArmed=false;const b=document.getElementById('drawerDel'),c=document.getElementById('drawerDelCancel');if(b){b.classList.remove('armed');b.textContent='delete'}if(c)c.hidden=true}
+function armDrawerDel(){drawerDelArmed=true;const b=document.getElementById('drawerDel'),c=document.getElementById('drawerDelCancel');if(b){b.classList.add('armed');b.textContent='confirm delete?'}if(c)c.hidden=false}
+document.getElementById('drawerDel').onclick=()=>{if(!drawerDelArmed){armDrawerDel();return}const n=drawerSub;disarmDrawerDel();
  if(n&&n.slots&&view==='scenes'&&activeChapter().scenes.includes(n)){selStrip=n;delSelected();return}
  if(n&&n.id!=null&&view!=='scenes'&&nodeById(n.id)){selected=n;delSelected();return}
  flashHint('nothing to delete')};
+document.getElementById('drawerDelCancel').onclick=()=>{disarmDrawerDel()};
+document.addEventListener('pointerdown',e=>{if(drawerDelArmed&&!(e.target&&e.target.closest&&e.target.closest('#drawerDel,#drawerDelCancel')))disarmDrawerDel()},true);
 /* ---- project + prompt wiring ---- */
 document.getElementById('projBtn').onclick=()=>openProjectModal();
 document.getElementById('projClose').onclick=()=>closeProjectModal();
