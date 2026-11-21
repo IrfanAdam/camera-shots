@@ -79,7 +79,11 @@ header .by{color:var(--mut);font-size:.8rem}
 #anchorRow button:hover{border-color:var(--acc);color:var(--ink)}
 #copyStub{background:transparent;border:1px solid #313b4a;border-radius:7px;color:#e8eaf0;padding:.4rem .9rem;cursor:pointer;font-size:.83rem;margin:.4rem 0}
 #copyStub:hover{border-color:var(--acc)}
-#promptPrev{background:#0b0e13;border:1px solid #262d38;border-radius:8px;padding:.6rem .7rem;font:11px/1.5 ui-monospace,Menlo,monospace;color:#c8cfdb;white-space:pre;margin:.4rem 0 .7rem;max-height:34vh;overflow:auto}
+#promptPrev{background:#0b0e13;border:1px solid #262d38;border-radius:8px;padding:.6rem .7rem;padding-top:2.3rem;font:11px/1.5 ui-monospace,Menlo,monospace;color:#c8cfdb;white-space:pre;margin:.4rem 0 .7rem;max-height:34vh;overflow:auto}
+#promptWrap{position:relative}
+#promptBtnRow{position:absolute;top:.45rem;right:.55rem;display:flex;gap:.4rem;margin:0}
+#promptBtnRow #copyStub{margin:0}
+#anchorRow code{cursor:pointer}
 .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);z-index:90}
 .modal[hidden]{display:none}
 .modal .box{background:#161b22;border:1px solid #313b4a;border-radius:12px;width:min(560px,94vw);max-height:88vh;overflow:auto;padding:1rem 1.2rem}
@@ -199,11 +203,11 @@ header .by{color:var(--mut);font-size:.8rem}
 <img id="drawerImg" alt="">
 <div id="drawerStills"></div>
 <div class="dp"><button id="drawerClose" title="dismiss">×</button><h3 id="drawerTitle"></h3>
-<div id="anchorRow" hidden><code id="anchorCode"></code><button id="anchorVariant" title="Create variant (next letter)">+ variant</button><button id="anchorAssign" title="Assign a different anchor">assign</button></div>
+<div id="anchorRow" hidden><code id="anchorCode" title="copy anchor id"></code><button id="anchorVariant" title="Create variant (next letter)">+ variant</button><button id="anchorAssign" title="Assign a different anchor">assign</button></div>
 <div id="shotProps" hidden><label>chapter <select id="shotCh"></select></label><label>scene <select id="shotSc"></select></label><span>lane <b id="shotLane">—</b></span></div>
 <div id="slotBtns" hidden><button id="goShot">go to shot</button><button id="removeSlot">remove</button></div>
-<div id="promptPrev" title="Live prompt preview"></div>
-<div><button id="copyStub">copy stub</button><button id="pmCopy">copy</button></div>
+<div id="promptWrap"><div id="promptPrev" title="Live prompt preview"></div>
+<div id="promptBtnRow"><button id="copyStub">copy stub</button><button id="pmCopy">copy</button></div></div>
 <p class="note" style="color:var(--mut);font-size:.78rem;margin:.5rem 0 0">Anchors lead every prompt. Domains enabled in ⚙ project feed the prompt; disabled domains contribute nothing.</p>
 <button id="drawerDel">delete</button>
 </div>
@@ -567,6 +571,7 @@ document.getElementById('anchorAssign').onclick=()=>{const n=drawerSub;if(!n)ret
  if(!anchorValid(a)){flashHint('bad anchor format');return}
  if(a!==cur&&anchorTaken(a)){flashHint('anchor taken');return}
  snap();if(n.slots)n.scAnchor=a;else n.anchor=a;persist();draw();renderAnchorRow(n);renderPromptPreview(n);flashHint('anchor set: '+a)};
+document.getElementById('anchorCode').onclick=()=>{const t=document.getElementById('anchorCode').textContent.trim();if(!t||t==='no anchor'){flashHint('no anchor to copy');return}copyText(t,'anchor '+t+' copied')};
 /* ---- overflow menu ---- */
 const dots=document.getElementById('dots'),menuDrop=document.getElementById('menuDrop');
 dots.onclick=e=>{e.stopPropagation();if(menuDrop.hidden)renderAssetMenu();menuDrop.hidden=!menuDrop.hidden};
@@ -1051,10 +1056,11 @@ function renderAnchorRow(n){const row=document.getElementById('anchorRow'),code=
  row.hidden=false;code.textContent=a;
  document.getElementById('anchorVariant').style.display=(n&&n.slots)?'none':'';
  document.getElementById('anchorAssign').style.display=''}
-function renderPromptPreview(n){const prev=document.getElementById('promptPrev');prev.innerHTML='';
+function renderPromptPreview(n){const prev=document.getElementById('promptPrev');prev.innerHTML='';pmJsonText='';
  if(!n)return;
  const o=buildJsonDom(prev,n,n,10);
- if(!o)prev.textContent='⚠ assign an anchor first (drawer → assign).'}
+ if(!o){prev.textContent='⚠ assign an anchor first (drawer → assign).';return}
+ pmJsonText=JSON.stringify(o,null,2)}
 function renderAssetMenu(){const host=document.getElementById('assetList');host.innerHTML='';
  const h=document.createElement('div');h.className='ah';host.appendChild(h);
  const pick=(label,n,fn)=>{const b=document.createElement('button');const an=n.anchor||n.scAnchor||'?';b.innerHTML='';const bb=document.createElement('b');bb.textContent=an;b.appendChild(bb);b.appendChild(document.createTextNode(' '+(label||'')));b.onclick=e=>{e.stopPropagation();fn()};host.appendChild(b)};
