@@ -253,3 +253,29 @@
 - Phase 2 (2-pane editor + staggered entrance) shipped 3a2e5f6
 - Phase 3 (close affordance + dim-input polish + cleanup) shipped b59260b
 - Honesty note: the Phase 2 editor screenshot was cross-contaminated by a sibling tab-hijack and the visual 2-pane proof was re-captured green in Phase 3 (p3-editor-close-hover.png, isolated session).
+
+---
+
+## Revision R1 merged drawer
+
+> Scope: append-only revision; existing content above is not rewritten.
+
+**Target design — one unified drawer:**
+- The user SEES the prompt in the drawer: image on top, clickable JSON below it, with `copy stub` plus `copy prompt` in the prompt footer.
+- The user EDITS via two extra panes (category nav plus fields) that animate in merged with the drawer on value click, and collapse via close/Esc.
+- Floating `#promptModal` is retired.
+
+**Contract table:**
+
+| Area | Kept | Deleted / retired | Notes |
+|------|------|-------------------|-------|
+| Ids kept | `drawerEdit`, `pmNav`, `pmFields`, `pmBack` (= close), `pmCopy` beside `copyStub` | — | `pmBack` reads as close; `pmCopy` sits beside `copyStub` in prompt footer |
+| Ids / blocks deleted | — | `promptModal` block, `pmTitle` / `pmAnchor`, modal CSS | Floating modal shell and its title/anchor header go away with it |
+| Entry points kept | `openPromptModal` / `closePromptModal` / `renderPmOut` / `renderPromptPreview` / `pmJsonText` / `persist` | — | Same call surface; re-homed onto drawer panes |
+| Drawer `.editing` | width `min(760px, 94vw)` | — | Drawer widens when edit panes are open |
+| Edit fade | `.22s ease .06s` | — | Nav + fields fade/slide merged with drawer on value click |
+
+**Lane split:**
+- Lane A — shell markup + CSS snapshot patch.
+- Lane B — wiring script snapshot patch.
+- Integration applies A then B with `patch --forward`, verifies isolated, commits.
