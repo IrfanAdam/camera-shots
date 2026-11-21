@@ -503,7 +503,7 @@ function openSlotDrawer(shotId,s,lane){const sh=shotById(shotId);if(!sh){selectS
  document.getElementById('slotBtns').hidden=false;document.getElementById('drawerDel').style.display='none';
  document.getElementById('goShot').onclick=()=>{closeDrawer();selectShot(shotId)};
  document.getElementById('removeSlot').onclick=()=>{unassignSlot(s,shotId);closeDrawer()}}
-function closeDrawer(){drawer.classList.remove('open');drawer.classList.remove('editing');scrim.classList.remove('open')}
+function closeDrawer(){drawer.classList.remove('open');drawer.classList.remove('editing');scrim.classList.remove('open');pmTarget=null}
 function populateShotProps(n){const sp=document.getElementById('shotProps'),chS=document.getElementById('shotCh'),scS=document.getElementById('shotSc');
  sp.hidden=false;chS.innerHTML='';
  for(const c of(SCENES.chapters||[])){const o=document.createElement('option');o.value=c.id;o.textContent=c.name||('Chapter '+c.id);chS.appendChild(o)}
