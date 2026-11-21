@@ -106,10 +106,10 @@ header .by{color:var(--mut);font-size:.8rem}
 .modal .frow button{background:#222a36;border:1px solid #313b4a;border-radius:7px;color:#e8eaf0;padding:.35rem .9rem;cursor:pointer;font-size:.82rem}
 .modal .frow button:hover{border-color:var(--acc)}
 #pmCopy,#projClose{background:#e8830c!important;border:0!important;color:#111!important;font-weight:700}
-#editPanel{position:fixed;top:0;bottom:0;right:360px;width:min(440px,calc(100vw - 360px));background:var(--panel);border-left:1px solid rgba(232,234,240,.12);border-right:0;z-index:70;transform:translateX(40px);opacity:0;pointer-events:none;visibility:hidden;transition:transform .32s cubic-bezier(0.22,1,0.36,1),opacity .24s ease-out,visibility 0s .32s;display:flex;flex-direction:column}
+#editPanel{position:fixed;top:0;bottom:0;right:360px;width:min(560px,calc(100vw - 360px));background:var(--panel);border-left:1px solid rgba(232,234,240,.12);border-right:0;z-index:70;transform:translateX(40px);opacity:0;pointer-events:none;visibility:hidden;transition:transform .32s cubic-bezier(0.22,1,0.36,1),opacity .24s ease-out,visibility 0s .32s;display:flex;flex-direction:column}
 #drawer.editing ~ #editPanel{transform:none;opacity:1;pointer-events:auto;visibility:visible;transition:transform .32s cubic-bezier(0.22,1,0.36,1),opacity .24s ease-out}
 #drawerEdit{display:flex;flex-direction:column;min-height:0;flex:1;min-width:0}
-@media (max-width:760px){#editPanel{right:0;width:min(440px,100vw);z-index:72;border-left:0}}
+@media (max-width:760px){#editPanel{right:0;width:min(480px,100vw);z-index:72;border-left:0}}
 .edithead{display:flex;align-items:center;gap:12px;padding:16px 20px 12px;min-height:52px}
 .edithead .pmtitle{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);line-height:1.5}
 .editbody{display:flex;gap:0;min-height:0;flex:1;overflow:hidden}
@@ -138,6 +138,13 @@ header .by{color:var(--mut);font-size:.8rem}
 #editPanel .tin:hover{border-color:var(--acc);cursor:pointer}
 #editPanel .tin:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 2px rgba(232,131,12,.18)}
 #editPanel .pmdiv{border:0;border-top:1px solid rgba(232,234,240,.10);margin:12px 0}
+#menDrop{position:fixed;z-index:120;min-width:220px;max-width:320px;max-height:240px;overflow:auto;background:var(--panel);color:var(--ink);border:1px solid rgba(232,234,240,.16);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.45);padding:4px}
+#menDrop[hidden]{display:none}
+#menDrop button{display:flex;gap:8px;align-items:baseline;width:100%;box-sizing:border-box;background:transparent;border:0;border-radius:6px;color:var(--ink);font:inherit;font-size:.82rem;text-align:left;padding:.35rem .55rem;cursor:pointer}
+#menDrop button b{color:var(--acc);font-weight:600;white-space:nowrap}
+#menDrop button.on,#menDrop button:hover{background:rgba(232,131,12,.12)}
+#menDrop .men-no{color:var(--mut);font-size:.8rem;font-style:italic;padding:.4rem .55rem}
+#promptPrev .jval.men{color:var(--acc);font-weight:600;text-decoration:underline;cursor:pointer}
 .jkey{color:#8b93a5}.jpunc{color:#4b5563}
 .jval{cursor:pointer;border-radius:4px;padding:0 2px}
 .jval:hover{background:#1b212b}
@@ -944,8 +951,12 @@ function pmFieldExtra(host,id){const o=EXTRA_OPTS[id];if(!o)return;const ps=pmTa
  sel.onchange=()=>{snap();pmTarget.promptState.sels[id]=+sel.value;persist();renderPmOut();renderPromptPreview(pmTarget)};row.appendChild(sel);host.appendChild(row);
  if(o.desc){const d=document.createElement('div');d.className='tdesc';d.textContent=o.desc;host.appendChild(d)}}
 function pmFieldText(host,k,label,ph){const ps=pmTarget.promptState||{};ps.details=ps.details||{};
- const inp=document.createElement('input');inp.className='tin';inp.dataset.k=k;inp.placeholder=label+(ph?' — '+ph:'');inp.value=ps.details[k]||'';
- inp.addEventListener('input',()=>{pmTarget.promptState.details[k]=inp.value;persist();renderPmOut();renderPromptPreview(pmTarget)});host.appendChild(inp)}
+ const inp=document.createElement('input');inp.className='tin';inp.dataset.k=k;inp.placeholder=label+(ph?' — '+ph:'');inp.value=ps.details[k]||'';inp.setAttribute('autocomplete','off');inp.setAttribute('spellcheck','false');
+ inp.addEventListener('input',()=>{pmTarget.promptState.details[k]=inp.value;persist();renderPmOut();renderPromptPreview(pmTarget);menUpdate(inp,k)});
+ inp.addEventListener('keydown',e=>{menKey(inp,k,e)});
+ inp.addEventListener('focus',()=>menUpdate(inp,k));
+ inp.addEventListener('click',()=>menUpdate(inp,k));
+ inp.addEventListener('blur',()=>{setTimeout(()=>{if(menState&&menState.inp===inp)menHide()},160)});host.appendChild(inp)}
 function pmDiv(host){const h=document.createElement('hr');h.className='pmdiv';host.appendChild(h)}
 function pmSub(host,t){const d=document.createElement('div');d.className='subh';d.textContent=t;host.appendChild(d)}
 function renderPmFields(){const host=document.getElementById('pmFields');host.innerHTML='';if(!pmTarget)return;
@@ -968,12 +979,33 @@ function jC(t){const s=document.createElement('span');s.className='jpunc';s.text
 function jLine(host,dep,items,step){const d=document.createElement('div');d.style.marginLeft=(dep*(step||14))+'px';items.forEach(p=>d.appendChild(typeof p==='string'?document.createTextNode(p):p));host.appendChild(d)}
 function pmFocusField(tab,k){if(!tab)return;if(pmTab!==tab){pmTab=tab;renderPmFields()}
  requestAnimationFrame(()=>{if(!k)return;const el=document.querySelector('#pmFields [data-k="'+k+'"]');if(el){el.scrollIntoView({block:'nearest',behavior:'smooth'});el.classList.remove('jflash');void el.offsetWidth;el.classList.add('jflash');if(el.focus)try{el.focus({preventScroll:true})}catch(e){}}})}
+/* ---- @-mention asset references in free prompt fields (plain '@ANCHOR ' text, zero schema change) ---- */
+function mentionAssets(){const out=[];try{for(const k of['cast','props','locations']){const src=(k===view&&VIEW_META[view]&&typeof nodes!=='undefined')?nodes:((VIEWS[k]||{}).nodes||[]);for(const n of(src||[])){if(!n||!n.anchor)continue;out.push({anchor:n.anchor,label:n.label||n.title||'card',node:n})}}}catch(e){}return out}
+function findAnchorNode(a){if(!a)return null;try{if(VIEW_META[view]&&typeof nodes!=='undefined')for(const n of(nodes||[])){if(n&&(n.anchor===a||n.scAnchor===a))return n}}catch(e){}try{for(const k of Object.keys(VIEWS||{})){const V=VIEWS[k];for(const n of((V&&V.nodes)||[])){if(n&&(n.anchor===a||n.scAnchor===a))return n}}}catch(e){}try{for(const c of allChapters()){if(!c)continue;if(c.chAnchor===a)return c;for(const s of(c.scenes||[]))if(s&&s.scAnchor===a)return s}}catch(e2){}return null}
+function liveNodeFor(t){if(!t)return t;try{if(t.id!=null&&typeof nodeById==='function'){const l=nodeById(t.id);if(l&&((l.anchor||null)===(t.anchor||null)))return l}}catch(e){}return t}
+const MEN_RE=/@[A-Z]{2,4}-[A-Z0-9]+(?:-[A-Za-z0-9]+)?/g;
+let menState=null;
+function menDropEl(){let d=document.getElementById('menDrop');if(!d){d=document.createElement('div');d.id='menDrop';d.hidden=true;document.body.appendChild(d)}return d}
+function menHide(){const d=document.getElementById('menDrop');if(d)d.hidden=true;menState=null}
+function menPaint(){const d=document.getElementById('menDrop');if(!d||!menState)return;const ch=d.querySelectorAll('button');for(let i=0;i<ch.length;i++)ch[i].classList.toggle('on',i===menState.idx)}
+function menInsert(inp,k,atPos,anchor){if(!inp)return;let caret=inp.value.length;try{caret=inp.selectionStart==null?inp.value.length:inp.selectionStart}catch(e){}const val=inp.value;const nv=val.slice(0,atPos)+'@'+anchor+' '+val.slice(caret);inp.value=nv;try{if(pmTarget){pmTarget.promptState.details=pmTarget.promptState.details||{};pmTarget.promptState.details[k]=nv;persist();renderPmOut();renderPromptPreview(pmTarget)}}catch(e2){}menHide();try{const nc=atPos+anchor.length+2;inp.focus();inp.setSelectionRange(nc,nc)}catch(e3){}}
+function menUpdate(inp,k){let caret=0;try{caret=inp.selectionStart==null?inp.value.length:inp.selectionStart}catch(e){caret=inp.value.length}const before=inp.value.slice(0,caret);const m=before.match(/(^|[\s\(\[,;])@([A-Za-z0-9-]*)$/);const d=menDropEl();if(!m){menHide();return}const f=(m[2]||'').toUpperCase();const atPos=caret-(m[2]||'').length-1;const list=mentionAssets().filter(a=>{if(!f)return true;return a.anchor.toUpperCase().indexOf(f)>=0||(a.label||'').toUpperCase().indexOf(f)>=0}).slice(0,8);menState={inp:inp,k:k,pos:atPos,list:list,idx:0};d.innerHTML='';if(!list.length){const no=document.createElement('div');no.className='men-no';no.textContent='no assets';d.appendChild(no)}else{list.forEach((a,i)=>{const b=document.createElement('button');b.type='button';if(i===0)b.classList.add('on');const bb=document.createElement('b');bb.textContent=a.anchor;b.appendChild(bb);b.appendChild(document.createTextNode(' '+(a.label||'')));b.addEventListener('mousedown',e=>{e.preventDefault();menInsert(inp,k,atPos,a.anchor)});b.addEventListener('mousemove',()=>{if(menState&&menState.inp===inp){menState.idx=i;menPaint()}});d.appendChild(b)})}try{const r=inp.getBoundingClientRect();d.style.left=Math.max(8,Math.min(Math.max(8,innerWidth-260),r.left))+'px';d.style.top=(r.bottom+4)+'px'}catch(e2){}d.hidden=false}
+function menKey(inp,k,e){if(!menState||menState.inp!==inp||menDropEl().hidden)return false;if(e.key==='ArrowDown'){e.preventDefault();if(menState.list.length)menState.idx=(menState.idx+1)%menState.list.length;menPaint();return true}if(e.key==='ArrowUp'){e.preventDefault();if(menState.list.length)menState.idx=(menState.idx-1+menState.list.length)%menState.list.length;menPaint();return true}if(e.key==='Enter'){e.preventDefault();if(menState.list.length)menInsert(inp,k,menState.pos,menState.list[menState.idx].anchor);else menHide();return true}if(e.key==='Escape'){e.preventDefault();e.stopPropagation();menHide();return true}return false}
+document.addEventListener('pointerdown',e=>{if(menState&&!(e.target&&e.target.closest&&(e.target.closest('#menDrop')||e.target.classList.contains('tin'))))menHide()},true);
+document.addEventListener('scroll',e=>{if(menState&&!(e.target&&e.target.closest&&e.target.closest('#menDrop')))menHide()},true);
 function jValEl(tab,k,v,free,node){const s=document.createElement('span');
  s.className='jval '+(free?'free':'tok')+((v==null||v==='')?' empty':'')+((!tab||!k)?' static':'');
- s.textContent=(v==null||v==='')?'""':'"'+v+'"';
  if(tab&&k){s.title=(free?'your words — click to edit in ':'project token — click to edit in ')+tab;
   s.onclick=()=>{if(node&&node!==pmTarget)openPromptModal(node,{tab:tab,k:k});else pmFocusField(tab,k)}}
- return s}
+ if(v==null||v===''){s.textContent='""';return s}
+ if(!(free&&tab&&k)){s.textContent='"'+v+'"';return s}
+ s.appendChild(document.createTextNode('"'));const str=String(v);let last=0,m;MEN_RE.lastIndex=0;
+ while((m=MEN_RE.exec(str))){if(m.index>last)s.appendChild(document.createTextNode(str.slice(last,m.index)));
+  const tok=m[0];let tgt=null;try{tgt=findAnchorNode(tok.slice(1))}catch(e){tgt=null}
+  if(tgt){const b=document.createElement('span');b.className='jval tok men';b.textContent=tok;b.title='open '+tok.slice(1);b.onclick=e=>{e.stopPropagation();try{openDrawer(liveNodeFor(tgt))}catch(err){}};s.appendChild(b)}
+  else s.appendChild(document.createTextNode(tok));last=m.index+m[0].length}
+ if(last<str.length)s.appendChild(document.createTextNode(str.slice(last)));
+ s.appendChild(document.createTextNode('"'));return s}
 function jSec(host,dep,name,map,step,node){jLine(host,dep,[jK(name),jC(': {')],step);for(const[k,v,tab,fk,free]of map)jLine(host,dep+1,[jK(k),jC(': '),jValEl(tab,fk,v,free,node),jC(',')],step);const last=host.lastChild;if(last&&last.lastChild)last.removeChild(last.lastChild);jLine(host,dep,[jC('},')],step)}
 function buildJsonDom(host,n,node,step){const o=buildPromptJSON(n);if(!o)return null;
  host.appendChild(document.createTextNode('{'));
