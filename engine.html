@@ -107,22 +107,22 @@ header .by{color:var(--mut);font-size:.8rem}
 #promptModal.open{visibility:visible;transition-delay:0s}
 #promptModal[hidden]{display:flex;visibility:hidden}
 #promptModal.open[hidden]{visibility:visible}
-#promptModal .box{width:min(1120px,96vw);height:100vh;max-height:none;top:0;bottom:0;border-radius:0;display:flex;gap:0;padding:0;overflow:hidden;transform:translateX(105%);transition:transform .25s ease}
+#promptModal .box{width:min(760px,92vw);height:100vh;max-height:none;top:0;bottom:0;border-radius:0;display:flex;gap:0;padding:0;overflow:hidden;transform:translateX(105%);transition:transform .25s ease}
 #promptModal.open .box{transform:none}
 #pmBack{align-self:flex-start;margin:0 .8rem .5rem;background:transparent;border:0;color:#8b93a5;font-size:.84rem;cursor:pointer;padding:.15rem 0;text-align:left;width:auto}
 #pmBack:hover{color:#e8eaf0}
 .pm-nav{width:148px;flex:none;background:#10151c;border-right:1px solid #262d38;padding:.8rem 0;display:flex;flex-direction:column;gap:0;overflow:auto}
 .pm-nav .pmtitle{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#8b93a5;margin:0 .8rem .4rem}
-#pmNav button{background:transparent;border:0;border-left:3px solid transparent;border-radius:0;color:#aab2c2;font-size:.84rem;text-align:left;padding:.55rem .8rem;cursor:pointer;width:100%}
+#pmNav button{background:transparent;border:0;border-left:3px solid transparent;border-radius:0;color:#aab2c2;font-size:.84rem;text-align:left;padding:.55rem .8rem;cursor:pointer;width:100%;transition:transform .22s ease,opacity .22s ease;transition-delay:calc(.12s + var(--i,0)*18ms)}
+#promptModal:not(.open) #pmNav button{transform:translateX(-8px);opacity:0;transition-delay:0s}
 #pmNav button:hover{color:#e8eaf0;background:#1b212b}
 #pmNav button.on{border-left-color:var(--acc);color:var(--acc);background:#1b212b;font-weight:600}
-.pm-mid{flex:1.1;min-width:0;padding:.9rem 1rem;overflow:auto}
+.pm-mid{flex:1;min-width:0;padding:.9rem 1rem;overflow:auto;transition:transform .24s ease .04s,opacity .2s ease .04s}
+#promptModal:not(.open) .pm-mid{transform:translateX(12px);opacity:0;transition-delay:0s}
+#promptModal.open .pm-mid{transform:none;opacity:1}
 .pmhead{display:flex;align-items:center;gap:.5rem}
 .pmhead h2{font-size:1rem;margin-bottom:.1rem}
 .pm-mid h2{font-size:1rem;margin-bottom:.1rem}
-.pm-right{flex:1;min-width:0;background:#0b0e13;border-left:1px solid #262d38;position:relative;display:flex;flex-direction:column}
-#pmJson{flex:1;margin:0;padding:.9rem 1rem 1rem;overflow:auto;font:12px/1.55 ui-monospace,Menlo,monospace;white-space:pre;color:#c8cfdb}
-#pmCopyFloat{position:absolute;top:.6rem;right:.6rem;background:#e8830c;border:0;border-radius:7px;color:#111;font-weight:700;font-size:.78rem;padding:.35rem .8rem;cursor:pointer}
 #pmTabs{display:none}
 .pmdiv{border:0;border-top:1px solid #262d38;margin:.7rem 0}
 .jkey{color:#8b93a5}.jpunc{color:#4b5563}
@@ -132,9 +132,6 @@ header .by{color:var(--mut);font-size:.8rem}
 .jval.free{color:#fbbf24;font-style:italic}
 .jval.empty{opacity:.45}
 .jval.static{cursor:default}
-.jlegend{flex:none;border-top:1px solid #262d38;padding:.45rem .9rem;font-size:.72rem;color:#8b93a5;display:flex;gap:.4rem;align-items:center}
-.jlegend .sw{display:inline-block;width:.6rem;height:.6rem;border-radius:2px}
-.jlegend .sw.free{background:#fbbf24}.jlegend .sw.tok{background:#5b6472}
 @keyframes jflash{0%{background:rgba(232,131,12,.35);outline:1px solid #e8830c}100%{background:transparent}}
 .jflash{animation:jflash 1.1s ease-out 2}
 .filehide{position:fixed;left:-9999px;top:0;width:4px;height:4px;opacity:0}
@@ -203,9 +200,8 @@ header .by{color:var(--mut);font-size:.8rem}
 <div class="row"><input id="pmNeg" placeholder="negative"></div></div>
 <div class="tabs" id="pmTabs"></div>
 <div class="out" id="pmOut" hidden></div>
-<div class="frow"><button id="pmCopy" hidden>copy</button><span class="note">Anchor first, then sections. Disabled project domains are omitted.</span></div>
+<div class="frow"><button id="pmCopy">copy</button><span class="note">Anchor first, then sections. Disabled project domains are omitted.</span></div>
 </div>
-<div class="pm-right"><pre id="pmJson"></pre><button id="pmCopyFloat">copy</button><div class="jlegend"><span class="sw free"></span>your words<span class="sw tok"></span>project token · click a value to edit it</div></div>
 </div></div>
 <div class="hint" id="hint">hover a card for dots · drag dot-to-dot to link · click a card for detail · Del deletes · Ctrl+Z undoes · double-click renames</div>
 <div id="toast" hidden><span id="toastMsg"></span><button id="toastBtn">Undo</button></div>
@@ -538,7 +534,6 @@ document.getElementById('copyStub').onclick=()=>{if(drawerSub)copyText(stubFor(d
 document.getElementById('pmBack').onclick=()=>closePromptModal();
 document.getElementById('promptModal').addEventListener('click',e=>{if(e.target.id==='promptModal')closePromptModal()});
 document.getElementById('pmCopy').onclick=()=>{if(pmJsonText)copyText(pmJsonText,'prompt JSON copied')};
-document.getElementById('pmCopyFloat').onclick=()=>{if(pmJsonText)copyText(pmJsonText,'prompt JSON copied')};
 document.getElementById('drawerClose').onclick=()=>closeDrawer();
 document.getElementById('pmAction').addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.action=e.target.value.slice(0,140);persist();renderPmOut()});
 document.getElementById('pmMood').addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.mood=e.target.value.slice(0,140);persist();renderPmOut()});
@@ -950,7 +945,7 @@ function pmDiv(host){const h=document.createElement('hr');h.className='pmdiv';ho
 function pmSub(host,t){const d=document.createElement('div');d.className='subh';d.textContent=t;host.appendChild(d)}
 function renderPmFields(){const host=document.getElementById('pmFields');host.innerHTML='';if(!pmTarget)return;
  const nav=document.getElementById('pmNav');nav.innerHTML='';
- for(const[id,lab]of PM_TABS){const b=document.createElement('button');b.textContent=lab;if(pmTab===id)b.classList.add('on');b.onclick=()=>{pmTab=id;renderPmFields()};nav.appendChild(b)}
+ PM_TABS.forEach(([id,lab],i)=>{const b=document.createElement('button');b.textContent=lab;b.style.setProperty('--i',i);if(pmTab===id)b.classList.add('on');b.onclick=()=>{pmTab=id;renderPmFields()};nav.appendChild(b)});
  const g=document.createElement('div');host.appendChild(g);
  if(pmTab==='subject'){pmFieldText(g,'descriptor','subject descriptor','East Asian woman, Tibetan highland features…');pmFieldText(g,'expression','expression','quiet confidence');pmDiv(g);pmSub(g,'wardrobe');pmFieldText(g,'wardrobe_top','top','oversized sage cashmere sweater');pmFieldText(g,'wardrobe_bottom','bottom','charcoal wide-leg trousers');pmFieldText(g,'wardrobe_feet','footwear','natural understated footwear');pmDiv(g);pmSub(g,'pose');pmFieldText(g,'action','action','one hand in pocket, body slightly turned');pmFieldText(g,'mood','mood','understated elegance')}
  else if(pmTab==='cine'){pmSub(g,'framing');pmFieldTok(g,'shot_scale');pmFieldExtra(g,'aspect_ratio');pmFieldText(g,'subject_scale','subject scale','occupies 65–70% of image height');pmFieldText(g,'visibility','visibility','both legs, feet, shoes fully visible');pmFieldTok(g,'composition');pmDiv(g);pmSub(g,'camera');pmFieldText(g,'camera_position','camera position','pulled back several meters');pmFieldTok(g,'camera_angle');pmFieldTok(g,'lens_type');pmFieldTok(g,'focal_length');pmFieldTok(g,'aperture');pmFieldText(g,'movement','movement (video-deferred)','');pmFieldText(g,'duration','duration (video-deferred)','')}
@@ -1000,11 +995,11 @@ function buildJsonDom(host,n,node,step){const o=buildPromptJSON(n);if(!o)return 
  jLine(host,1,[jK('negative'),jC(': '),jValEl('neg','neg',o.negative,1,node)],step);
  host.appendChild(document.createTextNode('}'));
  return o}
-function renderPmOut(){const box=document.getElementById('pmJson');box.innerHTML='';pmJsonText='';
- if(!pmTarget){box.textContent='⚠ assign an anchor first (drawer → assign).';return}
- const o=buildJsonDom(box,pmTarget,null,14);
- if(!o){box.textContent='⚠ assign an anchor first (drawer → assign).';return}
- pmJsonText=JSON.stringify(o,null,2);
+function renderPmOut(){const box=document.getElementById('pmJson');if(box)box.innerHTML='';pmJsonText='';
+ if(!pmTarget){if(box)box.textContent='⚠ assign an anchor first (drawer → assign).';return}
+ const o=box?buildJsonDom(box,pmTarget,null,14):buildPromptJSON(pmTarget);
+ if(!o){if(box)box.textContent='⚠ assign an anchor first (drawer → assign).';return}
+ pmJsonText=JSON.stringify(o,null,2);renderPromptPreview(pmTarget);
 }
 /* ---- drawer wiring ---- */
 function renderAnchorRow(n){const row=document.getElementById('anchorRow'),code=document.getElementById('anchorCode');
