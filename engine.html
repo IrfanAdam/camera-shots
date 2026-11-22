@@ -170,6 +170,13 @@ header .by{color:var(--mut);font-size:.8rem}
 #menDrop button b{color:var(--acc);font-weight:600;white-space:nowrap}
 #menDrop button.on,#menDrop button:hover{background:rgba(232,131,12,.12)}
 #menDrop .men-no{color:var(--mut);font-size:.8rem;font-style:italic;padding:.4rem .55rem}
+/* atomic mention pills: real text lives in the input (transparent), mirror renders pills above */
+.tinwrap{position:relative;display:block;margin:0}
+input.tin.tin-pilled{color:transparent !important}
+.tin-pilled::selection{background:rgba(232,131,12,.35)}
+.tinmirror{position:absolute;overflow:hidden;white-space:pre;pointer-events:none;background:transparent;z-index:2}
+.tinmirror-in{white-space:pre;width:max-content;box-sizing:border-box}
+.tinmirror-in .atin{background:rgba(232,131,12,.14);border:1px solid rgba(232,131,12,.5);border-radius:999px;padding:0 8px;white-space:nowrap;color:#e8830c;font-weight:600}
 #promptPrev .jval.men{color:var(--acc);font-weight:600;text-decoration:underline;cursor:pointer}
 .jkey{color:#8b93a5}.jpunc{color:#4b5563}
 .jval{cursor:pointer;border-radius:4px;padding:0 2px}
@@ -1002,11 +1009,11 @@ function pmFieldText(host,k,label,ph){const ps=pmTarget.promptState||{};ps.detai
  const full=TEXT_LABELS[k]||label;
  const lab=document.createElement('label');lab.className='flab';lab.textContent=full;if(ph)lab.title=full+' — '+ph;host.appendChild(lab);
  const inp=document.createElement('input');inp.className='tin';inp.dataset.k=k;inp.placeholder=full+(ph?' — '+ph:'');inp.title=full;inp.value=ps.details[k]||'';inp.setAttribute('autocomplete','off');inp.setAttribute('spellcheck','false');
- inp.addEventListener('input',()=>{pmTarget.promptState.details[k]=inp.value;persist();renderPmOut();renderPromptPreview(pmTarget);menUpdate(inp,k);slashUpdate(inp,k)});
- inp.addEventListener('keydown',e=>{if(menKey(inp,k,e))return;slashKey(inp,k,e)});
+ inp.addEventListener('input',()=>{pmTarget.promptState.details[k]=inp.value;persist();renderPmOut();renderPromptPreview(pmTarget);menUpdate(inp,k);slashUpdate(inp,k);menPaintMirror(inp)});
+ inp.addEventListener('keydown',e=>{if(menAtomicKey(inp,k,e))return;if(menKey(inp,k,e))return;slashKey(inp,k,e)});
  inp.addEventListener('focus',()=>{menUpdate(inp,k);slashUpdate(inp,k)});
  inp.addEventListener('click',()=>{menUpdate(inp,k);slashUpdate(inp,k)});
- inp.addEventListener('blur',()=>{setTimeout(()=>{if(menState&&menState.inp===inp)menHide();if(slashState&&slashState.inp===inp){const ae=document.activeElement;if(!(ae&&ae.closest&&ae.closest('#slashPop')))slashHide()}},160)});host.appendChild(inp)}
+ inp.addEventListener('blur',()=>{setTimeout(()=>{if(menState&&menState.inp===inp)menHide();if(slashState&&slashState.inp===inp){const ae=document.activeElement;if(!(ae&&ae.closest&&ae.closest('#slashPop')))slashHide()}},160)});host.appendChild(inp);menPillify(inp)}
 function pmDiv(host){const h=document.createElement('hr');h.className='pmdiv';host.appendChild(h)}
 function pmSub(host,t){const d=document.createElement('div');d.className='subh';d.textContent=t;host.appendChild(d)}
 function renderPmFields(){const host=document.getElementById('pmFields');host.innerHTML='';if(!pmTarget)return;
@@ -1021,7 +1028,7 @@ function renderPmFields(){const host=document.getElementById('pmFields');host.in
  else if(pmTab==='env'){pmFieldText(g,'env_setting','setting','highland grassland, softly rolling hills');pmFieldText(g,'env_props','props','one or two cashmere goats beside her')}
  else if(pmTab==='neg'){pmFieldText(g,'neg','negative','no text, logos, illustration, or CG');const d=document.createElement('div');d.className='tdesc';d.style.marginLeft='0';d.textContent='Default: '+NEG_DEFAULT;g.appendChild(d)}
  if(!g.children.length)g.innerHTML='<div class="sub">All project tokens in this section are disabled — enable them in ⚙ project.</div>'}
-function syncPmInputs(){const ps=pmTarget?pmTarget.promptState||{}:{};try{const _a=document.getElementById('pmAction');if(_a)_a.value=ps.action||'';const _m=document.getElementById('pmMood');if(_m)_m.value=ps.mood||'';const _g=document.getElementById('pmNeg');if(_g)_g.value=(ps.neg!=null?ps.neg:NEG_DEFAULT)}catch(e){}}
+function syncPmInputs(){const ps=pmTarget?pmTarget.promptState||{}:{};try{const _a=document.getElementById('pmAction');if(_a)_a.value=ps.action||'';const _m=document.getElementById('pmMood');if(_m)_m.value=ps.mood||'';const _g=document.getElementById('pmNeg');if(_g)_g.value=(ps.neg!=null?ps.neg:NEG_DEFAULT)}catch(e){}try{document.querySelectorAll('#pmFields .tin').forEach(menPaintMirror)}catch(e2){}}
 function renderPmTabs(){}
 let pmJsonText='';
 function jK(t){const s=document.createElement('span');s.className='jkey';s.textContent='"'+t+'"';return s}
@@ -1038,9 +1045,101 @@ let menState=null;
 function menDropEl(){let d=document.getElementById('menDrop');if(!d){d=document.createElement('div');d.id='menDrop';d.hidden=true;document.body.appendChild(d)}return d}
 function menHide(){const d=document.getElementById('menDrop');if(d)d.hidden=true;menState=null}
 function menPaint(){const d=document.getElementById('menDrop');if(!d||!menState)return;const ch=d.querySelectorAll('button');for(let i=0;i<ch.length;i++)ch[i].classList.toggle('on',i===menState.idx)}
-function menInsert(inp,k,atPos,anchor){if(!inp)return;let caret=inp.value.length;try{caret=inp.selectionStart==null?inp.value.length:inp.selectionStart}catch(e){}const val=inp.value;const nv=val.slice(0,atPos)+'@'+anchor+' '+val.slice(caret);inp.value=nv;try{if(pmTarget){pmTarget.promptState.details=pmTarget.promptState.details||{};pmTarget.promptState.details[k]=nv;persist();renderPmOut();renderPromptPreview(pmTarget)}}catch(e2){}menHide();try{const nc=atPos+anchor.length+2;inp.focus();inp.setSelectionRange(nc,nc)}catch(e3){}}
+function menInsert(inp,k,atPos,anchor){if(!inp)return;let caret=inp.value.length;try{caret=inp.selectionStart==null?inp.value.length:inp.selectionStart}catch(e){}const val=inp.value;const nv=val.slice(0,atPos)+'@'+anchor+' '+val.slice(caret);inp.value=nv;try{if(pmTarget){pmTarget.promptState.details=pmTarget.promptState.details||{};pmTarget.promptState.details[k]=nv;persist();renderPmOut();renderPromptPreview(pmTarget)}}catch(e2){}menHide();try{const nc=atPos+anchor.length+2;inp.focus();inp.setSelectionRange(nc,nc)}catch(e3){}try{menPaintMirror(inp)}catch(_e){}}
 function menUpdate(inp,k){let caret=0;try{caret=inp.selectionStart==null?inp.value.length:inp.selectionStart}catch(e){caret=inp.value.length}const before=inp.value.slice(0,caret);const m=before.match(/(^|[\s\(\[,;])@([A-Za-z0-9-]*)$/);const d=menDropEl();if(!m){menHide();return}const f=(m[2]||'').toUpperCase();const atPos=caret-(m[2]||'').length-1;const list=mentionAssets().filter(a=>{if(!f)return true;return a.anchor.toUpperCase().indexOf(f)>=0||(a.label||'').toUpperCase().indexOf(f)>=0}).slice(0,8);menState={inp:inp,k:k,pos:atPos,list:list,idx:0};d.innerHTML='';if(!list.length){const no=document.createElement('div');no.className='men-no';no.textContent='no assets';d.appendChild(no)}else{list.forEach((a,i)=>{const b=document.createElement('button');b.type='button';if(i===0)b.classList.add('on');const bb=document.createElement('b');bb.textContent=a.anchor;b.appendChild(bb);b.appendChild(document.createTextNode(' '+(a.label||'')));b.addEventListener('mousedown',e=>{e.preventDefault();menInsert(inp,k,atPos,a.anchor)});b.addEventListener('mousemove',()=>{if(menState&&menState.inp===inp){menState.idx=i;menPaint()}});d.appendChild(b)})}try{const r=inp.getBoundingClientRect();d.style.left=Math.max(8,Math.min(Math.max(8,innerWidth-260),r.left))+'px';d.style.top=(r.bottom+4)+'px'}catch(e2){}d.hidden=false}
 function menKey(inp,k,e){if(!menState||menState.inp!==inp||menDropEl().hidden)return false;if(e.key==='ArrowDown'){e.preventDefault();if(menState.list.length)menState.idx=(menState.idx+1)%menState.list.length;menPaint();return true}if(e.key==='ArrowUp'){e.preventDefault();if(menState.list.length)menState.idx=(menState.idx-1+menState.list.length)%menState.list.length;menPaint();return true}if(e.key==='Enter'){e.preventDefault();if(menState.list.length)menInsert(inp,k,menState.pos,menState.list[menState.idx].anchor);else menHide();return true}if(e.key==='Escape'){e.preventDefault();e.stopPropagation();menHide();return true}return false}
+/* ---- atomic @-mention pills in .tin inputs (tokens indivisible from keyboard) ---- */
+/* Token unit = MEN_RE match (the app's one anchor regex, reused — no second regex).
+   Paste/drop of partial @-like text needs no special casing: the input event never
+   auto-deletes, so failed-lookup substrings stay as plain text (existing behavior).
+   Printable-key choice (documented): caret collapsed anywhere in [start,end) —
+   including on the token's first char — jumps AFTER the token, then inserts. */
+function menEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function menTokScan(val){const out=[];if(!val)return out;MEN_RE.lastIndex=0;let m;while((m=MEN_RE.exec(val)))out.push({s:m.index,e:m.index+m[0].length,tok:m[0]});return out}
+function menTokAt(val,pos){const ts=menTokScan(val);for(const t of ts){if(pos>t.s&&pos<t.e)return t}return null}
+function menTokBefore(val,caret){const ts=menTokScan(val);let out=null;for(const t of ts){if(t.e===caret)out=t}return out}
+function menTokAfter(val,caret){const ts=menTokScan(val);for(const t of ts){if(t.s===caret)return t}return null}
+function menTokIntersect(val,a,b){const ts=menTokScan(val);return ts.filter(t=>t.s<b&&t.e>a)}
+function menPaintMirror(inp){try{const w=inp._tinWrap;if(!w)return;const inner=w.querySelector('.tinmirror-in');if(!inner)return;const val=inp.value||'';let last=0,h='';for(const t of menTokScan(val)){if(t.s>last)h+=menEsc(val.slice(last,t.s));let tgt=null;try{tgt=findAnchorNode(t.tok.slice(1))}catch(e){tgt=null}h+=tgt?'<span class="atin">'+menEsc(t.tok)+'</span>':menEsc(t.tok);last=t.e}h+=menEsc(val.slice(last));inner.innerHTML=h===''?'':h;inner.style.transform='translateX('+(-(inp.scrollLeft||0))+'px)'}catch(e){}}
+function menPillify(inp){if(!inp||inp._tinWrap)return;try{
+ const cs=getComputedStyle(inp);
+ const wrap=document.createElement('div');wrap.className='tinwrap';wrap.style.margin=cs.margin;
+ inp.parentNode.insertBefore(wrap,inp);wrap.appendChild(inp);inp.style.margin='0';
+ const mir=document.createElement('div');mir.className='tinmirror';mir.setAttribute('aria-hidden','true');
+ const inner=document.createElement('div');inner.className='tinmirror-in';mir.appendChild(inner);wrap.appendChild(mir);
+ inp._tinWrap=wrap;
+ const ink=cs.color||'#e8eaf0';
+ inp.classList.add('tin-pilled');inp.style.color='transparent';inp.style.caretColor=ink;
+ mir.style.top=cs.borderTopWidth;mir.style.left=cs.borderLeftWidth;mir.style.right=cs.borderRightWidth;mir.style.bottom=cs.borderBottomWidth;
+ inner.style.paddingTop=cs.paddingTop;inner.style.paddingRight=cs.paddingRight;inner.style.paddingBottom=cs.paddingBottom;inner.style.paddingLeft=cs.paddingLeft;
+ inner.style.fontStyle=cs.fontStyle;inner.style.fontWeight=cs.fontWeight;inner.style.fontSize=cs.fontSize;inner.style.lineHeight=cs.lineHeight;inner.style.fontFamily=cs.fontFamily;inner.style.letterSpacing=cs.letterSpacing;
+ inner.style.color=ink;
+ inp.addEventListener('scroll',()=>menPaintMirror(inp));
+ menPaintMirror(inp)}catch(e){}}
+function menCommit(inp,k,nv,nc){inp.value=nv;try{inp.focus();inp.setSelectionRange(nc,nc)}catch(e){}try{if(pmTarget){pmTarget.promptState.details=pmTarget.promptState.details||{};pmTarget.promptState.details[k]=nv;persist();renderPmOut();renderPromptPreview(pmTarget)}}catch(e2){}try{menUpdate(inp,k)}catch(e3){}try{slashUpdate(inp,k)}catch(e4){}menPaintMirror(inp)}
+function menAfterCaret(inp){menPaintMirror(inp);try{const k=inp.dataset?inp.dataset.k:null;menUpdate(inp,k)}catch(e){}try{const k2=inp.dataset?inp.dataset.k:null;slashUpdate(inp,k2)}catch(e2){}}
+function menAtomicKey(inp,k,e){
+ if(e.isComposing||e.ctrlKey||e.metaKey||e.altKey)return false;
+ const key=e.key;
+ if(key!=='Backspace'&&key!=='Delete'&&key!=='ArrowLeft'&&key!=='ArrowRight'&&key.length!==1)return false;
+ let s=0,ee=0;try{s=inp.selectionStart==null?0:inp.selectionStart;ee=inp.selectionEnd==null?s:inp.selectionEnd}catch(err){return false}
+ const val=inp.value||'';
+ const collapsed=(s===ee);
+ const kill=(ts,te)=>{let a=ts,b=te;if(val[b]===' ')b++;else if(a>0&&val[a-1]===' ')a--;menCommit(inp,k,val.slice(0,a)+val.slice(b),a)};
+ if(key==='Backspace'){
+  if(collapsed){
+   if(s===0)return false;
+   const t=menTokAt(val,s)||menTokBefore(val,s);
+   if(!t)return false;
+   e.preventDefault();kill(t.s,t.e);return true;
+  }
+  const hit=menTokIntersect(val,s,ee);
+  if(!hit.length)return false;
+  e.preventDefault();
+  const a=Math.min(s,hit[0].s),b=Math.max(ee,hit[hit.length-1].e);
+  menCommit(inp,k,val.slice(0,a)+val.slice(b),a);return true;
+ }
+ if(key==='Delete'){
+  if(collapsed){
+   if(s>=val.length)return false;
+   const t=menTokAt(val,s)||menTokAfter(val,s);
+   if(!t)return false;
+   e.preventDefault();kill(t.s,t.e);return true;
+  }
+  const hit=menTokIntersect(val,s,ee);
+  if(!hit.length)return false;
+  e.preventDefault();
+  const a=Math.min(s,hit[0].s),b=Math.max(ee,hit[hit.length-1].e);
+  menCommit(inp,k,val.slice(0,a)+val.slice(b),a);return true;
+ }
+ if(key==='ArrowLeft'){
+  if(!collapsed){e.preventDefault();let nc=s;const hit=menTokIntersect(val,s,ee);for(const t of hit){if(s>t.s&&s<t.e){nc=t.s;break}}try{inp.setSelectionRange(nc,nc)}catch(e2){}menAfterCaret(inp);return true}
+  if(s===0)return false;
+  const t=menTokAt(val,s)||menTokBefore(val,s);
+  if(!t)return false;
+  e.preventDefault();try{inp.setSelectionRange(t.s,t.s)}catch(e2){}menAfterCaret(inp);return true;
+ }
+ if(key==='ArrowRight'){
+  if(!collapsed){e.preventDefault();let nc=ee;const hit=menTokIntersect(val,s,ee);for(const t of hit){if(ee>t.s&&ee<t.e){nc=t.e;break}}try{inp.setSelectionRange(nc,nc)}catch(e2){}menAfterCaret(inp);return true}
+  if(s>=val.length)return false;
+  const t=menTokAt(val,s)||menTokAfter(val,s);
+  if(!t)return false;
+  e.preventDefault();try{inp.setSelectionRange(t.e,t.e)}catch(e2){}menAfterCaret(inp);return true;
+ }
+ /* printable char */
+ if(collapsed){
+  const t=menTokAt(val,s)||menTokAfter(val,s);
+  if(!t)return false;
+  e.preventDefault();
+  const nv=val.slice(0,t.e)+key+val.slice(t.e);
+  menCommit(inp,k,nv,t.e+1);return true;
+ }
+ const hit=menTokIntersect(val,s,ee);
+ if(!hit.length)return false;
+ e.preventDefault();
+ const a=Math.min(s,hit[0].s),b=Math.max(ee,hit[hit.length-1].e);
+ menCommit(inp,k,val.slice(0,a)+key+val.slice(b),a+1);return true;
+}
 document.addEventListener('pointerdown',e=>{if(menState&&!(e.target&&e.target.closest&&(e.target.closest('#menDrop')||e.target.classList.contains('tin'))))menHide()},true);
 document.addEventListener('scroll',e=>{if(menState&&!(e.target&&e.target.closest&&e.target.closest('#menDrop')))menHide();if(slashState&&!(e.target&&e.target.closest&&e.target.closest('#slashPop')))slashHide()},true);
 /* ---- '/'-slash asset picker: grouped popover sharing the @-mention insert path ('/' context flag) ---- */
