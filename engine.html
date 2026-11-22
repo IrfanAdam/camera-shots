@@ -176,7 +176,7 @@ input.tin.tin-pilled{color:transparent !important}
 .tin-pilled::selection{background:rgba(232,131,12,.35)}
 .tinmirror{position:absolute;overflow:hidden;white-space:pre;pointer-events:none;background:transparent;z-index:2}
 .tinmirror-in{white-space:pre;width:max-content;box-sizing:border-box}
-.tinmirror-in .atin{background:rgba(232,131,12,.14);border:1px solid rgba(232,131,12,.5);border-radius:999px;padding:0 8px;white-space:nowrap;color:#e8830c;font-weight:600}
+.tinmirror-in .atin{background:rgba(232,131,12,.14);border:0;border-radius:999px;padding:0 8px;margin:0 -8px;box-shadow:inset 0 0 0 1px rgba(232,131,12,.5);white-space:nowrap;color:#e8830c;text-shadow:0 0 .5px currentColor}
 #promptPrev .jval.men{color:var(--acc);font-weight:600;text-decoration:underline;cursor:pointer}
 .jkey{color:#8b93a5}.jpunc{color:#4b5563}
 .jval{cursor:pointer;border-radius:4px;padding:0 2px}
@@ -1060,7 +1060,7 @@ function menTokAt(val,pos){const ts=menTokScan(val);for(const t of ts){if(pos>t.
 function menTokBefore(val,caret){const ts=menTokScan(val);let out=null;for(const t of ts){if(t.e===caret)out=t}return out}
 function menTokAfter(val,caret){const ts=menTokScan(val);for(const t of ts){if(t.s===caret)return t}return null}
 function menTokIntersect(val,a,b){const ts=menTokScan(val);return ts.filter(t=>t.s<b&&t.e>a)}
-function menPaintMirror(inp){try{const w=inp._tinWrap;if(!w)return;const inner=w.querySelector('.tinmirror-in');if(!inner)return;const val=inp.value||'';let last=0,h='';for(const t of menTokScan(val)){if(t.s>last)h+=menEsc(val.slice(last,t.s));let tgt=null;try{tgt=findAnchorNode(t.tok.slice(1))}catch(e){tgt=null}h+=tgt?'<span class="atin">'+menEsc(t.tok)+'</span>':menEsc(t.tok);last=t.e}h+=menEsc(val.slice(last));inner.innerHTML=h===''?'':h;inner.style.transform='translateX('+(-(inp.scrollLeft||0))+'px)'}catch(e){}}
+function menPaintMirror(inp){try{const w=inp._tinWrap;if(!w)return;const inner=w.querySelector('.tinmirror-in');if(!inner)return;const val=inp.value||'';let last=0,h='';for(const t of menTokScan(val)){if(t.s>last)h+=menEsc(val.slice(last,t.s));let tgt=null;try{tgt=findAnchorNode(t.tok.slice(1))}catch(e){tgt=null}h+=tgt?'<span class="atin">'+menEsc(t.tok)+'</span>':menEsc(t.tok);last=t.e}h+=menEsc(val.slice(last));inner.innerHTML=h===''?'':h;inner.style.transform='translate('+(-(inp.scrollLeft||0))+'px,'+(-(inp.scrollTop||0))+'px)'}catch(e){}}
 function menPillify(inp){if(!inp||inp._tinWrap)return;try{
  const cs=getComputedStyle(inp);
  const wrap=document.createElement('div');wrap.className='tinwrap';wrap.style.margin=cs.margin;
@@ -1071,8 +1071,9 @@ function menPillify(inp){if(!inp||inp._tinWrap)return;try{
  const ink=cs.color||'#e8eaf0';
  inp.classList.add('tin-pilled');inp.style.color='transparent';inp.style.caretColor=ink;
  mir.style.top=cs.borderTopWidth;mir.style.left=cs.borderLeftWidth;mir.style.right=cs.borderRightWidth;mir.style.bottom=cs.borderBottomWidth;
+ mir.style.boxSizing='border-box';mir.style.padding='0';mir.style.border='0';
  inner.style.paddingTop=cs.paddingTop;inner.style.paddingRight=cs.paddingRight;inner.style.paddingBottom=cs.paddingBottom;inner.style.paddingLeft=cs.paddingLeft;
- inner.style.fontStyle=cs.fontStyle;inner.style.fontWeight=cs.fontWeight;inner.style.fontSize=cs.fontSize;inner.style.lineHeight=cs.lineHeight;inner.style.fontFamily=cs.fontFamily;inner.style.letterSpacing=cs.letterSpacing;
+ inner.style.fontStyle=cs.fontStyle;inner.style.fontVariant=cs.fontVariant;inner.style.fontWeight=cs.fontWeight;inner.style.fontStretch=cs.fontStretch;inner.style.fontSize=cs.fontSize;inner.style.lineHeight=cs.lineHeight;inner.style.fontFamily=cs.fontFamily;inner.style.letterSpacing=cs.letterSpacing;inner.style.wordSpacing=cs.wordSpacing;inner.style.textTransform=cs.textTransform;
  inner.style.color=ink;
  inp.addEventListener('scroll',()=>menPaintMirror(inp));
  menPaintMirror(inp)}catch(e){}}
