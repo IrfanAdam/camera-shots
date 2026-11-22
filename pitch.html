@@ -2,59 +2,70 @@
 <html lang="en"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Intent Before Pixels — A Craft-Led Engine for Cinematic AI Video</title>
-<meta name="description" content="A pitch for the cinematic AI-video prompt/storyboard engine: wiki teaches shot language, engine storyboards scenes and composes reusable prompt tokens.">
+<meta name="description" content="Story, investors, wiki and MVP docs for the cinematic AI-video prompt/storyboard engine: wiki teaches shot language, engine storyboards scenes and composes reusable prompt tokens.">
 <style>
 :root{--bg:#0A0A0B;--s1:#141416;--s2:#1B1B1E;--ink:#F2F0EB;--mut:#A7A5A0;--rule:#26262B;--acc:#C8B28A;--acc-ink:#141310;box-sizing:border-box}
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;scroll-padding-top:5.5rem}
+html{scroll-padding-top:7.5rem}
 body{background:var(--bg);color:var(--ink);font:15px/1.7 system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+body.lock{overflow:hidden}
 a{color:inherit}
-.w{max-width:1080px;margin:0 auto;padding:1.2rem 1.2rem 4rem}
-/* header mirrors index .top + .eng pill */
-.top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding:1.2rem 0 .4rem}
-.brand{font-size:.95rem;font-weight:650;letter-spacing:-.01em}
+.w{max-width:1080px;margin:0 auto;padding:0 1.2rem 4rem}
+/* header: brand + tabs + cross links (sticky; drawers/rails live on body) */
+.top{position:sticky;top:0;z-index:40;background:rgba(10,10,11,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);padding:.9rem 0 .7rem}
+.top .row{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+.brand{font-size:.95rem;font-weight:650;letter-spacing:-.01em;text-decoration:none}
 .brand small{display:block;color:var(--mut);font-weight:400;font-size:.8rem}
 .hright{display:flex;align-items:center;gap:.6rem}
 .by{color:var(--mut);font-size:.85rem;white-space:nowrap}
 .hnav{display:flex;gap:.5rem}
 .hnav a{font-size:.82rem;font-weight:600;text-decoration:none;padding:.32rem .8rem;border-radius:99px;border:1px solid var(--rule);color:var(--ink);background:var(--s1)}
 .hnav a:hover{border-color:var(--acc)}
-.hnav a.cta{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
-.hnav a.cta:hover{filter:brightness(1.06)}
-.layout{display:grid;grid-template-columns:220px 1fr;gap:2rem;margin-top:1rem}
+.tabs{display:flex;gap:.4rem;margin-top:.7rem;flex-wrap:wrap}
+.tab{position:relative;display:inline-flex;align-items:center;gap:.5rem;font-size:.85rem;font-weight:650;background:transparent;color:var(--mut);border:1px solid var(--rule);border-radius:99px;padding:.42rem 1rem;cursor:pointer;font-family:inherit}
+.tab::before{content:"";width:5px;height:5px;border-radius:50%;background:transparent;flex:none}
+.tab:hover{color:var(--ink);border-color:var(--acc)}
+.tab.on{color:var(--ink);border-color:var(--acc);background:var(--s1)}
+.tab.on::before{background:var(--acc)}
+.layout{display:grid;grid-template-columns:220px 1fr;gap:2rem;margin-top:1.5rem}
 /* desktop sticky TOC */
-.toc{position:sticky;top:5rem;align-self:start;display:flex;flex-direction:column;gap:.15rem;border-left:1px solid var(--rule);padding-left:1rem}
+.toc{position:sticky;top:8.5rem;align-self:start;display:flex;flex-direction:column;gap:.15rem;border-left:1px solid var(--rule);padding-left:1rem}
 .toc a{position:relative;text-decoration:none;color:var(--mut);font-size:.85rem;padding:.3rem 0 .3rem .9rem}
 .toc a::before{content:"";position:absolute;left:-1rem;top:.75em;width:5px;height:5px;border-radius:50%;background:transparent;transform:translateX(-2.5px)}
 .toc a.on{color:var(--ink);font-weight:650}
 .toc a.on::before{background:var(--acc)}
 .toc a:hover{color:var(--ink)}
-/* hero */
-.hero{padding:3.2rem 0 2.2rem;max-width:40rem}
-.eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);border:1px solid var(--rule);background:var(--s1);border-radius:99px;padding:.32rem .85rem}
-.hero h1{font-size:clamp(2rem,5vw,3.1rem);line-height:1.08;letter-spacing:-.03em;margin:1.1rem 0 .8rem}
-.hero h1 span{color:var(--acc)}
-.sub{color:var(--mut);font-size:1.02rem;max-width:34rem}
-.meta{color:var(--mut);font-size:.8rem;margin-top:1rem}
-.ctarow{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.4rem}
-.btn{display:inline-block;text-decoration:none;font-weight:650;font-size:.9rem;border-radius:99px;padding:.6rem 1.3rem;border:1px solid var(--rule)}
-.btn.primary{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
-.btn.ghost{background:transparent;color:var(--ink)}
-.btn:hover{filter:brightness(1.08)}
-/* article sections */
+/* panels */
+.panel{display:none;min-width:0}
+.panel.on{display:block;animation:fadeSlideIn .24s ease}
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 article{display:flex;flex-direction:column;gap:3rem;min-width:0}
-section{scroll-margin-top:5rem}
+section{scroll-margin-top:8.5rem}
 .k{font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);margin-bottom:.4rem}
 .draft{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);border:1px dashed var(--acc);border-radius:99px;padding:.2rem .7rem;margin-bottom:.6rem}
 .draft-note{font-size:.8rem;color:var(--mut);margin-top:.8rem;max-width:40rem}
 h2{font-size:1.35rem;letter-spacing:-.02em;line-height:1.25;margin-bottom:.5rem}
 .lede{color:var(--mut);font-size:.95rem;max-width:38rem}
 p.body{color:#D9D7D2;font-size:.95rem;max-width:40rem;margin-top:.6rem}
+p.body a,li a,.lede a{text-decoration:underline;text-decoration-color:var(--acc);text-underline-offset:2px}
+.hero{padding:2.6rem 0 1.6rem;max-width:40rem}
+.eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);border:1px solid var(--rule);background:var(--s1);border-radius:99px;padding:.32rem .85rem}
+.hero h1{font-size:clamp(2rem,5vw,3.1rem);line-height:1.08;letter-spacing:-.03em;margin:1.1rem 0 .8rem}
+.hero h1 span{color:var(--acc)}
+.sub{color:var(--mut);font-size:1.02rem;max-width:34rem}
+.meta{color:var(--mut);font-size:.8rem;margin-top:1rem}
+.ctarow{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.4rem}
+.btn{display:inline-block;text-decoration:none;font-weight:650;font-size:.9rem;border-radius:99px;padding:.6rem 1.3rem;border:1px solid var(--rule);background:transparent;color:var(--ink);cursor:pointer;font-family:inherit}
+.btn.primary{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn:hover{filter:brightness(1.08)}
 .grid{display:grid;gap:.8rem;grid-template-columns:1fr 1fr;margin-top:1.1rem}
 .card{background:var(--s1);border:1px solid var(--rule);border-radius:14px;padding:1rem 1.1rem}
 .card h3{font-size:.92rem;margin-bottom:.3rem;letter-spacing:-.01em}
 .card p{font-size:.87rem;color:var(--mut)}
 .card b{color:var(--ink);font-weight:650}
+.card.accent{border-color:var(--acc)}
+.card .gate{font-size:.8rem;color:var(--acc);margin-top:.5rem}
 .flow{margin-top:1.1rem;display:flex;flex-direction:column;gap:.8rem}
 .step{background:var(--s1);border:1px solid var(--rule);border-radius:14px;padding:1rem 1.1rem}
 .step h3{font-size:.92rem}
@@ -62,15 +73,52 @@ p.body{color:#D9D7D2;font-size:.95rem;max-width:40rem;margin-top:.6rem}
 .step h3 a:hover{text-decoration:underline}
 .step p{font-size:.87rem;color:var(--mut);margin-top:.25rem}
 .step code{color:var(--acc);font-size:.8rem}
+.lnum{color:var(--acc);font-weight:700;font-size:.8rem;letter-spacing:.1em}
 .quote{border-left:2px solid var(--acc);padding:.4rem 0 .4rem 1.1rem;margin-top:1.2rem;max-width:38rem}
 .quote p{font-style:italic;font-size:1.05rem;line-height:1.6;color:var(--ink)}
 .quote cite{display:block;font-style:normal;font-size:.8rem;color:var(--mut);margin-top:.4rem}
 ul.tight{list-style:none;margin-top:1rem;display:flex;flex-direction:column;gap:.55rem;max-width:40rem}
 ul.tight li{font-size:.9rem;color:#D9D7D2;border-bottom:1px solid var(--rule);padding-bottom:.55rem}
 ul.tight li b{color:var(--ink)}
-.cta-block{background:var(--s1);border:1px solid var(--rule);border-radius:18px;padding:2rem;text-align:left}
-.cta-block h2{font-size:clamp(1.5rem,3.5vw,2rem)}
-.cta-block p{color:var(--mut);font-size:.95rem;margin:.5rem 0 1.2rem;max-width:32rem}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-top:1.1rem}
+.metric{background:var(--s1);border:1px solid var(--rule);border-radius:14px;padding:.9rem 1rem}
+.metric .v{font-size:1.05rem;font-weight:700;letter-spacing:-.01em}
+.metric .l{font-size:.75rem;color:var(--mut);margin-top:.15rem}
+.metric .q{font-size:.72rem;color:var(--mut);margin-top:.3rem;font-style:italic}
+.qual{font-size:.72rem;color:var(--mut);font-style:italic}
+/* tables */
+.tbl{margin-top:1.1rem;overflow-x:auto;border:1px solid var(--rule);border-radius:14px}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+thead th{text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--mut);background:var(--s2);padding:.7rem .9rem;white-space:nowrap}
+tbody td{padding:.7rem .9rem;border-top:1px solid var(--rule);vertical-align:top;color:#D9D7D2}
+tbody td:first-child{white-space:nowrap;font-weight:650;color:var(--ink)}
+/* allocation bars */
+.alloc{margin-top:1.1rem;display:flex;flex-direction:column;gap:.9rem;max-width:40rem}
+.alloc .lab{display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.35rem}
+.alloc .lab b{color:var(--ink)}
+.track{height:8px;border-radius:99px;background:var(--s2);border:1px solid var(--rule);overflow:hidden}
+.fill{height:100%;border-radius:99px;background:var(--acc)}
+/* drawers + backdrop: direct body children */
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:60}
+.backdrop.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;right:0;top:0;height:100dvh;width:min(720px,100vw);background:var(--s1);border-left:1px solid var(--rule);z-index:61;transform:translateX(100%);transition:transform .32s cubic-bezier(.32,.72,.24,1);overflow-y:auto;padding:1.6rem}
+.drawer.open{transform:none}
+.drawer h2{font-size:1.2rem}
+.drawer .x{float:right;background:transparent;border:1px solid var(--rule);color:var(--ink);border-radius:99px;padding:.3rem .8rem;cursor:pointer;font-family:inherit;font-size:.8rem}
+.pills{display:flex;gap:.4rem;flex-wrap:wrap;margin:1rem 0}
+.pill{font-size:.78rem;font-weight:650;border:1px solid var(--rule);background:transparent;color:var(--mut);border-radius:99px;padding:.35rem .9rem;cursor:pointer;font-family:inherit}
+.pill.on{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.wrow{border-bottom:1px solid var(--rule);padding:.6rem 0;font-size:.87rem}
+.wrow b{color:var(--ink)}
+.wrow.gate{border:1px solid var(--acc);border-radius:12px;padding:.7rem .9rem;margin:.6rem 0}
+.wrow .done{color:var(--acc);font-size:.8rem}
+/* gantt */
+.gantt{margin-top:1.1rem;display:flex;flex-direction:column;gap:.5rem}
+.grow{display:grid;grid-template-columns:90px 1fr;gap:.7rem;align-items:center;font-size:.8rem}
+.gtrack{position:relative;height:10px;background:var(--s2);border:1px solid var(--rule);border-radius:99px}
+.gbar{position:absolute;top:0;bottom:0;border-radius:99px;background:var(--acc)}
+.gbar.ghost{background:transparent;border:1px dashed var(--acc)}
+.viewtoggle{display:flex;gap:.4rem;margin-top:1.1rem}
 footer{margin:3rem 0 1rem;color:var(--mut);font-size:.78rem;border-top:1px solid var(--rule);padding-top:1rem}
 /* mobile pill rail — direct body child */
 .mrail{display:none}
@@ -78,65 +126,77 @@ footer{margin:3rem 0 1rem;color:var(--mut);font-size:.78rem;border-top:1px solid
 .layout{grid-template-columns:1fr}
 .toc{display:none}
 .grid{grid-template-columns:1fr}
+.metrics{grid-template-columns:1fr 1fr}
 .mrail{display:flex;position:fixed;bottom:calc(.8rem + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);gap:.15rem;background:rgba(20,20,22,.92);backdrop-filter:blur(8px);border:1px solid var(--rule);border-radius:99px;padding:.3rem .45rem;z-index:50;max-width:calc(100vw - 1.5rem);overflow-x:auto;box-shadow:0 8px 24px rgba(0,0,0,.5)}
 .mrail a{flex:none;text-decoration:none;font-size:.75rem;font-weight:600;color:var(--mut);padding:.35rem .7rem;border-radius:99px;white-space:nowrap}
 .mrail a.on{background:var(--acc);color:var(--acc-ink)}
-.hero{padding:2rem 0 1.4rem}
+.hero{padding:1.6rem 0 1rem}
 }
-/* reveal */
-.rv{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease}
-.rv.in{opacity:1;transform:none}
-/* print: article only */
+@media(max-width:639px){
+.tbl thead{display:none}
+.tbl table,.tbl tbody,.tbl tr,.tbl td{display:block;width:100%}
+.tbl tbody td{border-top:0;border-bottom:1px solid var(--rule)}
+.tbl tbody td:first-child{white-space:normal}
+}
+/* print: active article only */
 @media print{
-.top,.toc,.mrail,.ctarow,footer{display:none!important}
+.top,.toc,.mrail,.ctarow,.drawer,.backdrop,footer,.viewtoggle{display:none!important}
 body{background:#fff!important;color:#111!important}
 .w{max-width:100%;padding:0}
-.card,.step,.cta-block{background:#fff!important;border:1px solid #ddd!important;color:#111!important}
-.card p,.step p,.lede,.sub,.cta-block p{color:#333!important}
-p.body,ul.tight li{color:#222!important}
-.k,.hero h1 span,.step h3 a,.draft{color:#8a6d2b!important}
+.panel{display:none!important}
+.panel.on{display:block!important;animation:none!important}
+.card,.step,.metric,.tbl{background:#fff!important;border:1px solid #ddd!important;color:#111!important}
+.card p,.step p,.lede,.sub,.metric .l,.metric .q{color:#333!important}
+p.body,ul.tight li,tbody td{color:#222!important}
+.k,.hero h1 span,.step h3 a,.draft,.lnum{color:#8a6d2b!important}
 article{gap:1.5rem}
 }
 @media(prefers-reduced-motion:reduce){
 html{scroll-behavior:auto}
-.rv{opacity:1;transform:none;transition:none}
-*{animation:none!important;transition:none!important}
+.panel.on{animation:none}
+.drawer,.backdrop,.tab,.btn{transition:none!important}
+*{animation:none!important}
 }
 </style></head>
-<body>
+<body data-print-doc="story">
 <div class="w">
-<div class="top"><div class="brand">Camera Shots<small>intent before pixels</small></div><span class="hright"><span class="by">by irfan</span><span class="hnav"><a href="index.html">wiki</a><a class="cta" href="engine.html">engine &rarr;</a></span></span></div>
+<header class="top">
+<div class="row">
+<a class="brand" href="#story">Camera Shots<small>intent before pixels</small></a>
+<span class="hright"><span class="by">by irfan</span><span class="hnav"><a href="index.html">wiki</a><a href="engine.html">engine &rarr;</a></span></span>
+</div>
+<nav class="tabs" aria-label="Documents">
+<button class="tab on" data-doc="story" aria-selected="true">Story</button>
+<button class="tab" data-doc="investors" aria-selected="false">Investors</button>
+<button class="tab" data-doc="wiki" aria-selected="false">Wiki</button>
+<button class="tab" data-doc="mvp" aria-selected="false">MVP</button>
+</nav>
+</header>
+
+<!-- ============ TAB 1: STORY ============ -->
+<div class="panel on" id="panel-doc-01" data-panel="story" role="tabpanel" aria-label="Story">
 <div class="layout">
-<aside><nav class="toc" id="toc" aria-label="Contents">
-<a href="#top">Intro</a>
-<a href="#vision">01 — Vision</a>
-<a href="#problem">02 — Problem</a>
-<a href="#gap">03 — The Craft Gap</a>
-<a href="#how">04 — How It Works</a>
-<a href="#built">05 — Built For</a>
-<a href="#principles">06 — Principles</a>
-<a href="#roadmap">07 — Roadmap</a>
-<a href="#investors">08 — Investors</a>
-<a href="#wiki">09 — Wiki</a>
-<a href="#mvp">10 — MVP</a>
-<a href="#cta">Build with Intent</a>
+<aside><nav class="toc" aria-label="Story contents">
+<a href="#s-hero">Intro</a><a href="#s-vision">01 — Vision</a><a href="#s-problem">02 — Problem</a><a href="#s-gap">03 — Craft Gap</a><a href="#s-how">04 — How It Works</a><a href="#s-built">05 — Built For</a><a href="#s-principles">06 — Principles</a><a href="#s-next">07 — What's Next</a><a href="#s-cta">Build with Intent</a>
 </nav></aside>
-<article id="top">
-<header class="hero rv">
+<article>
+<section id="s-hero">
+<header class="hero">
 <span class="eyebrow">Craft-led AI cinema</span>
 <h1>Start with intent. <span>Let the pixels follow.</span></h1>
 <p class="sub">Most AI video starts with a sentence and hopes for cinema. This engine flips it: learn the shot language, storyboard the beats, then compose deliberate prompt tokens — no generation, no black box, just craft you control.</p>
 <p class="meta">A wiki that teaches &middot; an engine that storyboards &middot; tokens you can reuse anywhere</p>
 <div class="ctarow"><a class="btn primary" href="engine.html">Open the engine</a><a class="btn ghost" href="index.html">Learn the language</a></div>
 </header>
-<section id="vision" class="rv">
+</section>
+<section id="s-vision">
 <p class="k">01 — Vision</p>
 <h2>Cinema is a language, not a lottery.</h2>
 <p class="lede">Every great shot answers a question before it fills a frame: whose eyes are we in, how close do we stand, what moves and what holds still. The product treats those answers as the work itself.</p>
 <p class="body">The wiki teaches shot language — size, framing, angle, movement, light, composition the way directors actually use it. The engine turns that language into structure: scenes, shots, locations, props, cast, composed into reusable prompt tokens. The thesis is simple — deliberate intent in, deliberate cinema out.</p>
 <div class="quote"><p>Direct with intent: every shot has a job before it has a look.</p><cite>— the working rule behind both tools</cite></div>
 </section>
-<section id="problem" class="rv">
+<section id="s-problem">
 <p class="k">02 — Problem</p>
 <h2>Prompt roulette is not directing.</h2>
 <p class="lede">Type a paragraph, get four random clips, repeat until something looks right. That is the current workflow — and it fails exactly where cinema matters most.</p>
@@ -147,7 +207,7 @@ html{scroll-behavior:auto}
 <div class="card"><h3>No continuity</h3><p>Screen direction flips, eyelines break, coverage never gets planned. The edit inherits the mess.</p></div>
 </div>
 </section>
-<section id="gap" class="rv">
+<section id="s-gap">
 <p class="k">03 — The Craft Gap</p>
 <h2>Between taste and tools, nobody teaches the middle.</h2>
 <p class="lede">Filmmakers know what good looks like. Generators make pixels fast. What is missing is the craft layer: naming the shot, justifying it, and holding it across a sequence.</p>
@@ -157,7 +217,7 @@ html{scroll-behavior:auto}
 <li><b>Prompts are not reusable.</b> Good phrasing gets typed once and lost. Tokens like <b>CU — close-up, face fills the frame</b> should be copy-ready, every time.</li>
 </ul>
 </section>
-<section id="how" class="rv">
+<section id="s-how">
 <p class="k">04 — How It Works</p>
 <h2>Learn it. Board it. Compose it.</h2>
 <p class="lede">Three moves, each with its own surface — no accounts, no rendering, no model lock-in. The output is deliberate language you paste wherever you generate.</p>
@@ -167,7 +227,7 @@ html{scroll-behavior:auto}
 <div class="step"><h3>3. Export deliberate intent</h3><p>Copy a stub — <code>SHOT-XX — phrase</code> — and paste it into any generator, brief, or shot list. The craft travels; the tool stays out of the way.</p></div>
 </div>
 </section>
-<section id="built" class="rv">
+<section id="s-built">
 <p class="k">05 — Built For</p>
 <h2>People who care about the frame.</h2>
 <p class="lede">Not for chasing trends — for anyone who wants AI footage to look decided rather than accidental.</p>
@@ -178,7 +238,7 @@ html{scroll-behavior:auto}
 <div class="card"><h3>Students of craft</h3><p>Learn why a close-up lands, when a dolly beats a zoom, and how screen direction holds.</p></div>
 </div>
 </section>
-<section id="principles" class="rv">
+<section id="s-principles">
 <p class="k">06 — Principles</p>
 <h2>What the work refuses to do.</h2>
 <ul class="tight">
@@ -188,9 +248,9 @@ html{scroll-behavior:auto}
 <li><b>Craft is portable.</b> What you learn and compose here works in any generator, brief, or edit.</li>
 </ul>
 </section>
-<section id="roadmap" class="rv">
-<p class="k">07 — What's next</p>
-<h2>Roadmap: deepen what already exists.</h2>
+<section id="s-next">
+<p class="k">07 — What's Next</p>
+<h2>Deepen what already exists.</h2>
 <p class="lede">No new promises — the near-term direction is making the current loop sharper: richer language, deeper composing, and a tighter connection between the two.</p>
 <ul class="tight">
 <li><b>Now — deepen the wiki's shot language.</b> More entries, sharper when-to-use guidance, and copy-ready tokens that stay consistent.</li>
@@ -198,92 +258,460 @@ html{scroll-behavior:auto}
 <li><b>Later — tighten the wiki &rarr; engine &rarr; intent loop.</b> Make learning a term and using it in a board feel like one motion, so craft carries straight into the prompt.</li>
 </ul>
 </section>
-<section id="investors" class="rv">
-<span class="draft">Rough draft &mdash; refining</span>
-<p class="k">08 &mdash; Investors (draft)</p>
-<h2>Capacity is commoditized. Control is the gap.</h2>
-<p class="lede">Every lab now generates passable footage &mdash; but nobody owns the intent layer: the shot grammar, continuity, and reusable craft that turn clips into cinema. OpenAI's Sora consumer and API shutdowns in 2026 are the cautionary tale: building on any single model's output is building on rented ground.</p>
-<p class="body">The bet: whoever owns deliberate intent &mdash; named shots, locked tokens, held continuity &mdash; sits above the model wars, not inside them.</p>
-<ul class="tight">
-<li><b>Narrow AI-video-generator market:</b> ~$0.85B (2025) &rarr; ~$1.0B (2026) &rarr; ~$2.1B (2030), ~19% CAGR &mdash; <a href="https://thebusinessresearchcompany.com/report/artificial-intelligence-ai-video-generator-global-market-report">Business Research Company, Sep 2026</a>.</li>
-<li><b>Text-to-video:</b> $1.0B (2025) &rarr; $1.45B (2026) &rarr; $8.76B (2035), ~22% CAGR &mdash; <a href="https://www.gminsights.com/industry-analysis/text-to-video-ai-market">GMInsights, 2026</a>.</li>
-<li><b>Broad platform stack:</b> ~$6.2B (2025) &rarr; ~$47.8B (2034) &mdash; <a href="https://report-ai.org/reports/ai-video-market-size-forecast">Grand View via Report AI, Aug 2026</a>.</li>
-</ul>
-<div class="grid">
-<div class="card"><h3>Google Veo 3.1</h3><p>Audio-first quality leader &mdash; sound and picture in one pass.</p></div>
-<div class="card"><h3>Runway</h3><p>Pro workflow play; Lionsgate equity partner.</p></div>
-<div class="card"><h3>Kling</h3><p>Motion quality standout.</p></div>
-<div class="card"><h3>Luma</h3><p>HDR/EXR post-production focus.</p></div>
-<div class="card"><h3>Pika</h3><p>Effects and social-first creation.</p></div>
-<div class="card"><h3>Synthesia / HeyGen</h3><p>Avatar video &mdash; corporate, not cinema.</p></div>
-</div>
-<ul class="tight">
-<li><b>Hollywood is already in production.</b> Lionsgate &times; Runway; Netflix with ~300 AI-assisted titles.</li>
-<li><b>Control and consistency are the battleground.</b> Quality converges; whoever holds continuity wins the workflow.</li>
-<li><b>Prompt craft is becoming cinematography.</b> Named, reusable shot language is the scarce skill &mdash; this product bottles it.</li>
-<li><b>Model-agnostic by design.</b> An intent layer above the model wars &mdash; no GPUs, no inference bills, no compute-cost exposure.</li>
-<li><b>Ask &mdash; TODO.</b> [Founder to fill: round size, terms, use of funds, contact.]</li>
-</ul>
-<p class="draft-note">Rough draft &mdash; founder to rewrite before sharing.</p>
-</section>
-<section id="wiki" class="rv">
-<span class="draft">Rough draft &mdash; refining</span>
-<p class="k">09 &mdash; Wiki (draft)</p>
-<h2>The wiki is the moat.</h2>
-<p class="lede">The <a href="index.html">Cinematography Wiki</a> is a shot-language knowledge base fused with generation: every entry maps to generatable prompt fields. It is the teaching layer competitors lack &mdash; learn the term, copy the token, use it anywhere.</p>
-<ul class="tight">
-<li><b>Shot size.</b> [stub &mdash; expand: CU through EWS, when each lands]</li>
-<li><b>Angle.</b> [stub &mdash; expand: eye-level, low, high, Dutch, POV]</li>
-<li><b>Movement.</b> [stub &mdash; expand: dolly, tracking, crane, handheld, lock]</li>
-<li><b>Lens.</b> [stub &mdash; expand: focal length, depth, compression looks]</li>
-<li><b>Light.</b> [stub &mdash; expand: key, golden hour, noir, motivated sources]</li>
-<li><b>Composition.</b> [stub &mdash; expand: rule of thirds, symmetry, leading lines]</li>
-<li><b>Transitions.</b> [stub &mdash; expand: match cut, whip, dissolve, invisible cuts]</li>
-</ul>
-<p class="draft-note">Rough draft &mdash; coverage list is stubs to expand later.</p>
-</section>
-<section id="mvp" class="rv">
-<span class="draft">Rough draft &mdash; refining</span>
-<p class="k">10 &mdash; MVP (draft)</p>
-<h2>Eight buildable pieces. Three explicit non-goals.</h2>
-<p class="lede">Scope from the research &mdash; an intent layer, not a generator.</p>
-<ul class="tight">
-<li><b>1. Shot-language entries linked to prompt fields.</b> Every wiki term emits a copy-ready token.</li>
-<li><b>2. Versioned reusable prompt-token library.</b> Tokens with versions, so phrasing improves without breaking boards.</li>
-<li><b>3. Scene&rarr;shot breakdown emitting locked prompt templates.</b> Beats become shots with anchors pinned.</li>
-<li><b>4. Continuity ledger.</b> Lens, light, palette, and screen direction held across the sequence.</li>
-<li><b>5. One-action-per-shot checker.</b> Flags shots trying to do two jobs at once.</li>
-<li><b>6. Model-agnostic export.</b> Plain-text stubs that paste into any generator.</li>
-<li><b>7. Board-to-animatic assembly.</b> Ordered shots become a watchable sequence outline.</li>
-<li><b>8. Regeneration-diff log.</b> What changed between takes, so iteration compounds.</li>
-</ul>
-<ul class="tight">
-<li><b>Non-goal: no model training.</b> No GPUs, no datasets, no fine-tunes.</li>
-<li><b>Non-goal: no rendering pipeline.</b> The product generates nothing &mdash; on purpose.</li>
-<li><b>Non-goal: no accounts or billing yet.</b> Local-first; identity and payments come later.</li>
-</ul>
-<p class="draft-note">Rough draft &mdash; founder to rewrite before sharing.</p>
-</section>
-<section id="cta" class="rv">
-<div class="cta-block">
+<section id="s-cta">
+<div class="card" style="padding:2rem">
 <p class="k">Build with intent</p>
 <h2>Storyboard the beats, not the pixels.</h2>
 <p>Open the engine to compose your sequence, or start in the wiki to learn the language behind every token.</p>
 <div class="ctarow"><a class="btn primary" href="engine.html">Open the engine</a><a class="btn ghost" href="index.html">Start with the wiki</a></div>
 </div>
 </section>
-<footer>Camera Shots — a wiki and a prompt engine for deliberate AI cinema. by irfan</footer>
 </article>
 </div>
 </div>
-<nav class="mrail" id="mrail" aria-label="Sections"><a href="#top">Intro</a><a href="#vision">Vision</a><a href="#problem">Problem</a><a href="#gap">Gap</a><a href="#how">How</a><a href="#built">For</a><a href="#principles">Rules</a><a href="#roadmap">Next</a><a href="#investors">Invest</a><a href="#wiki">Wiki</a><a href="#mvp">MVP</a><a href="#cta">Start</a></nav>
+
+<!-- ============ TAB 2: INVESTORS ============ -->
+<div class="panel" id="panel-doc-03" data-panel="investors" role="tabpanel" aria-label="Investors">
+<div class="layout">
+<aside><nav class="toc" aria-label="Investor contents">
+<a href="#d3-thesis">Thesis</a><a href="#d3-market">Why Now</a><a href="#d3-model">Model</a><a href="#d3-roadmap">Roadmap</a><a href="#d3-allocation">Allocation</a><a href="#d3-runway">Runway</a>
+</nav></aside>
+<article>
+<section id="d3-thesis">
+<span class="draft">Draft — figures being finalised</span>
+<p class="k">Thesis</p>
+<h2>Capacity is commoditized. Control is the gap.</h2>
+<p class="lede">Every lab now generates passable footage — but nobody owns the intent layer: the shot grammar, continuity, and reusable craft that turn clips into cinema. The bet is that whoever owns deliberate intent sits above the model wars, not inside them.</p>
+<div class="metrics">
+<div class="metric"><div class="v">[RAISE]</div><div class="l">Raise sought</div><div class="q">scenario — being finalised</div></div>
+<div class="metric"><div class="v">[STAGE]</div><div class="l">Stage</div><div class="q">plan, not promise</div></div>
+<div class="metric"><div class="v">[RUNWAY]</div><div class="l">Runway at close</div><div class="q">run-rate — being finalised</div></div>
+<div class="metric"><div class="v">[TARGET MRR]</div><div class="l">Target MRR</div><div class="q">scenario model — plan, not promise</div></div>
+</div>
+</section>
+<section id="d3-market">
+<span class="draft">Draft — refining</span>
+<p class="k">Why now</p>
+<h2>A vacant slot, a committed industry, a converging battle.</h2>
+<p class="lede">Three market figures, newest first — narrow AI-video-generator scope, text-to-video scope, then the broad platform stack:</p>
+<ul class="tight">
+<li><b>Narrow AI-video-generator:</b> ~$0.85B (2025) &rarr; ~$1.0B (2026) &rarr; ~$2.1B (2030), ~19% CAGR — Business Research Company, Sep 2026 (<a href="https://www.thebusinessresearchcompany.com/report/artificial-intelligence-ai-video-generator-global-market-report">full report</a>).</li>
+<li><b>Text-to-video:</b> $1.0B (2025) &rarr; $1.45B (2026) &rarr; $8.76B (2035), ~22% CAGR — GMInsights, 2026 (<a href="https://www.gminsights.com/industry-reports/text-to-video-ai-market">full report</a>).</li>
+<li><b>Broad stack:</b> ~$6.2B (2025) &rarr; ~$47.8B (2034) — Grand View via Report AI, Aug 2026 (<a href="https://report-ai.org/reports/ai-video-market-size-forecast/">full report</a>).</li>
+</ul>
+<div class="grid" style="grid-template-columns:1fr 1fr 1fr">
+<div class="card"><h3>The Sora vacancy</h3><p>OpenAI's Sora consumer and API shutdowns in 2026 left a vacant slot — and proved building on any single model's output is building on rented ground.</p></div>
+<div class="card"><h3>Hollywood is in production</h3><p>Lionsgate holds equity in Runway; Netflix reports ~300 AI-assisted titles. The industry buyer is already committed.</p></div>
+<div class="card"><h3>Control is the battleground</h3><p>Quality converges across labs; consistency and control decide workflows. Prompt-craft-as-cinematography is the scarce skill — this product bottles it.</p></div>
+</div>
+<p class="lede" style="margin-top:1.1rem">The field, one line each:</p>
+<div class="grid" style="grid-template-columns:1fr 1fr 1fr">
+<div class="card"><h3>Google Veo 3.1</h3><p>Audio-first quality leader — sound and picture in one pass.</p></div>
+<div class="card"><h3>Runway</h3><p>Pro workflow play, Lionsgate equity partner.</p></div>
+<div class="card"><h3>Kling</h3><p>Motion quality standout.</p></div>
+<div class="card"><h3>Luma</h3><p>HDR/EXR post-production focus.</p></div>
+<div class="card"><h3>Pika</h3><p>Effects and social-first creation.</p></div>
+<div class="card"><h3>Synthesia / HeyGen</h3><p>Avatar video — corporate, not cinema.</p></div>
+</div>
+</section>
+<section id="d3-model">
+<span class="draft">Draft — prices being finalised</span>
+<p class="k">Model</p>
+<h2>Tokens for makers, seats for teams.</h2>
+<p class="lede">B2C for individual filmmakers, B2B per-seat for studios and teams. Model-agnostic by design — no GPUs, no inference bills, no compute-cost exposure.</p>
+<div class="grid">
+<div class="card"><h3>B2C — individual</h3><p>Monthly <span data-fx data-usd="[B2C PRICE]" data-inr="[B2C PRICE INR]">[B2C PRICE]</span>/mo, annual plan at a lower effective rate. Token library, boards, export included.</p><p class="qual">scenario pricing — being finalised</p></div>
+<div class="card"><h3>B2B — per seat</h3><p><span data-fx data-usd="[B2B SEAT]" data-inr="[B2B SEAT INR]">[B2B SEAT]</span>/seat/mo. Shared continuity ledgers, team token libraries, handoff exports.</p><p class="qual">scenario pricing — being finalised</p></div>
+</div>
+</section>
+<section id="d3-roadmap">
+<p class="k">Roadmap</p>
+<h2>Gates, not dates.</h2>
+<p class="lede">Each phase starts only when the prior gate passes.</p>
+<div class="grid" style="grid-template-columns:1fr 1fr 1fr">
+<div class="card"><h3>M1–2 — Language</h3><p>Deepen the wiki's shot entries and token consistency.</p><p class="gate">Gate: every entry emits a copy-ready token; continuity terms pinned.</p></div>
+<div class="card"><h3>M3–6 — Compose</h3><p>Storyboard and composer depth: anchors and continuity hold across scenes.</p><p class="gate">Gate: multi-scene board exports with locked anchors, zero drift.</p></div>
+<div class="card"><h3>M7–18 — Loop</h3><p>Tighten wiki &rarr; engine &rarr; intent into one motion; team handoff.</p><p class="gate">Gate: paying teams complete learn-to-export inside the loop weekly.</p></div>
+</div>
+</section>
+<section id="d3-allocation">
+<span class="draft">Draft — 50/20/20/10 default</span>
+<p class="k">Allocation</p>
+<h2>Half to product, the rest to proof.</h2>
+<div class="alloc">
+<div><div class="lab"><span>Product &amp; craft</span><b>50%</b></div><div class="track"><div class="fill" style="width:50%"></div></div></div>
+<div><div class="lab"><span>Content &amp; wiki depth</span><b>20%</b></div><div class="track"><div class="fill" style="width:20%"></div></div></div>
+<div><div class="lab"><span>Growth &amp; community</span><b>20%</b></div><div class="track"><div class="fill" style="width:20%"></div></div></div>
+<div><div class="lab"><span>Ops &amp; buffer</span><b>10%</b></div><div class="track"><div class="fill" style="width:10%"></div></div></div>
+</div>
+<p class="draft-note">DRAFT default split, sums to 100%. Final allocation being finalised — scenario, plan not promise.</p>
+</section>
+<section id="d3-runway">
+<span class="draft">Draft — figures being finalised</span>
+<p class="k">Runway</p>
+<h2>Funded to gates, not to vibes.</h2>
+<p class="body">The raise funds the roadmap above through its gates: language depth first, composing depth second, the tightened loop third. Burn is kept low by design — a static product with no inference spend — so runway is measured from close against a stated run-rate, both being finalised.</p>
+<p class="body qual">Runway figures are scenario run-rate — plan, not promise.</p>
+<div class="ctarow"><button class="btn primary" data-open="fund-drawer">Open funding scenarios</button></div>
+</section>
+<section id="d3-notes">
+<p class="k">Missing inputs</p>
+<h2>What the founder still needs to fill.</h2>
+<ul class="tight">
+<li><b>Raise, stage, runway trigger, target MRR</b> — currently [RAISE] / [STAGE] / [RUNWAY] / [TARGET MRR].</li>
+<li><b>B2C price and B2B per-seat price</b> (USD + INR) — currently placeholders.</li>
+<li><b>MRR breakdown</b> (seats × price ≈ total) — scenario math to be shown.</li>
+<li><b>Contact and terms</b> for the ask.</li>
+</ul>
+<p class="draft-note">No funding figures, dates, or metrics beyond the cited market research above have been invented for this page.</p>
+</section>
+</article>
+</div>
+</div>
+
+<!-- ============ TAB 3: WIKI ============ -->
+<div class="panel" id="panel-doc-02" data-panel="wiki" role="tabpanel" aria-label="Wiki">
+<div class="layout">
+<aside><nav class="toc" aria-label="Wiki contents">
+<a href="#d2-principles">Principles</a><a href="#d2-architecture">Architecture</a><a href="#d2-stack">Stack</a><a href="#d2-security">Security</a><a href="#d2-adr">ADRs</a>
+</nav></aside>
+<article>
+<section id="d2-principles">
+<p class="k">Principles</p>
+<h2>Four rules the build obeys.</h2>
+<div class="grid">
+<div class="card"><h3>Intent before pixels.</h3><p>Why: every shot must declare its job before its look, or continuity has nothing to hold.</p></div>
+<div class="card"><h3>Tokens over prose.</h3><p>Why: named reusable phrases survive across runs; paragraphs vanish after one copy.</p></div>
+<div class="card"><h3>Structure over generation.</h3><p>Why: the product generates nothing, so it can never drift, bill, or break on a model change.</p></div>
+<div class="card"><h3>Craft is portable.</h3><p>Why: plain-text stubs work in any generator, brief, or edit — no lock-in, no export tax.</p></div>
+</div>
+</section>
+<section id="d2-architecture">
+<p class="k">Architecture</p>
+<h2>Four layers, entries to export.</h2>
+<div class="flow">
+<div class="step"><h3><span class="lnum">01 — </span>Entries</h3><p>Shot-language wiki pages: size, angle, movement, lens, light, composition — each with when-to-use guidance.</p></div>
+<div class="step"><h3><span class="lnum">02 — </span>Tokens</h3><p>Every entry emits a copy-ready token (<code>CU</code>, <code>DOLLY</code>, <code>GOLD</code>) with versions, so phrasing improves without breaking boards.</p></div>
+<div class="step accent card" style="border-color:var(--acc)"><h3><span class="lnum">03 — </span>Compose / reasoning</h3><p>Scenes break into shots; anchors (lens, light, palette, screen direction) are pinned first and held across the sequence — this is where intent becomes structure.</p></div>
+<div class="step"><h3><span class="lnum">04 — </span>Export</h3><p>Model-agnostic plain-text stubs (<code>SHOT-XX — phrase</code>) that paste into any generator, brief, or shot list.</p></div>
+</div>
+</section>
+<section id="d2-stack">
+<p class="k">Stack</p>
+<h2>What it really runs on.</h2>
+<div class="tbl"><table>
+<thead><tr><th>Layer</th><th>Choice</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>Markup</td><td>Static HTML/CSS/JS</td><td>No build step — the wiki and engine ship as hand-written files anyone can read.</td></tr>
+<tr><td>Backend</td><td>None</td><td>No server, no inference, no GPUs — the product generates nothing by design.</td></tr>
+<tr><td>State</td><td>localStorage only</td><td>Boards persist in the browser; no accounts, no sync to operate.</td></tr>
+<tr><td>Hosting</td><td>Vercel static</td><td>Zero-cost static deploy matched to a zero-backend product.</td></tr>
+</tbody>
+</table></div>
+</section>
+<section id="d2-security">
+<p class="k">Security</p>
+<h2>Local-first means little to attack.</h2>
+<ul class="tight">
+<li><b>Local-first data.</b> Boards live in the user's browser localStorage — nothing to breach server-side because there is no server side.</li>
+<li><b>No accounts, no secrets.</b> No passwords, tokens, or payment data exist anywhere in the system.</li>
+<li><b>No vendor promises.</b> No third-party model, analytics, or tracking dependency is claimed or required.</li>
+</ul>
+</section>
+<section id="d2-adr">
+<p class="k">ADRs</p>
+<h2>Decisions on record.</h2>
+<div class="tbl"><table>
+<thead><tr><th>Decision</th><th>Context</th><th>Consequence</th></tr></thead>
+<tbody>
+<tr><td>No-build static</td><td>Solo founder, zero budget, content-first product.</td><td>Anyone can read and edit the source; no toolchain to rot. Cost: hand-maintained CSS.</td></tr>
+<tr><td>Model-agnostic tokens</td><td>Sora's 2026 shutdowns proved single-model dependence is rented ground.</td><td>Plain-text stubs outlive any lab; product never pays inference or retrains on API change.</td></tr>
+<tr><td>localStorage-only state</td><td>No accounts or backend yet; boards must persist without ops.</td><td>Zero server cost and zero breach surface. Cost: no cross-device sync until identity exists.</td></tr>
+</tbody>
+</table></div>
+</section>
+</article>
+</div>
+</div>
+
+<!-- ============ TAB 4: MVP ============ -->
+<div class="panel" id="panel-doc-04" data-panel="mvp" role="tabpanel" aria-label="MVP">
+<div class="layout">
+<aside><nav class="toc" aria-label="MVP contents">
+<a href="#d4-research">Research</a><a href="#d4-scope">Scope</a><a href="#d4-requirements">Requirements</a><a href="#d4-nfr">NFRs</a><a href="#d4-backlog">Backlog</a>
+</nav></aside>
+<article>
+<section id="d4-header">
+<span class="draft">Draft — refining</span>
+<p class="k">MVP scope</p>
+<h2>An intent layer, not a generator.</h2>
+<p class="lede">The loop: learn a shot term in the wiki → board it as a shot with anchors → export a model-agnostic stub. Cut-off: anything that renders, trains, bills, or syncs is out.</p>
+</section>
+<section id="d4-research">
+<p class="k">Research</p>
+<h2>Ten findings, each with an implication.</h2>
+<div class="tbl"><table>
+<thead><tr><th>#</th><th>Finding</th><th>Implication</th></tr></thead>
+<tbody>
+<tr><td>R-01</td><td>Sora consumer + API shutdowns (2026) stranded single-model workflows.</td><td>Ship model-agnostic export first — never couple boards to one lab. (verified)</td></tr>
+<tr><td>R-02</td><td>Google Veo 3.1 leads on audio-first quality (sound + picture).</td><td>Tokens should carry an audio/intent slot even before generation targets support it. (verified)</td></tr>
+<tr><td>R-03</td><td>Luma targets HDR/EXR post-production workflows.</td><td>Export stubs must survive a colour/post pass — keep look tokens separate from blocking tokens. (verified)</td></tr>
+<tr><td>R-04</td><td>Kling stands out on motion quality.</td><td>Movement tokens (dolly, lock, track) deserve first-class fields, not prose. (verified)</td></tr>
+<tr><td>R-05</td><td>Prompt-craft-as-cinematography is becoming the scarce skill.</td><td>The wiki is the moat: teach the language, then sell the composing loop. (verified)</td></tr>
+<tr><td>R-06</td><td>Manual character-consistency token toil costs ~60% regeneration.</td><td>A continuity ledger that pins cast/look across shots is core, not nice-to-have. <span class="draft">DRAFT — rate TBD</span></td></tr>
+<tr><td>R-07</td><td>Continuity and drift remain open problems across generators.</td><td>Anchor-first composing (lens/light/palette/direction locked per shot) is the differentiator. (verified)</td></tr>
+<tr><td>R-08</td><td>Runway's previs work concedes planning to separate tools.</td><td>Own the pre-generation slot: shot lists and boards that hand off cleanly. <span class="draft">DRAFT — scope TBD</span></td></tr>
+<tr><td>R-09</td><td>Krea-style reusable Skills point to portable prompt units.</td><td>Versioned token library (FR-02) matches where the market is heading. <span class="draft">DRAFT — packaging TBD</span></td></tr>
+<tr><td>R-10</td><td>Boords/FrameForge cover boarding but not generatable tokens.</td><td>The gap is wiki → token → export in one loop; boarding alone is not the product. <span class="draft">DRAFT — depth TBD</span></td></tr>
+</tbody>
+</table></div>
+</section>
+<section id="d4-scope">
+<p class="k">Scope</p>
+<h2>In, out, and when out comes back.</h2>
+<div class="grid">
+<div class="card"><h3>In scope</h3><p>Wiki entries linked to prompt fields · versioned token library · scene→shot locked templates · continuity ledger · one-action-per-shot checker · model-agnostic export.</p></div>
+<div class="card"><h3>Out of scope</h3><p><b>No model training</b> — re-entry: never, product generates nothing. <b>No rendering pipeline</b> — re-entry: only via export stubs. <b>No accounts/billing</b> — re-entry: when teams need sync.</p></div>
+</div>
+</section>
+<section id="d4-requirements">
+<p class="k">Requirements</p>
+<h2>FR-01 to FR-06, each with a done-when gate.</h2>
+<div class="grid">
+<div class="card"><h3>FR-01 — Wiki-linked prompt fields</h3><p>Every wiki entry maps to generatable prompt fields.</p><p class="gate">Done when: each entry renders its fields + copy token.</p></div>
+<div class="card"><h3>FR-02 — Versioned token library</h3><p>Tokens carry versions; phrasing improves without breaking boards.</p><p class="gate">Done when: token edit creates a version; old boards pin the old one.</p></div>
+<div class="card"><h3>FR-03 — Scene→shot locked templates</h3><p>Beats break into shots with anchors pinned at creation.</p><p class="gate">Done when: new shot inherits scene anchors, locked by default.</p></div>
+<div class="card"><h3>FR-04 — Continuity ledger</h3><p>Lens, light, palette, screen direction held across the sequence.</p><p class="gate">Done when: changing a ledger value flags every affected shot.</p></div>
+<div class="card"><h3>FR-05 — One-action-per-shot checker</h3><p>Flags shots trying to do two jobs at once.</p><p class="gate">Done when: two-verb shots warn with a one-click split.</p></div>
+<div class="card"><h3>FR-06 — Model-agnostic export</h3><p>Plain-text stubs paste into any generator.</p><p class="gate">Done when: board exports to clipboard as SHOT-XX stubs with zero lab-specific syntax.</p></div>
+</div>
+</section>
+<section id="d4-nfr">
+<p class="k">NFRs</p>
+<h2>Measurable gates, not adjectives.</h2>
+<div class="tbl"><table>
+<thead><tr><th>ID</th><th>Area</th><th>Gate</th></tr></thead>
+<tbody>
+<tr><td>NFR-01</td><td>Latency</td><td>Board interactions respond &lt; 100ms on a mid-range phone; export to clipboard &lt; 1s.</td></tr>
+<tr><td>NFR-02</td><td>Privacy</td><td>Zero network calls for core loop; boards never leave localStorage without explicit export.</td></tr>
+<tr><td>NFR-03</td><td>Accessibility</td><td>Full keyboard path wiki → board → export; contrast AA; reduced-motion respected.</td></tr>
+<tr><td>NFR-04</td><td>Reliability</td><td>Boards survive reload and upgrade; corrupted local state resets to a blank board, never a blank page.</td></tr>
+</tbody>
+</table></div>
+</section>
+<section id="d4-arch">
+<p class="k">Arch principles</p>
+<h2>How the build stays small.</h2>
+<ul class="tight">
+<li><b>Phase-gated:</b> each backlog phase starts only when the prior gate passes.</li>
+<li><b>Single-adapter first:</b> one ingest (wiki terms) → one timeline (shot board) → one artifact (text stub).</li>
+<li><b>Scenario, not forecast:</b> all money math is labelled scenario-model, never commitment.</li>
+<li><b>Static until sync:</b> no backend until teams demand cross-device boards.</li>
+</ul>
+</section>
+<section id="d4-backlog">
+<p class="k">Backlog</p>
+<h2>Four phases, scenario math.</h2>
+<div class="grid" style="grid-template-columns:1fr 1fr">
+<div class="card"><h3>Phase 0 — Skeleton</h3><p>Tabs, TOC, drawers, print. This page.</p><p class="gate">Gate: anchors resolve, tabs switch, no JS errors.</p></div>
+<div class="card"><h3>Phase 1 — Language</h3><p>FR-01 + FR-02: wiki fields and versioned tokens.</p><p class="gate">Gate: every entry emits a versioned token.</p></div>
+<div class="card"><h3>Phase 2 — Compose</h3><p>FR-03 + FR-04 + FR-05: locked templates, ledger, checker.</p><p class="gate">Gate: multi-scene board holds anchors end to end.</p></div>
+<div class="card"><h3>Scale — Handoff</h3><p>FR-06 + team export: stubs, shared ledgers, seats.</p><p class="gate">Gate: a team completes learn-to-export weekly.</p></div>
+</div>
+<p class="lede" style="margin-top:1.1rem">Scenario model — burn vs MRR vs funding left (never commitments):</p>
+<div class="tbl"><table>
+<thead><tr><th>Scenario</th><th>Burn (run-rate)</th><th>MRR (scenario)</th><th>Funding left</th></tr></thead>
+<tbody>
+<tr><td>Minimal</td><td>[BURN] <span class="qual">scenario</span></td><td>[M6 MRR] <span class="qual">scenario</span></td><td>[RAISE] minus spend <span class="qual">plan, not promise</span></td></tr>
+<tr><td>Conservative</td><td>[BURN] <span class="qual">scenario</span></td><td>[M6 MRR] <span class="qual">scenario</span></td><td>[RAISE] minus spend <span class="qual">plan, not promise</span></td></tr>
+<tr><td>OK</td><td>[BURN] <span class="qual">scenario</span></td><td>[M6 MRR] <span class="qual">scenario</span></td><td>[RAISE] minus spend <span class="qual">plan, not promise</span></td></tr>
+<tr><td>Ideal</td><td>[BURN] <span class="qual">scenario</span></td><td>[M6 MRR] <span class="qual">scenario</span></td><td>[RAISE] minus spend <span class="qual">plan, not promise</span></td></tr>
+</tbody>
+</table></div>
+<div class="viewtoggle"><button class="btn ghost" id="gantt-toggle" aria-expanded="false">Show Gantt view</button></div>
+<div class="gantt" id="gantt" hidden>
+<div class="grow"><span>Phase 0</span><div class="gtrack"><div class="gbar" style="left:0%;width:12%"></div></div></div>
+<div class="grow"><span>Phase 1</span><div class="gtrack"><div class="gbar" style="left:12%;width:25%"></div></div></div>
+<div class="grow"><span>Phase 2</span><div class="gtrack"><div class="gbar" style="left:37%;width:38%"></div></div></div>
+<div class="grow"><span>Scale</span><div class="gtrack"><div class="gbar ghost" style="left:75%;width:25%"></div></div></div>
+<p class="qual">Scenario timeline only — bars show phase order, not committed dates.</p>
+</div>
+</section>
+<section id="d4-next">
+<div class="card" style="padding:2rem">
+<p class="k">Next step</p>
+<h2>Eight weeks, gated twice.</h2>
+<p>Open the week-by-week plan or the funding scenarios. W6 and W8 are decision gates — the build continues only if they pass.</p>
+<div class="ctarow"><button class="btn primary" data-open="plan-drawer">Open 8-week plan</button><button class="btn ghost" data-open="fund-drawer">Funding scenarios</button></div>
+</div>
+</section>
+</article>
+</div>
+</div>
+
+<footer>Camera Shots — a wiki and a prompt engine for deliberate AI cinema. by irfan · <a href="index.html">wiki</a> · <a href="engine.html">engine</a></footer>
+</div>
+
+<nav class="mrail" id="mrail" aria-label="Sections"></nav>
+
+<div class="backdrop" id="backdrop"></div>
+
+<aside class="drawer" id="fund-drawer" role="dialog" aria-modal="true" aria-label="Funding scenarios" hidden>
+<button class="x" data-close>Close ✕</button>
+<span class="draft">Draft — scenario model</span>
+<p class="k">Funding scenarios</p>
+<h2>Four ways the raise could play.</h2>
+<p class="lede">Scenario math only — plan, not promise. All figures DRAFT pending founder inputs.</p>
+<div class="pills" id="fund-pills">
+<button class="pill on">Minimal</button><button class="pill">Conservative</button><button class="pill">OK</button><button class="pill">Ideal</button>
+</div>
+<div class="metrics" style="grid-template-columns:1fr 1fr" id="fund-kpis">
+<div class="metric"><div class="v">[BURN]</div><div class="l">Monthly burn (run-rate)</div><div class="q">scenario — being finalised</div></div>
+<div class="metric"><div class="v">[M6 MRR]</div><div class="l">M6 MRR (scenario)</div><div class="q">scenario model — plan, not promise</div></div>
+</div>
+<p class="draft-note" id="fund-assump">Assumption (Minimal): skeleton crew, static hosting, no inference spend; runway measured from close. Scenario — being finalised.</p>
+<div class="tbl" id="fund-chart"><table>
+<thead><tr><th>Scenario</th><th>Posture</th><th>Gate funded</th></tr></thead>
+<tbody>
+<tr><td>Minimal</td><td>Skeleton crew, static only</td><td>Phase 1 gate</td></tr>
+<tr><td>Conservative</td><td>Language + compose depth</td><td>Phase 2 gate</td></tr>
+<tr><td>OK</td><td>Full loop + team handoff</td><td>Scale gate</td></tr>
+<tr><td>Ideal</td><td>Loop + content engine</td><td>Scale gate + buffer</td></tr>
+</tbody>
+</table></div>
+</aside>
+
+<aside class="drawer" id="plan-drawer" role="dialog" aria-modal="true" aria-label="Eight week plan" hidden>
+<button class="x" data-close>Close ✕</button>
+<span class="draft">Draft — plan, not promise</span>
+<p class="k">8-week plan</p>
+<h2>Week by week, gated twice.</h2>
+<div id="plan-weeks">
+<div class="wrow"><b>W1 —</b> Wiki entry → prompt-field mapping (FR-01 skeleton).<br><span class="done">Done when: 3 entries render fields + tokens.</span></div>
+<div class="wrow"><b>W2 —</b> Versioned token library (FR-02).<br><span class="done">Done when: token edits version; boards pin versions.</span></div>
+<div class="wrow"><b>W3 —</b> Scene→shot locked templates (FR-03).<br><span class="done">Done when: new shots inherit locked scene anchors.</span></div>
+<div class="wrow"><b>W4 —</b> Continuity ledger (FR-04).<br><span class="done">Done when: ledger change flags affected shots.</span></div>
+<div class="wrow"><b>W5 —</b> One-action checker (FR-05) + export stubs (FR-06).<br><span class="done">Done when: two-verb shots warn; clipboard export works.</span></div>
+<div class="wrow gate"><b>W6 — DECISION GATE.</b> Full learn→board→export loop on real boards.<br><span class="done">Continue only if: loop completes without invented fallbacks.</span></div>
+<div class="wrow"><b>W7 —</b> NFR pass: latency, keyboard path, reduced-motion, corrupt-state reset.<br><span class="done">Done when: all four NFR gates pass.</span></div>
+<div class="wrow gate"><b>W8 — DECISION GATE.</b> Team handoff trial + scenario review.<br><span class="done">Continue only if: a team completes learn-to-export weekly.</span></div>
+</div>
+</aside>
+
 <script>
-(function(){var ids=["top","vision","problem","gap","how","built","principles","roadmap","investors","wiki","mvp","cta"];
-var toc=[].slice.call(document.querySelectorAll('#toc a')),rail=[].slice.call(document.querySelectorAll('#mrail a'));
-function set(id){toc.forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+id)});rail.forEach(function(a){var map={top:"top",vision:"vision",problem:"problem",gap:"gap",how:"how",built:"built",principles:"principles",roadmap:"roadmap",investors:"investors",wiki:"wiki",mvp:"mvp",cta:"cta"};a.classList.toggle('on',map[id]!==undefined&&a.getAttribute('href')==='#'+id)})}
-if('IntersectionObserver' in window){var cur='top';var ob=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){cur=e.target.id;set(cur)}})},{rootMargin:'-40% 0px -55% 0px'});ids.forEach(function(id){var el=document.getElementById(id);if(el)ob.observe(el)})}
-var rv=[].slice.call(document.querySelectorAll('.rv'));
-if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches){var ro=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target)}})},{threshold:.08});rv.forEach(function(el){ro.observe(el)})}else{rv.forEach(function(el){el.classList.add('in')})}
+(function(){
+"use strict";
+var TABS=["story","investors","wiki","mvp"];
+var TOCS={
+story:[["s-hero","Intro"],["s-vision","Vision"],["s-problem","Problem"],["s-gap","Gap"],["s-how","How"],["s-built","For"],["s-principles","Rules"],["s-next","Next"],["s-cta","Start"]],
+investors:[["d3-thesis","Thesis"],["d3-market","Why Now"],["d3-model","Model"],["d3-roadmap","Roadmap"],["d3-allocation","Alloc"],["d3-runway","Runway"]],
+wiki:[["d2-principles","Principles"],["d2-architecture","Arch"],["d2-stack","Stack"],["d2-security","Security"],["d2-adr","ADRs"]],
+mvp:[["d4-research","Research"],["d4-scope","Scope"],["d4-requirements","Reqs"],["d4-nfr","NFRs"],["d4-backlog","Backlog"]]
+};
+var tabs=[].slice.call(document.querySelectorAll(".tab"));
+var panels={};TABS.forEach(function(n){panels[n]=document.querySelector('[data-panel="'+n+'"]')});
+var rail=document.getElementById("mrail");
+var reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+var spy=null;
+function activePanel(){return document.querySelector(".panel.on")}
+function setRail(name){
+  rail.innerHTML="";
+  TOCS[name].forEach(function(p){
+    var a=document.createElement("a");a.href="#"+p[0];a.textContent=p[1];a.dataset.sec=p[0];
+    rail.appendChild(a);
+  });
+}
+function mark(id){
+  var panel=activePanel();if(!panel)return;
+  [].slice.call(panel.querySelectorAll(".toc a")).forEach(function(a){
+    a.classList.toggle("on",a.getAttribute("href")==="#"+id);
+  });
+  [].slice.call(rail.querySelectorAll("a")).forEach(function(a){
+    a.classList.toggle("on",a.getAttribute("href")==="#"+id);
+  });
+}
+function observe(name){
+  if(spy){spy.disconnect();spy=null}
+  if(!("IntersectionObserver" in window))return;
+  spy=new IntersectionObserver(function(es){
+    es.forEach(function(e){if(e.isIntersecting)mark(e.target.id)});
+  },{rootMargin:"-35% 0px -55% 0px"});
+  TOCS[name].forEach(function(p){var el=document.getElementById(p[0]);if(el)spy.observe(el)});
+}
+function activate(name,skipScroll){
+  if(TOCS[name]===undefined)name="story";
+  tabs.forEach(function(t){
+    var on=t.dataset.doc===name;
+    t.classList.toggle("on",on);t.setAttribute("aria-selected",on?"true":"false");
+  });
+  TABS.forEach(function(n){panels[n].classList.toggle("on",n===name)});
+  document.body.dataset.printDoc=name;
+  setRail(name);observe(name);
+  try{history.replaceState(null,"","#"+name)}catch(e){}
+  if(!skipScroll){window.scrollTo(0,0);mark(TOCS[name][0][0])}
+}
+tabs.forEach(function(t){
+  t.addEventListener("click",function(){activate(t.dataset.doc)});
+});
+rail.addEventListener("click",function(e){
+  var a=e.target.closest("a");if(!a)return;e.preventDefault();
+  var el=document.getElementById(a.dataset.sec);
+  if(el)el.scrollIntoView({behavior:reduce?"auto":"smooth",block:"start"});
+});
+/* drawers */
+var backdrop=document.getElementById("backdrop");
+var openBtn=null;
+function openDrawer(id){
+  openBtn=document.activeElement;
+  document.querySelectorAll(".drawer.open").forEach(function(d){d.classList.remove("open");d.hidden=true});
+  var d=document.getElementById(id);if(!d)return;
+  d.hidden=false;
+  requestAnimationFrame(function(){requestAnimationFrame(function(){d.classList.add("open")})});
+  backdrop.classList.add("open");document.body.classList.add("lock");
+  var c=d.querySelector(".x");if(c)c.focus();
+}
+function closeDrawers(){
+  document.querySelectorAll(".drawer.open").forEach(function(d){d.classList.remove("open");d.hidden=true});
+  backdrop.classList.remove("open");document.body.classList.remove("lock");
+  if(openBtn&&openBtn.focus)openBtn.focus();openBtn=null;
+}
+document.addEventListener("click",function(e){
+  var o=e.target.closest("[data-open]");if(o){openDrawer(o.dataset.open);return}
+  if(e.target.closest("[data-close]")||e.target===backdrop){closeDrawers()}
+});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeDrawers()});
+/* fund scenario pills */
+var ASSUMPS={
+Minimal:"Assumption (Minimal): skeleton crew, static hosting, no inference spend; runway measured from close. Scenario — being finalised.",
+Conservative:"Assumption (Conservative): language + compose depth staffed; runway measured from close. Scenario — being finalised.",
+OK:"Assumption (OK): full loop plus team handoff staffed; runway measured from close. Scenario — plan, not promise.",
+Ideal:"Assumption (Ideal): loop plus content engine; buffer included; runway measured from close. Scenario — plan, not promise."
+};
+var pills=[].slice.call(document.querySelectorAll("#fund-pills .pill"));
+var assump=document.getElementById("fund-assump");
+pills.forEach(function(p){
+  p.addEventListener("click",function(){
+    pills.forEach(function(q){q.classList.remove("on")});p.classList.add("on");
+    if(assump&&ASSUMPS[p.textContent])assump.textContent=ASSUMPS[p.textContent];
+  });
+});
+/* gantt toggle */
+var gt=document.getElementById("gantt-toggle"),g=document.getElementById("gantt");
+if(gt&&g)gt.addEventListener("click",function(){
+  var show=g.hidden;g.hidden=!show;
+  gt.textContent=show?"Hide Gantt view":"Show Gantt view";
+  gt.setAttribute("aria-expanded",show?"true":"false");
+});
+/* init: #tab or #section-id deep links */
+var start=(location.hash||"").replace(/^#/,"");
+if(TOCS[start]!==undefined){activate(start,true);window.scrollTo(0,0)}
+else if(start&&document.getElementById(start)){
+  var owner=null;
+  TABS.forEach(function(n){TOCS[n].forEach(function(p){if(p[0]===start)owner=n})});
+  activate(owner||"story",true);
+  document.getElementById(start).scrollIntoView({block:"start"});mark(start);
+}
+else{activate("story",true);window.scrollTo(0,0)}
 })();
 </script>
 </body></html>
