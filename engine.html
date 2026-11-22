@@ -67,7 +67,12 @@ header .by{color:var(--mut);font-size:.8rem}
 #side button:hover{color:var(--ink);background:#1d2530}
 #side button.on{color:var(--ink);background:#222a36;border-color:#313b4a}
 .side-div{height:1px;background:#262d38;margin:.4rem .2rem}
-#stage{flex:1;display:flex;flex-direction:column;min-width:0}
+#stage{flex:1;display:flex;flex-direction:column;min-width:0;position:relative}
+#cardMenuBtn{position:absolute;z-index:40;min-width:28px;min-height:28px;width:28px;height:28px;padding:0;border-radius:8px;border:1px solid rgba(255,255,255,.25);background:rgba(10,13,18,.9);color:#e8eaf0;font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#cardMenuBtn:hover{border-color:#e8830c}
+#cardMenu{position:absolute;z-index:60;min-width:170px;background:#161b22;border:1px solid #313b4a;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.5);padding:5px;display:flex;flex-direction:column;gap:2px}
+#cardMenu button{background:transparent;border:0;color:#e8eaf0;font:inherit;font-size:.83rem;text-align:left;padding:.45rem .6rem;border-radius:7px;cursor:pointer}
+#cardMenu button:hover,#cardMenu button:focus-visible{background:#222a36;outline:1px solid #e8830c}
 #chapterbar{display:flex;align-items:center;gap:.5rem;padding:.45rem .8rem;background:var(--panel);border-bottom:1px solid #262d38;font-size:.82rem;color:var(--mut)}
 #chapterbar[hidden]{display:none}
 #chapterbar select{font:inherit;font-size:.82rem;color:var(--ink);background:#222a36;border:1px solid #313b4a;border-radius:8px;padding:.3rem .5rem}
@@ -206,8 +211,6 @@ input.tin.tin-pilled{color:transparent !important}
 <h1>Prompt Engine</h1><span class="by">storyboard the beats, not the pixels</span>
 <span class="tools">
 <button id="addNode">+ location</button>
-<button id="imgBtn" title="Upload an image onto the hovered card">🖼 image</button>
-<button id="urlBtn" title="Embed an image via URL or repo path">🔗 url</button>
 <button id="projBtn" title="Project proprietary tokens — enable domains used in prompts">⚙ project</button>
 <span class="menu"><button id="dots" title="more">⋯</button><span id="menuDrop" hidden><button id="undoBtn">undo</button><button id="clear">clear canvas</button><div id="assetList"></div></span></span>
 </span>
@@ -219,7 +222,7 @@ input.tin.tin-pilled{color:transparent !important}
 <button data-view="locations">Locations</button>
 <button data-view="props">Props</button>
 <button data-view="cast">Cast</button>
-</nav><div id="stage"><div id="chapterbar" hidden><span>Chapter</span><select id="chapterSel"></select><button id="addChapter">+ chapter</button><span class="sp"></span><button id="addLane">+ lane</button><button id="addScene">+ scene</button></div><canvas id="cv"></canvas></div></div>
+</nav><div id="stage"><div id="chapterbar" hidden><span>Chapter</span><select id="chapterSel"></select><button id="addChapter">+ chapter</button><span class="sp"></span><button id="addLane">+ lane</button><button id="addScene">+ scene</button></div><canvas id="cv"></canvas><button id="cardMenuBtn" title="Image and link options" aria-label="Card image and link options" aria-haspopup="menu" aria-expanded="false" hidden>⋯</button><div id="cardMenu" role="menu" hidden></div></div></div>
 <input type="file" id="filePick" accept="image/*" class="filehide">
 <div id="arrowpick" hidden>
 <div class="ap-row"><span class="ap-lab">end A</span><button type="button" data-end="endA" data-val="none" title="line, no head">─</button><button type="button" data-end="endA" data-val="arrow" title="arrow head">→</button></div>
@@ -389,7 +392,6 @@ function connAt(mx,my){for(let i=conns.length-1;i>=0;i--){const cur=_curveOf(con
 function onDrop(target){if(!pending)return null;if(!target||!target.node)return null;
  const c=addConn(pending.node,pending.port,target.node,target.port);pending=null;return c}
 /* ---- cards: image face, hover-reveal text sheet ---- */
-function imgBtnHit(n,mx,my){return mx>=n.x+n.w-28&&mx<=n.x+n.w-4&&my>=n.y+4&&my<=n.y+28}
 function shotMetaLine(n){let ch='—',sc='—';try{
  const c=(SCENES.chapters||[]).find(c=>c.id===n.ch);if(c){ch=c.name||('Chapter '+c.id);
   const s=(c.scenes||[]).find(s=>s.id===n.sc);if(s)sc=s.title||('Scene '+s.id)}}catch(e){}
@@ -428,10 +430,7 @@ function drawCard(n){const x=n.x,y=n.y,w=n.w,h=n.h,hovered=n===hoverNode;
    if(lines.length===2&&(words.join(' ').length>(lines[0]+' '+lines[1]).length||ctx.measureText(lines[1]).width>lw)){
     while(lines[1].length&&ctx.measureText(lines[1]+'…').width>lw)lines[1]=lines[1].slice(0,-1);lines[1]+='…'}
    if(lines[0])ctx.fillText(lines[0],px+8,py+36);
-   if(lines[1])ctx.fillText(lines[1],px+8,py+50)}
-  const cx2=x+w-16,cy2=y+16;
-  ctx.fillStyle='rgba(10,13,18,.85)';ctx.beginPath();ctx.arc(cx2,cy2,12,0,Math.PI*2);ctx.fill();
-  ctx.font='12px system-ui,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('🖼',cx2,cy2+1)}
+   if(lines[1])ctx.fillText(lines[1],px+8,py+50)}}
  ctx.restore();
  if(hovered){ctx.strokeStyle=kc;ctx.lineWidth=2;round(x,y,w,h,10);ctx.stroke()}
  else if(n===selected){ctx.strokeStyle='rgba(255,255,255,.45)';ctx.lineWidth=1;round(x+0.5,y+0.5,w-1,h-1,10);ctx.stroke()}
@@ -467,14 +466,14 @@ function draw(){if(view==='scenes')return drawScenes();ctx.save();ctx.setTransfo
  conns=conns.filter(c=>nodeById(c.a.id)&&nodeById(c.b.id));
  drawConns();drawTemp();
  if(!nodes.length){ctx.fillStyle='#5b6577';ctx.font='14px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';
-  const _ec=s2w(W/2,H/2);ctx.fillText('empty canvas — add a beat to start the sequence',_ec.x,_ec.y);return}
+  const _ec=s2w(W/2,H/2);ctx.fillText('empty canvas — add a beat to start the sequence',_ec.x,_ec.y);try{syncCardBtn()}catch(e){}return}
  for(const n of nodes)drawCard(n);
- if(hoverNode)drawPorts(hoverNode)}
+ if(hoverNode)drawPorts(hoverNode);
+ try{syncCardBtn()}catch(e){}}
 /* ---- pointer wiring ---- */
 cv.addEventListener('pointerdown',e=>{const[mx,my]=pos(e);mouse={x:mx,y:my};if(view==='scenes'){const _w=s2w(mx,my);return scenePD(e,mx,my,_w.x,_w.y)}const _w=s2w(mx,my),wx=_w.x,wy=_w.y;updateHover(wx,wy);
  if(hoverPort){pending={node:hoverPort.node,port:hoverPort.port};selConn=null;hidePicker();selected=hoverPort.node;
   try{cv.setPointerCapture(e.pointerId)}catch(err){}cv.style.cursor='crosshair';draw();return}
- if(hoverNode&&imgBtnHit(hoverNode,wx,wy)){selected=hoverNode;document.getElementById('filePick').click();return}
  const n=at(wx,wy);
  if(n){clearTimeout(clickT);drag={n,dx:wx-n.x,dy:wy-n.y,sx:mx,sy:my,moved:false};selected=n;hidePicker();selConn=null;
   try{cv.setPointerCapture(e.pointerId)}catch(err){}cv.style.cursor='grabbing';draw();return}
@@ -496,12 +495,62 @@ cv.addEventListener('pointerup',e=>{if(view==='scenes'){const _p=pos(e),_w=s2w(_
   hoverPort=null;cv.style.cursor='grab';draw()}});
 cv.addEventListener('dblclick',e=>{clearTimeout(clickT);const[mx,my]=pos(e);if(view==='scenes'){const _w=s2w(mx,my);const s=sceneAt(_w.x,_w.y);if(s)renameScene(s);return}const _dw=s2w(mx,my),n=at(_dw.x,_dw.y);if(!n)return;
  if(e.shiftKey)editNote(n);else editLabel(n)});
-addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();closeShotPicker();hidePicker();closeProjectModal();closePromptModal();selConn=null;pending=null;panDrag=null;draw()}
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeCardMenu();closeDrawer();closeShotPicker();hidePicker();closeProjectModal();closePromptModal();selConn=null;pending=null;panDrag=null;draw()}
  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();undo();return}});
-/* ---- toolbar ---- */
+/* ---- per-card image/URL menu (replaces the old global buttons) ---- */
 const filePick=document.getElementById('filePick');let pickTarget=null;
-function toolbarCard(){if(view==='scenes'){if(!selStrip){flashHint('select a scene first');return null}return selStrip}const t=hoverNode||selected;if(!t||!nodeById(t.id)){flashHint('hover a card first');return null}return t}
-document.getElementById('imgBtn').onclick=()=>{if(view==='scenes'){setView('shots');pickTarget={k:'new'};filePick.click();return}const t=toolbarCard();if(!t)return;pickTarget={k:'n',id:t.id};filePick.click()};
+const cardMenuBtn=document.getElementById('cardMenuBtn'),cardMenu=document.getElementById('cardMenu');
+let cardMenuFor=null;
+function cardAnchor(){const t=hoverNode||selected;return(t&&nodeById(t.id))?t:null}
+function syncCardBtn(){
+ const t=(view!=='scenes')?(hoverNode||(selected&&nodeById(selected.id)?selected:null)):null;
+ if(!t||(cardMenuFor&&cardMenuFor!==t))closeCardMenu();
+ if(!t){cardMenuBtn.hidden=true;return}
+ const r=cv.getBoundingClientRect(),pr=cardMenuBtn.parentElement.getBoundingClientRect();
+ const cx=(t.x+t.w-16-cam.x)*cam.z,cy=(t.y+16-cam.y)*cam.z;
+ let lx=r.left-pr.left+cx-14,ly=r.top-pr.top+cy-14;
+ try{lx=Math.max(4,Math.min(pr.width-32,lx));ly=Math.max(4,Math.min(pr.height-32,ly))}catch(e){}
+ cardMenuBtn.style.left=lx+'px';cardMenuBtn.style.top=ly+'px';
+ cardMenuBtn.hidden=false;
+ if(!cardMenu.hidden&&cardMenuFor)positionCardMenu()}
+function positionCardMenu(){
+ const pr=cardMenuBtn.parentElement.getBoundingClientRect(),br=cardMenuBtn.getBoundingClientRect();
+ cardMenu.hidden=false;cardMenu.style.visibility='hidden';
+ const mw=cardMenu.offsetWidth||190,mh=cardMenu.offsetHeight||110;
+ let lx=br.left-pr.left,ly=br.bottom-pr.top+4;
+ if(lx+mw>pr.width-8)lx=Math.max(8,br.right-pr.left-mw);
+ if(ly+mh>pr.height-8)ly=Math.max(8,br.top-pr.top-mh-4);
+ cardMenu.style.left=Math.max(8,lx)+'px';cardMenu.style.top=Math.max(8,ly)+'px';
+ cardMenu.style.visibility=''}
+function openCardMenu(card){
+ if(!card||!nodeById(card.id))return;
+ closeCardMenu();cardMenuFor=card;selected=card;
+ cardMenu.innerHTML='';
+ const add=(label,fn)=>{const b=document.createElement('button');b.type='button';b.setAttribute('role','menuitem');b.textContent=label;
+  b.addEventListener('click',e=>{e.stopPropagation();closeCardMenu();fn()});cardMenu.appendChild(b);return b};
+ add('Change image…',()=>{pickTarget={k:'n',id:card.id};filePick.click()});
+ add('Set/Edit URL…',()=>{const cur=card.imgUrl&&!card.imgUrl.startsWith('data:')?card.imgUrl:'';
+  const v=prompt('Image URL or repo path (e.g. uploads/photo.jpg) for "'+card.label+'": (empty removes)',cur);
+  if(v===null)return;attachURL(card,v.trim())});
+ if(card.imgUrl)add('Remove image',()=>attachURL(card,''));
+ cardMenuBtn.setAttribute('aria-expanded','true');
+ positionCardMenu();
+ const f=cardMenu.querySelector('button');if(f)f.focus();
+ draw()}
+function closeCardMenu(refocus){
+ if(cardMenu.hidden&&!cardMenuFor)return;
+ cardMenu.hidden=true;cardMenuFor=null;cardMenuBtn.setAttribute('aria-expanded','false');
+ if(refocus&&!cardMenuBtn.hidden){try{cardMenuBtn.focus()}catch(e){}}}
+cardMenuBtn.addEventListener('click',e=>{e.stopPropagation();if(cardMenu.hidden){const t=cardAnchor();if(t)openCardMenu(t)}else closeCardMenu()});
+cardMenu.addEventListener('keydown',e=>{
+ const items=Array.from(cardMenu.querySelectorAll('button')),i=items.indexOf(document.activeElement);
+ if(e.key==='Escape'){e.preventDefault();e.stopPropagation();closeCardMenu(true)}
+ else if(e.key==='ArrowDown'){e.preventDefault();(items[i+1]||items[0]).focus()}
+ else if(e.key==='ArrowUp'){e.preventDefault();(items[i-1]||items[items.length-1]).focus()}
+ else if(e.key==='Home'){e.preventDefault();items[0].focus()}
+ else if(e.key==='End'){e.preventDefault();items[items.length-1].focus()}});
+cardMenu.addEventListener('focusout',()=>{setTimeout(()=>{if(!cardMenu.hidden&&!cardMenu.contains(document.activeElement)&&document.activeElement!==cardMenuBtn)closeCardMenu()},0)});
+document.addEventListener('pointerdown',e=>{try{if(!cardMenu.hidden&&!(e.target&&e.target.closest&&e.target.closest('#cardMenu,#cardMenuBtn')))closeCardMenu()}catch(_e){}},true);
 filePick.addEventListener('change',()=>{const f=filePick.files&&filePick.files[0];filePick.value='';if(!f){pickTarget=null;return};
  if(pickTarget&&pickTarget.k==='new'){pickTarget=null;shotFromFile(f);return}
  const t=pickTarget?nodeById(pickTarget.id):null;pickTarget=null;
@@ -512,11 +561,6 @@ document.addEventListener('paste',e=>{const items=(e.clipboardData&&e.clipboardD
   if(view==='scenes'){shotFromFile(f);flashHint('pasted to Shots Composer');return}
   if(selected&&nodeById(selected.id)){attachFile(selected,f);return}
   addNode();attachFile(selected,f);return}}});
-document.getElementById('urlBtn').onclick=()=>{const t=toolbarCard();if(!t)return;
- if(view==='scenes'){const u=prompt('New shot image URL or repo path:');if(u===null||!u.trim())return;setView('shots');shotFromURL(u.trim());return}
- const cur=t.imgUrl&&!t.imgUrl.startsWith('data:')?t.imgUrl:'';
- const v=prompt('Image URL or repo path (e.g. uploads/photo.jpg) for "'+t.label+'": (empty removes)',cur);
- if(v===null)return;attachURL(t,v.trim())};
 document.getElementById('addNode').onclick=()=>addNode();
 document.getElementById('clear').onclick=()=>{menuDrop.hidden=true;
  if(view==='scenes'){const ch=activeChapter();if(ch.scenes.length&&confirm('Clear this chapter?')){snap();ch.scenes=[];selStrip=null;persist();draw()}return}
@@ -532,7 +576,7 @@ function openDrawer(n){drawerSub=n;disarmDrawerDel();
  let imgErr=document.getElementById('drawerImgErr');if(!imgErr){imgErr=document.createElement('p');imgErr.id='drawerImgErr';imgErr.style.cssText='color:var(--mut);font-size:.85rem;margin:.2rem 1.1rem 0;display:none';drawerImg.after(imgErr)}
  imgErr.style.display='none';
  if(n.images){drawerImg.style.display='none';
-  if(!n.images.length)stills.innerHTML='<p style="color:var(--mut);font-size:.85rem">No stills yet — select the scene, then 🖼 image or 🔗 url.</p>';
+  if(!n.images.length)stills.innerHTML='<p style="color:var(--mut);font-size:.85rem">No stills yet — add shots in the Shots Composer.</p>';
   for(const im of n.images){const e=document.createElement('img');e.src=im.url;e.alt='';stills.appendChild(e)}}
  else{if(n.imgUrl){drawerImg.style.display='block';drawerImg.onerror=()=>{drawerImg.style.display='none';imgErr.style.display='block';imgErr.textContent='could not load '+(n.imgUrl.length>80?n.imgUrl.slice(0,80)+'…':n.imgUrl)+' — check the URL or uploads/ file'};drawerImg.src=n.imgUrl}else{drawerImg.style.display='none';drawerImg.removeAttribute('src')}}
  if(n.imgErr&&!n.images){imgErr.style.display='block';imgErr.textContent='could not load '+(n.imgErr.length>80?n.imgErr.slice(0,80)+'…':n.imgErr)+' — check the URL or uploads/ file'}
@@ -760,7 +804,8 @@ function drawScenes(){ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0
  drawSceneConns(conns,isSceneId);drawSceneTemp();
  for(const s of c.scenes)drawScenePorts(s);
  const _lt='+ lane ('+((selStrip&&selStrip.lanes)||'—')+')';
- const _b=document.getElementById('addLane');if(_b.textContent!==_lt)_b.textContent=_lt}
+ const _b=document.getElementById('addLane');if(_b.textContent!==_lt)_b.textContent=_lt;
+ try{syncCardBtn()}catch(e){}}
 function scenePortPos(s,p){if(p==='t')return{x:s.x+s.w/2,y:s.y};
  if(p==='b')return{x:s.x+s.w/2,y:s.y+s.h};if(p==='l')return{x:s.x,y:s.y+s.h/2};return{x:s.x+s.w,y:s.y+s.h/2}}
 function drawScenePorts(s){if(s!==selStrip&&s!==hoverScene&&!pending)return;
@@ -848,7 +893,7 @@ function syncUI(){
  else{an.style.display='';an.textContent='+ '+(VIEW_META[view]?VIEW_META[view].one:'node').toLowerCase()}
  if(view==='scenes')rebuildChapters();
  hintEl.textContent=view==='scenes'?'wheel zooms · drag background pans · drag scene · resize corner · + fills lane slot · hover for dots · drag dot-to-dot to link · click still opens Shots':HINT_DEFAULT}
-function setView(v){if(v!==view){if(view==='scenes'){const oc=activeChapter();if(oc)oc.conns=conns}saveView();view=v;selStrip=null;selConn=null;pending=null;selected=null;hidePicker();closeShotPicker();
+function setView(v){if(v!==view){if(view==='scenes'){const oc=activeChapter();if(oc)oc.conns=conns}saveView();view=v;selStrip=null;selConn=null;pending=null;selected=null;hidePicker();closeShotPicker();closeCardMenu();
  if(v==='scenes'){const nc=activeChapter();conns=(nc&&nc.conns)||[]}else if(VIEW_META[v])loadView(v)}syncUI();persist();draw()}
 document.querySelectorAll('#side button').forEach(b=>{b.onclick=()=>setView(b.dataset.view)});
 document.getElementById('chapterSel').onchange=e=>{const oc=activeChapter();if(oc)oc.conns=conns;SCENES.active=+e.target.value;selStrip=null;selConn=null;const nc=activeChapter();conns=(nc&&nc.conns)||[];persist();syncUI();draw()};
