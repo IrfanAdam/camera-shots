@@ -69,10 +69,12 @@ header .by{color:var(--mut);font-size:.8rem}
 .side-div{height:1px;background:#262d38;margin:.4rem .2rem}
 #stage{flex:1;display:flex;flex-direction:column;min-width:0;position:relative}
 #cardMenuBtn{position:absolute;z-index:40;min-width:28px;min-height:28px;width:28px;height:28px;padding:0;border-radius:8px;border:1px solid rgba(255,255,255,.25);background:rgba(10,13,18,.9);color:#e8eaf0;font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
-#cardMenuBtn:hover{border-color:#e8830c}
+#cardMenuBtn:hover,#cardMenuBtn:focus-visible{border-color:#e8830c;outline:1px solid #e8830c}
+#cardMenuBtn[hidden]{display:none}
 #cardMenu{position:absolute;z-index:60;min-width:170px;background:#161b22;border:1px solid #313b4a;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.5);padding:5px;display:flex;flex-direction:column;gap:2px}
 #cardMenu button{background:transparent;border:0;color:#e8eaf0;font:inherit;font-size:.83rem;text-align:left;padding:.45rem .6rem;border-radius:7px;cursor:pointer}
 #cardMenu button:hover,#cardMenu button:focus-visible{background:#222a36;outline:1px solid #e8830c}
+#cardMenu[hidden]{display:none}
 #chapterbar{display:flex;align-items:center;gap:.5rem;padding:.45rem .8rem;background:var(--panel);border-bottom:1px solid #262d38;font-size:.82rem;color:var(--mut)}
 #chapterbar[hidden]{display:none}
 #chapterbar select{font:inherit;font-size:.82rem;color:var(--ink);background:#222a36;border:1px solid #313b4a;border-radius:8px;padding:.3rem .5rem}
@@ -90,11 +92,15 @@ header .by{color:var(--mut);font-size:.8rem}
 #promptPrev{background:#0b0e13;border:1px solid #262d38;border-radius:8px;padding:.6rem .7rem;padding-top:2.3rem;font:11px/1.5 ui-monospace,Menlo,monospace;color:#c8cfdb;white-space:pre;margin:.4rem 0 0;overflow:auto;flex:1;min-height:0}
 #promptWrap{position:relative;flex:1;display:flex;flex-direction:column;min-height:0}
 #anchorRow #drawerMenuBtn{position:static;margin-left:auto}
-#drawerMenuBtn:hover{border-color:var(--acc);color:var(--ink)}
+#drawerMenuBtn:hover,#drawerMenuBtn:focus-visible{border-color:var(--acc);color:var(--ink)}
 #drawerMenu{position:absolute;top:2.6rem;right:.6rem;background:#161b22;border:1px solid #313b4a;border-radius:10px;padding:6px;min-width:150px;box-shadow:0 8px 24px rgba(0,0,0,.45);z-index:3}
 #drawerMenu[hidden]{display:none}
-#menuDel{width:100%;text-align:left;background:transparent;border:0;border-radius:7px;padding:.4rem .6rem;color:#e8eaf0;font-size:.82rem;cursor:pointer;white-space:nowrap}
-#menuDel:hover{background:#222a36;color:#e5484d}
+#drawerMenu button{width:100%;text-align:left;background:transparent;border:0;border-radius:7px;padding:.4rem .6rem;color:#e8eaf0;font-size:.82rem;cursor:pointer;white-space:nowrap}
+#drawerMenu button:hover{background:#222a36}
+#drawerMenu button:focus-visible{outline:1px solid #e8830c}
+#drawerMenu button[hidden]{display:none}
+#drawerMenu #menuDel:hover{background:#222a36;color:#e5484d}
+#drawerMenu #menuDel.armed{background:#e5484d;border-color:#e5484d;color:#fff;font-weight:700}
 #delConfirm{display:flex;gap:.5rem;margin:.4rem 0}
 #delConfirm[hidden]{display:none}
 #delConfirm #drawerDel,#delConfirm #drawerDelCancel{margin-top:0}
@@ -106,24 +112,47 @@ header .by{color:var(--mut);font-size:.8rem}
 .modal .box{background:#161b22;border:1px solid #313b4a;border-radius:12px;width:min(560px,94vw);max-height:88vh;overflow:auto;padding:1rem 1.2rem}
 .modal h2{font-size:1rem;margin-bottom:.2rem}
 .modal .sub{color:var(--mut);font-size:.8rem;margin-bottom:.8rem}
-.modal .dom{border:1px solid #262d38;border-radius:10px;padding:.7rem .8rem;margin-bottom:.7rem}
-.modal .dom.off{opacity:.55}
-.modal .dom-h{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:.88rem}
-.modal .dom-h label{margin-left:auto;font-weight:400;font-size:.78rem;color:#aab2c2;display:flex;gap:.35rem;align-items:center;cursor:pointer}
-.modal .ddesc{color:var(--mut);font-size:.78rem;margin:.35rem 0 .5rem}
-.modal .tok{display:flex;gap:.5rem;align-items:center;margin:.3rem 0;font-size:.8rem}
-.modal .tok span{width:110px;flex:none;color:#c8cfdb}
-.modal .tok select{flex:1;background:#222a36;color:#e8eaf0;border:1px solid #313b4a;border-radius:6px;padding:.28rem .4rem;font-size:.8rem;min-width:0;cursor:pointer;transition:border-color .16s,background .16s,box-shadow .16s}
-.modal .tok select:hover{border-color:#e8830c;background:#1e2632}
-.modal .tok select:focus{outline:none;border-color:#e8830c;background:#1e2632;box-shadow:0 0 0 2px rgba(232,131,12,.18)}
-.modal .tdesc{color:var(--mut);font-size:.74rem;margin:0 0 .2rem 118px}
-.modal .codes{display:flex;flex-direction:column;gap:.25rem;margin:.15rem 0 .35rem 118px}
-.modal .code-row{display:flex;gap:.5rem;align-items:center;font-size:.74rem;min-width:0}
-.modal .code-lab{flex:1;min-width:0;color:#8b93a5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.modal .code-row input{width:132px;flex:none;background:#222a36;color:#e8eaf0;border:1px solid #313b4a;border-radius:6px;padding:.22rem .4rem;font-size:.74rem;font-family:ui-monospace,Menlo,monospace;text-transform:uppercase}
-.modal .code-row input:hover{border-color:#e8830c}
-.modal .code-row input:focus{outline:none;border-color:#e8830c;box-shadow:0 0 0 2px rgba(232,131,12,.18)}
-.modal .code-row input:disabled{opacity:.5}
+#projModal .box.proj-box{width:min(980px,96vw)}
+.proj-wrap{display:flex;border:1px solid #262d38;border-radius:10px;overflow:hidden;min-height:380px;max-height:62vh;background:#10151c}
+.proj-wrap .pm-nav{width:150px;flex:none;background:var(--bg);border-right:1px solid rgba(232,234,240,.12);padding:12px 0;display:flex;flex-direction:column;gap:4px;overflow:auto}
+#projNav{display:flex;flex-direction:column;gap:4px}
+#projNav button{background:transparent;border:0;border-left:3px solid transparent;border-radius:0;color:var(--mut);font-size:.84rem;line-height:1.5;text-align:left;padding:8px 20px;cursor:pointer;width:100%;box-sizing:border-box}
+#projNav button:hover{color:var(--ink);background:rgba(232,234,240,.06)}
+#projNav button.on{border-left-color:var(--acc);color:var(--acc);background:rgba(232,131,12,.10);font-weight:600}
+#projNav button.off{opacity:.55}
+.proj-wrap .pm-mid{flex:1;min-width:0;padding:14px 16px;overflow:auto}
+.proj-codes{width:270px;flex:none;border-left:1px solid rgba(232,234,240,.12);padding:12px 14px;overflow:auto;background:#0d1218}
+.proj-codes-h{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:0 0 8px}
+.proj-dom-h{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:.9rem;margin-bottom:2px}
+.proj-ddesc{color:var(--mut);font-size:.78rem;margin:.25rem 0 .7rem}
+.proj-tok{border:1px solid #262d38;border-radius:10px;padding:.55rem .65rem;margin-bottom:.55rem}
+.proj-tok.off{opacity:.6}
+.proj-tok-h{display:flex;align-items:center;gap:.55rem;font-size:.84rem;font-weight:600}
+.proj-tok-h .tname{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.proj-tok-h select{flex:none;max-width:190px;background:#222a36;color:#e8eaf0;border:1px solid #313b4a;border-radius:6px;padding:.22rem .35rem;font-size:.76rem;cursor:pointer}
+.proj-tok-h select:hover{border-color:#e8830c}
+.proj-tok-h select:disabled{opacity:.5}
+.proj-tdesc{color:var(--mut);font-size:.74rem;margin:.3rem 0 .45rem}
+.proj-val{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:#c8cfdb;padding:.18rem 0}
+.proj-val span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.proj-val.off span{opacity:.5;text-decoration:line-through}
+.proj-code-tok{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:#8b93a5;margin:.6rem 0 .25rem}
+.proj-code-tok:first-child{margin-top:0}
+.proj-codes .code-row{display:flex;gap:.5rem;align-items:center;font-size:.74rem;min-width:0;margin-bottom:.3rem}
+.proj-codes .code-lab{flex:1;min-width:0;color:#8b93a5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.proj-codes .code-row input{width:128px;flex:none;background:#222a36;color:#e8eaf0;border:1px solid #313b4a;border-radius:6px;padding:.22rem .4rem;font-size:.74rem;font-family:ui-monospace,Menlo,monospace;text-transform:uppercase}
+.proj-codes .code-row input:hover{border-color:#e8830c}
+.proj-codes .code-row input:focus{outline:none;border-color:#e8830c;box-shadow:0 0 0 2px rgba(232,131,12,.18)}
+.proj-empty{color:var(--mut);font-size:.8rem;font-style:italic}
+.sw{position:relative;display:inline-flex;flex:none;width:34px;height:19px;cursor:pointer}
+.sw input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+.sw .sl{position:absolute;inset:0;background:#2a3340;border:1px solid #3a4554;border-radius:999px;transition:background .16s,border-color .16s}
+.sw .sl::after{content:'';position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#8b93a5;transition:left .16s,background .16s}
+.sw input:checked + .sl{background:rgba(232,131,12,.35);border-color:var(--acc)}
+.sw input:checked + .sl::after{left:17px;background:var(--acc)}
+.sw input:disabled + .sl{opacity:.45}
+.sw input:focus-visible + .sl{outline:1px solid var(--acc);outline-offset:2px}
+@media (max-width:760px){.proj-wrap{flex-direction:column;max-height:70vh}.proj-wrap .pm-nav{width:auto;border-right:0;border-bottom:1px solid rgba(232,234,240,.12);padding:8px}#projNav{flex-direction:row;flex-wrap:wrap}.proj-codes{width:auto;border-left:0;border-top:1px solid rgba(232,234,240,.12)}}
 .modal .row{display:flex;gap:.6rem;margin:.5rem 0}
 .modal .row input,.modal .row select{flex:1;background:#222a36;color:#e8eaf0;border:1px solid #313b4a;border-radius:6px;padding:.35rem .5rem;font:inherit;font-size:.82rem;min-width:0}
 .modal .tabs{display:flex;gap:.35rem;flex-wrap:wrap;margin:.5rem 0}
@@ -207,7 +236,7 @@ input.tin.tin-pilled{color:transparent !important}
 #assetList button b{color:#5eead4;font-weight:600}
 </style></head><body>
 <header>
-<a class="back" href="index.html">← wiki</a>
+<a class="back" href="index.html">← wiki</a><a class="back" href="pitch.html">pitch →</a>
 <h1>Prompt Engine</h1><span class="by">storyboard the beats, not the pixels</span>
 <span class="tools">
 <button id="addNode">+ location</button>
@@ -234,7 +263,7 @@ input.tin.tin-pilled{color:transparent !important}
 <button id="drawerX" title="close">×</button>
 <img id="drawerImg" alt="">
 <div id="drawerStills"></div>
-<div class="dp"><div id="drawerMenu" hidden><button id="menuDel">delete</button></div><div id="delConfirm" hidden><button id="drawerDel">delete</button><button id="drawerDelCancel" hidden>cancel</button></div><h3 id="drawerTitle"></h3>
+<div class="dp"><div id="drawerMenu" hidden><button id="menuImg">Change image…</button><button id="menuURL">Set/Edit URL…</button><button id="menuRem">Remove image</button><button id="menuDel">delete</button></div><div id="delConfirm" hidden><button id="drawerDel">delete</button><button id="drawerDelCancel" hidden>cancel</button></div><h3 id="drawerTitle"></h3>
 <div id="anchorRow" hidden><code id="anchorCode" title="copy anchor id"></code><button id="anchorVariant" title="Create variant (next letter)">+ variant</button><button id="anchorAssign" title="Assign a different anchor">assign</button><button id="drawerMenuBtn" title="more">⋯</button></div>
 <div id="shotProps" hidden><label>chapter <select id="shotCh"></select></label><label>scene <select id="shotSc"></select></label><span>lane <b id="shotLane">—</b></span></div>
 <div id="slotBtns" hidden><button id="goShot">go to shot</button><button id="removeSlot">remove</button></div>
@@ -243,9 +272,9 @@ input.tin.tin-pilled{color:transparent !important}
 </div>
 </aside>
 <aside id="editPanel" aria-label="prompt editor"><div id="drawerEdit"><div class="edithead"><button id="pmBack" title="dismiss">close</button><div class="pmtitle">prompt</div></div><div class="editbody"><nav class="pm-nav"><div id="pmNav"></div></nav><div id="pmMid" class="pm-mid"><div id="pmFields"></div></div></div></div></aside>
-<div id="projModal" class="modal" hidden><div class="box"><h2>⚙ Project tokens</h2>
-<div class="sub">Frames only — video/motion is deferred. A domain must be <b>enabled</b> here before it appears in prompts. Disabled = zero words, no fallbacks.</div>
-<div id="projDomains"></div>
+<div id="projModal" class="modal" hidden><div class="box proj-box"><h2>⚙ Project tokens</h2>
+<div class="sub">Frames only — video/motion is deferred. Enable a domain, token, or value to include it in prompts. Disabled = zero words, no fallbacks.</div>
+<div class="proj-wrap"><nav class="pm-nav"><div id="projNav"></div></nav><div class="pm-mid"><div id="projToks"></div></div><div class="proj-codes"><div class="proj-codes-h">custom codes</div><div id="projCodes"></div></div></div>
 <div class="frow"><button id="projClose" class="modalClose">done</button><span class="note" id="projNote"></span></div>
 </div></div>
 <div class="hint" id="hint">hover a card for dots · drag dot-to-dot to link · click a card for detail · Ctrl+Z undoes · double-click renames</div>
@@ -323,8 +352,8 @@ function restore(){const r=Store.load();let _migP=false;
  if(VIEW_META[view])loadView(view);if(view==='scenes'){const _nc=activeChapter();conns=(_nc&&_nc.conns)||[]}ensureAnchorsAll();syncShotMeta();
  syncUI()}
 function loadImage(n,silent){if(!n.imgUrl){n.img=null;if(n)n.imgErr='';return}const im=new Image();n.imgErr='';
- im.onload=()=>{n.img=im;n.imgErr='';fitCard(n);draw();if(!silent)persist()};
- im.onerror=()=>{n.imgErr=n.imgUrl;n.imgUrl='';n.img=null;draw();if(!silent)flashHint('could not load that image — check the URL or uploads/ file')};
+ im.onload=()=>{n.img=im;n.imgErr='';fitCard(n);draw();if(!silent)persist();try{syncDrawerImg(n)}catch(_e){}};
+ im.onerror=()=>{n.imgErr=n.imgUrl;n.imgUrl='';n.img=null;draw();if(!silent)flashHint('could not load that image — check the URL or uploads/ file');try{syncDrawerImg(n)}catch(_e){}};
  im.src=n.imgUrl;n.img=im;draw()}
 
 /* ---- canvas ---- */
@@ -495,7 +524,7 @@ cv.addEventListener('pointerup',e=>{if(view==='scenes'){const _p=pos(e),_w=s2w(_
   hoverPort=null;cv.style.cursor='grab';draw()}});
 cv.addEventListener('dblclick',e=>{clearTimeout(clickT);const[mx,my]=pos(e);if(view==='scenes'){const _w=s2w(mx,my);const s=sceneAt(_w.x,_w.y);if(s)renameScene(s);return}const _dw=s2w(mx,my),n=at(_dw.x,_dw.y);if(!n)return;
  if(e.shiftKey)editNote(n);else editLabel(n)});
-addEventListener('keydown',e=>{if(e.key==='Escape'){closeCardMenu();closeDrawer();closeShotPicker();hidePicker();closeProjectModal();closePromptModal();selConn=null;pending=null;panDrag=null;draw()}
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeCardMenu();try{const _dm=document.getElementById('drawerMenu');if(_dm)_dm.hidden=true}catch(_e){}closeDrawer();closeShotPicker();hidePicker();closeProjectModal();closePromptModal();selConn=null;pending=null;panDrag=null;draw()}
  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();undo();return}});
 /* ---- per-card image/URL menu (replaces the old global buttons) ---- */
 const filePick=document.getElementById('filePick');let pickTarget=null;
@@ -503,7 +532,13 @@ const cardMenuBtn=document.getElementById('cardMenuBtn'),cardMenu=document.getEl
 let cardMenuFor=null;
 function cardAnchor(){const t=hoverNode||selected;return(t&&nodeById(t.id))?t:null}
 function syncCardBtn(){
- const t=(view!=='scenes')?(hoverNode||(selected&&nodeById(selected.id)?selected:null)):null;
+ /* hover-only: the ellipsis lives on the hovered card, never on selection alone.
+    It stays put while its menu is open (cardMenuFor) or while it / the menu has keyboard focus. */
+ const hv=(hoverNode&&nodeById(hoverNode.id))?hoverNode:null;
+ let t=(view!=='scenes')?hv:null;
+ if(!t&&cardMenuFor&&nodeById(cardMenuFor.id))t=cardMenuFor;
+ if(!t){const ae=document.activeElement;
+  if(ae&&(ae===cardMenuBtn||(cardMenu.contains&&cardMenu.contains(ae)))&&selected&&nodeById(selected.id))t=selected}
  if(!t||(cardMenuFor&&cardMenuFor!==t))closeCardMenu();
  if(!t){cardMenuBtn.hidden=true;return}
  const r=cv.getBoundingClientRect(),pr=cardMenuBtn.parentElement.getBoundingClientRect();
@@ -551,6 +586,10 @@ cardMenu.addEventListener('keydown',e=>{
  else if(e.key==='End'){e.preventDefault();items[items.length-1].focus()}});
 cardMenu.addEventListener('focusout',()=>{setTimeout(()=>{if(!cardMenu.hidden&&!cardMenu.contains(document.activeElement)&&document.activeElement!==cardMenuBtn)closeCardMenu()},0)});
 document.addEventListener('pointerdown',e=>{try{if(!cardMenu.hidden&&!(e.target&&e.target.closest&&e.target.closest('#cardMenu,#cardMenuBtn')))closeCardMenu()}catch(_e){}},true);
+document.addEventListener('click',e=>{try{if(!cardMenu.hidden&&!(e.target&&e.target.closest&&e.target.closest('#cardMenu,#cardMenuBtn')))closeCardMenu()}catch(_e){}try{const _dm=document.getElementById('drawerMenu');if(_dm&&!_dm.hidden&&!(e.target&&e.target.closest&&e.target.closest('#drawerMenu,#drawerMenuBtn')))_dm.hidden=true}catch(_e2){}});
+cv.addEventListener('pointerleave',()=>{hoverNode=null;hoverPort=null;try{draw()}catch(_e){}});
+cardMenuBtn.addEventListener('focus',()=>{try{syncCardBtn()}catch(_e){}});
+cardMenuBtn.addEventListener('blur',()=>{setTimeout(()=>{try{syncCardBtn()}catch(_e){}},0)});
 filePick.addEventListener('change',()=>{const f=filePick.files&&filePick.files[0];filePick.value='';if(!f){pickTarget=null;return};
  if(pickTarget&&pickTarget.k==='new'){pickTarget=null;shotFromFile(f);return}
  const t=pickTarget?nodeById(pickTarget.id):null;pickTarget=null;
@@ -621,7 +660,21 @@ function drawerDelFire(){const n=drawerSub;disarmDrawerDel();
 document.getElementById('drawerDel').onclick=()=>{if(!drawerDelArmed){armDrawerDel();return}drawerDelFire()};
 document.addEventListener('click',e=>{try{const t=e.target&&e.target.closest?e.target.closest('#menuDel,#delConfirm'):null;if(!t)return;if(t.id==='menuDel'){if(!drawerDelArmed){armDrawerDel()}else{drawerDelFire()}}else{disarmDrawerDel()}}catch(_e){}},true);
 document.getElementById('drawerDelCancel').onclick=()=>{disarmDrawerDel()};
-document.getElementById('drawerMenuBtn').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}const m=document.getElementById('drawerMenu');if(m)m.hidden=!m.hidden};
+function refreshDrawerMenu(){try{const r=document.getElementById('menuRem');if(r)r.hidden=!(drawerSub&&drawerSub.imgUrl)}catch(_e){}}
+function drawerLive(){return(drawerSub&&drawerSub.id!=null&&nodeById(drawerSub.id))||drawerSub}
+function refreshDrawerAfterImg(){try{if(!drawerSub)return;renderAnchorRow(drawerSub);renderPromptPreview(drawerSub)}catch(_e){}
+ try{if(drawerSub.images)return;const im=document.getElementById('drawerImg');let err=document.getElementById('drawerImgErr');
+  if(drawerSub.imgUrl){im.style.display='block';if(err)err.style.display='none';if(im.getAttribute('src')!==drawerSub.imgUrl)im.src=drawerSub.imgUrl}
+  else{im.style.display='none';im.removeAttribute('src')}}catch(_e2){}
+ try{draw()}catch(_e3){}}
+function syncDrawerImg(n){try{
+ if(!drawer||!drawer.classList.contains('open')||!drawerSub)return;
+ if(!((drawerSub.id!=null&&n&&drawerSub.id===n.id)||drawerSub===n))return;
+ refreshDrawerAfterImg()}catch(_e){}}
+document.getElementById('menuImg').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}const m=document.getElementById('drawerMenu');if(m)m.hidden=true;const t=drawerLive();if(!t||t.id==null||!nodeById(t.id)){flashHint('open a card first');return}pickTarget={k:'n',id:t.id};filePick.click()};
+document.getElementById('menuURL').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}const m=document.getElementById('drawerMenu');if(m)m.hidden=true;const t=drawerLive();if(!t||t.id==null||!nodeById(t.id)){flashHint('open a card first');return}const cur=t.imgUrl&&!t.imgUrl.startsWith('data:')?t.imgUrl:'';const v=prompt('Image URL or repo path (e.g. uploads/photo.jpg) for "'+(t.label||t.title||'card')+'": (empty removes)',cur);if(v===null)return;attachURL(t,v.trim());refreshDrawerAfterImg();refreshDrawerMenu()};
+document.getElementById('menuRem').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}const m=document.getElementById('drawerMenu');if(m)m.hidden=true;const t=drawerLive();if(!t||t.id==null||!nodeById(t.id)){flashHint('open a card first');return}attachURL(t,'');refreshDrawerAfterImg();refreshDrawerMenu()};
+document.getElementById('drawerMenuBtn').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}const m=document.getElementById('drawerMenu');if(!m)return;if(m.hidden)refreshDrawerMenu();m.hidden=!m.hidden};
 document.addEventListener('pointerdown',e=>{try{const m=document.getElementById('drawerMenu');if(m&&!m.hidden&&!(e.target&&e.target.closest&&e.target.closest('#drawerMenu,#drawerMenuBtn')))m.hidden=true}catch(_e){}},true);
 document.addEventListener('pointerdown',e=>{if(drawerDelArmed&&!(e.target&&e.target.closest&&e.target.closest('#drawerDel,#drawerDelCancel,#menuDel,#delConfirm')))disarmDrawerDel()},true);
 /* ---- project + prompt wiring ---- */
@@ -930,28 +983,28 @@ let PROJECT=null,TOMBSTONES=[];
 const KIND_PREFIX={locations:'LOC',props:'PROP',cast:'CHAR',shots:'SHOT'};
 const DOMAIN_ORDER=['camera','lens','framing','lighting','tone','style'];
 const BUILTIN_CODES={camera_body:{0:'ALEXA-35',1:'KOMODO',2:'VENICE-2',3:'EOS-R5',4:'VISION3-35',5:'HASSEL-MF',6:'POLA-600'},shutter_speed:{0:'SH-24',1:'SH-48',2:'SH-120',3:'SH-250'},iso:{0:'ISO-100',1:'ISO-400',2:'ISO-800',3:'ISO-3200'},lens_type:{0:'SPH-PRIME',1:'ANAMORPH',2:'MACRO-100',3:'TILT-SHIFT',4:'VINTAGE'},focal_length:{0:'FL-12',1:'FL-18',2:'FL-24',3:'FL-35',4:'FL-50',5:'FL-85',6:'FL-135',7:'FL-200'},aperture:{0:'F1-4',1:'F2-0',2:'F2-8',3:'F4-0',4:'F8-0',5:'F11'},shot_scale:{0:'XWS',1:'WS',2:'FS',3:'MW',4:'COWBOY',5:'MS',6:'MCU',7:'CU',8:'XCU',9:'ESTAB',10:'SINGLE',11:'TWO-SHOT',12:'OTS',13:'POV',14:'INSERT'},camera_angle:{0:'EYE',1:'LOW',2:'HIGH',3:'GROUND',4:'DUTCH',5:'TOP-DOWN',6:'AERIAL'},composition:{0:'THIRDS',1:'180-RULE',2:'LEAD-RM',3:'SYMM',4:'NEG-SPACE',5:'FG-FRAME'},lighting_setup:{0:'SOFT-DIFF',1:'GOLD-HR',2:'BLUE-HR',3:'HARD-DIR',4:'NIGHT-RIM',5:'SIDE-KEY',6:'SOFT-FILL',7:'MOTIVATED',8:'PRACT-IN',9:'DAY-NIGHT'},color_palette:{0:'WARM-GOLD',1:'TEAL-ORNG',2:'STEEL-BLU',3:'NOIR',4:'MONO-HC',5:'PASTEL',6:'EARTHY'},color_grade:{0:'NAT-GRADE',1:'CINE-CON',2:'BLEACH-BP',3:'FADED',4:'HI-KEY',5:'LO-KEY'},grain_texture:{0:'CLEAN',1:'GR-35',2:'GR-16',3:'HALATION'},style_preset:{0:'PHOTO-REAL',1:'STOCK-70S',2:'BLOCKBUST',3:'INDIE-NAT',4:'NOIR-BW',5:'DOCU-CAND',6:'ANIME-CEL'}};
-function migrateProject(P){if(!P||!P.domains)return false;let ch=false;for(const d of DOMAIN_ORDER){const D=P.domains[d];if(!D||!D.tokens)continue;for(const tid of Object.keys(D.tokens)){const T=D.tokens[tid],ref=BUILTIN_CODES[tid];if(!T||!ref)continue;if(!T.codes||typeof T.codes!=='object'||Array.isArray(T.codes)){T.codes={};ch=true}for(const k of Object.keys(ref)){if(T.codes[k]==null||T.codes[k]===''){T.codes[k]=ref[k];ch=true}}}}if(P.version!==2){P.version=2;ch=true}return ch}
-function defaultProject(){const P={version:2,scope:'frames-only: stills. video/motion deferred.',domains:{
+function migrateProject(P){if(!P||!P.domains)return false;let ch=false;for(const d of DOMAIN_ORDER){const D=P.domains[d];if(!D||!D.tokens)continue;if(D.enabled==null){D.enabled=true;ch=true}for(const tid of Object.keys(D.tokens)){const T=D.tokens[tid],ref=BUILTIN_CODES[tid];if(!T||typeof T!=='object')continue;if(T.enabled==null){T.enabled=true;ch=true}if(!T.off||typeof T.off!=='object'||Array.isArray(T.off)){T.off={};ch=true}if(!T.codes||typeof T.codes!=='object'||Array.isArray(T.codes)){T.codes={};ch=true}if(ref)for(const k of Object.keys(ref))if(T.codes[k]==null||T.codes[k]===''){T.codes[k]=ref[k];ch=true}const n=(T.values||[]).length,s=+T.sel||0;if(n&&(s<0||s>=n||(T.off&&T.off[s]))){let f=-1;for(let i=0;i<n;i++)if(!(T.off&&T.off[i])){f=i;break}if(f>=0&&f!==T.sel){T.sel=f;ch=true}}}}if(P.version!==3){P.version=3;ch=true}return ch}
+function defaultProject(){const P={version:3,scope:'frames-only: stills. video/motion deferred.',domains:{
 camera:{label:'Camera',desc:'Capture body and exposure behavior for stills.',enabled:true,tokens:{
-camera_body:{label:'Camera body',desc:'Sensor character: dynamic range, color science, still texture.',values:['ARRI Alexa 35, large-format cinematic sensor','RED Komodo, compact cinema sensor','Sony Venice 2, full-frame cinema sensor','Canon EOS R5, full-frame stills hybrid','35mm film, Kodak Vision3 stock','Medium format, Hasselblad color science','Instant film, Polaroid 600 character'],sel:0},
-shutter_speed:{label:'Shutter speed',desc:'Motion smear inside a still: slow smears action, fast freezes it.',values:['1/24, heavy motion blur','1/48, standard cinematic motion blur','1/120, crisp with slight blur','1/250, frozen action'],sel:1},
-iso:{label:'ISO',desc:'Exposure sensitivity and noise floor: clean daylight vs gritty night grain.',values:['ISO 100, clean daylight','ISO 400, balanced','ISO 800, low-light capable','ISO 3200, gritty night'],sel:1}}},
+camera_body:{label:'Camera body',desc:'Sensor character: dynamic range, color science, still texture.',values:['ARRI Alexa 35, large-format cinematic sensor','RED Komodo, compact cinema sensor','Sony Venice 2, full-frame cinema sensor','Canon EOS R5, full-frame stills hybrid','35mm film, Kodak Vision3 stock','Medium format, Hasselblad color science','Instant film, Polaroid 600 character'],sel:0,enabled:true,off:{}},
+shutter_speed:{label:'Shutter speed',desc:'Motion smear inside a still: slow smears action, fast freezes it.',values:['1/24, heavy motion blur','1/48, standard cinematic motion blur','1/120, crisp with slight blur','1/250, frozen action'],sel:1,enabled:true,off:{}},
+iso:{label:'ISO',desc:'Exposure sensitivity and noise floor: clean daylight vs gritty night grain.',values:['ISO 100, clean daylight','ISO 400, balanced','ISO 800, low-light capable','ISO 3200, gritty night'],sel:1,enabled:true,off:{}}}},
 lens:{label:'Lens',desc:'Optics in front of the sensor: character, field of view, depth of field.',enabled:true,tokens:{
-lens_type:{label:'Lens',desc:'Optical personality: neutral, anamorphic, vintage.',values:['spherical prime, clean and sharp','anamorphic widescreen, oval bokeh and flares','macro 100mm, tiny detail enormous','tilt-shift, sliver of selective focus','vintage prime, soft glowing character'],sel:0},
-focal_length:{label:'Focal length',desc:'Field of view, full-frame equivalents: wide exaggerates, telephoto compresses.',values:['shot on 12mm extreme wide (full-frame)','shot on 18mm ultra-wide','shot on 24mm wide','shot on 35mm, natural coverage','shot on 50mm standard','shot on 85mm short telephoto, soft background','shot on 135mm telephoto compression','shot on 200mm long telephoto, stacked crowd'],sel:3},
-aperture:{label:'Aperture',desc:'Depth of field: wide open isolates, stopped down keeps all sharp.',values:['f/1.4, razor-thin focus','f/2.0, shallow focus, background melts soft','f/2.8, soft background separation','f/4.0, balanced depth','f/8.0, deep focus, sharp front to back','f/11, everything sharp'],sel:2}}},
+lens_type:{label:'Lens',desc:'Optical personality: neutral, anamorphic, vintage.',values:['spherical prime, clean and sharp','anamorphic widescreen, oval bokeh and flares','macro 100mm, tiny detail enormous','tilt-shift, sliver of selective focus','vintage prime, soft glowing character'],sel:0,enabled:true,off:{}},
+focal_length:{label:'Focal length',desc:'Field of view, full-frame equivalents: wide exaggerates, telephoto compresses.',values:['shot on 12mm extreme wide (full-frame)','shot on 18mm ultra-wide','shot on 24mm wide','shot on 35mm, natural coverage','shot on 50mm standard','shot on 85mm short telephoto, soft background','shot on 135mm telephoto compression','shot on 200mm long telephoto, stacked crowd'],sel:3,enabled:true,off:{}},
+aperture:{label:'Aperture',desc:'Depth of field: wide open isolates, stopped down keeps all sharp.',values:['f/1.4, razor-thin focus','f/2.0, shallow focus, background melts soft','f/2.8, soft background separation','f/4.0, balanced depth','f/8.0, deep focus, sharp front to back','f/11, everything sharp'],sel:2,enabled:true,off:{}}}},
 framing:{label:'Framing',desc:'Shot scale, camera angle, compositional geometry.',enabled:true,tokens:{
-shot_scale:{label:'Framing',desc:'How much of the subject fills the frame: wider is context, tighter is emotion.',values:['extreme wide shot, subject tiny in the landscape','wide shot, full body with room around','full shot, head to toe','medium wide, knees up','cowboy shot, mid-thigh up','medium shot, waist up','medium close-up, chest up','close-up, face fills the frame','extreme close-up on one detail','establishing wide that sets the location','single on one featured subject','two shot, both characters in frame','over-the-shoulder, oriented on the conversation','POV, seeing through the character\u2019s eyes','insert shot, tight detail of an object'],sel:3},
-camera_angle:{label:'Angle',desc:'Power dynamics: low empowers, high diminishes, dutch unnerves.',values:['eye-level camera, neutral','low angle looking up, powerful','high angle looking down, vulnerable','ground-level camera, textured and low','dutch tilt, canted uneasy horizon','overhead straight down, graphic geometry','aerial wide, landscape scale'],sel:0},
-composition:{label:'Composition',desc:'Subject placement: thirds, symmetry, negative space. Holds screen direction.',values:['rule-of-thirds composition','hold screen direction, 180-degree rule','lead room ahead of movement','centered symmetry','negative space, subject small in frame','foreground framing, layered depth'],sel:0}}},
+shot_scale:{label:'Framing',desc:'How much of the subject fills the frame: wider is context, tighter is emotion.',values:['extreme wide shot, subject tiny in the landscape','wide shot, full body with room around','full shot, head to toe','medium wide, knees up','cowboy shot, mid-thigh up','medium shot, waist up','medium close-up, chest up','close-up, face fills the frame','extreme close-up on one detail','establishing wide that sets the location','single on one featured subject','two shot, both characters in frame','over-the-shoulder, oriented on the conversation','POV, seeing through the character\u2019s eyes','insert shot, tight detail of an object'],sel:3,enabled:true,off:{}},
+camera_angle:{label:'Angle',desc:'Power dynamics: low empowers, high diminishes, dutch unnerves.',values:['eye-level camera, neutral','low angle looking up, powerful','high angle looking down, vulnerable','ground-level camera, textured and low','dutch tilt, canted uneasy horizon','overhead straight down, graphic geometry','aerial wide, landscape scale'],sel:0,enabled:true,off:{}},
+composition:{label:'Composition',desc:'Subject placement: thirds, symmetry, negative space. Holds screen direction.',values:['rule-of-thirds composition','hold screen direction, 180-degree rule','lead room ahead of movement','centered symmetry','negative space, subject small in frame','foreground framing, layered depth'],sel:0,enabled:true,off:{}}}},
 lighting:{label:'Lighting',desc:'Motivated light sources and time-of-day looks.',enabled:true,tokens:{
-lighting_setup:{label:'Setup',desc:'The key source and time of day every still shares.',values:['soft diffused light, flattering','golden-hour backlight, warm tone','blue-hour cool ambient','hard direct light, sharp shadows','night practicals with rim backlight, edge separation','key light from the side, shaping the face','soft fill, lifting the shadows','motivated light, justified by a visible source','practicals glowing in frame','day for night, daylight graded as night'],sel:0}}},
+lighting_setup:{label:'Setup',desc:'The key source and time of day every still shares.',values:['soft diffused light, flattering','golden-hour backlight, warm tone','blue-hour cool ambient','hard direct light, sharp shadows','night practicals with rim backlight, edge separation','key light from the side, shaping the face','soft fill, lifting the shadows','motivated light, justified by a visible source','practicals glowing in frame','day for night, daylight graded as night'],sel:0,enabled:true,off:{}}}},
 tone:{label:'Tone / hue',desc:'Post-capture color: what the still looks like after the grade — not what lit the set. Lighting motivates; tone finishes.',enabled:true,tokens:{
-color_palette:{label:'Palette',desc:'Dominant hue family: what colors are in the frame?',values:['warm golden hues','teal-and-orange blockbuster','cool steel-blue hues','desaturated noir neutrals','high-contrast monochrome','pastel dream hues','earthy natural tones'],sel:0},
-color_grade:{label:'Grade',desc:'Curve on top of the palette: contrast, saturation, print emulation.',values:['natural balanced grade','cinematic contrast grade','bleach-bypass grit, silver and harsh','faded film emulation, lifted blacks','high-key airy grade','low-key moody grade'],sel:1},
-grain_texture:{label:'Grain',desc:'Physical finish: clean digital vs film grain vs halation glow.',values:['clean digital, no grain','fine 35mm grain','heavy 16mm grain','soft halation glow on highlights'],sel:1}}},
+color_palette:{label:'Palette',desc:'Dominant hue family: what colors are in the frame?',values:['warm golden hues','teal-and-orange blockbuster','cool steel-blue hues','desaturated noir neutrals','high-contrast monochrome','pastel dream hues','earthy natural tones'],sel:0,enabled:true,off:{}},
+color_grade:{label:'Grade',desc:'Curve on top of the palette: contrast, saturation, print emulation.',values:['natural balanced grade','cinematic contrast grade','bleach-bypass grit, silver and harsh','faded film emulation, lifted blacks','high-key airy grade','low-key moody grade'],sel:1,enabled:true,off:{}},
+grain_texture:{label:'Grain',desc:'Physical finish: clean digital vs film grain vs halation glow.',values:['clean digital, no grain','fine 35mm grain','heavy 16mm grain','soft halation glow on highlights'],sel:1,enabled:true,off:{}}}},
 style:{label:'Style',desc:'Global render preset applied to every still.',enabled:true,tokens:{
-style_preset:{label:'Preset',desc:'Master look: stock era, genre finish, or medium. One preset per project.',values:['photorealistic cinematic still','1970s film stock, warm and grainy','modern blockbuster, polished contrast','indie naturalism, available light','noir high-contrast black and white','documentary candid, unposed','anime-inspired frame, clean cel shading'],sel:0}}}}};try{for(const tid of Object.keys(BUILTIN_CODES)){for(const d of DOMAIN_ORDER){const T=P.domains[d]&&P.domains[d].tokens[tid];if(T){T.codes=Object.assign({},BUILTIN_CODES[tid]);break}}}}catch(e){}return P}
+style_preset:{label:'Preset',desc:'Master look: stock era, genre finish, or medium. One preset per project.',values:['photorealistic cinematic still','1970s film stock, warm and grainy','modern blockbuster, polished contrast','indie naturalism, available light','noir high-contrast black and white','documentary candid, unposed','anime-inspired frame, clean cel shading'],sel:0,enabled:true,off:{}}}}}};try{for(const tid of Object.keys(BUILTIN_CODES)){for(const d of DOMAIN_ORDER){const T=P.domains[d]&&P.domains[d].tokens[tid];if(T){T.codes=Object.assign({},BUILTIN_CODES[tid]);break}}}}catch(e){}return P}
 /* ---- anchors: PREFIX-ENTITY[-VARIANT][-STATE] ---- */
 function entityOf(label){const s=String(label||'').toUpperCase().replace(/[^A-Z]/g,'');return(s||'AST').slice(0,4)}
 function scEntityOf(title){const w=String(title||'').toUpperCase().split(/[^A-Z]+/).filter(Boolean);if(!w.length)return'GEN';return w.slice(0,2).map(x=>x.slice(0,3)).join('-')}
@@ -967,7 +1020,21 @@ function ensureAnchorsAll(){for(const k of Object.keys(VIEWS)){const p=KIND_PREF
 /* ---- prompt assembly (deterministic, model-agnostic) ---- */
 const NEG_DEFAULT='blurry, deformed hands, extra limbs, watermark, text overlay';
 function tokVal(tokId){for(const d of DOMAIN_ORDER){const D=PROJECT.domains[d];if(D&&D.tokens[tokId])return{dom:d,tok:D.tokens[tokId]}}return null}
-function effVal(tokId,ps){const f=tokVal(tokId);if(!f||!PROJECT.domains[f.dom].enabled)return'';const o=(ps&&ps.sels&&ps.sels[tokId]!=null)?ps.sels[tokId]:f.tok.sel;const c=f.tok.codes&&f.tok.codes[o];if(c!=null&&String(c).trim()!=='')return String(c).trim();return f.tok.values[o]||''}
+/* ---- project enablement: single source of truth (domain > token > value) ----
+   T.off={index:true} means that value is OFF; no entry means ON.
+   Disabled contributes zero words: effVal returns ''. sel auto-falls back
+   to the first enabled value; dropdowns list only enabled values. */
+function isDomOn(dom){try{return!!(PROJECT&&PROJECT.domains[dom]&&PROJECT.domains[dom].enabled)}catch(e){return false}}
+function isTokOn(tid){const f=tokVal(tid);if(!f||!isDomOn(f.dom))return false;return f.tok.enabled!==false}
+function isValOn(tid,i){const f=tokVal(tid);if(!f||!isTokOn(tid))return false;const n=(f.tok.values||[]).length;if(i<0||i>=n)return false;return!(f.tok.off&&f.tok.off[i])}
+function allowedValues(tid){const f=tokVal(tid);if(!f||!isTokOn(tid))return[];const n=(f.tok.values||[]).length,out=[];for(let i=0;i<n;i++)if(!(f.tok.off&&f.tok.off[i]))out.push(i);return out}
+function effSel(tid,ps){const idxs=allowedValues(tid);if(!idxs.length)return-1;const f=tokVal(tid);const cur=(ps&&ps.sels&&ps.sels[tid]!=null)?+ps.sels[tid]:(+f.tok.sel||0);return idxs.indexOf(cur)>=0?cur:idxs[0]}
+function codeFor(tid,idx){try{if(!isValOn(tid,idx))return null;const f=tokVal(tid);const c=f.tok.codes?f.tok.codes[idx]:null;return(c==null||String(c).trim()==='')?null:String(c).trim()}catch(e){return null}}
+function tokCodeAt(tid,idx){return codeFor(tid,idx)}
+function optLabel(tid,i){const c=codeFor(tid,i);const f=tokVal(tid);const v=(f&&f.tok.values&&f.tok.values[i])||'\u2014';return(c?c+' \u2014 ':'')+v}
+function codeError(raw){const nv=String(raw==null?'':raw).trim().toUpperCase();if(nv!==''&&!/^[A-Z0-9-]{2,12}$/.test(nv))return'code must be 2-12 chars: A-Z 0-9 -';return null}
+function setCode(tid,i,raw){const nv=String(raw==null?'':raw).trim().toUpperCase();const f=tokVal(tid);if(!f)return'';f.tok.codes=f.tok.codes||{};if(nv==='')delete f.tok.codes[i];else f.tok.codes[i]=nv;return nv}
+function effVal(tokId,ps){const s=effSel(tokId,ps);if(s<0)return'';const c=codeFor(tokId,s);if(c)return c;const f=tokVal(tokId);return(f&&f.tok.values[s])||''}
 function targetOf(n){
  if(n&&n.slots){const slots=(n.slots||[]).map(q=>{const sh=shotById(q.shot);return sh&&sh.anchor?sh.anchor:null}).filter(Boolean);
   return{anchor:n.scAnchor||'',entity:String(n.title||'Scene')+' scene'+(slots.length?', holding '+slots.join(', '):'')}}
@@ -996,29 +1063,32 @@ function stubFor(n){const t=targetOf(n);if(!t.anchor)return'⚠ no anchor';
  if(n&&n.slots){const slots=(n.slots||[]).map(q=>{const sh=shotById(q.shot);return(sh&&sh.anchor?sh.anchor:'?shot')+'@L'+(q.lane+1)});return t.anchor+' — '+String(n.title||'Scene')+(slots.length?' — '+slots.join(', '):'')}
  return t.anchor+' — '+t.entity}
 function copyText(s,okMsg){const done=()=>flashHint(okMsg||'copied');try{if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(s).then(done,()=>{prompt('Copy:',s);done()})}catch(e){}prompt('Copy:',s);done()}
-/* ---- project modal ---- */
-function renderProjectModal(){const host=document.getElementById('projDomains');host.innerHTML='';
- for(const d of DOMAIN_ORDER){const D=PROJECT.domains[d];const box=document.createElement('div');box.className='dom'+(D.enabled?'':' off');
-  const h=document.createElement('div');h.className='dom-h';h.textContent=D.label;
-  const lab=document.createElement('label');const cb=document.createElement('input');cb.type='checkbox';cb.checked=!!D.enabled;
-  cb.onchange=()=>{snap();D.enabled=cb.checked;persist();renderProjectModal();if(drawerSub)renderPromptPreview(drawerSub)};lab.appendChild(cb);lab.appendChild(document.createTextNode('enabled'));h.appendChild(lab);box.appendChild(h);
-  const dd=document.createElement('div');dd.className='ddesc';dd.textContent=D.desc+' '+(D.enabled?'Included in every prompt.':'Disabled — contributes zero words.');box.appendChild(dd);
-  for(const[tid,T]of Object.entries(D.tokens)){const row=document.createElement('div');row.className='tok';
-   const sp=document.createElement('span');sp.textContent=T.label;row.appendChild(sp);
-   const sel=document.createElement('select');sel.disabled=!D.enabled;
-   T.values.forEach((v,i)=>{const o=document.createElement('option');o.value=i;o.textContent=v;if(i===(T.sel||0))o.selected=true;sel.appendChild(o)});
-   sel.onchange=()=>{snap();T.sel=+sel.value;persist();if(drawerSub)renderPromptPreview(drawerSub)};row.appendChild(sel);box.appendChild(row);
-   const cw=document.createElement('div');cw.className='codes';
-   T.values.forEach((v,i)=>{const cr=document.createElement('div');cr.className='code-row';
-    const lb=document.createElement('span');lb.className='code-lab';lb.textContent=v;lb.title=v;cr.appendChild(lb);
-    const ci=document.createElement('input');ci.value=(T.codes&&T.codes[i]!=null)?T.codes[i]:'';ci.placeholder='CODE';ci.maxLength=12;ci.disabled=!D.enabled;ci.setAttribute('spellcheck','false');ci.setAttribute('autocomplete','off');
-    ci.onchange=()=>{const nv=String(ci.value||'').trim().toUpperCase();if(nv!==''&&!/^[A-Z0-9-]{2,12}$/.test(nv)){flashHint('code must be 2-12 chars: A-Z 0-9 -');ci.value=(T.codes&&T.codes[i])||'';return}snap();T.codes=T.codes||{};if(nv==='')delete T.codes[i];else T.codes[i]=nv;ci.value=nv;persist();if(drawerSub)renderPromptPreview(drawerSub)};
-    cr.appendChild(ci);cw.appendChild(cr)});
-   box.appendChild(cw);
-   const td=document.createElement('div');td.className='tdesc';td.textContent=T.desc;box.appendChild(td)}
-  host.appendChild(box)}
- document.getElementById('projNote').textContent=DOMAIN_ORDER.filter(d=>PROJECT.domains[d].enabled).length+' of '+DOMAIN_ORDER.length+' domains enabled'}
-function openProjectModal(){renderProjectModal();document.getElementById('projModal').hidden=false}
+/* ---- project modal: 3-pane drawer (nav | toggles | codes) ---- */
+let projTab='camera';
+function swEl(on,fn,title,disabled){const l=document.createElement('label');l.className='sw';if(title)l.title=title;const cb=document.createElement('input');cb.type='checkbox';cb.checked=!!on;cb.disabled=!!disabled;cb.onchange=()=>{snap();fn(cb.checked);persist();renderProjectModal();if(drawerSub)renderPromptPreview(drawerSub)};const s=document.createElement('span');s.className='sl';l.appendChild(cb);l.appendChild(s);return l}
+function projCounts(){let d=0,dt=0,t=0,tt=0,v=0,vt=0;for(const dom of DOMAIN_ORDER){const D=PROJECT&&PROJECT.domains[dom];if(!D)continue;dt++;if(D.enabled)d++;for(const tid of Object.keys(D.tokens||{})){tt++;if(isTokOn(tid))t++;const T=D.tokens[tid];(T.values||[]).forEach((_,i)=>{vt++;if(isValOn(tid,i))v++})}}return{d:d,dt:dt,t:t,tt:tt,v:v,vt:vt}}
+function projCodeRow(tid,i){const T=tokVal(tid).tok;const cr=document.createElement('div');cr.className='code-row';const lb=document.createElement('span');lb.className='code-lab';lb.textContent=T.values[i];lb.title=T.values[i];cr.appendChild(lb);const ci=document.createElement('input');ci.value=(T.codes&&T.codes[i]!=null)?T.codes[i]:'';ci.placeholder='CODE';ci.maxLength=12;ci.setAttribute('spellcheck','false');ci.setAttribute('autocomplete','off');ci.onchange=()=>{const em=codeError(ci.value);if(em){flashHint(em);const ff=tokVal(tid);ci.value=(ff.tok.codes&&ff.tok.codes[i])||'';return}snap();ci.value=setCode(tid,i,ci.value);persist();renderProjectModal();if(drawerSub)renderPromptPreview(drawerSub)};cr.appendChild(ci);return cr}
+function renderProjectModal(){if(!PROJECT||!PROJECT.domains)return;if(!PROJECT.domains[projTab])projTab=DOMAIN_ORDER[0];
+ const nav=document.getElementById('projNav'),mid=document.getElementById('projToks'),codeHost=document.getElementById('projCodes');nav.innerHTML='';mid.innerHTML='';codeHost.innerHTML='';
+ DOMAIN_ORDER.forEach((d,i)=>{const D=PROJECT.domains[d];if(!D)return;const b=document.createElement('button');b.textContent=D.label;b.style.setProperty('--i',i);if(d===projTab)b.classList.add('on');if(!D.enabled)b.classList.add('off');b.title=D.enabled?D.label+' \u2014 enabled':D.label+' \u2014 disabled';b.onclick=()=>{projTab=d;renderProjectModal()};nav.appendChild(b)});
+ const D=PROJECT.domains[projTab];
+ const dh=document.createElement('div');dh.className='proj-dom-h';const dt=document.createElement('span');dt.textContent=D.label;dt.style.flex='1';dh.appendChild(dt);dh.appendChild(swEl(!!D.enabled,v=>{D.enabled=v},D.label+' domain'));mid.appendChild(dh);
+ const dd=document.createElement('div');dd.className='proj-ddesc';dd.textContent=D.desc+' '+(D.enabled?'Included in every prompt.':'Disabled \u2014 contributes zero words.');mid.appendChild(dd);
+ for(const tid of Object.keys(D.tokens||{})){const T=D.tokens[tid];const box=document.createElement('div');box.className='proj-tok'+(isTokOn(tid)?'':' off');
+  const h=document.createElement('div');h.className='proj-tok-h';h.appendChild(swEl(isTokOn(tid),v=>{T.enabled=v},T.label+' token',!D.enabled));
+  const nm=document.createElement('span');nm.className='tname';nm.textContent=T.label;nm.title=T.desc||T.label;h.appendChild(nm);
+  const idxs=allowedValues(tid);const sel=document.createElement('select');sel.title='Project default value';sel.disabled=!D.enabled||!isTokOn(tid)||!idxs.length;
+  idxs.forEach(i=>{const o=document.createElement('option');o.value=i;o.textContent=optLabel(tid,i);sel.appendChild(o)});
+  const cur=+T.sel||0;sel.value=idxs.indexOf(cur)>=0?cur:idxs[0];
+  sel.onchange=()=>{snap();T.sel=+sel.value;persist();renderProjectModal();if(drawerSub)renderPromptPreview(drawerSub)};h.appendChild(sel);box.appendChild(h);
+  const td=document.createElement('div');td.className='proj-tdesc';td.textContent=T.desc;box.appendChild(td);
+  (T.values||[]).forEach((v,i)=>{const on=isValOn(tid,i);const vr=document.createElement('div');vr.className='proj-val'+(on?'':' off');vr.appendChild(swEl(on,x=>{T.off=T.off||{};if(x)delete T.off[i];else T.off[i]=true},String(v),!D.enabled||!isTokOn(tid)));const lb=document.createElement('span');lb.textContent=String(v);lb.title=String(v);vr.appendChild(lb);box.appendChild(vr)});
+  mid.appendChild(box)}
+ const ch=document.createElement('div');ch.className='proj-codes-h';ch.textContent='custom codes \u2014 '+D.label;codeHost.appendChild(ch);let nCodes=0;
+ for(const tid of Object.keys(D.tokens||{})){if(!isTokOn(tid))continue;const idxs=allowedValues(tid);if(!idxs.length)continue;const th=document.createElement('div');th.className='proj-code-tok';th.textContent=D.tokens[tid].label;codeHost.appendChild(th);idxs.forEach(i=>{codeHost.appendChild(projCodeRow(tid,i));nCodes++})}
+ if(!nCodes){const e=document.createElement('div');e.className='proj-empty';e.textContent='No enabled values \u2014 flip a toggle to add codes.';codeHost.appendChild(e)}
+ const c=projCounts();document.getElementById('projNote').textContent=c.d+' of '+c.dt+' domains \u00b7 '+c.t+' of '+c.tt+' tokens \u00b7 '+c.v+' of '+c.vt+' values enabled'}
+function openProjectModal(){if(PROJECT&&PROJECT.domains&&!PROJECT.domains[projTab])projTab=DOMAIN_ORDER[0];renderProjectModal();document.getElementById('projModal').hidden=false}
 function closeProjectModal(){document.getElementById('projModal').hidden=true}
 /* ---- prompt modal (character exemplar, works for any card/scene) ---- */
 let pmTarget=null;
@@ -1037,15 +1107,14 @@ const EXTRA_OPTS={
  film_stock:{label:'Film stock',desc:'Empty = clean digital capture; pick a stock to bake in its look.',values:['','Kodak Portra 400','Kodak Vision3 500T','Fujifilm 400H','Ilford HP5 black and white','Polaroid 600'],def:0}};
 const PM_TABS=[['subject','Subject'],['cine','Cinematography'],['capture','Capture'],['light','Lighting'],['color','Color'],['env','Environment'],['neg','Negative']];
 let pmTab='subject';
-function tokCodeAt(tid,idx){try{const f=tokVal(tid);if(!f||!f.tok)return null;const c=f.tok.codes?f.tok.codes[idx]:null;return(c==null||c==='')?null:String(c)}catch(e){return null}}
 const TEXT_LABELS={descriptor:'Subject descriptor',expression:'Expression',wardrobe_top:'Wardrobe top',wardrobe_bottom:'Wardrobe bottom',wardrobe_feet:'Wardrobe footwear',action:'Action',mood:'Mood',subject_scale:'Subject scale',visibility:'Visibility',camera_position:'Camera position',movement:'Movement',duration:'Duration',time_of_day:'Time of day',light_quality:'Light quality',env_setting:'Environment setting',env_props:'Environment props',neg:'Negative prompt'};
-function pmFieldTok(host,tid){const f=tokVal(tid);if(!f||!PROJECT.domains[f.dom].enabled)return;const ps=pmTarget.promptState||{};
+function pmFieldTok(host,tid){const f=tokVal(tid);if(!f||!isTokOn(tid))return;const ps=pmTarget.promptState||{};const idxs=allowedValues(tid);if(!idxs.length)return;
  const row=document.createElement('div');row.className='tok';const sp=document.createElement('span');sp.textContent=f.tok.label;sp.title=f.tok.desc||f.tok.label;row.appendChild(sp);
- const curIdx=(ps.sels&&ps.sels[tid]!=null)?ps.sels[tid]:(f.tok.sel||0);
- const chip=document.createElement('span');chip.className='tchip';chip.dataset.chip=tid;const code0=tokCodeAt(tid,curIdx);chip.hidden=!code0;chip.textContent=code0||'';if(code0)chip.title=String(f.tok.values[curIdx]||'');row.appendChild(chip);
- const sel=document.createElement('select');sel.dataset.k=tid;f.tok.values.forEach((v,i)=>{const o=document.createElement('option');o.value=i;const c=tokCodeAt(tid,i);o.textContent=(c?c+' — ':'')+(v||'—');sel.appendChild(o)});
- sel.value=curIdx;
- sel.onchange=()=>{snap();pmTarget.promptState.sels[tid]=+sel.value;persist();const c=tokCodeAt(tid,+sel.value);chip.hidden=!c;chip.textContent=c||'';chip.title=c?String(f.tok.values[+sel.value]||''):'';renderPmOut();renderPromptPreview(pmTarget)};row.appendChild(sel);host.appendChild(row)}
+ let cur=(ps.sels&&ps.sels[tid]!=null)?+ps.sels[tid]:(+f.tok.sel||0);if(idxs.indexOf(cur)<0)cur=idxs[0];
+ const chip=document.createElement('span');chip.className='tchip';chip.dataset.chip=tid;const code0=codeFor(tid,cur);chip.hidden=!code0;chip.textContent=code0||'';if(code0)chip.title=String(f.tok.values[cur]||'');row.appendChild(chip);
+ const sel=document.createElement('select');sel.dataset.k=tid;idxs.forEach(i=>{const o=document.createElement('option');o.value=i;o.textContent=optLabel(tid,i);sel.appendChild(o)});
+ sel.value=cur;
+ sel.onchange=()=>{snap();pmTarget.promptState.sels[tid]=+sel.value;persist();const c=codeFor(tid,+sel.value);chip.hidden=!c;chip.textContent=c||'';chip.title=c?String(f.tok.values[+sel.value]||''):'';renderPmOut();renderPromptPreview(pmTarget)};row.appendChild(sel);host.appendChild(row)}
 function pmFieldExtra(host,id){const o=EXTRA_OPTS[id];if(!o)return;const ps=pmTarget.promptState||{};
  const row=document.createElement('div');row.className='tok';const sp=document.createElement('span');sp.textContent=o.label;sp.title=o.desc||o.label;row.appendChild(sp);
  const sel=document.createElement('select');sel.dataset.k=id;o.values.forEach((v,i)=>{const el=document.createElement('option');el.value=i;el.textContent=v||'—';sel.appendChild(el)});

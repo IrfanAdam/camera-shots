@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Intent Before Pixels — A Craft-Led Engine for Cinematic AI Video</title>
+<meta name="description" content="A pitch for the cinematic AI-video prompt/storyboard engine: wiki teaches shot language, engine storyboards scenes and composes reusable prompt tokens.">
+<style>
+:root{--bg:#0A0A0B;--s1:#141416;--s2:#1B1B1E;--ink:#F2F0EB;--mut:#A7A5A0;--rule:#26262B;--acc:#C8B28A;--acc-ink:#141310;box-sizing:border-box}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:5.5rem}
+body{background:var(--bg);color:var(--ink);font:15px/1.7 system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.w{max-width:1080px;margin:0 auto;padding:1.2rem 1.2rem 4rem}
+/* header mirrors index .top + .eng pill */
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding:1.2rem 0 .4rem}
+.brand{font-size:.95rem;font-weight:650;letter-spacing:-.01em}
+.brand small{display:block;color:var(--mut);font-weight:400;font-size:.8rem}
+.hright{display:flex;align-items:center;gap:.6rem}
+.by{color:var(--mut);font-size:.85rem;white-space:nowrap}
+.hnav{display:flex;gap:.5rem}
+.hnav a{font-size:.82rem;font-weight:600;text-decoration:none;padding:.32rem .8rem;border-radius:99px;border:1px solid var(--rule);color:var(--ink);background:var(--s1)}
+.hnav a:hover{border-color:var(--acc)}
+.hnav a.cta{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.hnav a.cta:hover{filter:brightness(1.06)}
+.layout{display:grid;grid-template-columns:220px 1fr;gap:2rem;margin-top:1rem}
+/* desktop sticky TOC */
+.toc{position:sticky;top:5rem;align-self:start;display:flex;flex-direction:column;gap:.15rem;border-left:1px solid var(--rule);padding-left:1rem}
+.toc a{position:relative;text-decoration:none;color:var(--mut);font-size:.85rem;padding:.3rem 0 .3rem .9rem}
+.toc a::before{content:"";position:absolute;left:-1rem;top:.75em;width:5px;height:5px;border-radius:50%;background:transparent;transform:translateX(-2.5px)}
+.toc a.on{color:var(--ink);font-weight:650}
+.toc a.on::before{background:var(--acc)}
+.toc a:hover{color:var(--ink)}
+/* hero */
+.hero{padding:3.2rem 0 2.2rem;max-width:40rem}
+.eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);border:1px solid var(--rule);background:var(--s1);border-radius:99px;padding:.32rem .85rem}
+.hero h1{font-size:clamp(2rem,5vw,3.1rem);line-height:1.08;letter-spacing:-.03em;margin:1.1rem 0 .8rem}
+.hero h1 span{color:var(--acc)}
+.sub{color:var(--mut);font-size:1.02rem;max-width:34rem}
+.meta{color:var(--mut);font-size:.8rem;margin-top:1rem}
+.ctarow{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.4rem}
+.btn{display:inline-block;text-decoration:none;font-weight:650;font-size:.9rem;border-radius:99px;padding:.6rem 1.3rem;border:1px solid var(--rule)}
+.btn.primary{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn:hover{filter:brightness(1.08)}
+/* article sections */
+article{display:flex;flex-direction:column;gap:3rem;min-width:0}
+section{scroll-margin-top:5rem}
+.k{font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);margin-bottom:.4rem}
+h2{font-size:1.35rem;letter-spacing:-.02em;line-height:1.25;margin-bottom:.5rem}
+.lede{color:var(--mut);font-size:.95rem;max-width:38rem}
+p.body{color:#D9D7D2;font-size:.95rem;max-width:40rem;margin-top:.6rem}
+.grid{display:grid;gap:.8rem;grid-template-columns:1fr 1fr;margin-top:1.1rem}
+.card{background:var(--s1);border:1px solid var(--rule);border-radius:14px;padding:1rem 1.1rem}
+.card h3{font-size:.92rem;margin-bottom:.3rem;letter-spacing:-.01em}
+.card p{font-size:.87rem;color:var(--mut)}
+.card b{color:var(--ink);font-weight:650}
+.flow{margin-top:1.1rem;display:flex;flex-direction:column;gap:.8rem}
+.step{background:var(--s1);border:1px solid var(--rule);border-radius:14px;padding:1rem 1.1rem}
+.step h3{font-size:.92rem}
+.step h3 a{color:var(--acc);text-decoration:none}
+.step h3 a:hover{text-decoration:underline}
+.step p{font-size:.87rem;color:var(--mut);margin-top:.25rem}
+.step code{color:var(--acc);font-size:.8rem}
+.quote{border-left:2px solid var(--acc);padding:.4rem 0 .4rem 1.1rem;margin-top:1.2rem;max-width:38rem}
+.quote p{font-style:italic;font-size:1.05rem;line-height:1.6;color:var(--ink)}
+.quote cite{display:block;font-style:normal;font-size:.8rem;color:var(--mut);margin-top:.4rem}
+ul.tight{list-style:none;margin-top:1rem;display:flex;flex-direction:column;gap:.55rem;max-width:40rem}
+ul.tight li{font-size:.9rem;color:#D9D7D2;border-bottom:1px solid var(--rule);padding-bottom:.55rem}
+ul.tight li b{color:var(--ink)}
+.cta-block{background:var(--s1);border:1px solid var(--rule);border-radius:18px;padding:2rem;text-align:left}
+.cta-block h2{font-size:clamp(1.5rem,3.5vw,2rem)}
+.cta-block p{color:var(--mut);font-size:.95rem;margin:.5rem 0 1.2rem;max-width:32rem}
+footer{margin:3rem 0 1rem;color:var(--mut);font-size:.78rem;border-top:1px solid var(--rule);padding-top:1rem}
+/* mobile pill rail — direct body child */
+.mrail{display:none}
+@media(max-width:900px){
+.layout{grid-template-columns:1fr}
+.toc{display:none}
+.grid{grid-template-columns:1fr}
+.mrail{display:flex;position:fixed;bottom:calc(.8rem + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);gap:.15rem;background:rgba(20,20,22,.92);backdrop-filter:blur(8px);border:1px solid var(--rule);border-radius:99px;padding:.3rem .45rem;z-index:50;max-width:calc(100vw - 1.5rem);overflow-x:auto;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.mrail a{flex:none;text-decoration:none;font-size:.75rem;font-weight:600;color:var(--mut);padding:.35rem .7rem;border-radius:99px;white-space:nowrap}
+.mrail a.on{background:var(--acc);color:var(--acc-ink)}
+.hero{padding:2rem 0 1.4rem}
+}
+/* reveal */
+.rv{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease}
+.rv.in{opacity:1;transform:none}
+/* print: article only */
+@media print{
+.top,.toc,.mrail,.ctarow,footer{display:none!important}
+body{background:#fff!important;color:#111!important}
+.w{max-width:100%;padding:0}
+.card,.step,.cta-block{background:#fff!important;border:1px solid #ddd!important;color:#111!important}
+.card p,.step p,.lede,.sub,.cta-block p{color:#333!important}
+p.body,ul.tight li{color:#222!important}
+.k,.hero h1 span,.step h3 a{color:#8a6d2b!important}
+article{gap:1.5rem}
+}
+@media(prefers-reduced-motion:reduce){
+html{scroll-behavior:auto}
+.rv{opacity:1;transform:none;transition:none}
+*{animation:none!important;transition:none!important}
+}
+</style></head>
+<body>
+<div class="w">
+<div class="top"><div class="brand">Camera Shots<small>intent before pixels</small></div><span class="hright"><span class="by">by irfan</span><span class="hnav"><a href="index.html">wiki</a><a class="cta" href="engine.html">engine &rarr;</a></span></span></div>
+<div class="layout">
+<aside><nav class="toc" id="toc" aria-label="Contents">
+<a href="#top">Intro</a>
+<a href="#vision">01 — Vision</a>
+<a href="#problem">02 — Problem</a>
+<a href="#gap">03 — The Craft Gap</a>
+<a href="#how">04 — How It Works</a>
+<a href="#built">05 — Built For</a>
+<a href="#principles">06 — Principles</a>
+<a href="#cta">Build with Intent</a>
+</nav></aside>
+<article id="top">
+<header class="hero rv">
+<span class="eyebrow">Craft-led AI cinema</span>
+<h1>Start with intent. <span>Let the pixels follow.</span></h1>
+<p class="sub">Most AI video starts with a sentence and hopes for cinema. This engine flips it: learn the shot language, storyboard the beats, then compose deliberate prompt tokens — no generation, no black box, just craft you control.</p>
+<p class="meta">A wiki that teaches &middot; an engine that storyboards &middot; tokens you can reuse anywhere</p>
+<div class="ctarow"><a class="btn primary" href="engine.html">Open the engine</a><a class="btn ghost" href="index.html">Learn the language</a></div>
+</header>
+<section id="vision" class="rv">
+<p class="k">01 — Vision</p>
+<h2>Cinema is a language, not a lottery.</h2>
+<p class="lede">Every great shot answers a question before it fills a frame: whose eyes are we in, how close do we stand, what moves and what holds still. The product treats those answers as the work itself.</p>
+<p class="body">The wiki teaches shot language — size, framing, angle, movement, light, composition the way directors actually use it. The engine turns that language into structure: scenes, shots, locations, props, cast, composed into reusable prompt tokens. The thesis is simple — deliberate intent in, deliberate cinema out.</p>
+<div class="quote"><p>Direct with intent: every shot has a job before it has a look.</p><cite>— the working rule behind both tools</cite></div>
+</section>
+<section id="problem" class="rv">
+<p class="k">02 — Problem</p>
+<h2>Prompt roulette is not directing.</h2>
+<p class="lede">Type a paragraph, get four random clips, repeat until something looks right. That is the current workflow — and it fails exactly where cinema matters most.</p>
+<div class="grid">
+<div class="card"><h3>Prompt roulette</h3><p>Long prose prompts with no shot grammar. Every run is a fresh gamble; nothing learned carries forward.</p></div>
+<div class="card"><h3>Style drift</h3><p>Shot three forgets shot one. Focal length, light, and palette wander because nothing pins them down.</p></div>
+<div class="card"><h3>Weak shot language</h3><p><b>Vague verbs</b> — "cinematic, dramatic" — instead of named decisions: close-up or wide, dolly or lock, key from the side or golden backlight.</p></div>
+<div class="card"><h3>No continuity</h3><p>Screen direction flips, eyelines break, coverage never gets planned. The edit inherits the mess.</p></div>
+</div>
+</section>
+<section id="gap" class="rv">
+<p class="k">03 — The Craft Gap</p>
+<h2>Between taste and tools, nobody teaches the middle.</h2>
+<p class="lede">Filmmakers know what good looks like. Generators make pixels fast. What is missing is the craft layer: naming the shot, justifying it, and holding it across a sequence.</p>
+<ul class="tight">
+<li><b>Knowledge is scattered.</b> Shot craft lives across textbooks, essays, and long video series — rarely in one working reference.</li>
+<li><b>Planning has no home.</b> Shot lists live in docs, stills in folders, tokens in chat logs. Nothing connects the beat to the phrase that describes it.</li>
+<li><b>Prompts are not reusable.</b> Good phrasing gets typed once and lost. Tokens like <b>CU — close-up, face fills the frame</b> should be copy-ready, every time.</li>
+</ul>
+</section>
+<section id="how" class="rv">
+<p class="k">04 — How It Works</p>
+<h2>Learn it. Board it. Compose it.</h2>
+<p class="lede">Three moves, each with its own surface — no accounts, no rendering, no model lock-in. The output is deliberate language you paste wherever you generate.</p>
+<div class="flow">
+<div class="step"><h3>1. Learn the language — <a href="index.html">the wiki</a></h3><p>Shot size, framing, angle, movement, lens, light, composition: what each choice does for the story, when to use it, and its token (<code>CU</code>, <code>DOLLY</code>, <code>GOLD</code>) ready to copy.</p></div>
+<div class="step"><h3>2. Compose in the engine — <a href="engine.html">the engine</a></h3><p>Storyboard scenes and shots; track locations, props, and cast. Every card composes a prompt preview with its anchor first — continuity built in, not bolted on.</p></div>
+<div class="step"><h3>3. Export deliberate intent</h3><p>Copy a stub — <code>SHOT-XX — phrase</code> — and paste it into any generator, brief, or shot list. The craft travels; the tool stays out of the way.</p></div>
+</div>
+</section>
+<section id="built" class="rv">
+<p class="k">05 — Built For</p>
+<h2>People who care about the frame.</h2>
+<p class="lede">Not for chasing trends — for anyone who wants AI footage to look decided rather than accidental.</p>
+<div class="grid">
+<div class="card"><h3>Directors</h3><p>Block beats, name intent, and hand off coverage that actually cuts together.</p></div>
+<div class="card"><h3>Cinematographers</h3><p>Pin lens, angle, movement, and light per shot — and hold them across the sequence.</p></div>
+<div class="card"><h3>AI filmmakers</h3><p>Replace prose roulette with composed tokens: composition, rhythm, and continuity you can repeat.</p></div>
+<div class="card"><h3>Students of craft</h3><p>Learn why a close-up lands, when a dolly beats a zoom, and how screen direction holds.</p></div>
+</div>
+</section>
+<section id="principles" class="rv">
+<p class="k">06 — Principles</p>
+<h2>What the work refuses to do.</h2>
+<ul class="tight">
+<li><b>Intent before pixels.</b> Name the job of the shot before choosing its look.</li>
+<li><b>Tokens over prose.</b> Short, named, reusable phrases beat paragraphs that vanish.</li>
+<li><b>Structure over generation.</b> A storyboarded sequence with anchors beats four lucky clips. The product generates nothing — on purpose.</li>
+<li><b>Craft is portable.</b> What you learn and compose here works in any generator, brief, or edit.</li>
+</ul>
+</section>
+<section id="cta" class="rv">
+<div class="cta-block">
+<p class="k">Build with intent</p>
+<h2>Storyboard the beats, not the pixels.</h2>
+<p>Open the engine to compose your sequence, or start in the wiki to learn the language behind every token.</p>
+<div class="ctarow"><a class="btn primary" href="engine.html">Open the engine</a><a class="btn ghost" href="index.html">Start with the wiki</a></div>
+</div>
+</section>
+<footer>Camera Shots — a wiki and a prompt engine for deliberate AI cinema. by irfan</footer>
+</article>
+</div>
+</div>
+<nav class="mrail" id="mrail" aria-label="Sections"><a href="#top">Intro</a><a href="#vision">Vision</a><a href="#problem">Problem</a><a href="#gap">Gap</a><a href="#how">How</a><a href="#built">For</a><a href="#principles">Rules</a><a href="#cta">Start</a></nav>
+<script>
+(function(){var ids=["top","vision","problem","gap","how","built","principles","cta"];
+var toc=[].slice.call(document.querySelectorAll('#toc a')),rail=[].slice.call(document.querySelectorAll('#mrail a'));
+function set(id){toc.forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+id)});rail.forEach(function(a){var map={top:"top",vision:"vision",problem:"problem",gap:"gap",how:"how",built:"built",principles:"principles",cta:"cta"};a.classList.toggle('on',map[id]!==undefined&&a.getAttribute('href')==='#'+id)})}
+if('IntersectionObserver' in window){var cur='top';var ob=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){cur=e.target.id;set(cur)}})},{rootMargin:'-40% 0px -55% 0px'});ids.forEach(function(id){var el=document.getElementById(id);if(el)ob.observe(el)})}
+var rv=[].slice.call(document.querySelectorAll('.rv'));
+if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches){var ro=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target)}})},{threshold:.08});rv.forEach(function(el){ro.observe(el)})}else{rv.forEach(function(el){el.classList.add('in')})}
+})();
+</script>
+</body></html>
