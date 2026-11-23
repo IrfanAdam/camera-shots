@@ -21,12 +21,23 @@ a{color:inherit}
 .hnav{display:flex;gap:.5rem}
 .hnav a{font-size:.82rem;font-weight:600;text-decoration:none;padding:.32rem .8rem;border-radius:99px;border:1px solid var(--rule);color:var(--ink);background:var(--s1)}
 .hnav a:hover{border-color:var(--acc)}
-.tabs{display:flex;gap:.4rem;margin-top:.7rem;flex-wrap:wrap}
-.tab{position:relative;display:inline-flex;align-items:center;gap:.5rem;font-size:.85rem;font-weight:650;background:transparent;color:var(--mut);border:1px solid var(--rule);border-radius:99px;padding:.42rem 1rem;cursor:pointer;font-family:inherit}
+.tabs{position:relative;display:flex;gap:0;margin-top:.7rem;background:var(--s1);border:1px solid var(--rule);border-radius:99px;padding:.25rem;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{position:relative;z-index:1;flex:1 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-size:.85rem;font-weight:650;background:transparent;color:var(--mut);border:0;border-left:1px solid var(--rule);border-radius:99px;padding:.42rem 1rem;cursor:pointer;font-family:inherit;white-space:nowrap}
+.tab:first-child{border-left:0}
 .tab::before{content:"";width:5px;height:5px;border-radius:50%;background:transparent;flex:none}
-.tab:hover{color:var(--ink);border-color:var(--acc)}
-.tab.on{color:var(--ink);border-color:var(--acc);background:var(--s1)}
+.tab:hover{color:var(--ink)}
+.tab:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.tab.on{color:var(--ink)}
 .tab.on::before{background:var(--acc)}
+.thumb{position:absolute;z-index:0;top:.25rem;bottom:.25rem;left:0;width:0;border-radius:99px;background:rgba(200,178,138,.13);border:1px solid var(--acc);transition:left .25s ease,width .25s ease;pointer-events:none}
+.exportbar{display:flex;align-items:center;gap:.6rem;margin-top:.6rem;flex-wrap:wrap}
+.exportbar .explabel{font-size:.75rem;color:var(--mut);letter-spacing:.04em}
+.exportbar .explabel b{color:var(--ink);font-weight:650}
+.expbtns{display:flex;gap:.4rem;flex-wrap:wrap}
+.expbtn{font-size:.78rem;font-weight:600;background:transparent;color:var(--mut);border:1px solid var(--rule);border-radius:99px;padding:.32rem .85rem;cursor:pointer;font-family:inherit}
+.expbtn:hover{color:var(--ink);border-color:var(--acc)}
+.expstat{font-size:.78rem;color:var(--acc);min-height:1em}
 .layout{display:grid;grid-template-columns:220px 1fr;gap:2rem;margin-top:1.5rem}
 /* desktop sticky TOC */
 .toc{position:sticky;top:8.5rem;align-self:start;display:flex;flex-direction:column;gap:.15rem;border-left:1px solid var(--rule);padding-left:1rem}
@@ -140,7 +151,7 @@ footer{margin:3rem 0 1rem;color:var(--mut);font-size:.78rem;border-top:1px solid
 }
 /* print: active article only */
 @media print{
-.top,.toc,.mrail,.ctarow,.drawer,.backdrop,footer,.viewtoggle{display:none!important}
+.top,.toc,.mrail,.ctarow,.drawer,.backdrop,footer,.viewtoggle,.exportbar{display:none!important}
 body{background:#fff!important;color:#111!important}
 .w{max-width:100%;padding:0}
 .panel{display:none!important}
@@ -154,7 +165,7 @@ article{gap:1.5rem}
 @media(prefers-reduced-motion:reduce){
 html{scroll-behavior:auto}
 .panel.on{animation:none}
-.drawer,.backdrop,.tab,.btn{transition:none!important}
+.drawer,.backdrop,.tab,.btn,.thumb{transition:none!important}
 *{animation:none!important}
 }
 </style></head>
@@ -165,12 +176,22 @@ html{scroll-behavior:auto}
 <a class="brand" href="#story">Camera Shots<small>intent before pixels</small></a>
 <span class="hright"><span class="by">by irfan</span><span class="hnav"><a href="index.html">wiki</a><a href="engine.html">engine &rarr;</a></span></span>
 </div>
-<nav class="tabs" aria-label="Documents">
-<button class="tab on" data-doc="story" aria-selected="true">Story</button>
-<button class="tab" data-doc="investors" aria-selected="false">Investors</button>
-<button class="tab" data-doc="wiki" aria-selected="false">Wiki</button>
-<button class="tab" data-doc="mvp" aria-selected="false">MVP</button>
+<nav class="tabs" role="tablist" aria-label="Documents">
+<span class="thumb" id="tab-thumb" aria-hidden="true"></span>
+<button class="tab on" role="tab" data-doc="story" aria-selected="true" tabindex="0">Story</button>
+<button class="tab" role="tab" data-doc="investors" aria-selected="false" tabindex="-1">Investors</button>
+<button class="tab" role="tab" data-doc="wiki" aria-selected="false" tabindex="-1">Wiki</button>
+<button class="tab" role="tab" data-doc="mvp" aria-selected="false" tabindex="-1">MVP</button>
 </nav>
+<div class="exportbar" role="group" aria-label="Export active document">
+<span class="explabel">Export: <b id="export-label">Story</b></span>
+<span class="expbtns">
+<button class="expbtn" id="exp-md" type="button">Download .md</button>
+<button class="expbtn" id="exp-copy" type="button">Copy .md</button>
+<button class="expbtn" id="exp-print" type="button">Print / PDF</button>
+</span>
+<span class="expstat" id="exp-stat" role="status" aria-live="polite"></span>
+</div>
 </header>
 
 <!-- ============ TAB 1: STORY ============ -->
@@ -602,6 +623,8 @@ html{scroll-behavior:auto}
 (function(){
 "use strict";
 var TABS=["story","investors","wiki","mvp"];
+var DOC_TITLES={story:"Story",investors:"Investors",wiki:"Wiki",mvp:"MVP"};
+var PANEL_IDS={story:"panel-doc-01",investors:"panel-doc-03",wiki:"panel-doc-02",mvp:"panel-doc-04"};
 var TOCS={
 story:[["s-hero","Intro"],["s-vision","Vision"],["s-problem","Problem"],["s-gap","Gap"],["s-how","How"],["s-built","For"],["s-principles","Rules"],["s-next","Next"],["s-cta","Start"]],
 investors:[["d3-thesis","Thesis"],["d3-market","Why Now"],["d3-model","Model"],["d3-roadmap","Roadmap"],["d3-allocation","Alloc"],["d3-runway","Runway"]],
@@ -642,11 +665,12 @@ function activate(name,skipScroll){
   if(TOCS[name]===undefined)name="story";
   tabs.forEach(function(t){
     var on=t.dataset.doc===name;
-    t.classList.toggle("on",on);t.setAttribute("aria-selected",on?"true":"false");
+    t.classList.toggle("on",on);t.setAttribute("aria-selected",on?"true":"false");t.tabIndex=on?0:-1;
   });
   TABS.forEach(function(n){panels[n].classList.toggle("on",n===name)});
   document.body.dataset.printDoc=name;
-  setRail(name);observe(name);
+  var xl=document.getElementById("export-label");if(xl)xl.textContent=DOC_TITLES[name]||name;
+  setRail(name);observe(name);moveThumb();
   try{history.replaceState(null,"","#"+name)}catch(e){}
   if(!skipScroll){window.scrollTo(0,0);mark(TOCS[name][0][0])}
 }
@@ -702,6 +726,155 @@ if(gt&&g)gt.addEventListener("click",function(){
   gt.textContent=show?"Hide Gantt view":"Show Gantt view";
   gt.setAttribute("aria-expanded",show?"true":"false");
 });
+/* segmented thumb + roving tabindex + arrow-key tabs */
+var thumb=document.getElementById("tab-thumb");
+function moveThumb(){
+  var on=document.querySelector(".tab.on");
+  if(!on||!thumb)return;
+  thumb.style.left=on.offsetLeft+"px";
+  thumb.style.width=on.offsetWidth+"px";
+}
+window.addEventListener("resize",moveThumb);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(moveThumb);
+tabs.forEach(function(t){
+  if(PANEL_IDS[t.dataset.doc])t.setAttribute("aria-controls",PANEL_IDS[t.dataset.doc]);
+});
+var tabNav=document.querySelector(".tabs");
+tabNav.addEventListener("keydown",function(e){
+  var i=tabs.indexOf(document.activeElement);
+  if(i<0)return;
+  var j=null;
+  if(e.key==="ArrowRight")j=(i+1)%tabs.length;
+  else if(e.key==="ArrowLeft")j=(i-1+tabs.length)%tabs.length;
+  else if(e.key==="Home")j=0;
+  else if(e.key==="End")j=tabs.length-1;
+  if(j!==null){e.preventDefault();tabs[j].focus();activate(tabs[j].dataset.doc)}
+});
+/* per-tab export: markdown of the ACTIVE panel only (current DOM), download / copy / print */
+function rich(el){
+  var c=el.cloneNode(true);
+  [].slice.call(c.querySelectorAll("b,strong")).forEach(function(b){
+    b.replaceWith(document.createTextNode("**"+b.textContent.trim()+"**"));
+  });
+  [].slice.call(c.querySelectorAll("code")).forEach(function(x){
+    x.replaceWith(document.createTextNode("`"+x.textContent.trim()+"`"));
+  });
+  [].slice.call(c.querySelectorAll("a")).forEach(function(a){
+    var t=(a.textContent||"").trim(),h=a.getAttribute("href")||"";
+    a.replaceWith(document.createTextNode(/^https?:/.test(h)?"["+t+"]("+h+")":t));
+  });
+  return c.textContent.replace(/[ \t ]+/g," ").trim();
+}
+function tableMd(tbl){
+  var rows=[].slice.call(tbl.querySelectorAll("tr"));
+  return rows.map(function(tr,i){
+    var cells=[].slice.call(tr.querySelectorAll("th,td")).map(function(c){
+      return rich(c).replace(/\|/g,"\\|");
+    });
+    var row="| "+cells.join(" | ")+" |";
+    if(i===0)row+="\n| "+cells.map(function(){return "---"}).join(" | ")+" |";
+    return row;
+  }).join("\n");
+}
+function panelMarkdown(name){
+  var p=panels[name];if(!p)return "";
+  var date=new Date().toISOString().slice(0,10);
+  var drafts=[].slice.call(p.querySelectorAll("span.draft")).map(function(d){return d.textContent.trim()}).filter(function(v,i,a){return v&&a.indexOf(v)===i});
+  var L=["# Camera Shots — "+(DOC_TITLES[name]||name),"","_Exported "+date+" · Camera Shots pitch · tab `"+name+"` (this tab only)_",""];
+  if(drafts.length)L.push("> DRAFT — this tab carries draft badges ("+drafts.join(" · ")+"). Figures in [BRACKETS] are placeholders being finalised.","");
+  [].slice.call(p.querySelectorAll("article > section")).forEach(function(sec){
+    var els=sec.querySelectorAll(".draft,.k,.eyebrow,h1,h2,.lede,.sub,p.meta,p.body,.ctarow,.draft-note,.card,.step,.quote,ul.tight,.metric,.tbl,.alloc");
+    [].slice.call(els).forEach(function(el){
+      var box=el.closest(".card,.step,.metric,.quote,ul.tight,.tbl,.alloc");
+      if(box&&box!==el&&!el.classList.contains("ctarow"))return;
+      var t;
+      if(el.classList.contains("card")){
+        var ck=el.querySelector(":scope > .k");
+        if(ck)L.push("*"+rich(ck)+"*","");
+        var ch=el.querySelector(":scope > h2, :scope > h3");
+        if(ch)L.push("### "+rich(ch),"");
+        [].slice.call(el.querySelectorAll(":scope > p")).forEach(function(q){
+          if(q.classList.contains("k"))return;
+          t=rich(q);if(!t)return;
+          L.push(q.classList.contains("gate")?"- *Gate:* "+t:t);
+        });
+        L.push("");
+      }else if(el.classList.contains("step")){
+        var sh=el.querySelector("h3");
+        if(sh)L.push("### "+rich(sh),"");
+        [].slice.call(el.querySelectorAll("p")).forEach(function(q){t=rich(q);if(t)L.push(t)});
+        L.push("");
+      }else if(el.classList.contains("metric")){
+        var v=el.querySelector(".v"),lb=el.querySelector(".l"),qq=el.querySelector(".q");
+        L.push("- **"+(lb?rich(lb):"metric")+"**: "+(v?rich(v):"")+(qq?" ("+rich(qq)+")":""));
+      }else if(el.classList.contains("quote")){
+        var qp=el.querySelector("p"),qc=el.querySelector("cite");
+        if(qp)L.push("> "+rich(qp));
+        if(qc)L.push("> — "+rich(qc));
+        L.push("");
+      }else if(el.tagName==="UL"){
+        [].slice.call(el.querySelectorAll("li")).forEach(function(li){L.push("- "+rich(li))});
+        L.push("");
+      }else if(el.classList.contains("tbl")){
+        var tb=el.querySelector("table");if(tb)L.push(tableMd(tb),"");
+      }else if(el.classList.contains("alloc")){
+        [].slice.call(el.querySelectorAll(".lab")).forEach(function(lab){
+          var s=lab.querySelector("span"),b=lab.querySelector("b");
+          L.push("- "+(s?s.textContent.trim():"")+": "+(b?b.textContent.trim():""));
+        });
+        L.push("");
+      }else if(el.classList.contains("ctarow")){
+        var links=[].slice.call(el.querySelectorAll("a,button")).map(function(a){return (a.textContent||"").trim()}).filter(Boolean);
+        if(links.length)L.push("_Actions on page: "+links.join(" · ")+"_","");
+      }else if(el.classList.contains("draft")&&el.tagName==="SPAN"){
+        L.push("> DRAFT — "+rich(el),"");
+      }else if(el.classList.contains("k")||el.classList.contains("eyebrow")){
+        L.push("*"+rich(el)+"*","");
+      }else if(el.tagName==="H1"){
+        L.push("# "+rich(el),"");
+      }else if(el.tagName==="H2"){
+        L.push("## "+rich(el),"");
+      }else if(el.classList.contains("draft-note")){
+        L.push("_Note: "+rich(el)+"_","");
+      }else{
+        t=rich(el);if(t)L.push(t,"");
+      }
+    });
+  });
+  return L.join("\n").replace(/\n{3,}/g,"\n\n").trim()+"\n";
+}
+function expStat(msg){
+  var s=document.getElementById("exp-stat");if(!s)return;
+  s.textContent=msg;clearTimeout(s._t);
+  s._t=setTimeout(function(){s.textContent=""},3500);
+}
+function downloadMd(){
+  var name=document.body.dataset.printDoc||"story";
+  var date=new Date().toISOString().slice(0,10);
+  var blob=new Blob([panelMarkdown(name)],{type:"text/markdown;charset=utf-8"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");
+  a.href=url;a.download="camera-shots-"+name+"-"+date+".md";
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(function(){URL.revokeObjectURL(url)},1000);
+  expStat("Downloaded camera-shots-"+name+"-"+date+".md");
+}
+function copyMd(){
+  var name=document.body.dataset.printDoc||"story";
+  var md=panelMarkdown(name);
+  function done(){expStat("Copied "+(DOC_TITLES[name]||name)+" markdown to clipboard")}
+  function fallback(){
+    var ta=document.createElement("textarea");ta.value=md;ta.setAttribute("readonly","");
+    ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();
+    try{document.execCommand("copy");done()}catch(e){expStat("Copy failed — use Download instead")}
+    ta.remove();
+  }
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(md).then(done,fallback)}
+  else fallback();
+}
+document.getElementById("exp-md").addEventListener("click",downloadMd);
+document.getElementById("exp-copy").addEventListener("click",copyMd);
+document.getElementById("exp-print").addEventListener("click",function(){window.print()});
 /* init: #tab or #section-id deep links */
 var start=(location.hash||"").replace(/^#/,"");
 if(TOCS[start]!==undefined){activate(start,true);window.scrollTo(0,0)}
