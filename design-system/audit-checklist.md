@@ -48,3 +48,19 @@ Use per screen. Mark each: Compliant / Deviation / Gap. Deviations name the corr
 - [ ] Figures carry honesty qualifiers; allocation sums to 100%
 - [ ] Print shows article only (header/aside/rails hidden)
 - [ ] Export path exists for every doc type
+
+## Enforcement gate
+
+**A page change is not done until the gate is green.**
+
+```sh
+node scripts/lint-tokens.mjs          # human table; regenerates design-system/audit-report.md
+node scripts/lint-tokens.mjs --check  # CI mode: no write, exit 1 on any violation
+```
+
+- Scans `index.html`, `pitch.html`, `engine.html` and `design-system/*.html` (never `tokens.css`), per file and per line.
+- Fails on: raw color (V1), raw duration/cubic-bezier (V2), raw `z-index` (V3), raw `border-radius` (V4), inline `style=` paint (V5), SVG `fill|stroke|stop-color="#…"` (V6), and dead `var(--name)` references (U1).
+- `design-system/tokens.css` is the only place a literal may live; pages consume `var(--token)`. `:root` aliases may resolve to tokens (`--bg:var(--color-wiki-light-bg)`).
+- Media-query breakpoints are the documented raw-px exception (`var()` is invalid in `@media`).
+- `!important`, inline `style=` and `var(--)` counts are reported for visibility, not failed on.
+- `design-system/audit-report.md` is machine-written — read it, never hand-edit it.
