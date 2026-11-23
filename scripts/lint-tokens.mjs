@@ -2,8 +2,9 @@
 /* ==========================================================================
    lint-tokens.mjs — token-adherence gate (zero dependencies)
    --------------------------------------------------------------------------
-   tokens.css is the only place a raw paint / motion / z / radius value may
-   live. Pages consume var(--token). This script proves it, per file, per line.
+   tokens.css is the only place a raw paint / motion / z / radius / border /
+   spacing value may live. Pages consume var(--token). This script proves it,
+   per file, per line.
 
    Usage:
      node scripts/lint-tokens.mjs           human table + writes audit-report.md
@@ -20,7 +21,7 @@
      ...;         <-- JS  comment: lint-allow: popover must clear --z-overlay
      <meta ...>   <-- HTML comment: lint-allow: theme-color cannot read custom properties
 
-   The marker clears every hit on its own line (V1..V7, U1) and nothing else.
+   The marker clears every hit on its own line (V1..V8, U1) and nothing else.
    A marker with no reason, or with the reason "ok", exempts nothing and is
    reported BAD-ALLOW, so it cannot be used to blanket-suppress silently.
    ========================================================================== */
@@ -144,6 +145,29 @@ function varSpans(text) {
     re.lastIndex = i;
   }
   return spans;
+}
+
+function callSpans(text, name) {
+  const out = [];
+  const re = new RegExp(`\\b${name}\\(`, 'g');
+  let m;
+  while ((m = re.exec(text))) {
+    let depth = 0;
+    let i = m.index + name.length;
+    for (; i < text.length; i++) {
+      if (text[i] === '(') depth++;
+      else if (text[i] === ')') {
+        depth--;
+        if (depth === 0) {
+          i++;
+          break;
+        }
+      }
+    }
+    out.push([m.index, i]);
+    re.lastIndex = i;
+  }
+  return out;
 }
 
 const COLOR_RE = /#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?)\s*\(/g;
@@ -350,6 +374,39 @@ for (const file of files) {
     }
   }
 
+  /* V8 — raw spacing: padding / margin / gap must resolve to a spacing step.
+     Only rhythm is judged; width/height/top/left/inset/transform/grid-template
+     are geometry and stay out. 0, auto and percentages carry no unit; a var()
+     fallback and an env() safe-area inset are not spacing picks, so numbers
+     inside those calls are skipped. calc() arithmetic is still rhythm. */
+  {
+    const SPACING_PROPS = [
+      'padding', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
+      'padding-block', 'padding-inline', 'padding-block-start', 'padding-block-end',
+      'padding-inline-start', 'padding-inline-end',
+      'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
+      'margin-block', 'margin-inline', 'margin-block-start', 'margin-block-end',
+      'margin-inline-start', 'margin-inline-end',
+      'gap', 'row-gap', 'column-gap',
+    ];
+    const codeChars = masked.split('');
+    maskRanges(codeChars, textRanges);
+    const codeText = codeChars.join('');
+    for (const prop of SPACING_PROPS) {
+      const re = new RegExp(`(?<![-\\w])${prop}\\s*:\\s*([^;}"]*)`, 'gi');
+      for (const m of codeText.matchAll(re)) {
+        const value = m[1];
+        if (value.includes('<') || value.length > 300) continue;
+        const skip = [...callSpans(value, 'env'), ...varSpans(value)];
+        for (const n of value.matchAll(/(?<![\w.#-])-?\d*\.?\d+(?:px|rem|em)\b/g)) {
+          if (skip.some(([s, e]) => n.index >= s && n.index < e)) continue;
+          push('V8', m.index, `${prop}:${short(value, 46)}`, 'raw spacing');
+          break;
+        }
+      }
+    }
+  }
+
   /* counts (not V-classes) */
   const varChars = masked.split('');
   maskRanges(varChars, textRanges);
@@ -424,6 +481,7 @@ for (const file of files) {
       V5: keptViolations.filter((v) => v.cls === 'V5').length,
       V6: keptViolations.filter((v) => v.cls === 'V6').length,
       V7: keptViolations.filter((v) => v.cls === 'V7').length,
+      V8: keptViolations.filter((v) => v.cls === 'V8').length,
       U1: keptDead.length,
     },
   });
@@ -431,7 +489,7 @@ for (const file of files) {
 
 /* ---------------------------------------------------------------- totals */
 
-const classes = ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'U1'];
+const classes = ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'V8', 'U1'];
 const totals = Object.fromEntries(classes.map((c) => [c, 0]));
 let totalImportant = 0;
 let totalInline = 0;
@@ -453,7 +511,7 @@ const failed = totalViolations > 0 || totalBadAllow > 0;
 
 const header =
   'file'.padEnd(26) +
-  ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'U1'].map((c) => c.padStart(5)).join('') +
+  ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'V8', 'U1'].map((c) => c.padStart(5)).join('') +
   'exempt'.padStart(7) +
   'bad'.padStart(5) +
   '!imp'.padStart(6) +
@@ -544,6 +602,7 @@ const LEGEND = [
   ['V5', 'Inline `style="…"` attribute carrying color or px radius', 'Move to a class in `<style>`; paint via `var(--color-*)`, radius via `var(--radius-*)`'],
   ['V6', 'SVG paint attribute `fill|stroke|stop-color="#…"`', '`var(--color-*)` in a CSS rule (`fill:var(--color-…)`) or a token-backed class'],
   ['V7', 'Raw px border width in `border` / `border-top|right|bottom|left`', '`border.width.*` → `var(--border-width-hairline|strong|accent)` as the width position of the shorthand'],
+  ['V8', 'Raw px/rem number inside a `padding` / `margin` / `gap` declaration (incl. `-top|-right|-bottom|-left|-block|-inline`, `row-gap`, `column-gap`)', '`0`, `auto` and percentages pass; `spacing.*` → `var(--spacing-2|2xs|6|xs|10|sm|14|md|18|20|lg|xl|2xl)`; layout-scale and off-grid values get an in-place `lint-allow` reason'],
   ['U1', 'Dead `var(--name)`: not defined in tokens.css and not declared in this page', 'Add the token to `design-system/tokens.json` → regenerate, or use the existing token; never rely on a fallback'],
 ];
 
@@ -563,12 +622,12 @@ md += `- Files scanned: ${results.map((r) => '`' + r.file + '`').join(', ')}\n`;
 md += `- Result: **${failed ? 'FAIL' : 'PASS'}** — ${totalViolations} violation(s), ${totalExempt} exempt, ${totalBadAllow} bad-allow\n\n`;
 
 md += '## Per-file violations\n\n';
-md += '| File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | V7 border width | U1 dead var | exempt | bad-allow | `!important` | inline `style=` | `var(--)` uses |\n';
-md += '|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n';
+md += '| File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | V7 border width | V8 spacing | U1 dead var | exempt | bad-allow | `!important` | inline `style=` | `var(--)` uses |\n';
+md += '|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n';
 for (const r of results) {
-  md += `| \`${r.file}\` | ${r.counts.V1} | ${r.counts.V2} | ${r.counts.V3} | ${r.counts.V4} | ${r.counts.V5} | ${r.counts.V6} | ${r.counts.V7} | ${r.counts.U1} | ${r.exempt.length} | ${r.badAllows.length} | ${r.important} | ${r.inlineStyles} | ${r.varUses} |\n`;
+  md += `| \`${r.file}\` | ${r.counts.V1} | ${r.counts.V2} | ${r.counts.V3} | ${r.counts.V4} | ${r.counts.V5} | ${r.counts.V6} | ${r.counts.V7} | ${r.counts.V8} | ${r.counts.U1} | ${r.exempt.length} | ${r.badAllows.length} | ${r.important} | ${r.inlineStyles} | ${r.varUses} |\n`;
 }
-md += `| **Total** | **${totals.V1}** | **${totals.V2}** | **${totals.V3}** | **${totals.V4}** | **${totals.V5}** | **${totals.V6}** | **${totals.V7}** | **${totals.U1}** | **${totalExempt}** | **${totalBadAllow}** | **${totalImportant}** | **${totalInline}** | **${totalVars}** |\n\n`;
+md += `| **Total** | **${totals.V1}** | **${totals.V2}** | **${totals.V3}** | **${totals.V4}** | **${totals.V5}** | **${totals.V6}** | **${totals.V7}** | **${totals.V8}** | **${totals.U1}** | **${totalExempt}** | **${totalBadAllow}** | **${totalImportant}** | **${totalInline}** | **${totalVars}** |\n\n`;
 
 md += '## Violation detail\n\n';
 let anyDetail = false;
@@ -618,15 +677,17 @@ md += '\n';
 md += '### Exemptions (`lint-allow`)\n\n';
 md += 'A hit may be tolerated only **in place, on the same line, with a reason**: ';
 md += '`/* lint-allow: reason */` in CSS, `// lint-allow: reason` in JS, ';
-md += '`<!-- lint-allow: reason -->` in HTML. The marker clears every hit on its own line (V1–V7, U1) and nothing on the next line. ';
+md += '`<!-- lint-allow: reason -->` in HTML. The marker clears every hit on its own line (V1–V8, U1) and nothing on the next line. ';
 md += `The reason must be at least ${MIN_REASON} characters after trimming; a marker with no reason, or with \`ok\`, exempts nothing — the hit stays a violation and is additionally reported as **BAD-ALLOW**, so the mechanism cannot silently blanket-suppress.\n\n`;
 md += 'Legitimate only where **a browser cannot resolve the value from a custom property**: the `meta` theme-color tag, `@media` / `@supports` conditions, and canvas or gradient string composites assembled in JS. ';
-md += 'Never legitimate for any color, duration, radius or `z-index` that a token could hold — those get a token (or get fixed), because that is exactly the drift this gate exists to catch.\n\n';
+md += 'Never legitimate for any color, duration, radius, border width, spacing step or `z-index` that a token could hold — those get a token (or get fixed), because that is exactly the drift this gate exists to catch.\n\n';
 md += '### Documented exceptions\n\n';
 md += '- Media-query breakpoints stay raw px (`var()` is invalid in `@media`).\n';
 md += '- `design-system/tokens.css` is the token source and is never scanned.\n';
-md += '- Page-local alias declarations in `:root` are legal when they resolve to a token: `--bg:var(--color-wiki-light-bg)`.\n';
+md += '- Page-local alias declarations in `:root` are legal when they resolve to a token: `--bg:var(--color-wiki-light-bg)`. `--spacing-*` is the only scale that may hold rhythm.\n';
 md += '- A hex color is legal only as a `var()` fallback: `var(--color-x, #fff)`.\n';
+md += '- Spacing is a 2px grid: `padding`/`margin`/`gap` take `var(--spacing-2|2xs|6|xs|10|sm|14|md|18|20|lg|xl|2xl)` or `0`/`auto`/a percentage. `width`, `height`, `top`, `left`, `inset`, `transform` and `grid-template` are geometry and stay out of V8.\n';
+md += '- Layout-scale padding above 48px, negative offsets, and off-grid values (22.4, 25.6, 41.6, 86.4, 118) that would move more than 0.9px are kept literal with an in-place `lint-allow` reason.\n';
 
 if (!CHECK) {
   const prev = fs.existsSync(REPORT) ? fs.readFileSync(REPORT, 'utf8') : null;

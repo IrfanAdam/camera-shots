@@ -12,35 +12,62 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 - Generated: 2026-11-23
 - Tokens defined: 223 (`design-system/tokens.css`)
 - Files scanned: `index.html`, `pitch.html`, `engine.html`, `design-system/index.html`
-- Result: **PASS** — 0 violation(s), 4 exempt, 0 bad-allow
+- Result: **PASS** — 0 violation(s), 21 exempt, 0 bad-allow
 
 ## Per-file violations
 
-| File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | V7 border width | U1 dead var | exempt | bad-allow | `!important` | inline `style=` | `var(--)` uses |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 19 | 316 |
-| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 14 | 32 | 302 |
-| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 4 | 2 | 705 |
-| `design-system/index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 148 | 791 |
-| **Total** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **4** | **0** | **20** | **201** | **2114** |
+| File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | V7 border width | V8 spacing | U1 dead var | exempt | bad-allow | `!important` | inline `style=` | `var(--)` uses |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 2 | 19 | 395 |
+| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 7 | 0 | 14 | 32 | 428 |
+| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10 | 0 | 4 | 2 | 960 |
+| `design-system/index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 0 | 148 | 795 |
+| **Total** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **21** | **0** | **20** | **201** | **2578** |
 
 ## Violation detail
 
 _No violations._
 
-### `pitch.html` — Exempt (1)
+### `index.html` — Exempt (1)
 
 | Line | Class | Found | Reason |
 |---:|---|---|---|
-| 173 | V3 | `z-index:5` | no z step exists between --z-content (2) and --z-sticky (40); the frame tooltip must clear sibling cards inside its own stacking context without rising to the sticky header layer |
+| 64 | V8 | `padding-bottom:5.4rem` | 5.4rem mobile step-rail clearance is layout geometry, not UI rhythm |
 
-### `engine.html` — Exempt (3)
+### `pitch.html` — Exempt (7)
+
+| Line | Class | Found | Reason |
+|---:|---|---|---|
+| 32 | V8 | `padding:0 1.2rem 4rem` | deck shell 1.2rem gutter keeps the 390px bullet on one line; 4rem bottom pad is layout-scale |
+| 50 | V8 | `gap:1.4rem` | 22.4px tab rhythm sits between the 20 and 24 steps; snapping moves 1.6px |
+| 91 | V8 | `padding:2.6rem 0 1.6rem` | hero section pad is layout-scale; 41.6px and 25.6px have no step within 0.9px |
+| 97 | V8 | `margin-top:1.4rem` | 22.4px CTA lift sits between the 20 and 24 steps; snapping moves 1.6px |
+| 144 | V8 | `padding:1.6rem` | 25.6px drawer pad sits between the 24 step and the 32px layout gap |
+| 173 | V3 | `z-index:5` | no z step exists between --z-content (2) and --z-sticky (40); the frame tooltip must clear sibling cards inside its own stacking context without rising to the sticky header layer |
+| 203 | V8 | `padding:1.6rem 0 var(--spacing-md)` | 25.6px compact-hero pad sits between the 24 and 32 steps |
+
+### `engine.html` — Exempt (10)
 
 | Line | Class | Found | Reason |
 |---:|---|---|---|
 | 1 | V1 | `#0e1116` | meta theme-color cannot resolve custom properties; value mirrors --color-engine-bg (#0E1116) |
+| 109 | V8 | `padding:5px` | 5px menu inset sits between 4 and 6; snapping reflows the menu rows |
+| 116 | V8 | `padding:5px` | 5px panel inset sits between 4 and 6; snapping reflows the asset rows |
+| 143 | V8 | `padding-top:2.3rem` | 2.3rem prompt-label clearance is layout-scale, beyond the 32px step |
 | 147 | V3 | `z-index:3` | drawer menu stacks one step above drawer content; no z token holds 3 (nearest --z-content 2) and adding z.raise.deep would invent a step for one element |
+| 258 | V8 | `margin:0 0 var(--spacing-2xs) 118px` | 118px label indent aligns to the field column, not the rhythm |
+| 259 | V8 | `padding:1px var(--spacing-xs)` | 1px chip inset is an optical hairline; no 2px step exists |
+| 282 | V8 | `padding:0 0 0 3px` | 3px chip inset cancels the -3px gutter so the token stays flush |
+| 282 | V8 | `margin:0 0 0 -3px` | 3px chip inset cancels the -3px gutter so the token stays flush |
 | 1197 | V3 | `z-index:80` | fixed node-picker popover must clear --z-overlay (60) and stay below --z-canvas (90); no token holds 80 and inventing z.critical for one node would fork the scale |
+
+### `design-system/index.html` — Exempt (3)
+
+| Line | Class | Found | Reason |
+|---:|---|---|---|
+| 90 | V8 | `padding-left:calc(var(--spacing-sm) - 1px)` | 1px optical offset inside calc aligns the rail rule; no 2px step |
+| 183 | V8 | `margin-top:-10px` | negative half of the 20px dot centres it against the track |
+| 417 | V8 | `padding:1px var(--spacing-xs)` | 1px badge inset is an optical hairline; no 2px step exists |
 
 ## How to fix
 
@@ -53,17 +80,20 @@ _No violations._
 | V5 | Inline `style="…"` attribute carrying color or px radius | Move to a class in `<style>`; paint via `var(--color-*)`, radius via `var(--radius-*)` |
 | V6 | SVG paint attribute `fill|stroke|stop-color="#…"` | `var(--color-*)` in a CSS rule (`fill:var(--color-…)`) or a token-backed class |
 | V7 | Raw px border width in `border` / `border-top|right|bottom|left` | `border.width.*` → `var(--border-width-hairline|strong|accent)` as the width position of the shorthand |
+| V8 | Raw px/rem number inside a `padding` / `margin` / `gap` declaration (incl. `-top|-right|-bottom|-left|-block|-inline`, `row-gap`, `column-gap`) | `0`, `auto` and percentages pass; `spacing.*` → `var(--spacing-2|2xs|6|xs|10|sm|14|md|18|20|lg|xl|2xl)`; layout-scale and off-grid values get an in-place `lint-allow` reason |
 | U1 | Dead `var(--name)`: not defined in tokens.css and not declared in this page | Add the token to `design-system/tokens.json` → regenerate, or use the existing token; never rely on a fallback |
 
 ### Exemptions (`lint-allow`)
 
-A hit may be tolerated only **in place, on the same line, with a reason**: `/* lint-allow: reason */` in CSS, `// lint-allow: reason` in JS, `<!-- lint-allow: reason -->` in HTML. The marker clears every hit on its own line (V1–V7, U1) and nothing on the next line. The reason must be at least 8 characters after trimming; a marker with no reason, or with `ok`, exempts nothing — the hit stays a violation and is additionally reported as **BAD-ALLOW**, so the mechanism cannot silently blanket-suppress.
+A hit may be tolerated only **in place, on the same line, with a reason**: `/* lint-allow: reason */` in CSS, `// lint-allow: reason` in JS, `<!-- lint-allow: reason -->` in HTML. The marker clears every hit on its own line (V1–V8, U1) and nothing on the next line. The reason must be at least 8 characters after trimming; a marker with no reason, or with `ok`, exempts nothing — the hit stays a violation and is additionally reported as **BAD-ALLOW**, so the mechanism cannot silently blanket-suppress.
 
-Legitimate only where **a browser cannot resolve the value from a custom property**: the `meta` theme-color tag, `@media` / `@supports` conditions, and canvas or gradient string composites assembled in JS. Never legitimate for any color, duration, radius or `z-index` that a token could hold — those get a token (or get fixed), because that is exactly the drift this gate exists to catch.
+Legitimate only where **a browser cannot resolve the value from a custom property**: the `meta` theme-color tag, `@media` / `@supports` conditions, and canvas or gradient string composites assembled in JS. Never legitimate for any color, duration, radius, border width, spacing step or `z-index` that a token could hold — those get a token (or get fixed), because that is exactly the drift this gate exists to catch.
 
 ### Documented exceptions
 
 - Media-query breakpoints stay raw px (`var()` is invalid in `@media`).
 - `design-system/tokens.css` is the token source and is never scanned.
-- Page-local alias declarations in `:root` are legal when they resolve to a token: `--bg:var(--color-wiki-light-bg)`.
+- Page-local alias declarations in `:root` are legal when they resolve to a token: `--bg:var(--color-wiki-light-bg)`. `--spacing-*` is the only scale that may hold rhythm.
 - A hex color is legal only as a `var()` fallback: `var(--color-x, #fff)`.
+- Spacing is a 2px grid: `padding`/`margin`/`gap` take `var(--spacing-2|2xs|6|xs|10|sm|14|md|18|20|lg|xl|2xl)` or `0`/`auto`/a percentage. `width`, `height`, `top`, `left`, `inset`, `transform` and `grid-template` are geometry and stay out of V8.
+- Layout-scale padding above 48px, negative offsets, and off-grid values (22.4, 25.6, 41.6, 86.4, 118) that would move more than 0.9px are kept literal with an in-place `lint-allow` reason.
