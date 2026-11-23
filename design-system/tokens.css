@@ -2,7 +2,7 @@
    tokens.css — GENERATED FILE, DO NOT EDIT BY HAND.
    Source:     design-system/tokens.json
    Regenerate: node scripts/build-tokens.mjs
-   Tokens:     223
+   Tokens:     229
    ========================================================================== */
 
 :root {
@@ -107,13 +107,19 @@
   --color-pro-surface-0: #0B0B0D;
   --color-pro-surface-1: #1E1E22;
   --color-pro-surface-2: #2A2A2E;
+  --color-pro-surface-deep: #0C0C0C;
   --color-pro-text-primary: #F5F5F7;
   --color-pro-text-secondary: #9A9AA0;
+  --color-pro-tool: #1C1C1E;
+  --color-pro-tool-hover: #2C2C2E;
   --color-pro-divider: #2C2C2E;
+  --color-pro-divider-strong: #3A3A3C;
   --color-pro-selection: #FFD60A;
   --color-pro-track-fx: #5E5CE6;
   --color-pro-track-title: #30D158;
   --color-pro-track-audio: #32ADE6;
+  --color-pro-overlay-scrim: rgba(0,0,0,.9);
+  --color-pro-overlay-panel: rgba(30,30,34,.94);
 
   /* color.semantic */
   --color-semantic-success: #2E7D46;
