@@ -10,117 +10,42 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 ```
 
 - Generated: 2026-11-23
-- Tokens defined: 208 (`design-system/tokens.css`)
+- Tokens defined: 214 (`design-system/tokens.css`)
 - Files scanned: `index.html`, `pitch.html`, `engine.html`, `design-system/index.html`
-- Result: **FAIL** — 81 violation(s)
+- Result: **FAIL** — 3 violation(s), 3 exempt, 0 bad-allow
 
 ## Per-file violations
 
-| File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | U1 dead var | `!important` | inline `style=` | `var(--)` uses |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 19 | 215 |
-| `pitch.html` | 0 | 0 | 2 | 0 | 0 | 0 | 0 | 14 | 32 | 270 |
-| `engine.html` | 70 | 3 | 2 | 3 | 0 | 0 | 0 | 4 | 2 | 519 |
-| `design-system/index.html` | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 142 | 736 |
-| **Total** | **70** | **3** | **5** | **3** | **0** | **0** | **0** | **20** | **195** | **1740** |
+| File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | U1 dead var | exempt | bad-allow | `!important` | inline `style=` | `var(--)` uses |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 19 | 229 |
+| `pitch.html` | 0 | 0 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 14 | 32 | 269 |
+| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 4 | 2 | 538 |
+| `design-system/index.html` | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 142 | 741 |
+| **Total** | **0** | **0** | **3** | **0** | **0** | **0** | **0** | **3** | **0** | **20** | **195** | **1777** |
 
 ## Violation detail
 
 ### `pitch.html`
 
-| Line | Class | Found |
-|---:|---|---|
-| 144 | V3 | `z-index:61` |
-| 173 | V3 | `z-index:5` |
-
-### `engine.html`
-
-| Line | Class | Found |
-|---:|---|---|
-| 1 | V1 | `#0e1116` |
-| 85 | V1 | `rgba(255,255,255,.25)` |
-| 106 | V1 | `rgba(255,255,255,.25)` |
-| 147 | V3 | `z-index:3` |
-| 181 | V2 | `animation:.06s` |
-| 233 | V2 | `transition:0s` |
-| 292 | V2 | `animation:1.1s` |
-| 330 | V1 | `rgba(255,255,255,.25)` |
-| 721 | V1 | `#fff` |
-| 721 | V1 | `#e8830c` |
-| 748 | V1 | `#e8830c` |
-| 748 | V1 | `#9aa3b5` |
-| 755 | V1 | `#e8830c` |
-| 774 | V1 | `#7c3aed` |
-| 774 | V1 | `#e8830c` |
-| 774 | V1 | `#0f766e` |
-| 779 | V1 | `#1c2432` |
-| 779 | V1 | `#0d1117` |
-| 783 | V1 | `rgba(10,13,18,.82)` |
-| 784 | V1 | `#c7cedb` |
-| 787 | V1 | `rgba(10,13,18,.82)` |
-| 788 | V1 | `#c7cedb` |
-| 792 | V1 | `rgba(10,13,18,.88)` |
-| 793 | V1 | `#fff` |
-| 798 | V1 | `#aab2c2` |
-| 811 | V1 | `#8b93a5` |
-| 813 | V1 | `#e8830c` |
-| 814 | V1 | `#111` |
-| 819 | V1 | `rgba(255,255,255,.45)` |
-| 820 | V1 | `rgba(255,255,255,.10)` |
-| 850 | V1 | `#1a2130` |
-| 854 | V1 | `#5b6577` |
-| 1103 | V1 | `#222a36` |
-| 1104 | V1 | `rgba(255,255,255,.14)` |
-| 1105 | V1 | `#8b93a5` |
-| 1109 | V1 | `#161b22` |
-| 1110 | V1 | `#1b2230` |
-| 1111 | V1 | `rgba(255,255,255,.08)` |
-| 1112 | V1 | `#e8eaf0` |
-| 1116 | V1 | `#222a36` |
-| 1117 | V1 | `rgba(255,255,255,.12)` |
-| 1118 | V1 | `#8b93a5` |
-| 1122 | V1 | `rgba(255,255,255,.018)` |
-| 1122 | V1 | `rgba(255,255,255,.035)` |
-| 1123 | V1 | `rgba(255,255,255,.07)` |
-| 1126 | V1 | `#e8830c` |
-| 1126 | V1 | `#2a3342` |
-| 1127 | V1 | `rgba(0,0,0,.5)` |
-| 1128 | V1 | `rgba(255,255,255,.55)` |
-| 1130 | V1 | `#e8830c` |
-| 1130 | V1 | `rgba(255,255,255,.10)` |
-| 1148 | V1 | `#222a36` |
-| 1152 | V1 | `rgba(255,255,255,.12)` |
-| 1155 | V1 | `rgba(10,13,18,.9)` |
-| 1156 | V1 | `rgba(255,255,255,.35)` |
-| 1157 | V1 | `#fff` |
-| 1189 | V1 | `#161b22` |
-| 1189 | V1 | `#e8eaf0` |
-| 1189 | V1 | `#313b4a` |
-| 1189 | V1 | `rgba(0,0,0,.45)` |
-| 1189 | V3 | `z-index:80` |
-| 1189 | V4 | `border-radius:10px` |
-| 1191 | V1 | `#8b93a5` |
-| 1194 | V1 | `#222a36` |
-| 1194 | V1 | `#313b4a` |
-| 1194 | V4 | `border-radius:8px` |
-| 1197 | V1 | `#e8eaf0` |
-| 1218 | V1 | `#5b6577` |
-| 1220 | V1 | `#1a2130` |
-| 1235 | V1 | `#fff` |
-| 1235 | V1 | `#e8830c` |
-| 1244 | V1 | `#e8830c` |
-| 1251 | V1 | `#e8830c` |
-| 1251 | V1 | `#9aa3b5` |
-| 1562 | V1 | `#e8eaf0` |
-| 1658 | V1 | `rgba(232,131,12,.14)` |
-| 1658 | V1 | `rgba(232,131,12,.5)` |
-| 1658 | V4 | `border-radius:999px` |
+| Line | Class | Found | Marker |
+|---:|---|---|---|
+| 144 | V3 | `z-index:61` |  |
+| 173 | V3 | `z-index:5` |  |
 
 ### `design-system/index.html`
 
-| Line | Class | Found |
-|---:|---|---|
-| 428 | V3 | `z-index:30` |
+| Line | Class | Found | Marker |
+|---:|---|---|---|
+| 431 | V3 | `z-index:30` |  |
+
+### `engine.html` — Exempt (3)
+
+| Line | Class | Found | Reason |
+|---:|---|---|---|
+| 1 | V1 | `#0e1116` | meta theme-color cannot resolve custom properties; value mirrors --color-engine-bg (#0E1116) |
+| 147 | V3 | `z-index:3` | drawer menu stacks one step above drawer content; no z token holds 3 (nearest --z-content 2) and adding z.raise.deep would invent a step for one element |
+| 1197 | V3 | `z-index:80` | fixed node-picker popover must clear --z-overlay (60) and stay below --z-canvas (90); no token holds 80 and inventing z.critical for one node would fork the scale |
 
 ## How to fix
 
@@ -133,6 +58,12 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 | V5 | Inline `style="…"` attribute carrying color or px radius | Move to a class in `<style>`; paint via `var(--color-*)`, radius via `var(--radius-*)` |
 | V6 | SVG paint attribute `fill|stroke|stop-color="#…"` | `var(--color-*)` in a CSS rule (`fill:var(--color-…)`) or a token-backed class |
 | U1 | Dead `var(--name)`: not defined in tokens.css and not declared in this page | Add the token to `design-system/tokens.json` → regenerate, or use the existing token; never rely on a fallback |
+
+### Exemptions (`lint-allow`)
+
+A hit may be tolerated only **in place, on the same line, with a reason**: `/* lint-allow: reason */` in CSS, `// lint-allow: reason` in JS, `<!-- lint-allow: reason -->` in HTML. The marker clears every hit on its own line (V1–V6, U1) and nothing on the next line. The reason must be at least 8 characters after trimming; a marker with no reason, or with `ok`, exempts nothing — the hit stays a violation and is additionally reported as **BAD-ALLOW**, so the mechanism cannot silently blanket-suppress.
+
+Legitimate only where **a browser cannot resolve the value from a custom property**: the `meta` theme-color tag, `@media` / `@supports` conditions, and canvas or gradient string composites assembled in JS. Never legitimate for any color, duration, radius or `z-index` that a token could hold — those get a token (or get fixed), because that is exactly the drift this gate exists to catch.
 
 ### Documented exceptions
 

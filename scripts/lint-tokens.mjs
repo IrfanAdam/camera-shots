@@ -9,7 +9,20 @@
      node scripts/lint-tokens.mjs           human table + writes audit-report.md
      node scripts/lint-tokens.mjs --check   human table only; exit 1 on failure
 
-   Exit code: 0 = green, 1 = violations (including dead var() references).
+   Exit code: 0 = green, 1 = violations (including dead var() references) or
+   invalid exemptions (BAD-ALLOW).
+
+   Exemptions — same line only, reason required, at least 8 chars. Written in
+   the file's own comment syntax (CSS block comment, JS line comment, HTML
+   comment), immediately on the flagged line:
+
+     z-index:61   <-- CSS comment: lint-allow: no z token holds 61
+     ...;         <-- JS  comment: lint-allow: popover must clear --z-overlay
+     <meta ...>   <-- HTML comment: lint-allow: theme-color cannot read custom properties
+
+   The marker clears every hit on its own line (V1..V6, U1) and nothing else.
+   A marker with no reason, or with the reason "ok", exempts nothing and is
+   reported BAD-ALLOW, so it cannot be used to blanket-suppress silently.
    ========================================================================== */
 
 import fs from 'node:fs';
@@ -76,6 +89,37 @@ function rangesOf(text, re) {
   const out = [];
   for (const m of text.matchAll(re)) out.push([m.index, m.index + m[0].length]);
   return out;
+}
+
+/* ------------------------------------------------------------ exemptions */
+
+/* A marker must be a real comment opener, so prose that merely mentions the
+   mechanism can never exempt code:
+     CSS   slash-star  lint-allow: reason  star-slash
+     JS    slash-slash lint-allow: reason
+     HTML  less-than-bang-dash-dash  lint-allow: reason  dash-dash-greater
+   The reason runs to the comment terminator (or end of line for //). */
+const MARKER_RE = /(?:\/\*|\/\/|<!--)\s*lint-allow\s*:\s*([^\n]*)/;
+const MIN_REASON = 8;
+const THROWAWAY = new Set(['ok', 'okay', 'fine', 'todo', 'xx', 'n/a', 'na', 'test', 'skip']);
+
+function markerFor(lineText) {
+  const m = lineText.match(MARKER_RE);
+  if (!m) return null;
+  let reason = m[1];
+  const cut = reason.search(/\*\/|-->/);
+  if (cut !== -1) reason = reason.slice(0, cut);
+  reason = reason.replace(/\s+/g, ' ').trim();
+  const valid = reason.length >= MIN_REASON && !THROWAWAY.has(reason.toLowerCase());
+  return { reason, valid };
+}
+
+/* mark the same line only — a marker never reaches the next line */
+function lineMarkersOf(text, starts) {
+  return starts.map((start, i) => {
+    const end = i + 1 < starts.length ? starts[i + 1] - 1 : text.length;
+    return markerFor(text.slice(start, end));
+  });
 }
 
 /* var(...) spans, including nested fallbacks */
@@ -313,21 +357,56 @@ for (const file of files) {
     deadVars.push({ line, name, col: m.index - starts[line - 1] + 1 });
   }
 
+  /* -------- exemptions: same line, reason required, V1..V6 + U1 -------- */
+  const lineMarkers = lineMarkersOf(text, starts);
+  const exempt = [];
+  const badAllows = [];
+  const badLines = new Map(); // line -> {reason, classes:Set} — one BAD-ALLOW per line
+  const noteBad = (line, cls, reason) => {
+    if (!badLines.has(line)) badLines.set(line, { line, reason, classes: new Set() });
+    badLines.get(line).classes.add(cls);
+  };
+
+  const keptViolations = [];
+  for (const v of violations) {
+    const mk = lineMarkers[v.line - 1];
+    if (!mk) keptViolations.push(v);
+    else if (mk.valid) exempt.push({ ...v, reason: mk.reason });
+    else {
+      keptViolations.push({ ...v, badAllow: mk.reason });
+      noteBad(v.line, v.cls, mk.reason);
+    }
+  }
+  const keptDead = [];
+  for (const d of deadVars) {
+    const mk = lineMarkers[d.line - 1];
+    if (!mk) keptDead.push(d);
+    else if (mk.valid) {
+      exempt.push({ cls: 'U1', line: d.line, col: d.col, found: d.name, note: 'undefined token', reason: mk.reason });
+    } else {
+      keptDead.push(d);
+      noteBad(d.line, 'U1', mk.reason);
+    }
+  }
+  for (const b of badLines.values()) badAllows.push({ line: b.line, reason: b.reason, classes: [...b.classes].sort() });
+
   results.push({
     file: file.rel,
-    violations: violations.sort((a, b) => a.line - b.line || a.cls.localeCompare(b.cls)),
-    deadVars: deadVars.sort((a, b) => a.line - b.line),
+    violations: keptViolations.sort((a, b) => a.line - b.line || a.cls.localeCompare(b.cls)),
+    deadVars: keptDead.sort((a, b) => a.line - b.line),
+    exempt: exempt.sort((a, b) => a.line - b.line || a.cls.localeCompare(b.cls)),
+    badAllows: badAllows.sort((a, b) => a.line - b.line),
     important,
     inlineStyles: styleAttrs.length,
     varUses,
     counts: {
-      V1: violations.filter((v) => v.cls === 'V1').length,
-      V2: violations.filter((v) => v.cls === 'V2').length,
-      V3: violations.filter((v) => v.cls === 'V3').length,
-      V4: violations.filter((v) => v.cls === 'V4').length,
-      V5: violations.filter((v) => v.cls === 'V5').length,
-      V6: violations.filter((v) => v.cls === 'V6').length,
-      U1: deadVars.length,
+      V1: keptViolations.filter((v) => v.cls === 'V1').length,
+      V2: keptViolations.filter((v) => v.cls === 'V2').length,
+      V3: keptViolations.filter((v) => v.cls === 'V3').length,
+      V4: keptViolations.filter((v) => v.cls === 'V4').length,
+      V5: keptViolations.filter((v) => v.cls === 'V5').length,
+      V6: keptViolations.filter((v) => v.cls === 'V6').length,
+      U1: keptDead.length,
     },
   });
 }
@@ -339,20 +418,29 @@ const totals = Object.fromEntries(classes.map((c) => [c, 0]));
 let totalImportant = 0;
 let totalInline = 0;
 let totalVars = 0;
+let totalExempt = 0;
+let totalBadAllow = 0;
 for (const r of results) {
   for (const c of classes) totals[c] += r.counts[c];
   totalImportant += r.important;
   totalInline += r.inlineStyles;
   totalVars += r.varUses;
+  totalExempt += r.exempt.length;
+  totalBadAllow += r.badAllows.length;
 }
 const totalViolations = classes.reduce((n, c) => n + totals[c], 0);
-const failed = totalViolations > 0;
+const failed = totalViolations > 0 || totalBadAllow > 0;
 
 /* ---------------------------------------------------------- console table */
 
 const header =
-  'file'.padEnd(26) + ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'U1'].map((c) => c.padStart(5)).join('') +
-  '!imp'.padStart(6) + 'inline'.padStart(8) + 'var()'.padStart(8);
+  'file'.padEnd(26) +
+  ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'U1'].map((c) => c.padStart(5)).join('') +
+  'exempt'.padStart(7) +
+  'bad'.padStart(5) +
+  '!imp'.padStart(6) +
+  'inline'.padStart(8) +
+  'var()'.padStart(8);
 const rule = '-'.repeat(header.length);
 
 console.log('');
@@ -364,6 +452,8 @@ for (const r of results) {
   console.log(
     r.file.padEnd(26) +
       classes.map((c) => String(r.counts[c]).padStart(5)).join('') +
+      String(r.exempt.length).padStart(7) +
+      String(r.badAllows.length).padStart(5) +
       String(r.important).padStart(6) +
       String(r.inlineStyles).padStart(8) +
       String(r.varUses).padStart(8)
@@ -373,6 +463,8 @@ console.log(rule);
 console.log(
   'TOTAL'.padEnd(26) +
     classes.map((c) => String(totals[c]).padStart(5)).join('') +
+    String(totalExempt).padStart(7) +
+    String(totalBadAllow).padStart(5) +
     String(totalImportant).padStart(6) +
     String(totalInline).padStart(8) +
     String(totalVars).padStart(8)
@@ -383,20 +475,44 @@ for (const r of results) {
   if (!r.violations.length && !r.deadVars.length) continue;
   console.log(`\n${r.file}`);
   for (const v of r.violations) {
-    console.log(`  ${String(v.line).padStart(5)}:${String(v.col).padEnd(4)} ${v.cls}  ${v.note.padEnd(18)} ${v.found}`);
+    const bad = v.badAllow === undefined ? '' : `  [BAD-ALLOW: "${v.badAllow || '(no reason)'}"]`;
+    console.log(`  ${String(v.line).padStart(5)}:${String(v.col).padEnd(4)} ${v.cls}  ${v.note.padEnd(18)} ${v.found}${bad}`);
   }
   for (const d of r.deadVars) {
-    console.log(`  ${String(d.line).padStart(5)}:${String(d.col).padEnd(4)} U1  ${'undefined token'.padEnd(18)} ${d.name}`);
+    const bad = d.badAllow === undefined ? '' : `  [BAD-ALLOW: "${d.badAllow || '(no reason)'}"]`;
+    console.log(`  ${String(d.line).padStart(5)}:${String(d.col).padEnd(4)} U1  ${'undefined token'.padEnd(18)} ${d.name}${bad}`);
+  }
+}
+
+for (const r of results) {
+  if (!r.exempt.length) continue;
+  console.log(`\n${r.file} — Exempt (${r.exempt.length})`);
+  for (const e of r.exempt) {
+    console.log(`  ${String(e.line).padStart(5)}:${String(e.col).padEnd(4)} ${e.cls}  ${e.found}`);
+    console.log(`        reason: ${e.reason}`);
+  }
+}
+
+if (totalBadAllow) {
+  for (const r of results) {
+    if (!r.badAllows.length) continue;
+    console.log(`\n${r.file} — BAD-ALLOW (${r.badAllows.length})`);
+    for (const b of r.badAllows) {
+      console.log(`  ${String(b.line).padStart(5)}     ${b.classes.join(',')}  reason: ${b.reason || '(none)'}  — needs a real reason of ${MIN_REASON}+ chars`);
+    }
   }
 }
 
 console.log(
-  `\nRESULT: ${totalViolations} violation(s) across ${results.length} file(s) — ${failed ? 'FAIL' : 'PASS'}`
+  `\nRESULT: ${totalViolations} violation(s) across ${results.length} file(s) — ${
+    failed ? 'FAIL' : `PASS (${totalExempt} exempt)`
+  }`
 );
 if (failed) {
   const summary = classes.filter((c) => totals[c]).map((c) => `${c}=${totals[c]}`).join(' ');
-  console.log(`        ${summary}`);
+  if (summary) console.log(`        ${summary}`);
 }
+console.log(`        exempt: ${totalExempt}  bad-allow: ${totalBadAllow}`);
 console.log(`        report: ${CHECK ? 'skipped (--check)' : path.relative(ROOT, REPORT)}`);
 console.log('');
 
@@ -425,15 +541,15 @@ md += 'node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on fail
 md += `- Generated: ${new Date().toISOString().slice(0, 10)}\n`;
 md += `- Tokens defined: ${defined.size} (\`design-system/tokens.css\`)\n`;
 md += `- Files scanned: ${results.map((r) => '`' + r.file + '`').join(', ')}\n`;
-md += `- Result: **${failed ? 'FAIL' : 'PASS'}** — ${totalViolations} violation(s)\n\n`;
+md += `- Result: **${failed ? 'FAIL' : 'PASS'}** — ${totalViolations} violation(s), ${totalExempt} exempt, ${totalBadAllow} bad-allow\n\n`;
 
 md += '## Per-file violations\n\n';
-md += '| File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | U1 dead var | `!important` | inline `style=` | `var(--)` uses |\n';
-md += '|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n';
+md += '| File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | U1 dead var | exempt | bad-allow | `!important` | inline `style=` | `var(--)` uses |\n';
+md += '|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n';
 for (const r of results) {
-  md += `| \`${r.file}\` | ${r.counts.V1} | ${r.counts.V2} | ${r.counts.V3} | ${r.counts.V4} | ${r.counts.V5} | ${r.counts.V6} | ${r.counts.U1} | ${r.important} | ${r.inlineStyles} | ${r.varUses} |\n`;
+  md += `| \`${r.file}\` | ${r.counts.V1} | ${r.counts.V2} | ${r.counts.V3} | ${r.counts.V4} | ${r.counts.V5} | ${r.counts.V6} | ${r.counts.U1} | ${r.exempt.length} | ${r.badAllows.length} | ${r.important} | ${r.inlineStyles} | ${r.varUses} |\n`;
 }
-md += `| **Total** | **${totals.V1}** | **${totals.V2}** | **${totals.V3}** | **${totals.V4}** | **${totals.V5}** | **${totals.V6}** | **${totals.U1}** | **${totalImportant}** | **${totalInline}** | **${totalVars}** |\n\n`;
+md += `| **Total** | **${totals.V1}** | **${totals.V2}** | **${totals.V3}** | **${totals.V4}** | **${totals.V5}** | **${totals.V6}** | **${totals.U1}** | **${totalExempt}** | **${totalBadAllow}** | **${totalImportant}** | **${totalInline}** | **${totalVars}** |\n\n`;
 
 md += '## Violation detail\n\n';
 let anyDetail = false;
@@ -441,22 +557,52 @@ for (const r of results) {
   if (!r.violations.length && !r.deadVars.length) continue;
   anyDetail = true;
   md += `### \`${r.file}\`\n\n`;
-  md += '| Line | Class | Found |\n|---:|---|---|\n';
+  md += '| Line | Class | Found | Marker |\n|---:|---|---|---|\n';
   const rows = [
-    ...r.violations.map((v) => [v.line, v.cls, v.found]),
-    ...r.deadVars.map((d) => [d.line, 'U1', d.name]),
+    ...r.violations.map((v) => [v.line, v.cls, v.found, v.badAllow === undefined ? '' : `BAD-ALLOW: "${mdEscape(v.badAllow || '(no reason)')}"`]),
+    ...r.deadVars.map((d) => [d.line, 'U1', d.name, '']),
   ].sort((a, b) => a[0] - b[0] || String(a[1]).localeCompare(String(b[1])));
-  for (const [line, cls, found] of rows) {
-    md += `| ${line} | ${cls} | \`${mdEscape(found)}\` |\n`;
+  for (const [line, cls, found, marker] of rows) {
+    md += `| ${line} | ${cls} | \`${mdEscape(found)}\` | ${marker} |\n`;
   }
   md += '\n';
 }
 if (!anyDetail) md += '_No violations._\n\n';
 
+/* exempted hits, per file — what is tolerated and why */
+for (const r of results) {
+  if (!r.exempt.length) continue;
+  md += `### \`${r.file}\` — Exempt (${r.exempt.length})\n\n`;
+  md += '| Line | Class | Found | Reason |\n|---:|---|---|---|\n';
+  for (const e of r.exempt) {
+    md += `| ${e.line} | ${e.cls} | \`${mdEscape(e.found)}\` | ${mdEscape(e.reason)} |\n`;
+  }
+  md += '\n';
+}
+
+if (totalBadAllow) {
+  md += `## BAD-ALLOW (${totalBadAllow})\n\n`;
+  md += 'A marker that names no real reason exempts nothing; the hit stays a violation.\n\n';
+  md += '| File | Line | Class | Marker reason |\n|---|---:|---|---|\n';
+  for (const r of results) {
+    for (const b of r.badAllows) {
+      md += `| \`${r.file}\` | ${b.line} | ${b.classes.join(',')} | ${b.reason ? `\`${mdEscape(b.reason)}\`` : '_(none)_'} |\n`;
+    }
+  }
+  md += '\n';
+}
+
 md += '## How to fix\n\n';
 md += '| Class | Meaning | Fix with |\n|---|---|---|\n';
 for (const [cls, meaning, fix] of LEGEND) md += `| ${cls} | ${meaning} | ${fix} |\n`;
 md += '\n';
+md += '### Exemptions (`lint-allow`)\n\n';
+md += 'A hit may be tolerated only **in place, on the same line, with a reason**: ';
+md += '`/* lint-allow: reason */` in CSS, `// lint-allow: reason` in JS, ';
+md += '`<!-- lint-allow: reason -->` in HTML. The marker clears every hit on its own line (V1–V6, U1) and nothing on the next line. ';
+md += `The reason must be at least ${MIN_REASON} characters after trimming; a marker with no reason, or with \`ok\`, exempts nothing — the hit stays a violation and is additionally reported as **BAD-ALLOW**, so the mechanism cannot silently blanket-suppress.\n\n`;
+md += 'Legitimate only where **a browser cannot resolve the value from a custom property**: the `meta` theme-color tag, `@media` / `@supports` conditions, and canvas or gradient string composites assembled in JS. ';
+md += 'Never legitimate for any color, duration, radius or `z-index` that a token could hold — those get a token (or get fixed), because that is exactly the drift this gate exists to catch.\n\n';
 md += '### Documented exceptions\n\n';
 md += '- Media-query breakpoints stay raw px (`var()` is invalid in `@media`).\n';
 md += '- `design-system/tokens.css` is the token source and is never scanned.\n';
