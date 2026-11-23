@@ -1,0 +1,1412 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Design System — Camera Shots</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+/* ---------- gallery chrome: neutral, token-fed ---------- */
+:root{
+  color-scheme: light;
+  --g-bg: var(--color-wiki-light-bg);
+  --g-card: var(--color-wiki-light-card);
+  --g-ink: var(--color-wiki-light-ink);
+  --g-muted: var(--color-wiki-light-muted);
+  --g-rule: var(--color-wiki-light-rule);
+  --g-wash: var(--color-wiki-light-accent-wash);
+  --g-amber: var(--color-wiki-light-amber);
+  --g-swatch-edge: color-mix(in srgb, var(--color-wiki-light-rule) 78%, transparent);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --g-bg: var(--color-pitch-bg);
+    --g-card: var(--color-pitch-surface-1);
+    --g-ink: var(--color-pitch-ink);
+    --g-muted: var(--color-pitch-muted);
+    --g-rule: var(--color-pitch-rule);
+    --g-wash: var(--color-pitch-surface-2);
+    --g-amber: var(--color-pitch-accent);
+    --g-swatch-edge: color-mix(in srgb, var(--color-wiki-light-rule) 26%, transparent);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --g-bg: var(--color-pitch-bg);
+  --g-card: var(--color-pitch-surface-1);
+  --g-ink: var(--color-pitch-ink);
+  --g-muted: var(--color-pitch-muted);
+  --g-rule: var(--color-pitch-rule);
+  --g-wash: var(--color-pitch-surface-2);
+  --g-amber: var(--color-pitch-accent);
+  --g-swatch-edge: color-mix(in srgb, var(--color-wiki-light-rule) 26%, transparent);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  background:var(--g-bg);color:var(--g-ink);
+  font-family:var(--typography-family-sans);
+  font-size:var(--typography-size-body);
+  line-height:var(--typography-lineheight-body);
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:var(--typography-size-meta);letter-spacing:0}
+::selection{background:var(--color-pro-selection);color:var(--color-neutral-black)}
+
+.wrap{max-width:1100px;margin:0 auto;padding:0 var(--spacing-lg)}
+
+/* ---------- masthead ---------- */
+.masthead{border-bottom:1px solid var(--g-rule);padding:var(--spacing-2xl) 0 var(--spacing-xl)}
+.mast-top{display:flex;align-items:center;justify-content:space-between;gap:var(--spacing-md);flex-wrap:wrap;margin-bottom:var(--spacing-xl)}
+.kicker{font-size:var(--typography-size-eyebrow);letter-spacing:var(--typography-tracking-eyebrow);text-transform:uppercase;font-weight:var(--typography-weight-medium);color:var(--g-muted)}
+.themer{display:inline-flex;border:1px solid var(--g-rule);border-radius:var(--radius-pill);padding:2px;background:var(--g-card)}
+.themer button{
+  font:inherit;font-size:var(--typography-size-meta);min-height:var(--touch-min);
+  padding:0 var(--spacing-md);border:0;border-radius:var(--radius-pill);
+  background:transparent;color:var(--g-muted);cursor:pointer;
+  transition:color var(--motion-duration-fast) var(--motion-easing-standard),background var(--motion-duration-fast) var(--motion-easing-standard);
+}
+.themer button:hover{color:var(--g-ink)}
+.themer button[aria-pressed="true"]{background:var(--g-ink);color:var(--g-bg)}
+.themer button:focus-visible{outline:2px solid var(--g-ink);outline-offset:2px}
+.masthead h1{font-size:var(--typography-size-h1-pitch);line-height:var(--typography-lineheight-pitch-h1);letter-spacing:var(--typography-tracking-tight);font-weight:var(--typography-weight-bold);max-width:18ch}
+.mast-lede{margin-top:var(--spacing-md);max-width:56ch;color:var(--g-muted);font-size:var(--typography-size-body)}
+.mast-lede code{color:var(--g-ink)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--spacing-lg);margin-top:var(--spacing-xl);border-top:1px solid var(--g-rule);padding-top:var(--spacing-md)}
+.stats dt{font-size:var(--typography-size-eyebrow);letter-spacing:var(--typography-tracking-eyebrow);text-transform:uppercase;color:var(--g-muted)}
+.stats dd{margin-top:var(--spacing-2xs);font-size:var(--typography-size-small);font-weight:var(--typography-weight-medium)}
+
+/* ---------- shell + nav ---------- */
+.shell{display:grid;grid-template-columns:190px minmax(0,1fr);gap:var(--spacing-2xl);max-width:1100px;margin:0 auto;padding:var(--spacing-xl) var(--spacing-lg) var(--spacing-2xl)}
+.side{position:sticky;top:var(--spacing-lg);align-self:start;display:flex;flex-direction:column;gap:var(--spacing-2xs);font-size:var(--typography-size-small)}
+.side a{
+  text-decoration:none;color:var(--g-muted);padding:var(--spacing-xs) 0 var(--spacing-xs) var(--spacing-sm);
+  border-left:1px solid var(--g-rule);line-height:1.4;
+}
+.side a:hover{color:var(--g-ink)}
+.side a.on{color:var(--g-ink);font-weight:var(--typography-weight-medium);border-left:2px solid var(--g-ink);padding-left:calc(var(--spacing-sm) - 1px)}
+.side .side-label{font-size:var(--typography-size-eyebrow);letter-spacing:var(--typography-tracking-eyebrow);text-transform:uppercase;color:var(--g-muted);padding-bottom:var(--spacing-xs);border-bottom:1px solid var(--g-rule);margin-bottom:var(--spacing-xs)}
+.side .side-foot{margin-top:var(--spacing-md);font-size:var(--typography-size-eyebrow);color:var(--g-muted);line-height:1.6}
+
+main{min-width:0}
+section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
+.sec-head{display:flex;align-items:baseline;gap:var(--spacing-sm);flex-wrap:wrap;border-bottom:1px solid var(--g-rule);padding-bottom:var(--spacing-sm);margin-bottom:var(--spacing-lg)}
+.sec-num{font-size:var(--typography-size-eyebrow);letter-spacing:var(--typography-tracking-eyebrow);font-weight:var(--typography-weight-medium);color:var(--g-muted);font-variant-numeric:tabular-nums}
+.sec-head h2{font-size:var(--typography-size-h2-wiki);letter-spacing:var(--typography-tracking-tight);font-weight:var(--typography-weight-semibold)}
+.sec-head p{margin-left:auto;font-size:var(--typography-size-meta);color:var(--g-muted);max-width:46ch;text-align:right;line-height:1.5}
+.sec-intro{font-size:var(--typography-size-small);color:var(--g-muted);max-width:64ch;margin-bottom:var(--spacing-lg)}
+
+/* ---------- swatches ---------- */
+.swgroup{margin-bottom:var(--spacing-xl)}
+.swgroup:last-child{margin-bottom:0}
+.swgroup-head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--spacing-sm);margin-bottom:var(--spacing-sm);flex-wrap:wrap}
+.swgroup-head h3{font-size:var(--typography-size-small);font-weight:var(--typography-weight-semibold)}
+.swgroup-head .tag{font-size:var(--typography-size-eyebrow);letter-spacing:var(--typography-tracking-eyebrow);text-transform:uppercase;color:var(--g-muted)}
+.swgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--spacing-md)}
+.sw{display:flex;flex-direction:column;gap:var(--spacing-2xs);min-width:0}
+.sw-chip{display:block;height:56px;border-radius:var(--radius-sm);border:1px solid var(--g-swatch-edge)}
+.sw code{font-size:var(--typography-size-eyebrow);line-height:1.45;overflow-wrap:anywhere;word-break:normal;color:var(--g-ink)}
+.sw-val{font-size:11px;line-height:1.4;color:var(--g-muted);font-variant-numeric:tabular-nums}
+.swgrid.compact .sw-chip{height:48px}
+
+/* ---------- type ---------- */
+.type-list{border-top:1px solid var(--g-rule)}
+.type-row{display:grid;grid-template-columns:200px minmax(0,1fr);gap:var(--spacing-lg);align-items:baseline;padding:var(--spacing-md) 0;border-bottom:1px solid var(--g-rule)}
+.type-meta{display:flex;flex-direction:column;gap:2px;font-size:var(--typography-size-eyebrow);color:var(--g-muted);line-height:1.5}
+.type-meta code{color:var(--g-ink);font-size:var(--typography-size-eyebrow)}
+.type-val{font-size:11px;color:var(--g-ink);font-variant-numeric:tabular-nums}
+.type-spec{font-size:var(--typography-size-eyebrow);color:var(--g-muted)}
+
+.spec-h1-pitch{font-size:var(--typography-size-h1-pitch);line-height:var(--typography-lineheight-pitch-h1);letter-spacing:var(--typography-tracking-tight);font-weight:var(--typography-weight-bold)}
+.spec-h1-wiki{font-size:var(--typography-size-h1-wiki);line-height:1.12;letter-spacing:var(--typography-tracking-tight);font-weight:var(--typography-weight-bold)}
+.spec-h2-pitch{font-size:var(--typography-size-h2-pitch);line-height:1.22;letter-spacing:var(--typography-tracking-tight);font-weight:var(--typography-weight-semibold)}
+.spec-h2-wiki{font-size:var(--typography-size-h2-wiki);line-height:1.28;letter-spacing:var(--typography-tracking-tight);font-weight:var(--typography-weight-semibold)}
+.spec-lede{font-size:var(--typography-size-lede);color:var(--g-muted);max-width:40ch}
+.spec-body{font-size:var(--typography-size-body);color:var(--g-muted);max-width:46ch}
+.spec-ui{font-size:var(--typography-size-ui);font-weight:var(--typography-weight-medium)}
+.spec-small{font-size:var(--typography-size-small);color:var(--g-muted)}
+.spec-meta{font-size:var(--typography-size-meta);color:var(--g-muted)}
+.spec-eyebrow{font-size:var(--typography-size-eyebrow);letter-spacing:var(--typography-tracking-eyebrow);text-transform:uppercase;font-weight:var(--typography-weight-bold)}
+.spec-timecode{font-size:var(--typography-size-timecode);font-variant-numeric:tabular-nums;letter-spacing:0.02em}
+
+.families{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:var(--spacing-md);margin-top:var(--spacing-lg)}
+.fam{border:1px solid var(--g-rule);border-radius:var(--radius-md);padding:var(--spacing-md);background:var(--g-card)}
+.fam .fam-k{font-size:var(--typography-size-eyebrow);letter-spacing:var(--typography-tracking-eyebrow);text-transform:uppercase;color:var(--g-muted);margin-bottom:var(--spacing-2xs)}
+.fam .fam-spec{font-size:var(--typography-size-h2-wiki);line-height:1.2;margin-bottom:var(--spacing-xs)}
+.fam .fam-tok{font-size:var(--typography-size-eyebrow);color:var(--g-muted);overflow-wrap:break-word}
+.fam-display .fam-spec{font-family:var(--typography-family-display)}
+.fam-quote .fam-spec{font-family:var(--typography-family-quote);font-style:italic;font-weight:var(--typography-weight-regular)}
+
+/* ---------- space / radius / elevation ---------- */
+.space-row{display:grid;grid-template-columns:132px minmax(0,1fr) 92px;gap:var(--spacing-md);align-items:center;padding:var(--spacing-2xs) 0}
+.space-row code{font-size:var(--typography-size-eyebrow);color:var(--g-ink);overflow-wrap:break-word}
+.space-bar{height:10px;border-radius:var(--radius-none);background:var(--g-ink);min-width:2px;max-width:100%}
+.space-val{font-size:var(--typography-size-eyebrow);color:var(--g-muted);text-align:right;font-variant-numeric:tabular-nums}
+.scale-note{font-size:var(--typography-size-eyebrow);color:var(--g-muted);margin-top:var(--spacing-xs)}
+.sub-h{font-size:var(--typography-size-eyebrow);letter-spacing:var(--typography-tracking-eyebrow);text-transform:uppercase;color:var(--g-muted);font-weight:var(--typography-weight-medium);margin:var(--spacing-xl) 0 var(--spacing-xs)}
+
+.radius-row{display:flex;gap:var(--spacing-lg);flex-wrap:wrap;margin-top:var(--spacing-md)}
+.radius-cell{display:flex;flex-direction:column;gap:var(--spacing-2xs);width:76px}
+.radius-box{width:76px;height:76px;background:var(--g-wash);border:1px solid var(--g-ink)}
+.radius-cell code{font-size:var(--typography-size-eyebrow);color:var(--g-ink)}
+.radius-cell .radius-val{font-size:var(--typography-size-eyebrow);color:var(--g-muted)}
+
+.edge-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:var(--spacing-md);margin-top:var(--spacing-lg)}
+.edge{display:flex;flex-direction:column;justify-content:flex-end;gap:var(--spacing-2xs);height:92px;padding:var(--spacing-sm);background:var(--g-card);border-radius:var(--radius-md);font-size:var(--typography-size-eyebrow);color:var(--g-muted)}
+.edge code{font-size:var(--typography-size-eyebrow);color:var(--g-ink)}
+.edge-1{border:1px solid var(--g-rule)}
+.edge-2{border:2px solid var(--g-ink)}
+.edge-dashed{border:1px dashed var(--g-muted)}
+
+/* ---------- tables (motion + props + matrix) ---------- */
+.tok-table{width:100%;border-collapse:collapse;font-size:var(--typography-size-small)}
+.tok-table th{
+  text-align:left;font-size:var(--typography-size-eyebrow);letter-spacing:var(--typography-tracking-eyebrow);
+  text-transform:uppercase;color:var(--g-muted);font-weight:var(--typography-weight-medium);
+  border-bottom:1px solid var(--g-rule);padding:var(--spacing-xs) var(--spacing-sm);
+}
+.tok-table td{border-bottom:1px solid var(--g-rule);padding:var(--spacing-sm);vertical-align:middle}
+.tok-table td code{color:var(--g-ink);font-size:var(--typography-size-eyebrow);word-break:break-word}
+.tok-table td.live{color:var(--g-muted);font-variant-numeric:tabular-nums;font-size:var(--typography-size-eyebrow);white-space:nowrap}
+.tok-table tr:last-child td{border-bottom:0}
+
+.mplay{
+  position:relative;display:block;width:100%;max-width:200px;height:30px;padding:0;
+  border-radius:var(--radius-pill);background:var(--g-wash);border:1px solid var(--g-rule);
+  cursor:pointer;overflow:hidden;
+}
+.mplay:focus-visible{outline:2px solid var(--g-ink);outline-offset:2px}
+.mdot{
+  position:absolute;top:50%;left:4px;width:20px;height:20px;margin-top:-10px;
+  border-radius:var(--radius-circle);background:var(--g-ink);
+  transition-property:transform;
+  transition-duration:var(--motion-duration-base);
+  transition-timing-function:var(--motion-easing-standard);
+}
+.mplay:hover .mdot,.mplay:focus-visible .mdot,.mplay.is-play .mdot{transform:translateX(156px)}
+
+/* ---------- touch ---------- */
+.touch-row{display:flex;align-items:flex-end;gap:var(--spacing-xl);flex-wrap:wrap}
+.touch-cell{display:flex;flex-direction:column;gap:var(--spacing-xs);align-items:flex-start}
+.touch-box{
+  width:var(--touch-min);height:var(--touch-min);
+  background:var(--g-wash);border:1px solid var(--g-ink);border-radius:var(--radius-sm);
+  display:grid;place-items:center;font-size:var(--typography-size-eyebrow);font-weight:var(--typography-weight-medium);
+}
+.touch-box.t-preferred{width:var(--touch-preferred);height:var(--touch-preferred)}
+.touch-box.t-pro{width:var(--touch-pro);height:var(--touch-pro)}
+.touch-box.t-small{width:var(--touch-small);height:var(--touch-small);border-style:dashed}
+.touch-box.t-field{width:var(--touch-field);height:var(--touch-field);border-style:dashed}
+.touch-meta{font-size:var(--typography-size-eyebrow);color:var(--g-muted);line-height:1.6}
+.touch-meta code{color:var(--g-ink);font-size:var(--typography-size-eyebrow)}
+.touch-measured{color:var(--g-ink);font-weight:var(--typography-weight-medium)}
+
+/* ---------- components ---------- */
+.comp{border-top:1px solid var(--g-rule);padding-top:var(--spacing-lg);margin-top:var(--spacing-lg)}
+.comp:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.comp-head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--spacing-sm);flex-wrap:wrap;margin-bottom:var(--spacing-sm)}
+.comp-head h3{font-size:var(--typography-size-body);font-weight:var(--typography-weight-semibold);letter-spacing:var(--typography-tracking-tight)}
+.comp-classes{font-size:var(--typography-size-eyebrow);color:var(--g-muted);word-break:break-word}
+.frame{border:1px solid var(--g-rule);border-radius:var(--radius-md);overflow:hidden;background:var(--g-card)}
+.frame-bar{
+  display:flex;align-items:center;gap:var(--spacing-xs);
+  padding:var(--spacing-xs) var(--spacing-sm);border-bottom:1px solid var(--g-rule);
+  font-size:var(--typography-size-eyebrow);letter-spacing:var(--typography-tracking-eyebrow);
+  text-transform:uppercase;color:var(--g-muted);
+}
+.frame-dot{width:6px;height:6px;border-radius:var(--radius-circle);background:var(--g-muted);display:inline-block}
+.frame-bar .frame-val{margin-left:auto;letter-spacing:0;text-transform:none;font-size:var(--typography-size-eyebrow);font-variant-numeric:tabular-nums}
+
+/* surface aliases — the only place specimen colors are chosen */
+.stage{
+  --s-bg: var(--color-wiki-light-bg);
+  --s-card: var(--color-wiki-light-card);
+  --s-wash: var(--color-wiki-light-accent-wash);
+  --s-ink: var(--color-wiki-light-ink);
+  --s-body: var(--color-wiki-light-muted);
+  --s-muted: var(--color-wiki-light-muted);
+  --s-rule: var(--color-wiki-light-rule);
+  --s-rule-strong: var(--color-wiki-light-rule);
+  --s-accent: var(--color-wiki-light-accent);
+  --s-accent-ink: var(--color-neutral-white);
+  background:var(--s-bg);color:var(--s-ink);
+  padding:var(--spacing-xl);
+  display:flex;flex-direction:column;gap:var(--spacing-md);
+  font-family:var(--typography-family-sans);
+}
+.stage[data-surface="pitch"]{
+  --s-bg: var(--color-pitch-bg);
+  --s-card: var(--color-pitch-surface-1);
+  --s-wash: var(--color-pitch-surface-2);
+  --s-ink: var(--color-pitch-ink);
+  --s-body: var(--color-pitch-body);
+  --s-muted: var(--color-pitch-muted);
+  --s-rule: var(--color-pitch-rule);
+  --s-rule-strong: var(--color-pitch-rule);
+  --s-accent: var(--color-pitch-accent);
+  --s-accent-ink: var(--color-pitch-accent-ink);
+}
+.stage[data-surface="engine"]{
+  --s-bg: var(--color-engine-bg);
+  --s-card: var(--color-engine-panel);
+  --s-wash: var(--color-engine-tool);
+  --s-ink: var(--color-engine-ink);
+  --s-body: var(--color-engine-muted-2);
+  --s-muted: var(--color-engine-muted);
+  --s-rule: var(--color-engine-border);
+  --s-rule-strong: var(--color-engine-border-strong);
+  --s-accent: var(--color-engine-accent);
+  --s-accent-ink: var(--color-engine-accent-ink);
+}
+
+
+.row{display:flex;align-items:center;gap:var(--spacing-sm);flex-wrap:wrap}
+.hint{font-size:var(--typography-size-meta);color:var(--s-muted)}
+
+/* button */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:var(--spacing-xs);
+  min-height:var(--touch-preferred);padding:0 var(--spacing-lg);
+  border-radius:var(--radius-pill);border:1px solid var(--s-rule);
+  background:transparent;color:var(--s-ink);cursor:pointer;
+  font-family:var(--typography-family-sans);font-size:var(--typography-size-small);
+  font-weight:var(--typography-weight-semibold);
+  transition:background var(--motion-duration-fast) var(--motion-easing-standard),
+    border-color var(--motion-duration-fast) var(--motion-easing-standard),
+    color var(--motion-duration-fast) var(--motion-easing-standard);
+}
+.btn--primary{background:var(--s-accent);border-color:var(--s-accent);color:var(--s-accent-ink)}
+.btn--primary:hover{filter:brightness(1.06)}
+.btn--secondary:hover{border-color:var(--s-accent);color:var(--s-accent)}
+.btn--ghost{border-color:transparent;color:var(--s-muted)}
+.btn--ghost:hover{background:var(--s-wash);color:var(--s-ink)}
+.btn:focus-visible{outline:var(--focus-width) solid var(--s-accent);outline-offset:var(--focus-offset)}
+.btn:disabled{opacity:var(--opacity-disabled);cursor:not-allowed}
+.btn--primary:disabled{filter:none}
+
+/* pill filter */
+.pill{
+  display:inline-flex;align-items:center;min-height:var(--touch-min);padding:0 var(--spacing-md);
+  border-radius:var(--radius-pill);border:1px solid var(--s-rule);
+  background:var(--s-card);color:var(--s-ink);cursor:pointer;
+  font-family:var(--typography-family-sans);font-size:var(--typography-size-small);
+  transition:background var(--motion-duration-fast) var(--motion-easing-standard),
+    border-color var(--motion-duration-fast) var(--motion-easing-standard);
+}
+.pill:hover{border-color:var(--s-accent)}
+.pill[aria-pressed="true"]{background:var(--s-accent);border-color:var(--s-accent);color:var(--s-accent-ink)}
+.pill:focus-visible{outline:var(--focus-width) solid var(--s-accent);outline-offset:var(--focus-offset)}
+.pill .count{font-size:var(--typography-size-eyebrow);opacity:.7;margin-left:var(--spacing-xs)}
+
+/* field */
+.field{display:flex;flex-direction:column;gap:var(--spacing-2xs);max-width:320px;width:100%}
+.field label{
+  font-size:var(--typography-size-eyebrow);letter-spacing:var(--typography-tracking-eyebrow);
+  text-transform:uppercase;font-weight:var(--typography-weight-medium);color:var(--s-body);
+}
+.field input{
+  height:var(--touch-min);width:100%;border-radius:var(--radius-sm);
+  border:1px solid var(--s-rule-strong);background:var(--s-wash);color:var(--s-ink);
+  padding:0 var(--spacing-sm);font-family:var(--typography-family-sans);font-size:var(--typography-size-small);
+}
+.field input::placeholder{color:var(--s-muted)}
+.field input:focus-visible{outline:var(--focus-width) solid var(--s-accent);outline-offset:1px;border-color:var(--s-accent)}
+.field-note{font-size:var(--typography-size-meta);color:var(--s-muted)}
+.field.is-error input{border-color:var(--color-semantic-danger)}
+.field.is-error input:focus-visible{outline-color:var(--color-semantic-danger)}
+.field.is-error .field-note{color:var(--color-semantic-danger)}
+
+/* card + panel */
+.card{background:var(--s-card);border:1px solid var(--s-rule);border-radius:var(--radius-lg);padding:var(--spacing-lg);max-width:380px}
+.card .eyebrow{font-size:var(--typography-size-eyebrow);letter-spacing:var(--typography-tracking-eyebrow);text-transform:uppercase;color:var(--s-accent);font-weight:var(--typography-weight-bold)}
+.card h4{font-size:var(--typography-size-body);font-weight:var(--typography-weight-semibold);letter-spacing:var(--typography-tracking-tight);margin:var(--spacing-xs) 0}
+.card p{font-size:var(--typography-size-small);color:var(--s-body);line-height:var(--typography-lineheight-body)}
+.card .card-meta{display:flex;justify-content:space-between;gap:var(--spacing-sm);margin-top:var(--spacing-md);padding-top:var(--spacing-xs);border-top:1px solid var(--s-rule);font-size:var(--typography-size-meta);color:var(--s-muted)}
+
+.panel{background:var(--s-card);border:1px solid var(--s-rule);border-radius:var(--radius-md);padding:var(--spacing-lg);max-width:440px}
+.panel-h{display:flex;align-items:baseline;justify-content:space-between;gap:var(--spacing-sm);border-bottom:1px solid var(--s-rule);padding-bottom:var(--spacing-xs);margin-bottom:var(--spacing-sm)}
+.panel-h h4{font-size:var(--typography-size-h2-wiki);font-weight:var(--typography-weight-semibold);letter-spacing:var(--typography-tracking-tight)}
+.panel-h small{font-size:var(--typography-size-meta);color:var(--s-muted)}
+.panel-row{display:flex;justify-content:space-between;gap:var(--spacing-md);padding:var(--spacing-2xs) 0;font-size:var(--typography-size-small);border-bottom:1px solid var(--s-rule)}
+.panel-row:last-child{border-bottom:0}
+.panel-row span:last-child{color:var(--s-muted)}
+
+/* tool button */
+.tool{
+  display:inline-flex;align-items:center;gap:var(--spacing-xs);
+  min-height:var(--touch-min);padding:0 var(--spacing-sm);
+  border-radius:var(--radius-sm);border:1px solid var(--s-rule-strong);
+  background:var(--s-wash);color:var(--s-ink);cursor:pointer;
+  font-family:var(--typography-family-sans);font-size:var(--typography-size-small);
+  font-weight:var(--typography-weight-medium);
+  transition:border-color var(--motion-duration-fast) var(--motion-easing-standard),color var(--motion-duration-fast) var(--motion-easing-standard);
+}
+.tool:hover{border-color:var(--s-accent)}
+.tool[aria-pressed="true"]{border-color:var(--s-accent);color:var(--s-accent)}
+.tool:focus-visible{outline:var(--focus-width) solid var(--s-accent);outline-offset:var(--focus-offset)}
+.tool svg{display:block;flex:none}
+
+/* badge */
+.badge{
+  display:inline-flex;align-items:center;border-radius:var(--radius-pill);
+  padding:2px var(--spacing-xs);
+  font-size:var(--typography-size-eyebrow);font-weight:var(--typography-weight-bold);
+  letter-spacing:var(--typography-tracking-eyebrow);text-transform:uppercase;
+  color:var(--color-neutral-white);
+}
+.badge--free{background:var(--color-semantic-success)}
+.badge--paid{background:var(--color-semantic-info)}
+.badge--unverified{background:var(--s-muted);color:var(--color-neutral-white)}
+
+/* toast */
+.toast{
+  display:flex;align-items:center;gap:var(--spacing-md);
+  background:var(--s-card);border:1px solid var(--s-rule-strong);border-radius:var(--radius-md);
+  padding:var(--spacing-xs) var(--spacing-xs) var(--spacing-xs) var(--spacing-md);
+  box-shadow:var(--elevation-popover);max-width:440px;width:100%;
+  font-size:var(--typography-size-small);
+}
+.toast p{flex:1;color:var(--s-ink)}
+.toast button{
+  flex:none;min-height:var(--touch-min);padding:0 var(--spacing-md);
+  border:0;border-radius:var(--radius-sm);background:var(--s-accent);color:var(--s-accent-ink);
+  font-family:var(--typography-family-sans);font-size:var(--typography-size-meta);
+  font-weight:var(--typography-weight-bold);cursor:pointer;
+}
+.toast button:focus-visible{outline:var(--focus-width) solid var(--s-accent);outline-offset:var(--focus-offset)}
+.toast button:hover{filter:brightness(1.06)}
+
+/* sheet */
+.sheet{max-width:360px;width:100%;background:var(--s-card);border:1px solid var(--s-rule-strong);border-radius:var(--radius-lg);box-shadow:var(--elevation-sheet);overflow:hidden}
+.grab{display:block;width:var(--layout-sheet-grab-width);height:var(--layout-sheet-grab-height);border-radius:var(--radius-pill);background:var(--s-muted);margin:var(--spacing-sm) auto var(--spacing-2xs)}
+.sheet-h{display:flex;align-items:center;justify-content:space-between;gap:var(--spacing-sm);padding:var(--spacing-xs) var(--spacing-md) var(--spacing-md);border-bottom:1px solid var(--s-rule)}
+.sheet-h h4{font-size:var(--typography-size-eyebrow);letter-spacing:var(--typography-tracking-eyebrow);text-transform:uppercase;color:var(--s-muted);font-weight:var(--typography-weight-bold)}
+.sheet-x{
+  width:var(--touch-min);height:var(--touch-min);border-radius:var(--radius-circle);
+  border:1px solid var(--s-rule);background:transparent;color:var(--s-ink);
+  font-size:var(--typography-size-body);line-height:1;cursor:pointer;
+}
+.sheet-x:hover{border-color:var(--s-accent);color:var(--s-accent)}
+.sheet-x:focus-visible{outline:var(--focus-width) solid var(--s-accent);outline-offset:var(--focus-offset)}
+.sheet-body{padding:var(--spacing-md);font-size:var(--typography-size-small);color:var(--s-body)}
+
+.comp-props{margin-top:var(--spacing-sm)}
+.comp-props .tok-table{font-size:var(--typography-size-meta)}
+.comp-props .tok-table th{padding:var(--spacing-2xs) var(--spacing-sm)}
+.comp-props .tok-table td{padding:var(--spacing-2xs) var(--spacing-sm)}
+
+/* ---------- consistency matrix ---------- */
+.matrix-wrap{overflow-x:auto;border:1px solid var(--g-rule);border-radius:var(--radius-md)}
+.matrix{width:100%;border-collapse:collapse;font-size:var(--typography-size-small);min-width:720px}
+.matrix th,.matrix td{text-align:left;padding:var(--spacing-sm);border-bottom:1px solid var(--g-rule);vertical-align:top}
+.matrix thead th{
+  font-size:var(--typography-size-eyebrow);letter-spacing:var(--typography-tracking-eyebrow);
+  text-transform:uppercase;color:var(--g-muted);font-weight:var(--typography-weight-medium);
+  background:var(--g-card);
+}
+.matrix tbody th{font-weight:var(--typography-weight-medium);font-size:var(--typography-size-small);width:170px}
+.matrix td code{font-size:var(--typography-size-eyebrow);color:var(--g-ink);word-break:break-word;display:block}
+.matrix td .note{display:block;font-size:var(--typography-size-eyebrow);color:var(--g-muted);line-height:1.5;margin-top:var(--spacing-2xs);max-width:34ch}
+.matrix tr:last-child td,.matrix tr:last-child th{border-bottom:0}
+.badge-dev{
+  display:inline-flex;align-items:center;gap:4px;margin-bottom:var(--spacing-2xs);
+  border:1px solid var(--color-semantic-danger);color:var(--color-semantic-danger);
+  border-radius:var(--radius-pill);padding:1px var(--spacing-xs);
+  font-size:var(--typography-size-eyebrow);font-weight:var(--typography-weight-bold);
+  letter-spacing:0.08em;text-transform:uppercase;
+}
+.matrix-legend{display:flex;gap:var(--spacing-md);align-items:center;flex-wrap:wrap;font-size:var(--typography-size-meta);color:var(--g-muted);margin-top:var(--spacing-sm)}
+.matrix-sum{margin-top:var(--spacing-md);font-size:var(--typography-size-small);color:var(--g-muted);max-width:68ch}
+
+footer{border-top:1px solid var(--g-rule);padding:var(--spacing-lg) 0 var(--spacing-2xl);font-size:var(--typography-size-meta);color:var(--g-muted)}
+footer code{color:var(--g-ink)}
+
+/* ---------- responsive ---------- */
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;gap:var(--spacing-lg);padding-top:0}
+  .side{
+    position:sticky;top:0;z-index:var(--z-sticky);flex-direction:row;overflow-x:auto;gap:var(--spacing-md);
+    background:var(--g-bg);padding:var(--spacing-sm) 0;border-bottom:1px solid var(--g-rule);
+    scrollbar-width:none;margin:0 calc(var(--spacing-lg) * -1);padding-left:var(--spacing-lg);padding-right:var(--spacing-lg);
+  }
+  .side::-webkit-scrollbar{display:none}
+  .side .side-label,.side .side-foot{display:none}
+  .side a{white-space:nowrap;border-left:0;border-bottom:2px solid transparent;padding:var(--spacing-xs) 0}
+  .side a.on{border-left:0;border-bottom-color:var(--g-ink);padding-left:0}
+  section{scroll-margin-top:64px}
+  .sec-head p{margin-left:0;text-align:left}
+}
+@media (max-width:640px){
+  .swgrid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .stats{grid-template-columns:1fr;gap:var(--spacing-md)}
+  .masthead h1{font-size:var(--typography-size-h1-pitch)}
+  .type-row{grid-template-columns:1fr;gap:var(--spacing-xs)}
+  .space-row{grid-template-columns:110px minmax(0,1fr) 72px;gap:var(--spacing-xs)}
+  .stage{padding:var(--spacing-md)}
+  .tok-table td.live{white-space:normal}
+  .matrix{min-width:640px}
+  .radius-box,.radius-cell{width:64px}
+  .radius-box{height:64px}
+  .touch-row{gap:var(--spacing-lg)}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .mdot{transition:none}
+  .btn,.pill,.tool,.toast button,.themer button{transition:none}
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="mast-top">
+      <p class="kicker">Design system · rendered from tokens.css</p>
+      <div class="themer" role="group" aria-label="Theme">
+        <button type="button" data-theme-set="light" aria-pressed="true">Light</button>
+        <button type="button" data-theme-set="dark" aria-pressed="false">Dark</button>
+      </div>
+    </div>
+    <h1>Design System — Camera Shots</h1>
+    <p class="mast-lede">Every specimen below is drawn with the custom properties in <code>tokens.css</code>, so what you see is what ships. Three surfaces, one token layer: <b>Wiki</b> (read), <b>Pitch</b> (persuade), <b>Engine</b> (operate).</p>
+    <dl class="stats">
+      <div><dt>Tokens</dt><dd><span class="js-token-count">206</span> · one <code>:root</code> block</dd></div>
+      <div><dt>Surfaces</dt><dd>Wiki · Pitch · Engine</dd></div>
+      <div><dt>Theme family</dt><dd>light+dark · warm dark · cool dark</dd></div>
+    </dl>
+  </div>
+</header>
+
+<div class="shell">
+  <nav class="side" aria-label="Sections">
+    <span class="side-label">Sections</span>
+    <a href="#color">01 · Color</a>
+    <a href="#type">02 · Type</a>
+    <a href="#space">03 · Space &amp; shape</a>
+    <a href="#motion">04 · Motion</a>
+    <a href="#touch">05 · Touch</a>
+    <a href="#components">06 · Components</a>
+    <a href="#matrix">07 · Consistency</a>
+    <span class="side-foot">Swatch values are read live from the computed custom properties.</span>
+  </nav>
+
+  <main>
+
+    <!-- ============ 01 COLOR ============ -->
+    <section id="color" aria-labelledby="color-h">
+      <div class="sec-head">
+        <span class="sec-num">01</span>
+        <h2 id="color-h">Color</h2>
+        <p>Each chip is <code>background:var(--token)</code>. The value under it is computed at runtime, not typed in.</p>
+      </div>
+
+      <div class="swgroup">
+        <div class="swgroup-head"><h3>Pitch — warm dark</h3><span class="tag">18 tokens</span></div>
+        <div class="swgrid">
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-bg)"></span><code>--color-pitch-bg</code><span class="sw-val" data-live="--color-pitch-bg">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-surface-1)"></span><code>--color-pitch-surface-1</code><span class="sw-val" data-live="--color-pitch-surface-1">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-surface-2)"></span><code>--color-pitch-surface-2</code><span class="sw-val" data-live="--color-pitch-surface-2">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-ink)"></span><code>--color-pitch-ink</code><span class="sw-val" data-live="--color-pitch-ink">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-body)"></span><code>--color-pitch-body</code><span class="sw-val" data-live="--color-pitch-body">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-muted)"></span><code>--color-pitch-muted</code><span class="sw-val" data-live="--color-pitch-muted">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-muted-2)"></span><code>--color-pitch-muted-2</code><span class="sw-val" data-live="--color-pitch-muted-2">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-rule)"></span><code>--color-pitch-rule</code><span class="sw-val" data-live="--color-pitch-rule">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-accent)"></span><code>--color-pitch-accent</code><span class="sw-val" data-live="--color-pitch-accent">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-accent-ink)"></span><code>--color-pitch-accent-ink</code><span class="sw-val" data-live="--color-pitch-accent-ink">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-overlay-scrim)"></span><code>--color-pitch-overlay-scrim</code><span class="sw-val" data-live="--color-pitch-overlay-scrim">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-positive)"></span><code>--color-pitch-positive</code><span class="sw-val" data-live="--color-pitch-positive">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-positive-ink)"></span><code>--color-pitch-positive-ink</code><span class="sw-val" data-live="--color-pitch-positive-ink">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-switch-bg)"></span><code>--color-pitch-switch-bg</code><span class="sw-val" data-live="--color-pitch-switch-bg">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-scrim-soft)"></span><code>--color-pitch-scrim-soft</code><span class="sw-val" data-live="--color-pitch-scrim-soft">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-scrim-mid)"></span><code>--color-pitch-scrim-mid</code><span class="sw-val" data-live="--color-pitch-scrim-mid">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-overlay-surface)"></span><code>--color-pitch-overlay-surface</code><span class="sw-val" data-live="--color-pitch-overlay-surface">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-overlay-bg)"></span><code>--color-pitch-overlay-bg</code><span class="sw-val" data-live="--color-pitch-overlay-bg">—</span></div>
+        </div>
+      </div>
+
+      <div class="swgroup">
+        <div class="swgroup-head"><h3>Wiki — light</h3><span class="tag">8 tokens</span></div>
+        <div class="swgrid">
+          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-light-bg)"></span><code>--color-wiki-light-bg</code><span class="sw-val" data-live="--color-wiki-light-bg">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-light-card)"></span><code>--color-wiki-light-card</code><span class="sw-val" data-live="--color-wiki-light-card">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-light-ink)"></span><code>--color-wiki-light-ink</code><span class="sw-val" data-live="--color-wiki-light-ink">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-light-muted)"></span><code>--color-wiki-light-muted</code><span class="sw-val" data-live="--color-wiki-light-muted">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-light-rule)"></span><code>--color-wiki-light-rule</code><span class="sw-val" data-live="--color-wiki-light-rule">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-light-accent)"></span><code>--color-wiki-light-accent</code><span class="sw-val" data-live="--color-wiki-light-accent">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-light-accent-wash)"></span><code>--color-wiki-light-accent-wash</code><span class="sw-val" data-live="--color-wiki-light-accent-wash">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-light-amber)"></span><code>--color-wiki-light-amber</code><span class="sw-val" data-live="--color-wiki-light-amber">—</span></div>
+        </div>
+      </div>
+
+      <div class="swgroup">
+        <div class="swgroup-head"><h3>Wiki — dark</h3><span class="tag">8 tokens</span></div>
+        <div class="swgrid">
+          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-dark-bg)"></span><code>--color-wiki-dark-bg</code><span class="sw-val" data-live="--color-wiki-dark-bg">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-dark-card)"></span><code>--color-wiki-dark-card</code><span class="sw-val" data-live="--color-wiki-dark-card">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-dark-ink)"></span><code>--color-wiki-dark-ink</code><span class="sw-val" data-live="--color-wiki-dark-ink">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-dark-muted)"></span><code>--color-wiki-dark-muted</code><span class="sw-val" data-live="--color-wiki-dark-muted">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-dark-rule)"></span><code>--color-wiki-dark-rule</code><span class="sw-val" data-live="--color-wiki-dark-rule">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-dark-accent)"></span><code>--color-wiki-dark-accent</code><span class="sw-val" data-live="--color-wiki-dark-accent">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-dark-accent-wash)"></span><code>--color-wiki-dark-accent-wash</code><span class="sw-val" data-live="--color-wiki-dark-accent-wash">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-dark-amber)"></span><code>--color-wiki-dark-amber</code><span class="sw-val" data-live="--color-wiki-dark-amber">—</span></div>
+        </div>
+      </div>
+
+      <div class="swgroup">
+        <div class="swgroup-head"><h3>Engine — cool dark</h3><span class="tag">15 tokens</span></div>
+        <div class="swgrid">
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-bg)"></span><code>--color-engine-bg</code><span class="sw-val" data-live="--color-engine-bg">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-panel)"></span><code>--color-engine-panel</code><span class="sw-val" data-live="--color-engine-panel">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-panel-deep)"></span><code>--color-engine-panel-deep</code><span class="sw-val" data-live="--color-engine-panel-deep">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-ink)"></span><code>--color-engine-ink</code><span class="sw-val" data-live="--color-engine-ink">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-muted)"></span><code>--color-engine-muted</code><span class="sw-val" data-live="--color-engine-muted">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-muted-2)"></span><code>--color-engine-muted-2</code><span class="sw-val" data-live="--color-engine-muted-2">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-code)"></span><code>--color-engine-code</code><span class="sw-val" data-live="--color-engine-code">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-tool)"></span><code>--color-engine-tool</code><span class="sw-val" data-live="--color-engine-tool">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-tool-hover)"></span><code>--color-engine-tool-hover</code><span class="sw-val" data-live="--color-engine-tool-hover">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-border)"></span><code>--color-engine-border</code><span class="sw-val" data-live="--color-engine-border">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-border-strong)"></span><code>--color-engine-border-strong</code><span class="sw-val" data-live="--color-engine-border-strong">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-accent)"></span><code>--color-engine-accent</code><span class="sw-val" data-live="--color-engine-accent">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-accent-ink)"></span><code>--color-engine-accent-ink</code><span class="sw-val" data-live="--color-engine-accent-ink">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-teal)"></span><code>--color-engine-teal</code><span class="sw-val" data-live="--color-engine-teal">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-teal-bright)"></span><code>--color-engine-teal-bright</code><span class="sw-val" data-live="--color-engine-teal-bright">—</span></div>
+        </div>
+      </div>
+
+      <div class="swgroup">
+        <div class="swgroup-head"><h3>Engine — canvas &amp; tooling</h3><span class="tag">19 tokens</span></div>
+        <div class="swgrid compact">
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-canvas-bg)"></span><code>--color-engine-canvas-bg</code><span class="sw-val" data-live="--color-engine-canvas-bg">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-graph-title)"></span><code>--color-engine-graph-title</code><span class="sw-val" data-live="--color-engine-graph-title">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-graph-node-top)"></span><code>--color-engine-graph-node-top</code><span class="sw-val" data-live="--color-engine-graph-node-top">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-graph-node-bottom)"></span><code>--color-engine-graph-node-bottom</code><span class="sw-val" data-live="--color-engine-graph-node-bottom">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-graph-edge)"></span><code>--color-engine-graph-edge</code><span class="sw-val" data-live="--color-engine-graph-edge">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-graph-label)"></span><code>--color-engine-graph-label</code><span class="sw-val" data-live="--color-engine-graph-label">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-graph-arc)"></span><code>--color-engine-graph-arc</code><span class="sw-val" data-live="--color-engine-graph-arc">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-graph-handle)"></span><code>--color-engine-graph-handle</code><span class="sw-val" data-live="--color-engine-graph-handle">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-switch-track)"></span><code>--color-engine-switch-track</code><span class="sw-val" data-live="--color-engine-switch-track">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-switch-border)"></span><code>--color-engine-switch-border</code><span class="sw-val" data-live="--color-engine-switch-border">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-code-punct)"></span><code>--color-engine-code-punct</code><span class="sw-val" data-live="--color-engine-code-punct">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-code-hover)"></span><code>--color-engine-code-hover</code><span class="sw-val" data-live="--color-engine-code-hover">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-input-focus)"></span><code>--color-engine-input-focus</code><span class="sw-val" data-live="--color-engine-input-focus">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-input-edge)"></span><code>--color-engine-input-edge</code><span class="sw-val" data-live="--color-engine-input-edge">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-row)"></span><code>--color-engine-row</code><span class="sw-val" data-live="--color-engine-row">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-panel-project)"></span><code>--color-engine-panel-project</code><span class="sw-val" data-live="--color-engine-panel-project">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-panel-codes)"></span><code>--color-engine-panel-codes</code><span class="sw-val" data-live="--color-engine-panel-codes">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-placeholder)"></span><code>--color-engine-placeholder</code><span class="sw-val" data-live="--color-engine-placeholder">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-highlight)"></span><code>--color-engine-highlight</code><span class="sw-val" data-live="--color-engine-highlight">—</span></div>
+        </div>
+      </div>
+
+      <div class="swgroup">
+        <div class="swgroup-head"><h3>Engine — washes, scrims &amp; overlays</h3><span class="tag">18 tokens</span></div>
+        <div class="swgrid compact">
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-wash-6)"></span><code>--color-engine-wash-6</code><span class="sw-val" data-live="--color-engine-wash-6">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-wash-10)"></span><code>--color-engine-wash-10</code><span class="sw-val" data-live="--color-engine-wash-10">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-wash-12)"></span><code>--color-engine-wash-12</code><span class="sw-val" data-live="--color-engine-wash-12">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-wash-14)"></span><code>--color-engine-wash-14</code><span class="sw-val" data-live="--color-engine-wash-14">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-wash-16)"></span><code>--color-engine-wash-16</code><span class="sw-val" data-live="--color-engine-wash-16">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-accent-wash-10)"></span><code>--color-engine-accent-wash-10</code><span class="sw-val" data-live="--color-engine-accent-wash-10">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-accent-wash-12)"></span><code>--color-engine-accent-wash-12</code><span class="sw-val" data-live="--color-engine-accent-wash-12">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-accent-wash-14)"></span><code>--color-engine-accent-wash-14</code><span class="sw-val" data-live="--color-engine-accent-wash-14">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-accent-wash-18)"></span><code>--color-engine-accent-wash-18</code><span class="sw-val" data-live="--color-engine-accent-wash-18">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-accent-wash-35)"></span><code>--color-engine-accent-wash-35</code><span class="sw-val" data-live="--color-engine-accent-wash-35">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-accent-wash-50)"></span><code>--color-engine-accent-wash-50</code><span class="sw-val" data-live="--color-engine-accent-wash-50">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-scrim)"></span><code>--color-engine-scrim</code><span class="sw-val" data-live="--color-engine-scrim">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-scrim-strong)"></span><code>--color-engine-scrim-strong</code><span class="sw-val" data-live="--color-engine-scrim-strong">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-overlay-72)"></span><code>--color-engine-overlay-72</code><span class="sw-val" data-live="--color-engine-overlay-72">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-overlay-90)"></span><code>--color-engine-overlay-90</code><span class="sw-val" data-live="--color-engine-overlay-90">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-overlay-panel)"></span><code>--color-engine-overlay-panel</code><span class="sw-val" data-live="--color-engine-overlay-panel">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-overlay-panel-94)"></span><code>--color-engine-overlay-panel-94</code><span class="sw-val" data-live="--color-engine-overlay-panel-94">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-overlay-panel-97)"></span><code>--color-engine-overlay-panel-97</code><span class="sw-val" data-live="--color-engine-overlay-panel-97">—</span></div>
+        </div>
+      </div>
+
+      <div class="swgroup">
+        <div class="swgroup-head"><h3>Pro editor — reference language</h3><span class="tag">10 tokens</span></div>
+        <div class="swgrid">
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pro-surface-0)"></span><code>--color-pro-surface-0</code><span class="sw-val" data-live="--color-pro-surface-0">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pro-surface-1)"></span><code>--color-pro-surface-1</code><span class="sw-val" data-live="--color-pro-surface-1">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pro-surface-2)"></span><code>--color-pro-surface-2</code><span class="sw-val" data-live="--color-pro-surface-2">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pro-text-primary)"></span><code>--color-pro-text-primary</code><span class="sw-val" data-live="--color-pro-text-primary">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pro-text-secondary)"></span><code>--color-pro-text-secondary</code><span class="sw-val" data-live="--color-pro-text-secondary">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pro-divider)"></span><code>--color-pro-divider</code><span class="sw-val" data-live="--color-pro-divider">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pro-selection)"></span><code>--color-pro-selection</code><span class="sw-val" data-live="--color-pro-selection">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pro-track-fx)"></span><code>--color-pro-track-fx</code><span class="sw-val" data-live="--color-pro-track-fx">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pro-track-title)"></span><code>--color-pro-track-title</code><span class="sw-val" data-live="--color-pro-track-title">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-pro-track-audio)"></span><code>--color-pro-track-audio</code><span class="sw-val" data-live="--color-pro-track-audio">—</span></div>
+        </div>
+      </div>
+
+      <div class="swgroup">
+        <div class="swgroup-head"><h3>Semantic — status</h3><span class="tag">4 tokens</span></div>
+        <div class="swgrid">
+          <div class="sw"><span class="sw-chip" style="background:var(--color-semantic-success)"></span><code>--color-semantic-success</code><span class="sw-val" data-live="--color-semantic-success">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-semantic-danger)"></span><code>--color-semantic-danger</code><span class="sw-val" data-live="--color-semantic-danger">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-semantic-warning)"></span><code>--color-semantic-warning</code><span class="sw-val" data-live="--color-semantic-warning">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-semantic-info)"></span><code>--color-semantic-info</code><span class="sw-val" data-live="--color-semantic-info">—</span></div>
+        </div>
+      </div>
+
+      <div class="swgroup">
+        <div class="swgroup-head"><h3>Support — print, neutral, diagrams</h3><span class="tag">9 tokens</span></div>
+        <div class="swgrid compact">
+          <div class="sw"><span class="sw-chip" style="background:var(--color-print-rule)"></span><code>--color-print-rule</code><span class="sw-val" data-live="--color-print-rule">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-print-body)"></span><code>--color-print-body</code><span class="sw-val" data-live="--color-print-body">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-print-fine)"></span><code>--color-print-fine</code><span class="sw-val" data-live="--color-print-fine">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-print-accent)"></span><code>--color-print-accent</code><span class="sw-val" data-live="--color-print-accent">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-print-ink)"></span><code>--color-print-ink</code><span class="sw-val" data-live="--color-print-ink">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-neutral-white)"></span><code>--color-neutral-white</code><span class="sw-val" data-live="--color-neutral-white">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-neutral-black)"></span><code>--color-neutral-black</code><span class="sw-val" data-live="--color-neutral-black">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-diagram-fill)"></span><code>--color-wiki-diagram-fill</code><span class="sw-val" data-live="--color-wiki-diagram-fill">—</span></div>
+          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-scrim-thumb)"></span><code>--color-wiki-scrim-thumb</code><span class="sw-val" data-live="--color-wiki-scrim-thumb">—</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 02 TYPE ============ -->
+    <section id="type" aria-labelledby="type-h">
+      <div class="sec-head">
+        <span class="sec-num">02</span>
+        <h2 id="type-h">Type</h2>
+        <p>The shipped scale, set in the shipped families. Space Grotesk and Newsreader are real dependencies of the pages; without them the documented system stack takes over.</p>
+      </div>
+
+      <div class="type-list">
+        <div class="type-row">
+          <div class="type-meta"><code>--typography-size-h1-pitch</code><span class="type-spec">w 700 · lh 1.08 · tracking -0.02em</span><span class="type-val" data-live="--typography-size-h1-pitch">—</span></div>
+          <p class="spec-h1-pitch">Intent before pixels</p>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><code>--typography-size-h1-wiki</code><span class="type-spec">w 700 · lh 1.12 · tracking -0.02em</span><span class="type-val" data-live="--typography-size-h1-wiki">—</span></div>
+          <p class="spec-h1-wiki">Shot size reference</p>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><code>--typography-size-h2-pitch</code><span class="type-spec">w 650 · lh 1.22 · tracking -0.02em</span><span class="type-val" data-live="--typography-size-h2-pitch">—</span></div>
+          <p class="spec-h2-pitch">The story is the constraint</p>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><code>--typography-size-h2-wiki</code><span class="type-spec">w 650 · lh 1.28</span><span class="type-val" data-live="--typography-size-h2-wiki">—</span></div>
+          <p class="spec-h2-wiki">Rack focus</p>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><code>--typography-size-lede</code><span class="type-spec">w 400 · lh 1.6 · intro copy</span><span class="type-val" data-live="--typography-size-lede">—</span></div>
+          <p class="spec-lede">A working reference for how films are shot and directed, written for the set.</p>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><code>--typography-size-body</code><span class="type-spec">w 400 · lh 1.7</span><span class="type-val" data-live="--typography-size-body">—</span></div>
+          <p class="spec-body">Focus deliberately shifts from one subject to another to redirect attention, revealing the link between them.</p>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><code>--typography-size-ui</code><span class="type-spec">w 600 · buttons and controls</span><span class="type-val" data-live="--typography-size-ui">—</span></div>
+          <p class="spec-ui">Approve cut · Export · Add shot</p>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><code>--typography-size-small</code><span class="type-spec">w 400 · lh 1.6</span><span class="type-val" data-live="--typography-size-small">—</span></div>
+          <p class="spec-small">Supporting line under a card: credits, timing, qualifier.</p>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><code>--typography-size-meta</code><span class="type-spec">w 400 · muted</span><span class="type-val" data-live="--typography-size-meta">—</span></div>
+          <p class="spec-meta">by irfan · updated 23 Nov</p>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><code>--typography-size-eyebrow</code><span class="type-spec">w 700 · tracking 0.16em</span><span class="type-val" data-live="--typography-size-eyebrow">—</span></div>
+          <p class="spec-eyebrow">Section eyebrow</p>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><code>--typography-size-timecode</code><span class="type-spec">w 400 · tabular</span><span class="type-val" data-live="--typography-size-timecode">—</span></div>
+          <p class="spec-timecode">00:04:12:08</p>
+        </div>
+      </div>
+
+      <div class="families">
+        <div class="fam">
+          <p class="fam-k">Sans — UI and body</p>
+          <p class="fam-spec">Handheld, motivated, honest</p>
+          <p class="fam-tok">--typography-family-sans</p>
+        </div>
+        <div class="fam fam-display">
+          <p class="fam-k">Display — headlines</p>
+          <p class="fam-spec">Intent before pixels</p>
+          <p class="fam-tok">--typography-family-display</p>
+        </div>
+        <div class="fam fam-quote">
+          <p class="fam-k">Quote — pull quotes</p>
+          <p class="fam-spec">Every cut is an argument.</p>
+          <p class="fam-tok">--typography-family-quote</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 03 SPACE & SHAPE ============ -->
+    <section id="space" aria-labelledby="space-h">
+      <div class="sec-head">
+        <span class="sec-num">03</span>
+        <h2 id="space-h">Space &amp; shape</h2>
+        <p>One 4px base, eight steps. Bars are drawn at 6× so the ladder is legible; labels carry the literal value.</p>
+      </div>
+
+      <div class="space-row"><code>--spacing-2xs</code><span class="space-bar" style="width:calc(var(--spacing-2xs) * 6)"></span><span class="space-val" data-live="--spacing-2xs">—</span></div>
+      <div class="space-row"><code>--spacing-xs</code><span class="space-bar" style="width:calc(var(--spacing-xs) * 6)"></span><span class="space-val" data-live="--spacing-xs">—</span></div>
+      <div class="space-row"><code>--spacing-sm</code><span class="space-bar" style="width:calc(var(--spacing-sm) * 6)"></span><span class="space-val" data-live="--spacing-sm">—</span></div>
+      <div class="space-row"><code>--spacing-md</code><span class="space-bar" style="width:calc(var(--spacing-md) * 6)"></span><span class="space-val" data-live="--spacing-md">—</span></div>
+      <div class="space-row"><code>--spacing-lg</code><span class="space-bar" style="width:calc(var(--spacing-lg) * 6)"></span><span class="space-val" data-live="--spacing-lg">—</span></div>
+      <div class="space-row"><code>--spacing-xl</code><span class="space-bar" style="width:calc(var(--spacing-xl) * 6)"></span><span class="space-val" data-live="--spacing-xl">—</span></div>
+      <div class="space-row"><code>--spacing-2xl</code><span class="space-bar" style="width:calc(var(--spacing-2xl) * 6)"></span><span class="space-val" data-live="--spacing-2xl">—</span></div>
+      <div class="space-row"><code>--spacing-gutter-pro</code><span class="space-bar" style="width:calc(var(--spacing-gutter-pro) * 6)"></span><span class="space-val" data-live="--spacing-gutter-pro">—</span></div>
+      <p class="scale-note">Base 4px · spacing.base is the unit, 2xs is its alias.</p>
+
+      <div class="radius-row">
+        <div class="radius-cell"><span class="radius-box" style="border-radius:var(--radius-none)"></span><code>--radius-none</code><span class="radius-val" data-live="--radius-none">—</span></div>
+        <div class="radius-cell"><span class="radius-box" style="border-radius:var(--radius-xs)"></span><code>--radius-xs</code><span class="radius-val" data-live="--radius-xs">—</span></div>
+        <div class="radius-cell"><span class="radius-box" style="border-radius:var(--radius-sm)"></span><code>--radius-sm</code><span class="radius-val" data-live="--radius-sm">—</span></div>
+        <div class="radius-cell"><span class="radius-box" style="border-radius:var(--radius-md)"></span><code>--radius-md</code><span class="radius-val" data-live="--radius-md">—</span></div>
+        <div class="radius-cell"><span class="radius-box" style="border-radius:var(--radius-card)"></span><code>--radius-card</code><span class="radius-val" data-live="--radius-card">—</span></div>
+        <div class="radius-cell"><span class="radius-box" style="border-radius:var(--radius-lg)"></span><code>--radius-lg</code><span class="radius-val" data-live="--radius-lg">—</span></div>
+        <div class="radius-cell"><span class="radius-box" style="border-radius:var(--radius-xl)"></span><code>--radius-xl</code><span class="radius-val" data-live="--radius-xl">—</span></div>
+        <div class="radius-cell"><span class="radius-box" style="border-radius:var(--radius-pill)"></span><code>--radius-pill</code><span class="radius-val" data-live="--radius-pill">—</span></div>
+        <div class="radius-cell"><span class="radius-box" style="border-radius:var(--radius-circle)"></span><code>--radius-circle</code><span class="radius-val" data-live="--radius-circle">—</span></div>
+      </div>
+
+      <div class="edge-row">
+        <div class="edge edge-1"><code>1px hairline</code><span>border · --color-wiki-light-rule</span></div>
+        <div class="edge edge-2"><code>2px emphasis</code><span>border · no border-width token</span></div>
+        <div class="edge edge-dashed"><code>1px dashed</code><span>draft / provisional</span></div>
+        <div class="edge" style="box-shadow:var(--elevation-1)"><code>--elevation-1</code><span>resting card</span></div>
+        <div class="edge" style="box-shadow:var(--elevation-popover)"><code>--elevation-popover</code><span>menu / toast</span></div>
+        <div class="edge" style="box-shadow:var(--elevation-float)"><code>--elevation-float</code><span>rail / floating bar</span></div>
+        <div class="edge" style="box-shadow:var(--elevation-ring-accent)"><code>--elevation-ring-accent</code><span>focus halo</span></div>
+        <div class="edge" style="box-shadow:var(--elevation-inset-accent)"><code>--elevation-inset-accent</code><span>armed / selected</span></div>
+      </div>
+
+      <h3 class="sub-h">Layering — z scale</h3>
+      <table class="tok-table">
+        <thead><tr><th>Token</th><th>Value</th><th>Layer</th></tr></thead>
+        <tbody>
+          <tr><td><code>--z-base</code></td><td class="live" data-live="--z-base">—</td><td>page flow</td></tr>
+          <tr><td><code>--z-raise</code></td><td class="live" data-live="--z-raise">—</td><td>lifted row</td></tr>
+          <tr><td><code>--z-content</code></td><td class="live" data-live="--z-content">—</td><td>content above canvas</td></tr>
+          <tr><td><code>--z-sticky</code></td><td class="live" data-live="--z-sticky">—</td><td>sticky header</td></tr>
+          <tr><td><code>--z-sticky-rail</code></td><td class="live" data-live="--z-sticky-rail">—</td><td>sticky rail</td></tr>
+          <tr><td><code>--z-bar</code></td><td class="live" data-live="--z-bar">—</td><td>step rail</td></tr>
+          <tr><td><code>--z-overlay</code></td><td class="live" data-live="--z-overlay">—</td><td>scrim</td></tr>
+          <tr><td><code>--z-sheet</code></td><td class="live" data-live="--z-sheet">—</td><td>sheet</td></tr>
+          <tr><td><code>--z-drawer</code></td><td class="live" data-live="--z-drawer">—</td><td>drawer</td></tr>
+          <tr><td><code>--z-drawer-child</code></td><td class="live" data-live="--z-drawer-child">—</td><td>inside drawer</td></tr>
+          <tr><td><code>--z-popover</code></td><td class="live" data-live="--z-popover">—</td><td>popover</td></tr>
+          <tr><td><code>--z-canvas</code></td><td class="live" data-live="--z-canvas">—</td><td>canvas controls</td></tr>
+          <tr><td><code>--z-toast</code></td><td class="live" data-live="--z-toast">—</td><td>toast</td></tr>
+          <tr><td><code>--z-menu</code></td><td class="live" data-live="--z-menu">—</td><td>menu</td></tr>
+          <tr><td><code>--z-max</code></td><td class="live" data-live="--z-max">—</td><td>last resort</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ============ 04 MOTION ============ -->
+    <section id="motion" aria-labelledby="motion-h">
+      <div class="sec-head">
+        <span class="sec-num">04</span>
+        <h2 id="motion-h">Motion</h2>
+        <p>Hover a track (or tab to it) to play that exact curve. Reduced-motion users get no travel.</p>
+      </div>
+      <table class="tok-table">
+        <thead><tr><th>Token</th><th>Value</th><th>Specimen</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>--motion-duration-instant</code></td>
+            <td class="live" data-live="--motion-duration-instant">—</td>
+            <td><button class="mplay" type="button" aria-label="Play instant duration"><span class="mdot" style="transition-duration:var(--motion-duration-instant);transition-timing-function:var(--motion-easing-standard)"></span></button></td>
+          </tr>
+          <tr>
+            <td><code>--motion-duration-hover</code></td>
+            <td class="live" data-live="--motion-duration-hover">—</td>
+            <td><button class="mplay" type="button" aria-label="Play hover duration"><span class="mdot" style="transition-duration:var(--motion-duration-hover);transition-timing-function:var(--motion-easing-out)"></span></button></td>
+          </tr>
+          <tr>
+            <td><code>--motion-duration-fast</code></td>
+            <td class="live" data-live="--motion-duration-fast">—</td>
+            <td><button class="mplay" type="button" aria-label="Play 0.22s ease"><span class="mdot" style="transition-duration:var(--motion-duration-fast);transition-timing-function:var(--motion-easing-standard)"></span></button></td>
+          </tr>
+          <tr>
+            <td><code>--motion-duration-base</code></td>
+            <td class="live" data-live="--motion-duration-base">—</td>
+            <td><button class="mplay" type="button" aria-label="Play 0.28s ease"><span class="mdot" style="transition-duration:var(--motion-duration-base);transition-timing-function:var(--motion-easing-standard)"></span></button></td>
+          </tr>
+          <tr>
+            <td><code>--motion-duration-tab</code></td>
+            <td class="live" data-live="--motion-duration-tab">—</td>
+            <td><button class="mplay" type="button" aria-label="Play 0.24s drawer curve"><span class="mdot" style="transition-duration:var(--motion-duration-tab);transition-timing-function:var(--motion-easing-drawer)"></span></button></td>
+          </tr>
+          <tr>
+            <td><code>--motion-duration-opacity</code></td>
+            <td class="live" data-live="--motion-duration-opacity">—</td>
+            <td><button class="mplay" type="button" aria-label="Play opacity duration"><span class="mdot" style="transition-duration:var(--motion-duration-opacity);transition-timing-function:var(--motion-easing-standard)"></span></button></td>
+          </tr>
+          <tr>
+            <td><code>--motion-duration-slow</code></td>
+            <td class="live" data-live="--motion-duration-slow">—</td>
+            <td><button class="mplay" type="button" aria-label="Play slow duration"><span class="mdot" style="transition-duration:var(--motion-duration-slow);transition-timing-function:var(--motion-easing-sheet)"></span></button></td>
+          </tr>
+          <tr>
+            <td><code>--motion-easing-drawer</code></td>
+            <td class="live" data-live="--motion-easing-drawer">—</td>
+            <td><button class="mplay" type="button" aria-label="Play drawer curve"><span class="mdot" style="transition-duration:var(--motion-duration-base);transition-timing-function:var(--motion-easing-drawer)"></span></button></td>
+          </tr>
+          <tr>
+            <td><code>--motion-easing-standard</code></td>
+            <td class="live" data-live="--motion-easing-standard">—</td>
+            <td><button class="mplay" type="button" aria-label="Play standard curve"><span class="mdot"></span></button></td>
+          </tr>
+          <tr>
+            <td><code>--motion-easing-sheet</code></td>
+            <td class="live" data-live="--motion-easing-sheet">—</td>
+            <td><button class="mplay" type="button" aria-label="Play sheet curve"><span class="mdot" style="transition-duration:var(--motion-duration-base);transition-timing-function:var(--motion-easing-sheet)"></span></button></td>
+          </tr>
+          <tr>
+            <td><code>--motion-easing-emphasized</code></td>
+            <td class="live" data-live="--motion-easing-emphasized">—</td>
+            <td><button class="mplay" type="button" aria-label="Play emphasized curve"><span class="mdot" style="transition-duration:var(--motion-duration-base);transition-timing-function:var(--motion-easing-emphasized)"></span></button></td>
+          </tr>
+          <tr>
+            <td><code>--motion-easing-out</code></td>
+            <td class="live" data-live="--motion-easing-out">—</td>
+            <td><button class="mplay" type="button" aria-label="Play ease-out curve"><span class="mdot" style="transition-duration:var(--motion-duration-base);transition-timing-function:var(--motion-easing-out)"></span></button></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ============ 05 TOUCH ============ -->
+    <section id="touch" aria-labelledby="touch-h">
+      <div class="sec-head">
+        <span class="sec-num">05</span>
+        <h2 id="touch-h">Touch</h2>
+        <p>Boxes are sized by the token; the label is the browser's measured height, not the authored number.</p>
+      </div>
+      <div class="touch-row">
+        <div class="touch-cell">
+          <span class="touch-box" id="box-min" data-measure="m-min">min</span>
+          <span class="touch-meta"><code>--touch-min</code><br><span class="touch-measured" id="m-min">—</span></span>
+        </div>
+        <div class="touch-cell">
+          <span class="touch-box t-preferred" id="box-preferred" data-measure="m-preferred">pref</span>
+          <span class="touch-meta"><code>--touch-preferred</code><br><span class="touch-measured" id="m-preferred">—</span></span>
+        </div>
+        <div class="touch-cell">
+          <span class="touch-box t-pro" id="box-pro" data-measure="m-pro">pro</span>
+          <span class="touch-meta"><code>--touch-pro</code><br><span class="touch-measured" id="m-pro">—</span></span>
+        </div>
+        <div class="touch-cell">
+          <span class="touch-box t-field" id="box-field" data-measure="m-field">field</span>
+          <span class="touch-meta"><code>--touch-field</code><br><span class="touch-measured" id="m-field">—</span></span>
+        </div>
+        <div class="touch-cell">
+          <span class="touch-box t-small" id="box-small" data-measure="m-small">small</span>
+          <span class="touch-meta"><code>--touch-small</code><br><span class="touch-measured" id="m-small">—</span></span>
+        </div>
+      </div>
+      <p class="matrix-sum">Dashed boxes are legacy debt: --touch-small (28px) and --touch-field (38px) are below --touch-min and must not be used on new controls.</p>
+    </section>
+
+    <!-- ============ 06 COMPONENTS ============ -->
+    <section id="components" aria-labelledby="components-h">
+      <div class="sec-head">
+        <span class="sec-num">06</span>
+        <h2 id="components-h">Components</h2>
+        <p>Real DOM, real states: hover with the pointer, tab for focus-visible, disabled by attribute. Each frame declares its surface.</p>
+      </div>
+
+      <!-- button -->
+      <article class="comp">
+        <div class="comp-head">
+          <h3>Button</h3>
+          <span class="comp-classes">.btn · .btn--primary · .btn--secondary · .btn--ghost · [disabled]</span>
+        </div>
+        <div class="frame">
+          <div class="frame-bar"><span class="frame-dot"></span> surface · pitch <span class="frame-val">accent → primary fill only</span></div>
+          <div class="stage" data-surface="pitch">
+            <div class="row">
+              <button class="btn btn--primary" type="button">Approve cut</button>
+              <button class="btn btn--secondary" type="button">Compare</button>
+              <button class="btn btn--ghost" type="button">Skip</button>
+              <button class="btn btn--primary" type="button" disabled>Export</button>
+            </div>
+            <p class="hint">Hover, Tab, and the disabled fourth button.</p>
+          </div>
+        </div>
+        <div class="comp-props">
+          <table class="tok-table">
+            <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Radius</td><td><code>--radius-pill</code></td><td class="live" data-live="--radius-pill">—</td></tr>
+              <tr><td>Height</td><td><code>--touch-preferred</code></td><td class="live" data-live="--touch-preferred">—</td></tr>
+              <tr><td>Primary fill</td><td><code>--color-pitch-accent</code></td><td class="live" data-live="--color-pitch-accent">—</td></tr>
+              <tr><td>Primary label</td><td><code>--color-pitch-accent-ink</code></td><td class="live" data-live="--color-pitch-accent-ink">—</td></tr>
+              <tr><td>Focus width</td><td><code>--focus-width</code></td><td class="live" data-live="--focus-width">—</td></tr>
+              <tr><td>Focus offset</td><td><code>--focus-offset</code></td><td class="live" data-live="--focus-offset">—</td></tr>
+              <tr><td>Disabled</td><td><code>--opacity-disabled</code></td><td class="live" data-live="--opacity-disabled">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <!-- pill filter -->
+      <article class="comp">
+        <div class="comp-head">
+          <h3>Pill filter</h3>
+          <span class="comp-classes">.pill[aria-pressed="true|false"]</span>
+        </div>
+        <div class="frame">
+          <div class="frame-bar"><span class="frame-dot"></span> surface · wiki · light <span class="frame-val">on = accent fill, off = card</span></div>
+          <div class="stage" data-surface="wiki">
+            <div class="row" role="group" aria-label="Filter">
+              <button class="pill" type="button" aria-pressed="true">All shots</button>
+              <button class="pill" type="button" aria-pressed="false">Coverage</button>
+              <button class="pill" type="button" aria-pressed="false">Movement</button>
+            </div>
+            <p class="hint">Pill filters never mix with underline steps on one control.</p>
+          </div>
+        </div>
+        <div class="comp-props">
+          <table class="tok-table">
+            <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Radius</td><td><code>--radius-pill</code></td><td class="live" data-live="--radius-pill">—</td></tr>
+              <tr><td>Height</td><td><code>--touch-min</code></td><td class="live" data-live="--touch-min">—</td></tr>
+              <tr><td>On fill</td><td><code>--color-wiki-light-accent</code></td><td class="live" data-live="--color-wiki-light-accent">—</td></tr>
+              <tr><td>Off fill</td><td><code>--color-wiki-light-card</code></td><td class="live" data-live="--color-wiki-light-card">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <!-- field -->
+      <article class="comp">
+        <div class="comp-head">
+          <h3>Field</h3>
+          <span class="comp-classes">.field · .field.is-error · label · input</span>
+        </div>
+        <div class="frame">
+          <div class="frame-bar"><span class="frame-dot"></span> surface · engine <span class="frame-val">error uses semantic danger</span></div>
+          <div class="stage" data-surface="engine">
+            <div class="field">
+              <label for="f-shot">Shot label</label>
+              <input id="f-shot" type="text" value="Handheld — corridor" placeholder="Name this shot">
+              <span class="field-note">Shown in the timeline and every prompt token.</span>
+            </div>
+            <div class="field is-error">
+              <label for="f-code">Code</label>
+              <input id="f-code" type="text" value="HH-CORRIDOR-EXTRA-LONG" aria-invalid="true" aria-describedby="f-code-err">
+              <span class="field-note" id="f-code-err">Max 12 characters.</span>
+            </div>
+          </div>
+        </div>
+        <div class="comp-props">
+          <table class="tok-table">
+            <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Radius</td><td><code>--radius-sm</code></td><td class="live" data-live="--radius-sm">—</td></tr>
+              <tr><td>Height</td><td><code>--touch-min</code></td><td class="live" data-live="--touch-min">—</td></tr>
+              <tr><td>Border</td><td><code>--color-engine-border-strong</code></td><td class="live" data-live="--color-engine-border-strong">—</td></tr>
+              <tr><td>Error</td><td><code>--color-semantic-danger</code></td><td class="live" data-live="--color-semantic-danger">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <!-- card -->
+      <article class="comp">
+        <div class="comp-head">
+          <h3>Card</h3>
+          <span class="comp-classes">.card · .eyebrow · .card-meta</span>
+        </div>
+        <div class="frame">
+          <div class="frame-bar"><span class="frame-dot"></span> surface · pitch <span class="frame-val">hairline + tint, no shadow</span></div>
+          <div class="stage" data-surface="pitch">
+            <div class="card">
+              <p class="eyebrow">Shot size · 02</p>
+              <h4>Medium close-up</h4>
+              <p>Chest up. Favors the face while keeping a little distance, so the room still has a say in the scene.</p>
+              <div class="card-meta"><span>Coverage</span><span>4 prompts</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="comp-props">
+          <table class="tok-table">
+            <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Radius</td><td><code>--radius-lg</code></td><td class="live" data-live="--radius-lg">—</td></tr>
+              <tr><td>Padding</td><td><code>--spacing-lg</code></td><td class="live" data-live="--spacing-lg">—</td></tr>
+              <tr><td>Fill</td><td><code>--color-pitch-surface-1</code></td><td class="live" data-live="--color-pitch-surface-1">—</td></tr>
+              <tr><td>Rule</td><td><code>--color-pitch-rule</code></td><td class="live" data-live="--color-pitch-rule">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <!-- panel -->
+      <article class="comp">
+        <div class="comp-head">
+          <h3>Panel</h3>
+          <span class="comp-classes">.panel · .panel-h · .panel-row</span>
+        </div>
+        <div class="frame">
+          <div class="frame-bar"><span class="frame-dot"></span> surface · wiki · light <span class="frame-val">reader container</span></div>
+          <div class="stage" data-surface="wiki">
+            <div class="panel">
+              <div class="panel-h"><h4>Rack focus</h4><small>Focus</small></div>
+              <div class="panel-row"><span>Use</span><span>Reveal, link two subjects</span></div>
+              <div class="panel-row"><span>Pairs with</span><span>Crab move</span></div>
+              <div class="panel-row"><span>Prompt token</span><span>RF — pull baton → eyes</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="comp-props">
+          <table class="tok-table">
+            <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Radius</td><td><code>--radius-md</code></td><td class="live" data-live="--radius-md">—</td></tr>
+              <tr><td>Padding</td><td><code>--spacing-lg</code></td><td class="live" data-live="--spacing-lg">—</td></tr>
+              <tr><td>Fill</td><td><code>--color-wiki-light-card</code></td><td class="live" data-live="--color-wiki-light-card">—</td></tr>
+              <tr><td>Heading</td><td><code>--typography-size-h2-wiki</code></td><td class="live" data-live="--typography-size-h2-wiki">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <!-- tool button -->
+      <article class="comp">
+        <div class="comp-head">
+          <h3>Tool button</h3>
+          <span class="comp-classes">.tool · [aria-pressed] · svg glyph</span>
+        </div>
+        <div class="frame">
+          <div class="frame-bar"><span class="frame-dot"></span> surface · engine <span class="frame-val">40px hit area, 8px radius</span></div>
+          <div class="stage" data-surface="engine">
+            <div class="row">
+              <button class="tool" type="button" aria-pressed="true">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M7 2v10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                Add shot
+              </button>
+              <button class="tool" type="button" aria-pressed="false">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Mark done
+              </button>
+              <button class="tool" type="button" aria-pressed="false">Zoom 100%</button>
+            </div>
+            <p class="hint">Border picks up accent on hover; pressed keeps accent.</p>
+          </div>
+        </div>
+        <div class="comp-props">
+          <table class="tok-table">
+            <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Radius</td><td><code>--radius-sm</code></td><td class="live" data-live="--radius-sm">—</td></tr>
+              <tr><td>Height</td><td><code>--touch-min</code></td><td class="live" data-live="--touch-min">—</td></tr>
+              <tr><td>Fill</td><td><code>--color-engine-tool</code></td><td class="live" data-live="--color-engine-tool">—</td></tr>
+              <tr><td>Hover edge</td><td><code>--color-engine-accent</code></td><td class="live" data-live="--color-engine-accent">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <!-- badge -->
+      <article class="comp">
+        <div class="comp-head">
+          <h3>Badge</h3>
+          <span class="comp-classes">.badge · .badge--free · .badge--paid · .badge--unverified</span>
+        </div>
+        <div class="frame">
+          <div class="frame-bar"><span class="frame-dot"></span> surface · wiki · light <span class="frame-val">success / info / muted</span></div>
+          <div class="stage" data-surface="wiki">
+            <div class="row">
+              <span class="badge badge--free">Free</span>
+              <span class="badge badge--paid">Paid</span>
+              <span class="badge badge--unverified">Unverified</span>
+            </div>
+            <p class="hint">FREE → semantic success · PAID → semantic info · UNVERIFIED → surface muted.</p>
+          </div>
+        </div>
+        <div class="comp-props">
+          <table class="tok-table">
+            <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Radius</td><td><code>--radius-pill</code></td><td class="live" data-live="--radius-pill">—</td></tr>
+              <tr><td>Size</td><td><code>--typography-size-eyebrow</code></td><td class="live" data-live="--typography-size-eyebrow">—</td></tr>
+              <tr><td>FREE</td><td><code>--color-semantic-success</code></td><td class="live" data-live="--color-semantic-success">—</td></tr>
+              <tr><td>PAID</td><td><code>--color-semantic-info</code></td><td class="live" data-live="--color-semantic-info">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <!-- toast -->
+      <article class="comp">
+        <div class="comp-head">
+          <h3>Toast</h3>
+          <span class="comp-classes">.toast · .toast button · elevation.popover</span>
+        </div>
+        <div class="frame">
+          <div class="frame-bar"><span class="frame-dot"></span> surface · engine <span class="frame-val">one action, never two</span></div>
+          <div class="stage" data-surface="engine">
+            <div class="toast" role="status">
+              <p>Shot deleted. 12 remain in this chapter.</p>
+              <button type="button">Undo</button>
+            </div>
+            <p class="hint">Floats above the canvas; the action keeps a 40px target.</p>
+          </div>
+        </div>
+        <div class="comp-props">
+          <table class="tok-table">
+            <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Radius</td><td><code>--radius-md</code></td><td class="live" data-live="--radius-md">—</td></tr>
+              <tr><td>Fill</td><td><code>--color-engine-panel</code></td><td class="live" data-live="--color-engine-panel">—</td></tr>
+              <tr><td>Shadow</td><td><code>--elevation-popover</code></td><td class="live" data-live="--elevation-popover">—</td></tr>
+              <tr><td>Action fill</td><td><code>--color-engine-accent</code></td><td class="live" data-live="--color-engine-accent">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <!-- sheet -->
+      <article class="comp">
+        <div class="comp-head">
+          <h3>Drawer / sheet header</h3>
+          <span class="comp-classes">.sheet · .grab · .sheet-h · .sheet-x · .sheet-body</span>
+        </div>
+        <div class="frame">
+          <div class="frame-bar"><span class="frame-dot"></span> surface · engine <span class="frame-val">grab 44 × 5</span></div>
+          <div class="stage" data-surface="engine">
+            <div class="sheet">
+              <span class="grab" aria-hidden="true"></span>
+              <div class="sheet-h">
+                <h4>Shot properties</h4>
+                <button class="sheet-x" type="button" aria-label="Close">&times;</button>
+              </div>
+              <div class="sheet-body">Chapter 2 · coverage. Edit the label, pick a size, then commit the prompt.</div>
+            </div>
+            <p class="hint">Grab handle is decorative; Escape and the 40px close button are the real exits.</p>
+          </div>
+        </div>
+        <div class="comp-props">
+          <table class="tok-table">
+            <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Grab width</td><td><code>--layout-sheet-grab-width</code></td><td class="live" data-live="--layout-sheet-grab-width">—</td></tr>
+              <tr><td>Grab height</td><td><code>--layout-sheet-grab-height</code></td><td class="live" data-live="--layout-sheet-grab-height">—</td></tr>
+              <tr><td>Radius</td><td><code>--radius-lg</code></td><td class="live" data-live="--radius-lg">—</td></tr>
+              <tr><td>Shadow</td><td><code>--elevation-sheet</code></td><td class="live" data-live="--elevation-sheet">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <!-- ============ 07 MATRIX ============ -->
+    <section id="matrix" aria-labelledby="matrix-h">
+      <div class="sec-head">
+        <span class="sec-num">07</span>
+        <h2 id="matrix-h">Consistency matrix</h2>
+        <p>Measured from the shipped CSS in the three pages. Red cells are the worklist — not style opinions.</p>
+      </div>
+
+      <div class="matrix-wrap">
+        <table class="matrix">
+          <thead>
+            <tr><th scope="col">Element</th><th scope="col">Wiki</th><th scope="col">Pitch</th><th scope="col">Engine</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Button radius</th>
+              <td><code>--radius-pill</code><span class="note">99px on .tab / .chip; 8px on .nav button — both tokenised.</span></td>
+              <td><code>--radius-pill</code><span class="note">99px .btn; .expbtn uses 8px (sm).</span></td>
+              <td><span class="badge-dev">deviation</span><code>--radius-sm</code><span class="note">8px on .tools, but 6 / 7 / 9 / 12px elsewhere. Consolidate to sm.</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Field radius</th>
+              <td><code>--radius-pill</code><span class="note">Search input is a 99px pill; no form fields yet.</span></td>
+              <td><span class="note">— not used (document surface).</span></td>
+              <td><span class="badge-dev">deviation</span><code>--radius-sm</code><span class="note">Inputs render at 6px. Correct token: radius-sm (8px).</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Card radius</th>
+              <td><code>--radius-card</code><span class="note">.panel is 12px and matches radius-card exactly.</span></td>
+              <td><code>--radius-lg</code><span class="note">14px .card matches lg exactly.</span></td>
+              <td><code>--radius-md</code><span class="note">10px menus / panels; inner items drop to 7px.</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Border width</th>
+              <td><span class="badge-dev">deviation</span><code>1px</code><span class="note">No border-width token exists. Gap: border.width = 1px.</span></td>
+              <td><span class="badge-dev">deviation</span><code>1px</code><span class="note">No border-width token exists. Gap: border.width = 1px.</span></td>
+              <td><span class="badge-dev">deviation</span><code>1px</code><span class="note">No border-width token exists. Gap: border.width = 1px.</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Accent usage</th>
+              <td><code>--color-wiki-light-accent</code><span class="note">Swaps to --color-wiki-dark-accent under dark. One accent span per card.</span></td>
+              <td><code>--color-pitch-accent</code><span class="note">Champagne; usually one accent span in the H1.</span></td>
+              <td><code>--color-engine-accent</code><span class="note">Orange only for primary + hover edge; teal is a data accent.</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Focus ring</th>
+              <td><span class="badge-dev">deviation</span><code>none defined</code><span class="note">Browser default only. Correct: 2px accent, 2px offset.</span></td>
+              <td><code>--focus-width / --focus-offset</code><span class="note">2px accent, 2px offset across three rules; authored literally, token matches.</span></td>
+              <td><span class="badge-dev">deviation</span><code>1px accent + shadow</code><span class="note">1px ring + halo; --elevation-ring-accent exists but --focus-width is 2px. Round up.</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Body size</th>
+              <td><span class="badge-dev">deviation</span><code>15px</code><span class="note">0.9375rem vs --typography-size-body 0.95rem (15.2px).</span></td>
+              <td><span class="badge-dev">deviation</span><code>15px</code><span class="note">0.9375rem vs token 0.95rem. Line-height 1.7 matches.</span></td>
+              <td><span class="badge-dev">deviation</span><code>15px</code><span class="note">0.9375rem vs token 0.95rem. Line-height 1.6 vs token 1.7.</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Muted text</th>
+              <td><code>--color-wiki-light-muted</code><span class="note">23 uses of var(--mut); dark set swaps cleanly.</span></td>
+              <td><code>--color-pitch-muted</code><span class="note">All muted copy routed through var(--mut).</span></td>
+              <td><code>--color-engine-muted</code><span class="note">Secondary text uses muted-2 for contrast on panels.</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="matrix-legend">
+        <span class="badge-dev">deviation</span>
+        <span>Cell departs from the token layer. Fix is named in the note.</span>
+      </div>
+      <p class="matrix-sum">Worklist: field radius and focus ring in Engine, plus the missing border-width token. Body size is a rounding decision still open (15px authored vs 0.95rem token). Everything else now resolves to a token, including the 12px card radius (radius-card).</p>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">Generated from <code>design-system/tokens.css</code> · <span class="js-token-count">206</span> tokens · one <code>:root</code> block. Specimens are UI fragments, not a device mockup.</div>
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var liveEls = function () { return document.querySelectorAll('[data-live]'); };
+
+  function countRootTokens() {
+    var n = 0;
+    try {
+      for (var i = 0; i < document.styleSheets.length; i++) {
+        var sheet = document.styleSheets[i];
+        /* only the generated token sheet; inline gallery chrome is not the system */
+        if (!sheet.href || sheet.href.indexOf('tokens.css') === -1) continue;
+        var rules = null;
+        try { rules = sheet.cssRules; } catch (e) { continue; }
+        if (!rules) continue;
+        for (var j = 0; j < rules.length; j++) {
+          var r = rules[j];
+          if (r.selectorText === ':root' && r.style) {
+            for (var k = 0; k < r.style.length; k++) {
+              if (r.style[k].indexOf('--') === 0) n++;
+            }
+          }
+        }
+      }
+    } catch (e) {}
+    return n;
+  }
+
+  function paintCount() {
+    var n = countRootTokens();
+    if (!n) return;
+    document.querySelectorAll('.js-token-count').forEach(function (el) { el.textContent = n; });
+  }
+
+  function paint() {
+    liveEls().forEach(function (el) {
+      var name = el.getAttribute('data-live');
+      var v = getComputedStyle(root).getPropertyValue(name).trim();
+      el.textContent = v || 'undefined';
+    });
+    document.querySelectorAll('[data-measure]').forEach(function (el) {
+      var out = document.getElementById(el.getAttribute('data-measure'));
+      if (out) {
+        var h = Math.round(el.getBoundingClientRect().height);
+        out.textContent = h + 'px measured';
+      }
+    });
+  }
+
+  function markTheme(t) {
+    document.querySelectorAll('[data-theme-set]').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-theme-set') === t));
+    });
+  }
+
+  function setTheme(t) {
+    root.setAttribute('data-theme', t);
+    markTheme(t);
+    try { localStorage.setItem('ds-gallery-theme', t); } catch (e) {}
+    requestAnimationFrame(paint);
+    setTimeout(paint, 60);
+  }
+
+  document.querySelectorAll('[data-theme-set]').forEach(function (b) {
+    b.addEventListener('click', function () { setTheme(b.getAttribute('data-theme-set')); });
+  });
+
+  var saved = null;
+  try { saved = localStorage.getItem('ds-gallery-theme'); } catch (e) {}
+  if (saved === 'light' || saved === 'dark') {
+    root.setAttribute('data-theme', saved);
+    markTheme(saved);
+  } else {
+    markTheme(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  }
+
+  var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  if (mq && mq.addEventListener) mq.addEventListener('change', paint);
+
+  paintCount();
+  paint();
+  window.addEventListener('load', function () { paintCount(); paint(); });
+  window.addEventListener('resize', paint);
+
+  /* scrollspy — deterministic, section whose top passed 30% of viewport */
+  var links = Array.prototype.slice.call(document.querySelectorAll('.side a'));
+  var secs = links.map(function (a) { return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+  var ticking = false;
+  function spy() {
+    ticking = false;
+    var line = window.innerHeight * 0.3;
+    var current = secs[0] ? secs[0].id : null;
+    secs.forEach(function (s) {
+      if (s.getBoundingClientRect().top <= line) current = s.id;
+    });
+    /* the final section may never reach the 30% line — claim it at page bottom */
+    var atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4;
+    if (atBottom && secs.length) current = secs[secs.length - 1].id;
+    links.forEach(function (l) {
+      l.classList.toggle('on', l.getAttribute('href') === '#' + current);
+    });
+  }
+  function requestSpy() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(spy);
+  }
+  window.addEventListener('scroll', requestSpy, { passive: true });
+  window.addEventListener('resize', requestSpy);
+  spy();
+
+  /* motion specimen: click/tap also plays once */
+  document.querySelectorAll('.mplay').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      btn.classList.remove('is-play');
+      void btn.offsetWidth;
+      btn.classList.add('is-play');
+      setTimeout(function () { btn.classList.remove('is-play'); }, 700);
+    });
+  });
+})();
+</script>
+</body>
+</html>
