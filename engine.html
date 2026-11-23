@@ -386,6 +386,22 @@ header{padding-top:calc(var(--spacing-sm) + env(safe-area-inset-top,0px));paddin
   #zoomCtl{display:flex}
 }
 /* --------------------------------------------------------------------------
+   Phone reflow (<=520px). The board is one column wide here, so the chapter
+   bar puts + scene in the first screen, the redundant "Chapter" field label
+   drops (the select already names the chapter), and glyph-only controls get
+   their 40px hit floor back after flex squeeze.
+   -------------------------------------------------------------------------- */
+@media (max-width:520px){
+  #chapterbar>span:first-child{display:none}
+  #chapterSel{order:1;min-width:0;max-width:31vw}
+  #addScene{order:2}
+  #addChapter{order:3}
+  #chapterbar .sp{order:4}
+  #addLane{order:5}
+  #chapterbar button{white-space:nowrap}
+  #histUndoBtn,#histRedoBtn,#dots,#drawerMenuBtn{min-width:var(--touch-min)}
+}
+/* --------------------------------------------------------------------------
    Focus. One ring for the whole surface: tokens --focus-width / --focus-offset
    on the engine accent. Components below never declare their own outline; the
    only exception is the visually hidden switch input, which paints the ring on
@@ -710,7 +726,7 @@ function loadImage(n,silent){if(!n.imgUrl){n.img=null;if(n)n.imgErr='';return}co
  im.src=n.imgUrl;n.img=im;draw()}
 
 /* ---- canvas ---- */
-function fit(){DPR=Math.min(2,devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);draw()}
+function fit(){DPR=Math.min(2,devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);try{if(view==='scenes')rebuildChapters()}catch(e){}try{/* phone: the asset chip docks under the chapter bar instead of over it */const ab=document.getElementById('assetBtn'),cb=document.getElementById('chapterbar');if(ab){const nt=narrowBoard()?((cb&&!cb.hidden?cb.offsetHeight:0)+8)+'px':'';if(ab.style.top!==nt)ab.style.top=nt}}catch(e){}draw()}
 addEventListener('resize',fit);
 function addNode(){const m=VIEW_META[view]||VIEW_META.locations;const w=200,h=190;
  const n={id:nextId++,kind:'beat',label:m.one+' '+seq,note:'',anchor:'',promptState:null,x:40+Math.random()*Math.max(40,W-w-80),y:40+Math.random()*Math.max(40,H-h-80),w,h,imgUrl:'',img:null};
@@ -731,9 +747,9 @@ function portPos(n,p){
 function drawPorts(n){if(!n||n!==hoverNode)return;
  for(const p of PORTS){const q=portPos(n,p),hot=!!(hoverPort&&hoverPort.node===n&&hoverPort.port===p);
   ctx.save();ctx.globalAlpha=hot?1:0.75;
-  ctx.beginPath();ctx.arc(q.x,q.y,(hot?8:6)/cam.z,0,Math.PI*2);
+  ctx.beginPath();ctx.arc(q.x,q.y,((hot?8:6)+(narrowBoard()?4:0))/cam.z,0,Math.PI*2);
   ctx.fillStyle=CT(hot?'--color-pro-text-primary':'--color-pro-text-secondary');ctx.fill();ctx.lineWidth=1.5/cam.z;ctx.strokeStyle=CT('--color-pro-surface-1');ctx.stroke();ctx.restore()}}
-function portAt(mx,my){const R=12/cam.z;
+function portAt(mx,my){const R=(narrowBoard()?20:12)/cam.z;
  const check=n=>{for(const p of PORTS){const q=portPos(n,p);if(Math.hypot(mx-q.x,my-q.y)<=R)return{node:n,port:p}}return null};
  if(pending!=null){for(let i=nodes.length-1;i>=0;i--){const hit=check(nodes[i]);if(hit)return hit}return null}
  if(!hoverNode)return null;return check(hoverNode)}
@@ -861,7 +877,7 @@ document.querySelectorAll('#arrowpick button[data-end]').forEach(b=>{b.addEventL
 document.getElementById('apDel').addEventListener('click',e=>{e.stopPropagation();if(!apTarget)return;removeConn(apTarget.id);hidePicker();persist();draw()});
 /* ---- master draw ---- */
 function draw(){if(view==='scenes')return drawScenes();ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);ctx.restore();applyCam();
- ctx.fillStyle=WA('--color-neutral-white',9);const _gs=28,_x0=Math.floor(cam.x/_gs)*_gs,_y0=Math.floor(cam.y/_gs)*_gs;
+ ctx.fillStyle=WA('--color-neutral-white',9);const _gs=narrowBoard()?48:28,_x0=Math.floor(cam.x/_gs)*_gs,_y0=Math.floor(cam.y/_gs)*_gs;
  for(let x=_x0;x<cam.x+W/cam.z;x+=_gs)for(let y=_y0;y<cam.y+H/cam.z;y+=_gs)ctx.fillRect(x,y,1/cam.z,1/cam.z);
  conns=conns.filter(c=>nodeById(c.a.id)&&nodeById(c.b.id));
  drawConns();drawTemp();
@@ -1108,17 +1124,24 @@ function attachZoom(){if(cv._zoomOn)return;cv._zoomOn=true;
   cam.x=wx-mx/nz;cam.y=wy-my/nz;cam.z=nz;draw()},{passive:false})}
 function activeChapter(){let c=SCENES.chapters.find(c=>c.id===SCENES.active);if(!c){c=SCENES.chapters[0];if(c)SCENES.active=c.id}return c}
 function sceneById(id){const c=activeChapter();return c?c.scenes.find(s=>s.id===id):null}
-function sceneRect(s){return{x:s.x,y:s.y,w:s.w,h:s.h}}
-function laneRowRect(s,i){return{x:s.x+PAD,y:s.y+TITLE_H+PAD+i*(ROW_H+GAP),w:s.w-PAD*2,h:ROW_H}}
-function plusBtnRect(s,lane){const r=laneRowRect(s,lane);return{x:r.x+8,y:r.y+(r.h-PLUS)/2,w:PLUS,h:PLUS}}
-function handleRect(s){return{x:s.x+s.w-20,y:s.y+s.h-20,w:14,h:14}}
+function narrowBoard(){return W>0&&W<520}
+/* Phone reflow: below 520 CSS px of canvas a scene renders full-bleed to the
+   canvas width (one column). The stored width is untouched, so a desktop board
+   opened on a phone still keeps its 560px cards on the desktop. */
+function sceneW(s){return narrowBoard()?Math.min(s.w||560,Math.max(280,W-2*PAD)):(s.w||560)}
+/* the lane "+" is a canvas-drawn control: 40px at phone width, 28 on desktop */
+function plusSize(){return narrowBoard()?40:PLUS}
+function sceneRect(s){return{x:s.x,y:s.y,w:sceneW(s),h:s.h}}
+function laneRowRect(s,i){return{x:s.x+PAD,y:s.y+TITLE_H+PAD+i*(ROW_H+GAP),w:sceneW(s)-PAD*2,h:ROW_H}}
+function plusBtnRect(s,lane){const r=laneRowRect(s,lane),p=plusSize();return{x:r.x+8,y:r.y+(r.h-p)/2,w:p,h:p}}
+function handleRect(s){const n=narrowBoard();return{x:s.x+sceneW(s)-(n?40:20),y:s.y+s.h-(n?40:20),w:n?30:14,h:n?30:14}}
 function fitTitle(a,b){let t,mw;if(a&&typeof a==='object'&&b&&typeof b.w==='number'){t=String(a.title||'Scene');ctx.font='600 12px system-ui';mw=b.w-20}else{t=String(a==null?'':a);mw=+b||0}
  if(mw>0&&ctx.measureText(t).width>mw){while(t.length&&ctx.measureText(t+'…').width>mw)t=t.slice(0,-1);t+='…'}return t}
-function drawPlusBtn(r){ctx.save();round(r.x,r.y,r.w,r.h,7);ctx.fillStyle=CT('--color-pro-tool');ctx.fill();
+function drawPlusBtn(r){ctx.save();const g=r.w>28?9:6;round(r.x,r.y,r.w,r.h,7);ctx.fillStyle=CT('--color-pro-tool');ctx.fill();
  ctx.strokeStyle=WA('--color-neutral-white',14);ctx.lineWidth=1;ctx.stroke();
  ctx.strokeStyle=CT('--color-pro-text-secondary');ctx.lineWidth=2;ctx.lineCap='round';ctx.beginPath();
- ctx.moveTo(r.x+r.w/2-6,r.y+r.h/2);ctx.lineTo(r.x+r.w/2+6,r.y+r.h/2);
- ctx.moveTo(r.x+r.w/2,r.y+r.h/2-6);ctx.lineTo(r.x+r.w/2,r.y+r.h/2+6);ctx.stroke();ctx.restore()}
+ ctx.moveTo(r.x+r.w/2-g,r.y+r.h/2);ctx.lineTo(r.x+r.w/2+g,r.y+r.h/2);
+ ctx.moveTo(r.x+r.w/2,r.y+r.h/2-g);ctx.lineTo(r.x+r.w/2,r.y+r.h/2+g);ctx.stroke();ctx.restore()}
 function drawSceneBase(s,selected){const r=sceneRect(s),sel=!!selected;
  ctx.save();round(r.x,r.y,r.w,r.h,4);ctx.fillStyle=CT('--color-pro-surface-1');ctx.fill();ctx.restore();
  ctx.save();round(r.x,r.y,r.w,r.h,4);ctx.clip();ctx.fillStyle=CT('--color-pro-surface-2');ctx.fillRect(r.x,r.y,r.w,TITLE_H);
@@ -1140,11 +1163,12 @@ function drawSceneBase(s,selected){const r=sceneRect(s),sel=!!selected;
  ctx.fillStyle=sel?CT('--color-pro-selection'):CT('--color-pro-surface-2');ctx.fillRect(hr.x,hr.y,hr.w,hr.h);
  ctx.strokeStyle=sel?CT('--color-pro-selection'):WA('--color-neutral-black',50);ctx.lineWidth=1;ctx.strokeRect(hr.x+.5,hr.y+.5,hr.w-1,hr.h-1);
  ctx.strokeStyle=WA('--color-neutral-white',55);ctx.lineWidth=1.5;ctx.lineCap='round';ctx.beginPath();
- ctx.moveTo(hr.x+4,hr.y+10);ctx.lineTo(hr.x+10,hr.y+4);ctx.moveTo(hr.x+7,hr.y+10.5);ctx.lineTo(hr.x+10.5,hr.y+7);ctx.stroke();ctx.restore();
+ const hs=hr.w/14;
+ ctx.moveTo(hr.x+4*hs,hr.y+10*hs);ctx.lineTo(hr.x+10*hs,hr.y+4*hs);ctx.moveTo(hr.x+7*hs,hr.y+10.5*hs);ctx.lineTo(hr.x+10.5*hs,hr.y+7*hs);ctx.stroke();ctx.restore();
  ctx.strokeStyle=sel?CT('--color-pro-selection'):WA('--color-neutral-white',10);ctx.lineWidth=1;
  if(sel)round(r.x+.5,r.y+.5,r.w-1,r.h-1,4);else round(r.x,r.y,r.w,r.h,4);ctx.stroke()}
-function slotRect(s,lane,idx){return{x:s.x+PAD+PLUS+GAP+idx*(THUMB+GAP),y:s.y+TITLE_H+PAD+lane*(ROW_H+GAP)+(ROW_H-THUMB)/2,w:THUMB,h:THUMB}}
-function rowCap(s){const avail=s.w-PAD*2-PLUS-GAP;return Math.max(1,Math.floor((avail+GAP)/(THUMB+GAP)))}
+function slotRect(s,lane,idx){return{x:s.x+PAD+plusSize()+GAP+idx*(THUMB+GAP),y:s.y+TITLE_H+PAD+lane*(ROW_H+GAP)+(ROW_H-THUMB)/2,w:THUMB,h:THUMB}}
+function rowCap(s){const avail=sceneW(s)-PAD*2-plusSize()-GAP;return Math.max(1,Math.floor((avail+GAP)/(THUMB+GAP)))}
 function slotXRect(s,lane,idx){const r=slotRect(s,lane,idx);return{x:r.x+r.w-20,y:r.y+2,w:18,h:18}}
 function allChapters(){try{if(typeof SCENES!=='undefined'&&SCENES&&Array.isArray(SCENES.chapters))return SCENES.chapters}catch(e){}return[]}
 var _slotImgCache={};
@@ -1191,7 +1215,7 @@ function handleSlotClick(s,mx,my){const lanes=s.lanes||0;
    if(mx>=xr.x-3&&mx<=xr.x+xr.w+3&&my>=xr.y-3&&my<=xr.y+xr.h+3){unassignSlot(s,list[idx].shot);return true}}}
  const hit=slotAt(s,mx,my);
  if(hit){openSlotDrawer(hit.shot,s,hit.lane);return true}
- if(mx>=s.x&&mx<=s.x+s.w){const lane=laneAtY(s,my);
+ if(mx>=s.x&&mx<=s.x+sceneW(s)){const lane=laneAtY(s,my);
   if(lane>=0){const sa=w2s(mx,my);openShotPicker(s,lane,sa.x,sa.y);return true}}return false}
 var _shotPickEl=null,_shotPickOut=null,_shotPickEsc=null;
 function closeShotPicker(){if(_shotPickEl&&_shotPickEl.parentNode)_shotPickEl.parentNode.removeChild(_shotPickEl);_shotPickEl=null;
@@ -1232,7 +1256,7 @@ function drawScenes(){ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0
  const c=activeChapter();if(!c){SCENES=defaultScenes();const d0=activeChapter();conns=(d0&&d0.conns)||[];persist();syncUI();draw();return}
  if(!c.scenes.length){ctx.fillStyle=CT('--color-pro-text-secondary');ctx.font='14px system-ui';ctx.textAlign='center';
   const _ec=s2w(W/2,H/2);ctx.textBaseline='middle';ctx.fillText('empty chapter — + scene to lay out the sequence',_ec.x,_ec.y);return}
- ctx.fillStyle=WA('--color-neutral-white',9);const _gs=28,_x0=Math.floor(cam.x/_gs)*_gs,_y0=Math.floor(cam.y/_gs)*_gs;
+ ctx.fillStyle=WA('--color-neutral-white',9);const _gs=narrowBoard()?48:28,_x0=Math.floor(cam.x/_gs)*_gs,_y0=Math.floor(cam.y/_gs)*_gs;
  const _x1=cam.x+W/cam.z,_y1=cam.y+H/cam.z;
  for(let gx=_x0;gx<_x1;gx+=_gs)for(let gy=_y0;gy<_y1;gy+=_gs)ctx.fillRect(gx,gy,1/cam.z,1/cam.z);
  for(const s of c.scenes){drawSceneBase(s,s===selStrip);drawSlots(s)}
@@ -1241,14 +1265,14 @@ function drawScenes(){ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0
  const _lt='+ lane ('+((selStrip&&selStrip.lanes)||'—')+')';
  const _b=document.getElementById('addLane');if(_b.textContent!==_lt)_b.textContent=_lt;
  try{syncCardBtn()}catch(e){}}
-function scenePortPos(s,p){if(p==='t')return{x:s.x+s.w/2,y:s.y};
- if(p==='b')return{x:s.x+s.w/2,y:s.y+s.h};if(p==='l')return{x:s.x,y:s.y+s.h/2};return{x:s.x+s.w,y:s.y+s.h/2}}
+function scenePortPos(s,p){const w=sceneW(s);if(p==='t')return{x:s.x+w/2,y:s.y};
+ if(p==='b')return{x:s.x+w/2,y:s.y+s.h};if(p==='l')return{x:s.x,y:s.y+s.h/2};return{x:s.x+w,y:s.y+s.h/2}}
 function drawScenePorts(s){if(s!==selStrip&&s!==hoverScene&&!pending)return;
  for(const p of PORTS){const q=scenePortPos(s,p);
   const hot=!!(hoverPort&&hoverPort.node===s&&hoverPort.port===p)||!!(pending&&pending.node===s&&pending.port===p);
-  ctx.save();ctx.globalAlpha=hot?1:0.75;ctx.beginPath();ctx.arc(q.x,q.y,(hot?8:6)/cam.z,0,Math.PI*2);
+  ctx.save();ctx.globalAlpha=hot?1:0.75;ctx.beginPath();ctx.arc(q.x,q.y,((hot?8:6)+(narrowBoard()?4:0))/cam.z,0,Math.PI*2);
   ctx.fillStyle=CT(hot?'--color-pro-text-primary':'--color-pro-text-secondary');ctx.fill();ctx.lineWidth=1.5/cam.z;ctx.strokeStyle=CT('--color-pro-surface-1');ctx.stroke();ctx.restore()}}
-function scenePortAt(wx,wy){const R=12/cam.z,c=activeChapter();if(!c||!c.scenes)return null;
+function scenePortAt(wx,wy){const R=(narrowBoard()?20:12)/cam.z,c=activeChapter();if(!c||!c.scenes)return null;
  for(let i=c.scenes.length-1;i>=0;i--){const s=c.scenes[i];
   for(const p of PORTS){const q=scenePortPos(s,p);
    if(Math.hypot(wx-q.x,wy-q.y)<=R)return{node:s,port:p}}}return null}
@@ -1279,10 +1303,10 @@ function sceneAt(wx,wy){const c=activeChapter();if(!c||!c.scenes)return null;
   if(wx>=r.x&&wx<=r.x+r.w&&wy>=r.y&&wy<=r.y+r.h)return c.scenes[i]}return null}
 function sceneBodyDown(s,e,wx,wy){const hr=handleRect(s);
  const mode=(wx>=hr.x-5&&wx<=hr.x+hr.w+5&&wy>=hr.y-5&&wy<=hr.y+hr.h+5)?'resize':'move';
- dragS={s,mode,dx:wx-s.x,dy:wy-s.y,sw:s.w,sh:s.h,sx:wx,sy:wy,moved:false};hidePicker();
+ dragS={s,mode,dx:wx-s.x,dy:wy-s.y,sw:sceneW(s),sh:s.h,sx:wx,sy:wy,moved:false};hidePicker();
  try{cv.setPointerCapture(e.pointerId)}catch(err){}cv.style.cursor=mode==='resize'?'nwse-resize':'grabbing'}
 function sceneDragMove(wx,wy){if(Math.hypot(wx-dragS.sx,wy-dragS.sy)>6)dragS.moved=true;const s=dragS.s;
- if(dragS.mode==='resize'){s.w=Math.max(320,dragS.sw+(wx-dragS.sx));s.h=Math.max(220,dragS.sh+(wy-dragS.sy))}
+ if(dragS.mode==='resize'){s.w=Math.max(narrowBoard()?280:320,dragS.sw+(wx-dragS.sx));s.h=Math.max(220,dragS.sh+(wy-dragS.sy))}
  else{s.x=wx-dragS.dx;s.y=wy-dragS.dy}}
 function sceneDragUp(wx,wy){const d=dragS;dragS=null;persist();cv.style.cursor='grab';
  if(!d.moved&&sceneAt(wx,wy)===d.s){clearTimeout(clickT);clickT=setTimeout(()=>openDrawer(d.s),260)}}
@@ -1312,13 +1336,19 @@ function sceneUP(e,sx,sy,wx,wy){
   else pending=null;hoverPort=null;cv.style.cursor='grab';draw();return}
  if(dragS){sceneDragUp(wx,wy);draw();return}}
 function renameScene(s){const v=prompt('Scene title:',s.title||'');if(v!==null&&v.trim()){s.title=v.trim().slice(0,60);persist();draw()}}
+/* Phone reflow: one scene per row, full-bleed width, camera follows the new
+   card. Desktop keeps the 560px card and the offset cascade. */
 function addScene(){const c=activeChapter();if(!c)return null;const id=c.nextScene++;
  const s={id,title:'Scene '+id,scAnchor:'',x:40+((c.scenes.length*70)%400),y:60,w:560,h:340,lanes:2,slots:[]};
+ if(narrowBoard()){s.x=PAD;s.y=64+c.scenes.length*(340+64);s.w=Math.max(280,Math.round(W-2*PAD))}
  s.scAnchor=mintAnchor('SC',s.title);
- c.scenes.push(s);selStrip=s;persist();draw();return s}
+ c.scenes.push(s);selStrip=s;persist();
+ if(narrowBoard()){cam.x=0;cam.y=Math.max(0,s.y-64)}
+ draw();return s}
 /* ---- views: sidebar + chapters ---- */
 function rebuildChapters(){const c=activeChapter(),sel=document.getElementById('chapterSel');sel.innerHTML='';
- for(const ch of SCENES.chapters){const o=document.createElement('option');o.value=ch.id;o.textContent=(ch.chAnchor?ch.chAnchor+' · ':'')+(ch.name||('Chapter '+ch.id));if(ch.id===SCENES.active)o.selected=true;sel.appendChild(o)}
+ const nb=narrowBoard();
+ for(const ch of SCENES.chapters){const o=document.createElement('option');o.value=ch.id;o.textContent=(ch.chAnchor&&!nb?ch.chAnchor+' · ':'')+(ch.name||('Chapter '+ch.id));if(ch.id===SCENES.active)o.selected=true;sel.appendChild(o)}
  document.getElementById('addLane').textContent='+ lane ('+((selStrip&&selStrip.lanes)||'—')+')'}
 function syncUI(){
  document.querySelectorAll('#side button').forEach(b=>b.classList.toggle('on',b.dataset.view===view));
