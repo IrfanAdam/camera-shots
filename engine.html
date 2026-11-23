@@ -318,7 +318,27 @@ const Store={
      create policy "anon delete shots" on storage.objects for delete using (bucket_id='shots');
    Empty/unset = local-only. Uploads are best-effort: the
    ≤768px dataURL is kept until the remote URL lands, so offline/unauthenticated
-   use persists exactly as before. */
+   use persists exactly as before.
+   ---- shared board sync (Supabase table `boards`, id='main') ----
+   Every device loads the SAME board: on boot engine.html GETs the shared row
+   first (falls back to localStorage when offline/missing), and every persist()
+   also PUTs (debounced ~1.2s, last-writer-wins, no conflict UI) to Supabase
+   while always writing localStorage too (offline cache).
+   Anon keys cannot CREATE tables — run this SQL once in the Supabase
+   dashboard (SQL editor) before live verification:
+     create table if not exists public.boards (
+       id text primary key default 'main',
+       data jsonb not null default '{}'::jsonb,
+       updated_at timestamptz not null default now()
+     );
+     alter table public.boards enable row level security;
+     drop policy if exists "anon read boards" on public.boards;
+     create policy "anon read boards" on public.boards for select using (true);
+     drop policy if exists "anon insert boards" on public.boards;
+     create policy "anon insert boards" on public.boards for insert with check (true);
+     drop policy if exists "anon update boards" on public.boards;
+     create policy "anon update boards" on public.boards for update using (true) with check (true);
+   Until that SQL is run, fetch to the real URL 404s — that is expected. */
 const REMOTE_ENDPOINT_DEFAULT='';
 /* Built-in Supabase default. Override per-browser via localStorage['cse-backend']. */
 const SUPABASE_DEFAULTS={url:'https://gyksaplsiiupvdbjhkte.supabase.co',anonKey:'sb_publishable_FDNwZSLsig9q2YuP-fUDow_oYU0IkKx',bucket:'shots'};
@@ -379,11 +399,43 @@ try{window.CSE_REMOTE=Remote}catch(e){}
    dataURL (offline fallback) until the remote URL is confirmed, then swaps it
    in and persists. All per-card menu / drawer flows are unchanged. */
 function remoteBackup(n,localUrl){
- if(!n||!Remote.enabled||typeof localUrl!=='string'||!localUrl.startsWith('data:'))return;
- Remote.put(localUrl).then(u=>{
-  if(!u||n.imgUrl!==localUrl)return;
-  n.imgUrl=u;loadImage(n);persist();
- }).catch(()=>flashHint('saved locally — remote upload failed'))}
+if(!n||!Remote.enabled||typeof localUrl!=='string'||!localUrl.startsWith('data:'))return;
+Remote.put(localUrl).then(u=>{
+ if(!u||n.imgUrl!==localUrl)return;
+ n.imgUrl=u;loadImage(n);persist();
+}).catch(()=>flashHint('saved locally — remote upload failed'))}
+/* ---- shared board sync (Supabase table `boards`, id='main') ----
+   Load-shared-first: boot GETs the shared row and replays it through
+   restore(); missing row / offline / table-not-created-yet (404 until the
+   header SQL is run) all fall back to localStorage silently.
+   Debounced remote save: every persist() writes localStorage immediately and
+   queues one upsert (~1.2s, last-writer-wins, no conflict UI). Single upsert
+   POST (Prefer: resolution=merge-duplicates) covers insert+update for anon. */
+const BOARD_ID='main',BOARD_SAVE_DEBOUNCE_MS=1200;
+const BoardSync={
+ timer:null,pending:null,
+ cfg(){const sb=(typeof Remote!=='undefined'&&Remote.sb)||{};const u=String(sb.url||SUPABASE_DEFAULTS.url||'').replace(/\/$/,'');return{url:u,key:sb.anonKey||SUPABASE_DEFAULTS.anonKey||''}},
+ get enabled(){const c=this.cfg();return!!(c.url&&c.key)},
+ hdrs(extra){const c=this.cfg();return Object.assign({apikey:c.key,Authorization:'Bearer '+c.key,'Content-Type':'application/json'},extra||{})},
+ validPayload(s){return!!(s&&(s.views||s.scenes))},
+ async load(){const c=this.cfg();if(!c.url||!c.key)return null;
+  const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),12000);
+  try{const r=await fetch(c.url+'/rest/v1/boards?id=eq.'+encodeURIComponent(BOARD_ID)+'&select=data,updated_at',{headers:this.hdrs(),signal:ctrl.signal});
+   if(!r.ok)return null;const j=await r.json();
+   const row=Array.isArray(j)?j[0]:j;const d=row&&(row.data!=null?row.data:row);
+   return this.validPayload(d)?d:null;
+  }catch(e){return null}finally{clearTimeout(t)}},
+ async flush(){if(!this.pending)return;const p=this.pending;this.pending=null;
+  const c=this.cfg();if(!c.url||!c.key)return;
+  const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),15000);
+  try{await fetch(c.url+'/rest/v1/boards',{method:'POST',headers:this.hdrs({Prefer:'resolution=merge-duplicates'}),body:JSON.stringify({id:BOARD_ID,data:p,updated_at:new Date().toISOString()}),signal:ctrl.signal});
+  }catch(e){}finally{clearTimeout(t)}},
+ schedule(p){if(!this.enabled||!this.validPayload(p))return;this.pending=p;
+  clearTimeout(this.timer);this.timer=setTimeout(()=>this.flush(),BOARD_SAVE_DEBOUNCE_MS);},
+ async boot(){const d=await this.load();if(!d)return;
+  try{Store.save(d);restore();draw()}catch(e){}}
+};
+try{window.CSE_BOARDSYNC=BoardSync}catch(e){}
 function flashHint(t){hintEl.textContent=t;clearTimeout(flashHint._t);flashHint._t=setTimeout(()=>hintEl.textContent=HINT_DEFAULT,2200)}
 let toastT=null;
 function showToast(msg){document.getElementById('toastMsg').textContent=msg;const t=document.getElementById('toast');t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,5000)}
@@ -393,7 +445,8 @@ function revive(list){return(list||[]).map(n=>{const o={id:n.id,kind:n.kind==='a
 function saveView(){if(VIEW_META[view])VIEWS[view]={nodes:dataOf(nodes),conns,seq,nextId,nextConnId}}
 function loadView(v){const d=VIEWS[v]||freshView();nodes=revive(d.nodes);conns=Array.isArray(d.conns)?d.conns.filter(c=>c&&c.a&&c.b&&nodes.some(n=>n.id===c.a.id)&&nodes.some(n=>n.id===c.b.id)):[];seq=d.seq||1;nextId=d.nextId||1;nextConnId=d.nextConnId||1;selected=nodes.length?nodes[nodes.length-1]:null;selConn=null;selStrip=null}
 function defaultScenes(){return{chapters:[{id:1,name:'Chapter 1',lanes:3,scenes:[],nextScene:1}],active:1}}
-function persist(){if(view==='scenes'){const _ac=activeChapter();if(_ac)_ac.conns=conns}saveView();Store.save({views:VIEWS,scenes:SCENES,project:PROJECT,tombs:TOMBSTONES,ui:{view}})}
+function boardPayload(){return{views:VIEWS,scenes:SCENES,project:PROJECT,tombs:TOMBSTONES,ui:{view}}}
+function persist(){if(view==='scenes'){const _ac=activeChapter();if(_ac)_ac.conns=conns}saveView();const _p=boardPayload();Store.save(_p);try{if(typeof BoardSync!=='undefined')BoardSync.schedule(_p)}catch(e){}}
 let UNDO=[];
 function snap(){try{UNDO.push(JSON.stringify({views:VIEWS,scenes:SCENES,project:PROJECT,tombs:TOMBSTONES,view}));if(UNDO.length>50)UNDO.shift()}catch(e){}}
 function undo(){const s=UNDO.pop();if(!s){flashHint('nothing to undo');return}
@@ -1433,4 +1486,5 @@ function renderAssetMenu(){const host=document.getElementById('assetList');host.
  if(!host.children.length+1||host.querySelectorAll('button').length===0){const d=document.createElement('div');d.className='ah';d.textContent='no assets yet';host.appendChild(d)}}
 attachZoom();
 restore();fit();
+try{if(typeof BoardSync!=='undefined'&&BoardSync.boot)BoardSync.boot()}catch(e){}
 </script></body></html>
