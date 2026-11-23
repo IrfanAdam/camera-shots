@@ -21,26 +21,28 @@ a{color:inherit}
 .hnav{display:flex;gap:.5rem}
 .hnav a{font-size:.82rem;font-weight:600;text-decoration:none;padding:.32rem .8rem;border-radius:99px;border:1px solid var(--rule);color:var(--ink);background:var(--s1)}
 .hnav a:hover{border-color:var(--acc)}
-.tabs{position:relative;display:flex;gap:0;margin-top:.7rem;background:var(--s1);border:1px solid var(--rule);border-radius:99px;padding:.25rem;overflow-x:auto;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab{position:relative;z-index:1;flex:1 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-size:.85rem;font-weight:650;background:transparent;color:var(--mut);border:0;border-left:1px solid var(--rule);border-radius:99px;padding:.42rem 1rem;cursor:pointer;font-family:inherit;white-space:nowrap}
-.tab:first-child{border-left:0}
-.tab::before{content:"";width:5px;height:5px;border-radius:50%;background:transparent;flex:none}
-.tab:hover{color:var(--ink)}
-.tab:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-.tab.on{color:var(--ink)}
-.tab.on::before{background:var(--acc)}
-.thumb{position:absolute;z-index:0;top:.25rem;bottom:.25rem;left:0;width:0;border-radius:99px;background:rgba(200,178,138,.13);border:1px solid var(--acc);transition:left .25s ease,width .25s ease;pointer-events:none}
-.exportbar{display:flex;align-items:center;gap:.6rem;margin-top:.6rem;flex-wrap:wrap}
-.exportbar .explabel{font-size:.75rem;color:var(--mut);letter-spacing:.04em}
-.exportbar .explabel b{color:var(--ink);font-weight:650}
-.expbtns{display:flex;gap:.4rem;flex-wrap:wrap}
-.expbtn{font-size:.78rem;font-weight:600;background:transparent;color:var(--mut);border:1px solid var(--rule);border-radius:99px;padding:.32rem .85rem;cursor:pointer;font-family:inherit}
+/* sidebar: minimal doc tabs + export below tabs + active-panel TOC */
+.side{position:sticky;top:6.5rem;align-self:start;display:flex;flex-direction:column;min-width:0}
+.doctabs{display:flex;flex-direction:column;align-items:stretch;gap:0;border-bottom:1px solid var(--rule);padding-bottom:.7rem}
+.doctabs .cap{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);padding:.1rem 0 .5rem}
+.doctab{position:relative;display:flex;align-items:center;gap:.55rem;background:transparent;border:0;padding:.42rem 0 .42rem .85rem;font-size:.86rem;font-weight:400;color:var(--mut);cursor:pointer;font-family:inherit;text-align:left;white-space:nowrap}
+.doctab::before{content:"";position:absolute;left:0;top:50%;width:5px;height:5px;border-radius:50%;background:transparent;transform:translateY(-50%)}
+.doctab:hover{color:var(--ink)}
+.doctab:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.doctab.on{color:var(--ink);font-weight:650}
+.doctab.on::before{background:var(--acc)}
+.sidexport{display:flex;flex-direction:column;gap:.45rem;border-bottom:1px solid var(--rule);padding:.7rem 0}
+.sidexport .explabel{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.sidexport .explabel b{color:var(--ink);font-weight:650}
+.expbtns{display:flex;flex-direction:column;gap:.35rem}
+.expbtn{font-size:.8rem;font-weight:600;background:transparent;color:var(--mut);border:1px solid var(--rule);border-radius:10px;padding:.42rem .8rem;cursor:pointer;font-family:inherit;text-align:left}
 .expbtn:hover{color:var(--ink);border-color:var(--acc)}
 .expstat{font-size:.78rem;color:var(--acc);min-height:1em}
 .layout{display:grid;grid-template-columns:220px 1fr;gap:2rem;margin-top:1.5rem}
-/* desktop sticky TOC */
-.toc{position:sticky;top:8.5rem;align-self:start;display:flex;flex-direction:column;gap:.15rem;border-left:1px solid var(--rule);padding-left:1rem}
+.panels{display:flex;flex-direction:column;min-width:0}
+/* active-panel TOC under the export block */
+.toc{display:none;flex-direction:column;gap:.15rem;border-left:1px solid var(--rule);padding-left:1rem;margin-top:.9rem}
+.toc.on{display:flex}
 .toc a{position:relative;text-decoration:none;color:var(--mut);font-size:.85rem;padding:.3rem 0 .3rem .9rem}
 .toc a::before{content:"";position:absolute;left:-1rem;top:.75em;width:5px;height:5px;border-radius:50%;background:transparent;transform:translateX(-2.5px)}
 .toc a.on{color:var(--ink);font-weight:650}
@@ -135,7 +137,16 @@ footer{margin:3rem 0 1rem;color:var(--mut);font-size:.78rem;border-top:1px solid
 .mrail{display:none}
 @media(max-width:900px){
 .layout{grid-template-columns:1fr}
-.toc{display:none}
+.side{position:static}
+.doctabs{flex-direction:row;align-items:center;gap:.2rem;overflow-x:auto;border-bottom:0;padding-bottom:.55rem;scrollbar-width:none}
+.doctabs::-webkit-scrollbar{display:none}
+.doctabs .cap{display:none}
+.doctab{flex:none;padding:.35rem .1rem .35rem .8rem;font-size:.82rem}
+.sidexport{flex-direction:row;align-items:center;gap:.5rem;flex-wrap:wrap;border-bottom:0;padding:.1rem 0 .2rem}
+.sidexport .explabel{font-size:.72rem}
+.expbtns{flex-direction:row;flex-wrap:wrap}
+.expbtn{border-radius:99px;padding:.32rem .8rem;font-size:.76rem}
+.toc,.toc.on{display:none}
 .grid{grid-template-columns:1fr}
 .metrics{grid-template-columns:1fr 1fr}
 .mrail{display:flex;position:fixed;bottom:calc(.8rem + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);gap:.15rem;background:rgba(20,20,22,.92);backdrop-filter:blur(8px);border:1px solid var(--rule);border-radius:99px;padding:.3rem .45rem;z-index:50;max-width:calc(100vw - 1.5rem);overflow-x:auto;box-shadow:0 8px 24px rgba(0,0,0,.5)}
@@ -151,7 +162,7 @@ footer{margin:3rem 0 1rem;color:var(--mut);font-size:.78rem;border-top:1px solid
 }
 /* print: active article only */
 @media print{
-.top,.toc,.mrail,.ctarow,.drawer,.backdrop,footer,.viewtoggle,.exportbar{display:none!important}
+.top,.side,.mrail,.ctarow,.drawer,.backdrop,footer,.viewtoggle{display:none!important}
 body{background:#fff!important;color:#111!important}
 .w{max-width:100%;padding:0}
 .panel{display:none!important}
@@ -165,7 +176,7 @@ article{gap:1.5rem}
 @media(prefers-reduced-motion:reduce){
 html{scroll-behavior:auto}
 .panel.on{animation:none}
-.drawer,.backdrop,.tab,.btn,.thumb{transition:none!important}
+.drawer,.backdrop,.doctab,.btn{transition:none!important}
 *{animation:none!important}
 }
 </style></head>
@@ -176,14 +187,19 @@ html{scroll-behavior:auto}
 <a class="brand" href="#story">Camera Shots<small>intent before pixels</small></a>
 <span class="hright"><span class="by">by irfan</span><span class="hnav"><a href="index.html">wiki</a><a href="engine.html">engine &rarr;</a></span></span>
 </div>
-<nav class="tabs" role="tablist" aria-label="Documents">
-<span class="thumb" id="tab-thumb" aria-hidden="true"></span>
-<button class="tab on" role="tab" data-doc="story" aria-selected="true" tabindex="0">Story</button>
-<button class="tab" role="tab" data-doc="investors" aria-selected="false" tabindex="-1">Investors</button>
-<button class="tab" role="tab" data-doc="wiki" aria-selected="false" tabindex="-1">Wiki</button>
-<button class="tab" role="tab" data-doc="mvp" aria-selected="false" tabindex="-1">MVP</button>
+</header>
+
+<!-- ============ SHARED SIDEBAR: doc tabs, export below tabs, active TOC ============ -->
+<div class="layout">
+<aside class="side">
+<nav class="doctabs" role="tablist" aria-label="Documents">
+<span class="cap" aria-hidden="true">Documents</span>
+<button class="doctab on" role="tab" data-doc="story" aria-selected="true" tabindex="0">Story</button>
+<button class="doctab" role="tab" data-doc="investors" aria-selected="false" tabindex="-1">Investors</button>
+<button class="doctab" role="tab" data-doc="wiki" aria-selected="false" tabindex="-1">Wiki</button>
+<button class="doctab" role="tab" data-doc="mvp" aria-selected="false" tabindex="-1">MVP</button>
 </nav>
-<div class="exportbar" role="group" aria-label="Export active document">
+<div class="sidexport" role="group" aria-label="Export active document">
 <span class="explabel">Export: <b id="export-label">Story</b></span>
 <span class="expbtns">
 <button class="expbtn" id="exp-md" type="button">Download .md</button>
@@ -192,14 +208,23 @@ html{scroll-behavior:auto}
 </span>
 <span class="expstat" id="exp-stat" role="status" aria-live="polite"></span>
 </div>
-</header>
+<nav class="toc on" data-toc="story" aria-label="Story contents">
+<a href="#s-hero">Intro</a><a href="#s-vision">01 — Vision</a><a href="#s-problem">02 — Problem</a><a href="#s-gap">03 — Craft Gap</a><a href="#s-how">04 — How It Works</a><a href="#s-built">05 — Built For</a><a href="#s-principles">06 — Principles</a><a href="#s-next">07 — What's Next</a><a href="#s-cta">Build with Intent</a>
+</nav>
+<nav class="toc" data-toc="investors" aria-label="Investor contents">
+<a href="#d3-thesis">Thesis</a><a href="#d3-market">Why Now</a><a href="#d3-model">Model</a><a href="#d3-roadmap">Roadmap</a><a href="#d3-allocation">Allocation</a><a href="#d3-runway">Runway</a>
+</nav>
+<nav class="toc" data-toc="wiki" aria-label="Wiki contents">
+<a href="#d2-principles">Principles</a><a href="#d2-architecture">Architecture</a><a href="#d2-stack">Stack</a><a href="#d2-security">Security</a><a href="#d2-adr">ADRs</a>
+</nav>
+<nav class="toc" data-toc="mvp" aria-label="MVP contents">
+<a href="#d4-research">Research</a><a href="#d4-scope">Scope</a><a href="#d4-requirements">Requirements</a><a href="#d4-nfr">NFRs</a><a href="#d4-backlog">Backlog</a>
+</nav>
+</aside>
+<div class="panels">
 
 <!-- ============ TAB 1: STORY ============ -->
 <div class="panel on" id="panel-doc-01" data-panel="story" role="tabpanel" aria-label="Story">
-<div class="layout">
-<aside><nav class="toc" aria-label="Story contents">
-<a href="#s-hero">Intro</a><a href="#s-vision">01 — Vision</a><a href="#s-problem">02 — Problem</a><a href="#s-gap">03 — Craft Gap</a><a href="#s-how">04 — How It Works</a><a href="#s-built">05 — Built For</a><a href="#s-principles">06 — Principles</a><a href="#s-next">07 — What's Next</a><a href="#s-cta">Build with Intent</a>
-</nav></aside>
 <article>
 <section id="s-hero">
 <header class="hero">
@@ -289,14 +314,9 @@ html{scroll-behavior:auto}
 </section>
 </article>
 </div>
-</div>
 
 <!-- ============ TAB 2: INVESTORS ============ -->
 <div class="panel" id="panel-doc-03" data-panel="investors" role="tabpanel" aria-label="Investors">
-<div class="layout">
-<aside><nav class="toc" aria-label="Investor contents">
-<a href="#d3-thesis">Thesis</a><a href="#d3-market">Why Now</a><a href="#d3-model">Model</a><a href="#d3-roadmap">Roadmap</a><a href="#d3-allocation">Allocation</a><a href="#d3-runway">Runway</a>
-</nav></aside>
 <article>
 <section id="d3-thesis">
 <span class="draft">Draft — figures being finalised</span>
@@ -388,14 +408,9 @@ html{scroll-behavior:auto}
 </section>
 </article>
 </div>
-</div>
 
 <!-- ============ TAB 3: WIKI ============ -->
 <div class="panel" id="panel-doc-02" data-panel="wiki" role="tabpanel" aria-label="Wiki">
-<div class="layout">
-<aside><nav class="toc" aria-label="Wiki contents">
-<a href="#d2-principles">Principles</a><a href="#d2-architecture">Architecture</a><a href="#d2-stack">Stack</a><a href="#d2-security">Security</a><a href="#d2-adr">ADRs</a>
-</nav></aside>
 <article>
 <section id="d2-principles">
 <p class="k">Principles</p>
@@ -453,14 +468,9 @@ html{scroll-behavior:auto}
 </section>
 </article>
 </div>
-</div>
 
 <!-- ============ TAB 4: MVP ============ -->
 <div class="panel" id="panel-doc-04" data-panel="mvp" role="tabpanel" aria-label="MVP">
-<div class="layout">
-<aside><nav class="toc" aria-label="MVP contents">
-<a href="#d4-research">Research</a><a href="#d4-scope">Scope</a><a href="#d4-requirements">Requirements</a><a href="#d4-nfr">NFRs</a><a href="#d4-backlog">Backlog</a>
-</nav></aside>
 <article>
 <section id="d4-header">
 <span class="draft">Draft — refining</span>
@@ -568,7 +578,8 @@ html{scroll-behavior:auto}
 </section>
 </article>
 </div>
-</div>
+</div><!-- /panels -->
+</div><!-- /layout -->
 
 <footer>Camera Shots — a wiki and a prompt engine for deliberate AI cinema. by irfan · <a href="index.html">wiki</a> · <a href="engine.html">engine</a></footer>
 </div>
@@ -631,12 +642,13 @@ investors:[["d3-thesis","Thesis"],["d3-market","Why Now"],["d3-model","Model"],[
 wiki:[["d2-principles","Principles"],["d2-architecture","Arch"],["d2-stack","Stack"],["d2-security","Security"],["d2-adr","ADRs"]],
 mvp:[["d4-research","Research"],["d4-scope","Scope"],["d4-requirements","Reqs"],["d4-nfr","NFRs"],["d4-backlog","Backlog"]]
 };
-var tabs=[].slice.call(document.querySelectorAll(".tab"));
+var tabs=[].slice.call(document.querySelectorAll(".doctab"));
+var tocs=[].slice.call(document.querySelectorAll(".toc[data-toc]"));
+var current="story";
 var panels={};TABS.forEach(function(n){panels[n]=document.querySelector('[data-panel="'+n+'"]')});
 var rail=document.getElementById("mrail");
 var reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
 var spy=null;
-function activePanel(){return document.querySelector(".panel.on")}
 function setRail(name){
   rail.innerHTML="";
   TOCS[name].forEach(function(p){
@@ -645,8 +657,8 @@ function setRail(name){
   });
 }
 function mark(id){
-  var panel=activePanel();if(!panel)return;
-  [].slice.call(panel.querySelectorAll(".toc a")).forEach(function(a){
+  var toc=document.querySelector('.toc[data-toc="'+current+'"]');if(!toc)return;
+  [].slice.call(toc.querySelectorAll("a")).forEach(function(a){
     a.classList.toggle("on",a.getAttribute("href")==="#"+id);
   });
   [].slice.call(rail.querySelectorAll("a")).forEach(function(a){
@@ -663,14 +675,17 @@ function observe(name){
 }
 function activate(name,skipScroll){
   if(TOCS[name]===undefined)name="story";
+  current=name;
+  [].slice.call(document.querySelectorAll(".toc a.on")).forEach(function(a){a.classList.remove("on")});
   tabs.forEach(function(t){
     var on=t.dataset.doc===name;
     t.classList.toggle("on",on);t.setAttribute("aria-selected",on?"true":"false");t.tabIndex=on?0:-1;
   });
   TABS.forEach(function(n){panels[n].classList.toggle("on",n===name)});
+  tocs.forEach(function(c){c.classList.toggle("on",c.dataset.toc===name)});
   document.body.dataset.printDoc=name;
   var xl=document.getElementById("export-label");if(xl)xl.textContent=DOC_TITLES[name]||name;
-  setRail(name);observe(name);moveThumb();
+  setRail(name);observe(name);
   try{history.replaceState(null,"","#"+name)}catch(e){}
   if(!skipScroll){window.scrollTo(0,0);mark(TOCS[name][0][0])}
 }
@@ -726,20 +741,11 @@ if(gt&&g)gt.addEventListener("click",function(){
   gt.textContent=show?"Hide Gantt view":"Show Gantt view";
   gt.setAttribute("aria-expanded",show?"true":"false");
 });
-/* segmented thumb + roving tabindex + arrow-key tabs */
-var thumb=document.getElementById("tab-thumb");
-function moveThumb(){
-  var on=document.querySelector(".tab.on");
-  if(!on||!thumb)return;
-  thumb.style.left=on.offsetLeft+"px";
-  thumb.style.width=on.offsetWidth+"px";
-}
-window.addEventListener("resize",moveThumb);
-if(document.fonts&&document.fonts.ready)document.fonts.ready.then(moveThumb);
+/* roving tabindex + arrow-key tabs */
 tabs.forEach(function(t){
   if(PANEL_IDS[t.dataset.doc])t.setAttribute("aria-controls",PANEL_IDS[t.dataset.doc]);
 });
-var tabNav=document.querySelector(".tabs");
+var tabNav=document.querySelector(".doctabs");
 tabNav.addEventListener("keydown",function(e){
   var i=tabs.indexOf(document.activeElement);
   if(i<0)return;
