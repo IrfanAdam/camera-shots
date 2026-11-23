@@ -132,12 +132,14 @@ tbody td:first-child{white-space:nowrap;font-weight:650;color:var(--ink)}
 .dpill{display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;font-weight:600;background:transparent;color:var(--mut);border:1px solid var(--rule);border-radius:99px;padding:.32rem .7rem;cursor:pointer;font-family:inherit}
 .dpill svg{flex:none;display:block}
 .dpill:hover{color:var(--ink);border-color:var(--acc)}
-.curtoggle{display:flex;align-items:center;gap:.6rem;margin:.4rem 0 1rem}
-.fxswitch{position:relative;display:inline-flex;align-items:center;width:12rem;max-width:100%;height:2.5rem;border-radius:999px;background:#101012;border:1px solid var(--rule);cursor:pointer;padding:0;font-family:inherit;-webkit-tap-highlight-color:transparent}
+.scenrow{display:flex;align-items:center;justify-content:space-between;gap:.5rem .75rem;flex-wrap:wrap;margin:1rem 0}
+.scenrow .pills{display:flex;gap:.4rem;flex-wrap:wrap;margin:0;flex:1 1 auto;min-width:0}
+.scenrow .curtoggle{display:flex;align-items:center;margin:0 0 0 auto;flex:none}
+.fxswitch{position:relative;display:inline-flex;align-items:center;width:6.4rem;max-width:100%;height:23px;border-radius:999px;background:#101012;border:1px solid var(--rule);cursor:pointer;padding:0;font-family:inherit;-webkit-tap-highlight-color:transparent;flex:none}
 .fxswitch:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-.fxthumb{position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);border-radius:999px;background:var(--acc);transition:transform .22s ease;z-index:0}
+.fxthumb{position:absolute;top:2px;bottom:2px;left:2px;width:calc(50% - 2px);border-radius:999px;background:var(--acc);transition:transform .22s ease;z-index:0}
 .fxswitch[aria-checked="true"] .fxthumb{transform:translateX(100%)}
-.fxlab{position:relative;z-index:1;flex:1 1 50%;text-align:center;font-size:.78rem;font-weight:650;color:var(--mut);transition:color .2s ease;white-space:nowrap}
+.fxlab{position:relative;z-index:1;flex:1 1 50%;text-align:center;font-size:11px;line-height:1;font-weight:700;color:var(--mut);transition:color .2s ease;white-space:nowrap;padding:0 .3rem}
 .fxswitch[aria-checked="false"] .fxlab[data-fxlab="inr"]{color:var(--acc-ink)}
 .fxswitch[aria-checked="true"] .fxlab[data-fxlab="usd"]{color:var(--acc-ink)}
 @media (prefers-reduced-motion: reduce){.fxthumb,.fxlab{transition:none}}
@@ -629,10 +631,9 @@ html{scroll-behavior:auto}
 <p class="k">Funding scenarios</p>
 <h2>Four ways the raise could play.</h2>
 <p class="lede">Illustrative defaults only — plan, not promise. All figures DRAFT pending founder inputs.</p>
-<div class="pills" id="fund-pills">
+<div class="scenrow"><div class="pills" id="fund-pills">
 <button class="pill" data-fsc="minimal">Minimal</button><button class="pill" data-fsc="conservative">Conservative</button><button class="pill on" data-fsc="ok">OK</button><button class="pill" data-fsc="ideal">Ideal</button>
-</div>
-<div class="curtoggle"><button id="fund-fx" class="fxswitch" type="button" role="switch" aria-checked="false" aria-label="Currency, INR or USD"><span class="fxthumb" aria-hidden="true"></span><span class="fxlab" data-fxlab="inr" aria-hidden="true">&#8377; INR</span><span class="fxlab" data-fxlab="usd" aria-hidden="true">$ USD</span></button></div>
+</div><div class="curtoggle"><button id="fund-fx" class="fxswitch" type="button" role="switch" aria-checked="false" aria-label="Currency, INR or USD"><span class="fxthumb" aria-hidden="true"></span><span class="fxlab" data-fxlab="inr" aria-hidden="true">&#8377; INR</span><span class="fxlab" data-fxlab="usd" aria-hidden="true">$ USD</span></button></div></div>
 <div class="metrics" style="grid-template-columns:1fr 1fr" id="fund-kpis"></div>
 <p class="draft-note" id="fund-assump"></p>
 <div class="fchart" id="fund-chart" aria-label="Monthly burn versus scenario MRR"></div>
