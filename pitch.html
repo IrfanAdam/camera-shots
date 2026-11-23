@@ -26,6 +26,7 @@ a{color:inherit}
 @media(min-width:901px){.hdricons{display:none}}
 .hicon{display:flex;align-items:center;justify-content:center;width:2rem;height:2rem;border-radius:8px;background:transparent;border:0;color:var(--mut);font-size:1rem;cursor:pointer;font-family:inherit}
 .hicon:hover{color:var(--ink);background:var(--s2)}
+.hicon svg{display:block}
 /* doc tabs: minimal text buttons right, 5px champagne dot under active */
 .doctabs{display:flex;align-items:center;justify-content:flex-start;gap:1.4rem;overflow-x:auto;scrollbar-width:none}
 .doctabs::-webkit-scrollbar{display:none}
@@ -41,8 +42,9 @@ a{color:inherit}
 .sidexport{display:flex;flex-direction:column;gap:.45rem;border-bottom:1px solid var(--rule);padding:.7rem 0}
 .sidexport .explabel{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
 .sidexport .explabel b{color:var(--ink);font-weight:650}
-.expbtns{display:flex;flex-direction:column;gap:.35rem}
-.expbtn{font-size:.8rem;font-weight:600;background:transparent;color:var(--mut);border:1px solid var(--rule);border-radius:10px;padding:.42rem .8rem;cursor:pointer;font-family:inherit;text-align:left}
+.expbtns{display:flex;flex-wrap:wrap;gap:.35rem}
+.expbtn{display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;font-weight:600;background:transparent;color:var(--mut);border:1px solid var(--rule);border-radius:8px;padding:.32rem .55rem;cursor:pointer;font-family:inherit}
+.expbtn svg{flex:none;display:block}
 .expbtn:hover{color:var(--ink);border-color:var(--acc)}
 .expstat{font-size:.78rem;color:var(--acc);min-height:1em}
 .layout{display:grid;grid-template-columns:220px 1fr;gap:2rem;margin-top:1.5rem}
@@ -127,18 +129,24 @@ tbody td:first-child{white-space:nowrap;font-weight:650;color:var(--ink)}
 .drawer .x{float:right;background:transparent;border:1px solid var(--rule);color:var(--ink);border-radius:99px;padding:.3rem .8rem;cursor:pointer;font-family:inherit;font-size:.8rem}
 .dhead{display:flex;align-items:center;justify-content:flex-end;gap:.5rem;margin-bottom:.9rem}
 .dhead .x{float:none}
-.dpill{font-size:.78rem;font-weight:600;background:transparent;color:var(--mut);border:1px solid var(--rule);border-radius:99px;padding:.4rem .95rem;cursor:pointer;font-family:inherit}
+.dpill{display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;font-weight:600;background:transparent;color:var(--mut);border:1px solid var(--rule);border-radius:99px;padding:.32rem .7rem;cursor:pointer;font-family:inherit}
+.dpill svg{flex:none;display:block}
 .dpill:hover{color:var(--ink);border-color:var(--acc)}
 .curtoggle{display:flex;gap:.4rem;margin:.4rem 0 1rem}
-/* fund chart: paired burn/MRR bars + hover/focus tooltip */
-.fchart{position:relative;margin-top:1.1rem;display:flex;flex-direction:column;gap:.32rem}
-.frow{display:grid;grid-template-columns:2.4rem 1fr;gap:.55rem;align-items:center;font-size:.72rem;color:var(--mut);border-radius:6px}
-.frow:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-.fbars{display:flex;flex-direction:column;gap:3px;min-width:0}
-.fbar{height:8px;border-radius:99px;background:var(--acc);min-width:2px}
-.fbar.mrr{background:transparent;border:1px solid var(--acc)}
-.ftip{position:absolute;z-index:5;pointer-events:none;background:var(--s2);border:1px solid var(--acc);border-radius:8px;padding:.4rem .6rem;font-size:.72rem;color:var(--ink);white-space:nowrap;display:none;max-width:100%}
+/* fund chart: SVG line graph (MRR vs burn) + hover/focus tooltip */
+.fchart{position:relative;margin-top:1.1rem}
+.fchart svg{width:100%;height:auto;display:block}
+.fchart rect[data-m]{cursor:pointer}
+.fchart rect[data-m]:focus-visible{outline:2px solid var(--acc);outline-offset:-2px}
+.fleg{display:flex;flex-wrap:wrap;gap:.4rem 1rem;margin-top:.5rem;font-size:.7rem;color:var(--mut)}
+.fleg span{display:inline-flex;align-items:center;gap:.4rem}
+.fleg i{font-style:normal}
+.fsw{width:1.1rem;height:0;border-top:2px solid var(--acc)}
+.fsw.burn{border-top:2px dashed #8E8C86}
+.fdot{width:.55rem;height:.55rem;border-radius:50%;background:#10b981}
+.ftip{position:absolute;z-index:5;pointer-events:none;background:var(--s2);border:1px solid var(--acc);border-radius:8px;padding:.45rem .65rem;font-size:.72rem;line-height:1.6;color:var(--ink);white-space:nowrap;display:none;max-width:100%}
 .ftip.show{display:block}
+.ftip .be{display:inline-block;font-size:.62rem;font-weight:700;padding:.05rem .45rem;border-radius:99px;background:#10b981;color:#06110c;vertical-align:1px}
 .pills{display:flex;gap:.4rem;flex-wrap:wrap;margin:1rem 0}
 .pill{font-size:.78rem;font-weight:650;border:1px solid var(--rule);background:transparent;color:var(--mut);border-radius:99px;padding:.35rem .9rem;cursor:pointer;font-family:inherit}
 .pill.on{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
@@ -201,8 +209,9 @@ html{scroll-behavior:auto}
 <a class="brand" href="#story" onclick="switchTab('story');return false;">Camera Shots<small>intent before pixels</small></a>
 <span style="display:flex;align-items:center;gap:.8rem"><span class="hnav"><a href="index.html">wiki</a><a href="engine.html">engine &rarr;</a></span>
 <span class="hdricons no-print">
-<button class="hicon" id="h-exp" type="button" title="Download .md of this tab" aria-label="Download active tab markdown">&#8681;</button>
-<button class="hicon" id="h-copy" type="button" title="Copy .md of this tab" aria-label="Copy active tab markdown">&#10697;</button>
+<button class="hicon" id="h-exp" type="button" title="Download .md of this tab" aria-label="Download active tab markdown"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button>
+<button class="hicon" id="h-copy" type="button" title="Copy .md of this tab" aria-label="Copy active tab markdown"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+<button class="hicon" id="h-print" type="button" title="Print this tab" aria-label="Print active tab"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button>
 </span></span>
 </div>
 <nav class="doctabs" role="tablist" aria-label="Company Documents">
@@ -232,9 +241,9 @@ html{scroll-behavior:auto}
 <div class="sidexport no-print" role="group" aria-label="Export active document">
 <span class="explabel">Export: <b id="export-label">Story</b></span>
 <span class="expbtns">
-<button class="expbtn" id="exp-md" type="button">Download .md</button>
-<button class="expbtn" id="exp-copy" type="button">Copy .md</button>
-<button class="expbtn" id="exp-print" type="button">Print / PDF</button>
+<button class="expbtn" id="exp-md" type="button" title="Download .md of this tab" aria-label="Download active tab markdown"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>.md</button>
+<button class="expbtn" id="exp-copy" type="button" title="Copy .md of this tab" aria-label="Copy active tab markdown"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button>
+<button class="expbtn" id="exp-print" type="button" title="Print this tab" aria-label="Print active tab"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print</button>
 </span>
 <span class="expstat" id="exp-stat" role="status" aria-live="polite"></span>
 </div>
@@ -607,7 +616,7 @@ html{scroll-behavior:auto}
 <div class="backdrop" id="backdrop"></div>
 
 <aside class="drawer" id="fund-drawer" role="dialog" aria-modal="true" aria-label="Funding scenarios" hidden>
-<div class="dhead"><button class="dpill" id="fund-md" type="button">Export .md</button><button class="x" data-close>Close &#10005;</button></div>
+<div class="dhead"><button class="dpill" id="fund-md" type="button" title="Download funding scenarios as Markdown"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Export .md</button><button class="x" data-close>Close &#10005;</button></div>
 <span class="draft">Draft — scenario model, not a forecast</span>
 <p class="k">Funding scenarios</p>
 <h2>Four ways the raise could play.</h2>
@@ -621,6 +630,7 @@ html{scroll-behavior:auto}
 <div class="metrics" style="grid-template-columns:1fr 1fr" id="fund-kpis"></div>
 <p class="draft-note" id="fund-assump"></p>
 <div class="fchart" id="fund-chart" aria-label="Monthly burn versus scenario MRR"></div>
+<div class="fleg" aria-hidden="true"><span><i class="fsw burn"></i>Burn</span><span><i class="fsw"></i>MRR</span><span><i class="fdot"></i>Breakeven</span></div>
 <div class="tbl"><table>
 <thead><tr><th>M</th><th>Burn</th><th>MRR</th><th>Team</th><th>Gap</th></tr></thead>
 <tbody id="fund-rows"></tbody>
@@ -629,7 +639,7 @@ html{scroll-behavior:auto}
 </aside>
 
 <aside class="drawer" id="plan-drawer" role="dialog" aria-modal="true" aria-label="Eight week plan" hidden>
-<div class="dhead"><button class="dpill" id="plan-md" type="button">Export .md</button><button class="x" data-close>Close &#10005;</button></div>
+<div class="dhead"><button class="dpill" id="plan-md" type="button" title="Download 8-week plan as Markdown"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Export .md</button><button class="x" data-close>Close &#10005;</button></div>
 <span class="draft">Draft — plan, not promise</span>
 <p class="k">8-week plan</p>
 <h2>Week by week, gated twice.</h2>
@@ -784,14 +794,47 @@ function fundRender(id){
   }
   var chart=document.getElementById("fund-chart");
   if(chart){
-    var mx=1;for(m=1;m<=18;m++){mx=Math.max(mx,burnAt(sc,m),mrrAt(sc,m))}
-    var ch="";
-    for(m=1;m<=18;m++){
-      var bb=burnAt(sc,m),rr=mrrAt(sc,m);
-      ch+='<div class="frow" tabindex="0" data-tip="M'+m+" · burn "+inr(bb)+" · MRR "+inr(rr)+'"><span>M'+m+'</span><span class="fbars"><span class="fbar" style="width:'+Math.max(1,bb/mx*100).toFixed(1)+'%"></span><span class="fbar mrr" style="width:'+Math.max(1,rr/mx*100).toFixed(1)+'%"></span></span></div>';
+    var W=600,H=210,pL=52,pR=10,pT=12,pB=22;
+    var mrr=[],brn=[],i;
+    for(m=1;m<=18;m++){mrr.push(mrrAt(sc,m));brn.push(burnAt(sc,m))}
+    var ymax=Math.max(brn[17]*1.1,mrr[17]*1.12);
+    var step=ymax/4,pow=Math.pow(10,Math.floor(Math.log(step)/Math.LN10)),nn=step/pow;
+    step=(nn>=5?5:nn>=2?2:1)*pow;
+    function X(ii){return pL+ii*(W-pL-pR)/17}
+    function Y(v){return H-pB-(v/ymax)*(H-pT-pB)}
+    function ax(v){
+      var a=Math.abs(v);
+      if(a>=1e7)return "₹"+(v/1e7).toFixed(1).replace(/\.0$/,"")+" Cr";
+      if(a>=1e5)return "₹"+Math.round(v/1e5)+"L";
+      return "₹"+Math.round(v/1000)+"k";
     }
-    ch+='<div class="ftip" id="fund-tip" role="status"></div>';
-    chart.innerHTML=ch;
+    var mp=[],bp2=[];
+    for(i=0;i<18;i++){mp.push(X(i).toFixed(1)+","+Y(mrr[i]).toFixed(1));bp2.push(X(i).toFixed(1)+","+Y(brn[i]).toFixed(1))}
+    var s='<svg viewBox="0 0 '+W+" "+H+'" role="img" aria-label="Burn versus MRR line chart. Hover a point for month detail.">';
+    for(var t=0;t<=ymax;t+=step){
+      var yy=Y(t);
+      s+='<line x1="'+pL+'" y1="'+yy.toFixed(1)+'" x2="'+(W-pR)+'" y2="'+yy.toFixed(1)+'" stroke="#26262B" stroke-width="1"/>';
+      s+='<text x="'+(pL-6)+'" y="'+(yy+3.5).toFixed(1)+'" text-anchor="end" font-size="9.5" fill="#A7A5A0">'+ax(t)+"</text>";
+    }
+    s+='<polyline points="'+bp2.join(" ")+'" fill="none" stroke="#8E8C86" stroke-width="1.5" stroke-dasharray="5 4"/>';
+    s+='<polyline points="'+mp.join(" ")+'" fill="none" stroke="#C8B28A" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
+    var xl=[0,5,11,17],xlL=["M1","M6","M12","M18"],q;
+    for(q=0;q<xl.length;q++){s+='<text x="'+X(xl[q]).toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle" font-size="9.5" fill="#A7A5A0">'+xlL[q]+"</text>"}
+    if(be!==null){
+      var bx=X(be-1),by=Y(mrr[be-1]);
+      s+='<circle cx="'+bx.toFixed(1)+'" cy="'+by.toFixed(1)+'" r="5" fill="#10b981" stroke="#0A0A0B" stroke-width="2"/>';
+      s+='<text x="'+bx.toFixed(1)+'" y="'+Math.max(by-10,10).toFixed(1)+'" text-anchor="middle" font-size="10" font-weight="600" fill="#10b981">M'+be+"</text>";
+    }
+    var bw=(W-pL-pR)/17;
+    for(i=0;i<18;i++){
+      s+='<rect data-m="'+i+'" x="'+(X(i)-bw/2).toFixed(1)+'" y="'+pT+'" width="'+bw.toFixed(1)+'" height="'+(H-pB-pT)+'" fill="transparent" style="cursor:pointer;outline:none;" tabindex="0" aria-label="Month M'+(i+1)+' detail"/>';
+    }
+    s+='<g id="fund-hover" visibility="hidden" pointer-events="none">'
+      +'<line id="fund-vline" x1="0" y1="'+pT+'" x2="0" y2="'+(H-pB)+'" stroke="#F2F0EB" stroke-width="1" stroke-dasharray="3 3" opacity="0.55"/>'
+      +'<circle id="fund-dot" cx="0" cy="0" r="6" fill="#C8B28A" stroke="#0A0A0B" stroke-width="2.5"/></g>';
+    s+="</svg>";
+    s+='<div class="ftip" id="fund-tip" role="status"></div>';
+    chart.innerHTML=s;
   }
 }
 var pills=[].slice.call(document.querySelectorAll("#fund-pills .pill"));
@@ -801,21 +844,49 @@ pills.forEach(function(p){
 [].slice.call(document.querySelectorAll("[data-cur]")).forEach(function(p){
   p.addEventListener("click",function(){fundCur=p.getAttribute("data-cur");fundRender(fundSc);applyFx(document)});
 });
-/* fund chart tooltip: hover + keyboard focus */
+/* fund chart tooltip: hover + keyboard focus (heal pattern: per-month hit rects) */
 (function(){
   var chart=document.getElementById("fund-chart");if(!chart)return;
   function tip(){return document.getElementById("fund-tip")}
-  function show(el){
-    var t=tip();if(!t||!el.getAttribute("data-tip"))return;
-    t.textContent=el.getAttribute("data-tip");t.classList.add("show");
-    var cr=chart.getBoundingClientRect(),er=el.getBoundingClientRect();
-    t.style.top=Math.min(cr.height-30,Math.max(0,er.top-cr.top-8))+"px";
-    t.style.left="10px";
+  function val(n){return fundCur==="usd"?usd(n):inr(n)}
+  function show(idx){
+    var t=tip();if(!t||!(idx>=0&&idx<18))return;
+    var sc=FUND.SC[fundSc];if(!sc)return;
+    var b=burnAt(sc,idx+1),r=mrrAt(sc,idx+1),net=r-b;
+    var isBe=r>=b&&(idx===0||mrrAt(sc,idx)<burnAt(sc,idx));
+    t.innerHTML='<div style="font-weight:700;">M'+(idx+1)+(isBe?' <span class="be">breakeven</span>':"")+"</div>"
+      +"<div>MRR "+val(r)+"</div>"
+      +"<div>Burn "+val(b)+"</div>"
+      +"<div>Net "+val(net)+(net>=0?' <span style="color:#10b981;">surplus</span>':' <span style="color:var(--mut);">burn</span>')+"</div>";
+    t.classList.add("show");
+    var W=600,H=210,pL=52,pR=10,pT=12,pB=22;
+    var ymax=Math.max(burnAt(sc,18)*1.1,mrrAt(sc,18)*1.12);
+    var Xv=pL+idx*(W-pL-pR)/17,Yv=H-pB-(r/ymax)*(H-pT-pB);
+    var px=Xv/W*100,py=Yv/H*100;
+    var hg=document.getElementById("fund-hover"),vl=document.getElementById("fund-vline"),dt=document.getElementById("fund-dot");
+    if(hg&&vl&&dt){
+      vl.setAttribute("x1",Xv.toFixed(1));vl.setAttribute("x2",Xv.toFixed(1));
+      dt.setAttribute("cx",Xv.toFixed(1));dt.setAttribute("cy",Yv.toFixed(1));
+      hg.setAttribute("visibility","visible");
+    }
+    t.style.left=(px>62?"auto":px+"%");
+    t.style.right=(px>62?"0":"auto");
+    t.style.top=py+"%";
+    t.style.transform="translateY(calc(-100% - 10px))";
   }
-  function hide(){var t=tip();if(t)t.classList.remove("show")}
-  chart.addEventListener("mousemove",function(e){var r=e.target.closest?e.target.closest(".frow"):null;if(r)show(r)});
+  function hide(){
+    var t=tip();if(t)t.classList.remove("show");
+    var hg=document.getElementById("fund-hover");
+    if(hg)hg.setAttribute("visibility","hidden");
+  }
+  function fromEvent(e){
+    var r=e.target&&e.target.getAttribute?e.target:null;
+    if(!r||!r.getAttribute("data-m")){hide();return}
+    show(parseInt(r.getAttribute("data-m"),10));
+  }
+  chart.addEventListener("mousemove",fromEvent);
   chart.addEventListener("mouseleave",hide);
-  chart.addEventListener("focusin",function(e){var r=e.target.closest?e.target.closest(".frow"):null;if(r)show(r)});
+  chart.addEventListener("focusin",fromEvent);
   chart.addEventListener("focusout",hide);
 })();
 /* drawer Export .md pills: render first, then serialize */
@@ -1002,6 +1073,7 @@ document.getElementById("exp-copy").addEventListener("click",copyMd);
 document.getElementById("exp-print").addEventListener("click",function(){window.print()});
 var he=document.getElementById("h-exp");if(he)he.addEventListener("click",downloadMd);
 var hc2=document.getElementById("h-copy");if(hc2)hc2.addEventListener("click",copyMd);
+var hp=document.getElementById("h-print");if(hp)hp.addEventListener("click",function(){window.print()});
 /* Projection Default-Data Rule: pre-render OK scenario before the drawer ever opens */
 fundRender("ok");
 /* init: #tab or #section-id deep links */
