@@ -10,7 +10,7 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 ```
 
 - Generated: 2026-11-23
-- Tokens defined: 217 (`design-system/tokens.css`)
+- Tokens defined: 223 (`design-system/tokens.css`)
 - Files scanned: `index.html`, `pitch.html`, `engine.html`, `design-system/index.html`
 - Result: **PASS** — 0 violation(s), 4 exempt, 0 bad-allow
 
