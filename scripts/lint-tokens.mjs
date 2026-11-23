@@ -20,7 +20,7 @@
      ...;         <-- JS  comment: lint-allow: popover must clear --z-overlay
      <meta ...>   <-- HTML comment: lint-allow: theme-color cannot read custom properties
 
-   The marker clears every hit on its own line (V1..V6, U1) and nothing else.
+   The marker clears every hit on its own line (V1..V7, U1) and nothing else.
    A marker with no reason, or with the reason "ok", exempts nothing and is
    reported BAD-ALLOW, so it cannot be used to blanket-suppress silently.
    ========================================================================== */
@@ -333,6 +333,23 @@ for (const file of files) {
   /* V6 — SVG paint attributes */
   for (const s of svgPaint) push('V6', s.start, short(`${s.attr}="${s.value}"`, 60), 'svg paint');
 
+  /* V7 — raw border width: a border shorthand/side whose width is a px number
+     instead of var(--border-width-*). Color, style and 0/none are other
+     concerns (V1 for paint; border-collapse / border-spacing are not widths). */
+  {
+    const codeChars = masked.split('');
+    maskRanges(codeChars, textRanges);
+    const codeText = codeChars.join('');
+    for (const prop of ['border', 'border-top', 'border-right', 'border-bottom', 'border-left']) {
+      for (const m of codeText.matchAll(DECL_RE(prop))) {
+        const value = m[1];
+        if (value.includes('<') || value.length > 300) continue;
+        const w = value.match(/(?<![\w.-])\d*\.?\d+px(?![\w-])/);
+        if (w) push('V7', m.index, `${prop}:${short(value, 60)}`, 'raw border width');
+      }
+    }
+  }
+
   /* counts (not V-classes) */
   const varChars = masked.split('');
   maskRanges(varChars, textRanges);
@@ -406,6 +423,7 @@ for (const file of files) {
       V4: keptViolations.filter((v) => v.cls === 'V4').length,
       V5: keptViolations.filter((v) => v.cls === 'V5').length,
       V6: keptViolations.filter((v) => v.cls === 'V6').length,
+      V7: keptViolations.filter((v) => v.cls === 'V7').length,
       U1: keptDead.length,
     },
   });
@@ -413,7 +431,7 @@ for (const file of files) {
 
 /* ---------------------------------------------------------------- totals */
 
-const classes = ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'U1'];
+const classes = ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'U1'];
 const totals = Object.fromEntries(classes.map((c) => [c, 0]));
 let totalImportant = 0;
 let totalInline = 0;
@@ -435,7 +453,7 @@ const failed = totalViolations > 0 || totalBadAllow > 0;
 
 const header =
   'file'.padEnd(26) +
-  ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'U1'].map((c) => c.padStart(5)).join('') +
+  ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'U1'].map((c) => c.padStart(5)).join('') +
   'exempt'.padStart(7) +
   'bad'.padStart(5) +
   '!imp'.padStart(6) +
@@ -525,6 +543,7 @@ const LEGEND = [
   ['V4', 'Raw `border-radius` (px/%/rem or bare 0)', '`radius.*` → `var(--radius-none|xs|sm|md|card|lg|xl|pill|circle)`'],
   ['V5', 'Inline `style="…"` attribute carrying color or px radius', 'Move to a class in `<style>`; paint via `var(--color-*)`, radius via `var(--radius-*)`'],
   ['V6', 'SVG paint attribute `fill|stroke|stop-color="#…"`', '`var(--color-*)` in a CSS rule (`fill:var(--color-…)`) or a token-backed class'],
+  ['V7', 'Raw px border width in `border` / `border-top|right|bottom|left`', '`border.width.*` → `var(--border-width-hairline|strong|accent)` as the width position of the shorthand'],
   ['U1', 'Dead `var(--name)`: not defined in tokens.css and not declared in this page', 'Add the token to `design-system/tokens.json` → regenerate, or use the existing token; never rely on a fallback'],
 ];
 
@@ -544,12 +563,12 @@ md += `- Files scanned: ${results.map((r) => '`' + r.file + '`').join(', ')}\n`;
 md += `- Result: **${failed ? 'FAIL' : 'PASS'}** — ${totalViolations} violation(s), ${totalExempt} exempt, ${totalBadAllow} bad-allow\n\n`;
 
 md += '## Per-file violations\n\n';
-md += '| File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | U1 dead var | exempt | bad-allow | `!important` | inline `style=` | `var(--)` uses |\n';
-md += '|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n';
+md += '| File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | V7 border width | U1 dead var | exempt | bad-allow | `!important` | inline `style=` | `var(--)` uses |\n';
+md += '|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n';
 for (const r of results) {
-  md += `| \`${r.file}\` | ${r.counts.V1} | ${r.counts.V2} | ${r.counts.V3} | ${r.counts.V4} | ${r.counts.V5} | ${r.counts.V6} | ${r.counts.U1} | ${r.exempt.length} | ${r.badAllows.length} | ${r.important} | ${r.inlineStyles} | ${r.varUses} |\n`;
+  md += `| \`${r.file}\` | ${r.counts.V1} | ${r.counts.V2} | ${r.counts.V3} | ${r.counts.V4} | ${r.counts.V5} | ${r.counts.V6} | ${r.counts.V7} | ${r.counts.U1} | ${r.exempt.length} | ${r.badAllows.length} | ${r.important} | ${r.inlineStyles} | ${r.varUses} |\n`;
 }
-md += `| **Total** | **${totals.V1}** | **${totals.V2}** | **${totals.V3}** | **${totals.V4}** | **${totals.V5}** | **${totals.V6}** | **${totals.U1}** | **${totalExempt}** | **${totalBadAllow}** | **${totalImportant}** | **${totalInline}** | **${totalVars}** |\n\n`;
+md += `| **Total** | **${totals.V1}** | **${totals.V2}** | **${totals.V3}** | **${totals.V4}** | **${totals.V5}** | **${totals.V6}** | **${totals.V7}** | **${totals.U1}** | **${totalExempt}** | **${totalBadAllow}** | **${totalImportant}** | **${totalInline}** | **${totalVars}** |\n\n`;
 
 md += '## Violation detail\n\n';
 let anyDetail = false;
@@ -599,7 +618,7 @@ md += '\n';
 md += '### Exemptions (`lint-allow`)\n\n';
 md += 'A hit may be tolerated only **in place, on the same line, with a reason**: ';
 md += '`/* lint-allow: reason */` in CSS, `// lint-allow: reason` in JS, ';
-md += '`<!-- lint-allow: reason -->` in HTML. The marker clears every hit on its own line (V1–V6, U1) and nothing on the next line. ';
+md += '`<!-- lint-allow: reason -->` in HTML. The marker clears every hit on its own line (V1–V7, U1) and nothing on the next line. ';
 md += `The reason must be at least ${MIN_REASON} characters after trimming; a marker with no reason, or with \`ok\`, exempts nothing — the hit stays a violation and is additionally reported as **BAD-ALLOW**, so the mechanism cannot silently blanket-suppress.\n\n`;
 md += 'Legitimate only where **a browser cannot resolve the value from a custom property**: the `meta` theme-color tag, `@media` / `@supports` conditions, and canvas or gradient string composites assembled in JS. ';
 md += 'Never legitimate for any color, duration, radius or `z-index` that a token could hold — those get a token (or get fixed), because that is exactly the drift this gate exists to catch.\n\n';
