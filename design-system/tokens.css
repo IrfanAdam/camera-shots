@@ -1,0 +1,265 @@
+/* ==========================================================================
+   tokens.css — GENERATED FILE, DO NOT EDIT BY HAND.
+   Source:     design-system/tokens.json
+   Regenerate: node scripts/build-tokens.mjs
+   Tokens:     155
+   ========================================================================== */
+
+:root {
+  /* color.pitch */
+  --color-pitch-bg: #0A0A0B;
+  --color-pitch-surface-1: #141416;
+  --color-pitch-surface-2: #1B1B1E;
+  --color-pitch-ink: #F2F0EB;
+  --color-pitch-body: #D9D7D2;
+  --color-pitch-muted: #A7A5A0;
+  --color-pitch-muted-2: #8E8C86;
+  --color-pitch-rule: #26262B;
+  --color-pitch-accent: #C8B28A;
+  --color-pitch-accent-ink: #141310;
+  --color-pitch-overlay-scrim: #00000073;
+  --color-pitch-positive: #10B981;
+  --color-pitch-positive-ink: #06110C;
+  --color-pitch-switch-bg: #101012;
+
+  /* color.wiki */
+  --color-wiki-light-bg: #FAFAF8;
+  --color-wiki-light-card: #FFFFFF;
+  --color-wiki-light-ink: #16181D;
+  --color-wiki-light-muted: #5B6270;
+  --color-wiki-light-rule: #E1E3E8;
+  --color-wiki-light-accent: #0B5D66;
+  --color-wiki-light-accent-wash: #DDEFF1;
+  --color-wiki-light-amber: #B86A00;
+  --color-wiki-dark-bg: #0E1213;
+  --color-wiki-dark-card: #151B1C;
+  --color-wiki-dark-ink: #ECF1F1;
+  --color-wiki-dark-muted: #9DAAAB;
+  --color-wiki-dark-rule: #243032;
+  --color-wiki-dark-accent: #5CC4D0;
+  --color-wiki-dark-accent-wash: #12383D;
+  --color-wiki-dark-amber: #F0A648;
+  --color-wiki-diagram-fill: #9FC3D8;
+  --color-wiki-scrim-thumb: #101828;
+
+  /* color.engine */
+  --color-engine-bg: #0E1116;
+  --color-engine-panel: #161B22;
+  --color-engine-panel-deep: #0B0E13;
+  --color-engine-ink: #E8EAF0;
+  --color-engine-muted: #8B93A5;
+  --color-engine-muted-2: #AAB2C2;
+  --color-engine-code: #C8CFDB;
+  --color-engine-tool: #222A36;
+  --color-engine-tool-hover: #1D2530;
+  --color-engine-border: #262D38;
+  --color-engine-border-strong: #313B4A;
+  --color-engine-accent: #E8830C;
+  --color-engine-teal: #0F766E;
+  --color-engine-teal-bright: #5EEAD4;
+  --color-engine-accent-ink: #111111;
+  --color-engine-canvas-bg: #1A2130;
+  --color-engine-graph-title: #1B2230;
+  --color-engine-graph-node-top: #1C2432;
+  --color-engine-graph-node-bottom: #0D1117;
+  --color-engine-graph-edge: #9AA3B5;
+  --color-engine-graph-label: #C7CEDB;
+  --color-engine-graph-arc: #7C3AED;
+  --color-engine-graph-handle: #2A3342;
+  --color-engine-switch-track: #2A3340;
+  --color-engine-switch-border: #3A4554;
+  --color-engine-code-punct: #4B5563;
+  --color-engine-code-hover: #1B212B;
+  --color-engine-input-focus: #1E2632;
+  --color-engine-input-edge: #B45309;
+  --color-engine-row: #0F141B;
+  --color-engine-panel-project: #10151C;
+  --color-engine-panel-codes: #0D1218;
+  --color-engine-placeholder: #5B6577;
+  --color-engine-highlight: #FBBF24;
+
+  /* color.pro */
+  --color-pro-surface-0: #0B0B0D;
+  --color-pro-surface-1: #1E1E22;
+  --color-pro-surface-2: #2A2A2E;
+  --color-pro-text-primary: #F5F5F7;
+  --color-pro-text-secondary: #9A9AA0;
+  --color-pro-divider: #2C2C2E;
+  --color-pro-selection: #FFD60A;
+  --color-pro-track-fx: #5E5CE6;
+  --color-pro-track-title: #30D158;
+  --color-pro-track-audio: #32ADE6;
+
+  /* color.semantic */
+  --color-semantic-success: #2E7D46;
+  --color-semantic-danger: #E5484D;
+  --color-semantic-warning: #B86A00;
+  --color-semantic-info: #8A5CF6;
+
+  /* color.print */
+  --color-print-rule: #DDDDDD;
+  --color-print-body: #333333;
+  --color-print-fine: #222222;
+  --color-print-accent: #8A6D2B;
+  --color-print-ink: #111111;
+
+  /* color.neutral */
+  --color-neutral-white: #FFFFFF;
+  --color-neutral-black: #000000;
+
+  /* typography.family */
+  --typography-family-sans: system-ui, -apple-system, Segoe UI, sans-serif;
+  --typography-family-display: Space Grotesk, system-ui, sans-serif;
+  --typography-family-quote: Newsreader, Georgia, serif;
+
+  /* typography.size */
+  --typography-size-h1-pitch: clamp(2rem, 5vw, 3.1rem);
+  --typography-size-h1-wiki: 1.6rem;
+  --typography-size-h2-pitch: 1.35rem;
+  --typography-size-h2-wiki: 1.25rem;
+  --typography-size-body: 0.95rem;
+  --typography-size-small: 0.85rem;
+  --typography-size-meta: 0.8rem;
+  --typography-size-eyebrow: 0.72rem;
+  --typography-size-timecode: 0.75rem;
+
+  /* typography.weight */
+  --typography-weight-regular: 400;
+  --typography-weight-medium: 600;
+  --typography-weight-semibold: 650;
+  --typography-weight-bold: 700;
+
+  /* typography.lineheight */
+  --typography-lineheight-body: 1.7;
+  --typography-lineheight-pitch-h1: 1.08;
+
+  /* typography.tracking */
+  --typography-tracking-tight: -0.02em;
+  --typography-tracking-eyebrow: 0.16em;
+
+  /* spacing.base */
+  --spacing-base: 4px;
+
+  /* spacing.2xs */
+  --spacing-2xs: 4px;
+
+  /* spacing.xs */
+  --spacing-xs: 8px;
+
+  /* spacing.sm */
+  --spacing-sm: 12px;
+
+  /* spacing.md */
+  --spacing-md: 16px;
+
+  /* spacing.lg */
+  --spacing-lg: 24px;
+
+  /* spacing.xl */
+  --spacing-xl: 32px;
+
+  /* spacing.2xl */
+  --spacing-2xl: 48px;
+
+  /* spacing.gutter */
+  --spacing-gutter-pro: 16px;
+
+  /* radius.none */
+  --radius-none: 0;
+
+  /* radius.sm */
+  --radius-sm: 8px;
+
+  /* radius.md */
+  --radius-md: 10px;
+
+  /* radius.lg */
+  --radius-lg: 14px;
+
+  /* radius.pill */
+  --radius-pill: 9999px;
+
+  /* radius.circle */
+  --radius-circle: 50%;
+
+  /* elevation.0 */
+  --elevation-0: none;
+
+  /* elevation.1 */
+  --elevation-1: 0 1px 2px rgb(15 23 42 / 0.05);
+
+  /* elevation.popover */
+  --elevation-popover: 0 8px 24px rgba(0, 0, 0, 0.45);
+
+  /* elevation.sheet */
+  --elevation-sheet: 0 8px 24px rgba(0, 0, 0, 0.5);
+
+  /* motion.duration */
+  --motion-duration-fast: 0.22s;
+  --motion-duration-base: 0.28s;
+  --motion-duration-tab: 0.24s;
+
+  /* motion.easing */
+  --motion-easing-drawer: cubic-bezier(0.32, 0.72, 0.24, 1);
+  --motion-easing-standard: ease;
+  --motion-easing-sheet: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* opacity.disabled */
+  --opacity-disabled: 0.35;
+
+  /* opacity.overlay */
+  --opacity-overlay-thumb: 0.85;
+
+  /* opacity.scrim */
+  --opacity-scrim: 0.45;
+
+  /* touch.min */
+  --touch-min: 40px;
+
+  /* touch.preferred */
+  --touch-preferred: 44px;
+
+  /* touch.pro */
+  --touch-pro: 48px;
+
+  /* touch.handle */
+  --touch-handle-timeline: 32px;
+
+  /* touch.small */
+  --touch-small: 28px;
+
+  /* touch.field */
+  --touch-field: 38px;
+
+  /* layout.max */
+  --layout-max-wiki: 980px;
+  --layout-max-pitch: 1080px;
+
+  /* layout.sidebar */
+  --layout-sidebar-wiki: 230px;
+  --layout-sidebar-pitch: 220px;
+  --layout-sidebar-engine: 148px;
+
+  /* layout.drawer */
+  --layout-drawer-width: min(360px, 92vw);
+  --layout-drawer-pitch-width: min(720px, 100vw);
+
+  /* layout.bar */
+  --layout-bar-transport: 62px;
+
+  /* layout.sheet */
+  --layout-sheet-grab-width: 44px;
+  --layout-sheet-grab-height: 5px;
+
+  /* breakpoint.tablet */
+  --breakpoint-tablet: 720px;
+
+  /* breakpoint.sidenav */
+  --breakpoint-sidenav: 1023.5px;
+
+  /* breakpoint.grid */
+  --breakpoint-grid-collapse: 767.5px;
+
+  /* breakpoint.table */
+  --breakpoint-table-stack: 639px;
+}
