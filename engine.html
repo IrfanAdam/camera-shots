@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Prompt Engine — Camera Shots</title><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0e1116"><title>Prompt Engine — Camera Shots</title><style>
 :root{--bg:#0e1116;--panel:#161b22;--ink:#e8eaf0;--mut:#8b93a5;--acc:#e8830c;--teal:#0f766e}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -84,6 +84,22 @@ header .by{color:var(--mut);font-size:.8rem}
 #cardMenu button{background:transparent;border:0;color:#e8eaf0;font:inherit;font-size:.83rem;text-align:left;padding:.45rem .6rem;border-radius:7px;cursor:pointer}
 #cardMenu button:hover,#cardMenu button:focus-visible{background:#222a36;outline:1px solid #e8830c}
 #cardMenu[hidden]{display:none}
+#assetBtn{position:absolute;z-index:40;top:10px;left:10px;font:inherit;font-size:.8rem;font-weight:600;color:#8b93a5;background:rgba(22,27,34,.92);border:1px solid #313b4a;border-radius:8px;padding:.35rem .65rem;cursor:pointer;backdrop-filter:blur(4px)}
+#assetBtn:hover,#assetBtn:focus-visible{color:#e8eaf0;border-color:#e8830c;outline:none}
+#assetBtn[aria-expanded="true"]{color:#e8830c;border-color:#e8830c}
+#assetPanel{position:absolute;z-index:60;top:48px;left:10px;width:min(260px,70vw);max-height:min(320px,60vh);overflow:auto;background:#161b22;border:1px solid #313b4a;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.5);padding:5px}
+#assetPanel[hidden]{display:none}
+#assetPanel .ahead{display:flex;align-items:center;gap:.4rem;padding:.2rem .3rem .25rem .6rem}
+#assetPanel .ahead .ah{flex:1;min-width:0}
+#assetPanel .aedit{flex:none;width:auto;font-size:.72rem;color:var(--mut);background:transparent;border:1px solid #313b4a;border-radius:6px;padding:.15rem .5rem;cursor:pointer;white-space:nowrap}
+#assetPanel .aedit:hover{color:var(--ink);border-color:#e8830c}
+#assetPanel .ajump{display:flex;gap:.45rem;align-items:center;width:100%;text-align:left;font:inherit;font-size:.82rem;color:#e8eaf0;background:transparent;border:0;border-radius:7px;padding:.3rem;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#assetPanel .ajump:hover,#assetPanel .ajump:focus-visible{background:#222a36;outline:1px solid #e8830c}
+#assetPanel .ajump b{color:#5eead4;font-weight:600;margin-right:.35rem}
+#assetPanel .athumb{width:28px;height:28px;flex:none;border-radius:6px;object-fit:cover;background:#0b0e13;border:1px solid #262d38}
+#assetPanel .athumb.none{display:inline-flex;align-items:center;justify-content:center;color:#5b6577;font-size:.85rem}
+#assetPanel .atxt{min-width:0;overflow:hidden;text-overflow:ellipsis}
+#assetPanel .empty{color:#8b93a5;font-size:.8rem;font-style:italic;padding:.4rem .6rem}
 #chapterbar{display:flex;align-items:center;gap:.5rem;padding:.45rem .8rem;background:var(--panel);border-bottom:1px solid #262d38;font-size:.82rem;color:var(--mut)}
 #chapterbar[hidden]{display:none}
 #chapterbar select{font:inherit;font-size:.82rem;color:var(--ink);background:#222a36;border:1px solid #313b4a;border-radius:8px;padding:.3rem .5rem}
@@ -121,7 +137,24 @@ header .by{color:var(--mut);font-size:.8rem}
 .modal .box{background:#161b22;border:1px solid #313b4a;border-radius:12px;width:min(560px,94vw);max-height:88vh;overflow:auto;padding:1rem 1.2rem}
 .modal h2{font-size:1rem;margin-bottom:.2rem}
 .modal .sub{color:var(--mut);font-size:.8rem;margin-bottom:.8rem}
-#projModal .box.proj-box{width:min(980px,96vw)}
+#projModal{justify-content:flex-end;align-items:stretch;background:rgba(0,0,0,.45);animation:projFade .24s ease-out}
+#projModal .box.proj-box{width:min(880px,94vw);max-height:none;height:100%;margin:0;border:0;border-left:1px solid #313b4a;border-radius:0;background:#161b22;display:flex;flex-direction:column;padding:0;overflow:hidden;animation:projIn .32s cubic-bezier(0.22,1,0.36,1)}
+@keyframes projIn{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+@keyframes projFade{from{opacity:0}to{opacity:1}}
+#projModal.closing{animation:projFadeOut .24s ease-out}
+#projModal.closing .box.proj-box{animation:projOut .28s ease}
+@keyframes projOut{from{transform:none;opacity:1}to{transform:translateX(40px);opacity:0}}
+@keyframes projFadeOut{from{opacity:1}to{opacity:0}}
+#projModal .proj-head{display:flex;align-items:center;gap:12px;padding:16px 20px 2px}
+#projModal h2{font-size:1rem;margin:0;padding:0;flex:1;min-width:0}
+#projModal .proj-head #projClose{flex:none}
+#projModal .sub{margin:0;padding:0 20px 12px}
+#projModal .proj-wrap{flex:1;min-height:0;max-height:none;border:0;border-top:1px solid rgba(232,234,240,.12);border-bottom:1px solid rgba(232,234,240,.12);border-radius:0}
+#projModal .frow{margin:0;padding:12px 20px 16px}
+#projModal:not([hidden]) #projNav button{animation:projNavIn .32s cubic-bezier(0.22,1,0.36,1) backwards;animation-delay:calc(.10s + var(--i,0)*16ms)}
+@keyframes projNavIn{from{transform:translateX(-8px);opacity:0}to{transform:none;opacity:1}}
+#projModal .pm-mid{animation:projMidIn .32s cubic-bezier(0.22,1,0.36,1) .06s backwards}
+@keyframes projMidIn{from{transform:translateX(12px);opacity:0}to{transform:none;opacity:1}}
 .proj-wrap{display:flex;border:1px solid #262d38;border-radius:10px;overflow:hidden;min-height:380px;max-height:62vh;background:#10151c}
 .proj-wrap .pm-nav{width:150px;flex:none;background:var(--bg);border-right:1px solid rgba(232,234,240,.12);padding:12px 0;display:flex;flex-direction:column;gap:4px;overflow:auto}
 #projNav{display:flex;flex-direction:column;gap:4px}
@@ -161,7 +194,7 @@ header .by{color:var(--mut);font-size:.8rem}
 .sw input:checked + .sl::after{left:17px;background:var(--acc)}
 .sw input:disabled + .sl{opacity:.45}
 .sw input:focus-visible + .sl{outline:1px solid var(--acc);outline-offset:2px}
-@media (max-width:760px){.proj-wrap{flex-direction:column;max-height:70vh}.proj-wrap .pm-nav{width:auto;border-right:0;border-bottom:1px solid rgba(232,234,240,.12);padding:8px}#projNav{flex-direction:row;flex-wrap:wrap}.proj-codes{width:auto;border-left:0;border-top:1px solid rgba(232,234,240,.12)}}
+@media (max-width:760px){.proj-wrap{flex-direction:column;max-height:none}.proj-wrap .pm-nav{width:auto;border-right:0;border-bottom:1px solid rgba(232,234,240,.12);padding:8px}#projNav{flex-direction:row;flex-wrap:wrap}.proj-codes{width:auto;border-left:0;border-top:1px solid rgba(232,234,240,.12)}}
 .modal .row{display:flex;gap:.6rem;margin:.5rem 0}
 .modal .row input,.modal .row select{flex:1;background:#222a36;color:#e8eaf0;border:1px solid #313b4a;border-radius:6px;padding:.35rem .5rem;font:inherit;font-size:.82rem;min-width:0}
 .modal .tabs{display:flex;gap:.35rem;flex-wrap:wrap;margin:.5rem 0}
@@ -243,6 +276,22 @@ input.tin.tin-pilled{color:transparent !important}
 #assetList .ah{color:#8b93a5;font-size:.72rem;padding:.3rem .6rem .1rem;text-transform:uppercase;letter-spacing:.04em}
 #assetList button{white-space:normal;text-align:left}
 #assetList button b{color:#5eead4;font-weight:600}
+#assetPanel .ah{color:#8b93a5;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em}
+#assetModal .box.asset-box{width:min(600px,94vw)}
+#assetEditList{display:flex;flex-direction:column;gap:.45rem;max-height:56vh;overflow:auto;margin:.4rem 0}
+#assetEditList .aerow{display:flex;gap:.6rem;align-items:center;background:#0f141b;border:1px solid #262d38;border-radius:9px;padding:.4rem .5rem}
+#assetEditList .aethumb{width:44px;height:44px;flex:none;border-radius:7px;object-fit:cover;background:#0b0e13;border:1px solid #262d38}
+#assetEditList .aethumb.none{display:inline-flex;align-items:center;justify-content:center;color:#5b6577;font-size:1rem}
+#assetEditList .aemain{flex:1;min-width:0}
+#assetEditList .aename{font-size:.84rem;color:#e8eaf0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#assetEditList .aename b{color:#5eead4;margin-right:.35rem}
+#assetEditList .aesub{font-size:.74rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#assetEditList .aeactions{display:flex;gap:.3rem;flex-wrap:wrap;justify-content:flex-end;flex:none}
+#assetEditList .aeactions button{background:#222a36;border:1px solid #313b4a;border-radius:6px;color:#e8eaf0;font-size:.74rem;padding:.25rem .55rem;cursor:pointer;white-space:nowrap}
+#assetEditList .aeactions button:hover{border-color:var(--acc)}
+#assetEditList .aeactions button.danger{color:#e5484d;border-color:#e5484d;background:transparent}
+#assetEditList .aeactions button.danger.armed{background:#e5484d;color:#fff;font-weight:700}
+#assetEditList .aeempty{color:#8b93a5;font-size:.82rem;font-style:italic;padding:.5rem .2rem}
 #refPop{position:fixed;z-index:130;width:240px;background:var(--panel);color:var(--ink);border:1px solid rgba(232,234,240,.16);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.45);padding:.6rem}
 #refPop[hidden]{display:none}
 #refPop img{width:100%;max-height:150px;object-fit:cover;border-radius:6px;display:block;background:#0b0e13}
@@ -256,6 +305,58 @@ input.tin.tin-pilled{color:transparent !important}
 #drawerBack{position:absolute;top:.6rem;left:.6rem;z-index:2;background:rgba(10,13,18,.72);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:7px;padding:.25rem .6rem;font-size:.78rem;cursor:pointer;backdrop-filter:blur(4px)}
 #drawerBack[hidden]{display:none}
 #drawerBack:hover{border-color:var(--acc)}
+/* ---- mobile-first touch layer (lane Engine-Mobile; visual language only, IA unchanged) ----
+   Tokens: --tap 44px min touch target; --bar-h bottom transport bar height. */
+:root{--tap:44px;--bar-h:62px}
+html,body{overflow-x:clip}
+body{-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
+header{padding-top:calc(.7rem + env(safe-area-inset-top,0px));padding-left:calc(1rem + env(safe-area-inset-left,0px));padding-right:calc(1rem + env(safe-area-inset-right,0px))}
+/* desktop + mobile: 44px minimum touch targets on all primary controls */
+.tools button,#chapterbar button,#chapterbar select,#side button{min-height:var(--tap)}
+#drawerMenu button,#cardMenu button,#assetPanel .ajump,.modal .frow button{min-height:var(--tap)}
+#arrowpick button{min-width:var(--tap);min-height:var(--tap)}
+#drawerX{width:var(--tap);height:var(--tap)}
+/* canvas zoom controls: transport-style cluster, mobile only */
+#zoomCtl{position:absolute;z-index:41;right:10px;bottom:10px;display:none;flex-direction:column;gap:6px}
+#zoomCtl button{width:var(--tap);height:var(--tap);border-radius:12px;border:1px solid #313b4a;background:rgba(22,27,34,.94);color:#e8eaf0;font-size:18px;font-weight:700;cursor:pointer;backdrop-filter:blur(4px)}
+#zoomCtl button:hover{border-color:var(--acc)}
+#sheetGrab{display:none}
+@media (max-width:860px){
+  header{gap:.45rem;padding:.55rem .7rem;padding-top:calc(.55rem + env(safe-area-inset-top,0px))}
+  header h1{font-size:.95rem}
+  header .by{display:none}
+  .back{padding:.5rem .2rem}
+  .tools{flex-wrap:nowrap;overflow-x:auto;max-width:100%;scrollbar-width:none}
+  .tools::-webkit-scrollbar{display:none}
+  .tools button{flex:none;min-height:var(--tap)}
+  #main{flex-direction:column;padding-bottom:calc(var(--bar-h) + env(safe-area-inset-bottom,0px))}
+  /* side rail -> bottom transport bar (same views, same order: chip language) */
+  #side{position:fixed;left:0;right:0;bottom:0;z-index:65;width:auto;flex-direction:row;align-items:stretch;gap:4px;overflow-x:auto;padding:.45rem .6rem calc(.45rem + env(safe-area-inset-bottom,0px));border-right:0;border-top:1px solid #262d38;background:rgba(22,27,34,.97);backdrop-filter:blur(10px);scrollbar-width:none}
+  #side::-webkit-scrollbar{display:none}
+  #side button{flex:1 0 auto;text-align:center;white-space:nowrap;padding:.55rem .75rem;border-radius:12px}
+  .side-div{display:none}
+  .hint{display:none}
+  #stage{min-height:0}
+  #chapterbar{overflow-x:auto;scrollbar-width:none}
+  #chapterbar::-webkit-scrollbar{display:none}
+  /* drawer -> bottom sheet with grab handle + safe-area */
+  #drawer{top:auto;left:0;right:0;bottom:0;width:100%;max-height:86dvh;border-left:0;border-top:1px solid #313b4a;border-radius:16px 16px 0 0;transform:translateY(106%);padding-bottom:env(safe-area-inset-bottom,0px)}
+  #drawer.open{transform:none}
+  #drawer img{max-height:30dvh}
+  #sheetGrab{display:block;flex:none;width:44px;height:5px;border-radius:99px;background:#313b4a;margin:8px auto 2px;touch-action:none;cursor:grab}
+  /* edit panel + project modal become full sheets */
+  #editPanel{right:0;width:100vw;border-left:0}
+  #projModal .box.proj-box{width:100vw;height:100dvh;max-height:100dvh;border-left:0}
+  .modal .box{width:min(560px,calc(100vw - 2rem))}
+  #toast{bottom:calc(var(--bar-h) + env(safe-area-inset-bottom,0px) + 12px);max-width:calc(100vw - 2rem)}
+  #assetPanel{max-width:calc(100vw - 20px)}
+  #arrowpick{max-width:calc(100vw - 16px)}
+  #cardMenu{min-width:min(220px,78vw);max-width:calc(100vw - 16px)}
+  #zoomCtl{display:flex}
+}
+@media (prefers-reduced-motion:reduce){
+  #drawer,#scrim,#editPanel,#projModal .box.proj-box{transition:none;animation:none}
+}
 </style></head><body>
 <header>
 <a class="back" href="index.html">← wiki</a><a class="back" href="pitch.html">pitch →</a>
@@ -275,8 +376,9 @@ input.tin.tin-pilled{color:transparent !important}
 <button data-view="locations">Locations</button>
 <button data-view="props">Props</button>
 <button data-view="cast">Cast</button>
-</nav><div id="stage"><div id="chapterbar" hidden><span>Chapter</span><select id="chapterSel"></select><button id="addChapter">+ chapter</button><span class="sp"></span><button id="addLane">+ lane</button><button id="addScene">+ scene</button></div><canvas id="cv"></canvas><button id="cardMenuBtn" title="Image and link options" aria-label="Card image and link options" aria-haspopup="menu" aria-expanded="false" hidden>⋯</button><div id="cardMenu" role="menu" hidden></div></div></div>
+</nav><div id="stage"><div id="chapterbar" hidden><span>Chapter</span><select id="chapterSel"></select><button id="addChapter">+ chapter</button><span class="sp"></span><button id="addLane">+ lane</button><button id="addScene">+ scene</button></div><canvas id="cv"></canvas><button id="assetBtn" title="List assets in this tab" aria-haspopup="true" aria-expanded="false">☰</button><div id="assetPanel" role="menu" hidden></div><button id="cardMenuBtn" title="Image and link options" aria-label="Card image and link options" aria-haspopup="menu" aria-expanded="false" hidden>⋯</button><div id="cardMenu" role="menu" hidden></div></div></div>
 <input type="file" id="filePick" accept="image/*" class="filehide">
+<input type="file" id="assetImportPick" accept=".json,application/json,image/*" class="filehide">
 <div id="arrowpick" hidden>
 <div class="ap-row"><span class="ap-lab">end A</span><button type="button" data-end="endA" data-val="none" title="line, no head">─</button><button type="button" data-end="endA" data-val="arrow" title="arrow head">→</button></div>
 <div class="ap-row"><span class="ap-lab">end B</span><button type="button" data-end="endB" data-val="none" title="line, no head">─</button><button type="button" data-end="endB" data-val="arrow" title="arrow head">→</button></div>
@@ -288,7 +390,7 @@ input.tin.tin-pilled{color:transparent !important}
 <img id="drawerImg" alt="">
 <div id="drawerEmpty" hidden><p>No image yet — add one to set the look.</p><button id="drawerAddImg" type="button">Add image</button></div>
 <div id="drawerStills"></div>
-<div class="dp"><div id="drawerMenu" hidden><button id="menuImg">Change image…</button><button id="menuURL">Set/Edit URL…</button><button id="menuRem">Remove image</button><button id="menuDel">delete</button></div><div id="delConfirm" hidden><button id="drawerDel">delete</button><button id="drawerDelCancel" hidden>cancel</button></div><h3 id="drawerTitle"></h3>
+<div class="dp"><div id="drawerMenu" hidden><button id="menuRename">Rename asset…</button><button id="menuImg">Change image…</button><button id="menuURL">Set/Edit URL…</button><button id="menuRem">Remove image</button><button id="menuDel">delete</button></div><div id="delConfirm" hidden><button id="drawerDel">delete</button><button id="drawerDelCancel" hidden>cancel</button></div><h3 id="drawerTitle"></h3>
 <div id="anchorRow" hidden><code id="anchorCode" title="copy anchor id"></code><button id="anchorVariant" title="Create variant (next letter)">+ variant</button><button id="anchorAssign" title="Assign a different anchor">assign</button><button id="drawerMenuBtn" title="more">⋯</button></div>
 <div id="shotProps" hidden><label>chapter <select id="shotCh"></select></label><label>scene <select id="shotSc"></select></label><span>lane <b id="shotLane">—</b></span></div>
 <div id="slotBtns" hidden><button id="goShot">go to shot</button><button id="removeSlot">remove</button></div>
@@ -297,10 +399,15 @@ input.tin.tin-pilled{color:transparent !important}
 </div>
 </aside>
 <aside id="editPanel" aria-label="prompt editor"><div id="drawerEdit"><div class="edithead"><button id="pmBack" title="dismiss">close</button><div class="pmtitle">prompt</div></div><div class="editbody"><nav class="pm-nav"><div id="pmNav"></div></nav><div id="pmMid" class="pm-mid"><div id="pmFields"></div></div></div></div></aside>
-<div id="projModal" class="modal" hidden><div class="box proj-box"><h2>⚙ Project tokens</h2>
+<div id="projModal" class="modal" hidden><div class="box proj-box"><div class="proj-head"><h2>⚙ Project tokens</h2><button id="projClose" class="modalClose">done</button></div>
 <div class="sub">Frames only — video/motion is deferred. Enable a domain, token, or value to include it in prompts. Disabled = zero words, no fallbacks.</div>
 <div class="proj-wrap"><nav class="pm-nav"><div id="projNav"></div></nav><div class="pm-mid"><div id="projToks"></div></div><div class="proj-codes"><div class="proj-codes-h">custom codes</div><div id="projCodes"></div></div></div>
-<div class="frow"><button id="projClose" class="modalClose">done</button><span class="note" id="projNote"></span></div>
+<div class="frow"><span class="note" id="projNote"></span></div>
+</div></div>
+<div id="assetModal" class="modal" hidden><div class="box asset-box"><h2 id="assetModalTitle">Edit assets</h2>
+<div class="sub" id="assetModalSub"></div>
+<div id="assetEditList"></div>
+<div class="frow"><button id="assetClose" class="modalClose">done</button><span class="note" id="assetNote"></span></div>
 </div></div>
 <div class="hint" id="hint">hover a card for dots · drag dot-to-dot to link · click a card for detail · Ctrl+Z undoes · double-click renames</div>
 <div id="toast" hidden><span id="toastMsg"></span><button id="toastBtn">Undo</button></div>
@@ -608,6 +715,12 @@ function connAt(mx,my){for(let i=conns.length-1;i>=0;i--){const cur=_curveOf(con
 function onDrop(target){if(!pending)return null;if(!target||!target.node)return null;
  const c=addConn(pending.node,pending.port,target.node,target.port);pending=null;return c}
 /* ---- cards: image face, hover-reveal text sheet ---- */
+/* Imageless-card CTA: muted placeholder + orange 'Add image' button (drawer language).
+   Rect is world-coords, recomputed each draw into n._addImg for click hit-testing. */
+function cardHasImage(n){if(!n)return false;if(n.imgUrl)return true;if(n.images&&n.images.length)return true;const im=n.img;return!!(im&&im.complete&&im.naturalWidth)}
+function addImgRect(n){if(!n||cardHasImage(n))return null;const bw=Math.min(116,n.w-24),bh=26;if(bw<60)return null;return{x:n.x+n.w/2-bw/2,y:n.y+n.h-38,w:bw,h:bh}}
+function addImgHit(n,wx,wy){const r=n&&(n._addImg||addImgRect(n));return!!(r&&wx>=r.x&&wx<=r.x+r.w&&wy>=r.y&&wy<=r.y+r.h)}
+function fireCardAddImage(n){if(!n||n.id==null||!nodeById(n.id)){flashHint('hover a card first');return}pickTarget={k:'n',id:n.id};filePick.click()}
 function shotMetaLine(n){let ch='—',sc='—';try{
  const c=(SCENES.chapters||[]).find(c=>c.id===n.ch);if(c){ch=c.name||('Chapter '+c.id);
   const s=(c.scenes||[]).find(s=>s.id===n.sc);if(s)sc=s.title||('Scene '+s.id)}}catch(e){}
@@ -621,7 +734,7 @@ function drawCard(n){const x=n.x,y=n.y,w=n.w,h=n.h,hovered=n===hoverNode;
  else{const g=ctx.createLinearGradient(x,y,x,y+h);g.addColorStop(0,'#1c2432');g.addColorStop(1,'#0d1117');
   ctx.fillStyle=g;ctx.fillRect(x,y,w,h);ctx.globalAlpha=0.22;ctx.fillStyle=kc;ctx.fillRect(x,y,w,h);ctx.globalAlpha=1;
   ctx.fillStyle=kc;ctx.font='44px system-ui,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText(glyph,x+w/2,hovered?y+h*0.30:y+h/2)}
+  ctx.fillText(glyph,x+w/2,hovered?y+h*0.30:y+h*0.36)}
  if(n.kind==='shot'){const mt=(n.anchor?n.anchor+' · ':'')+shotMetaLine(n);ctx.fillStyle='rgba(10,13,18,.82)';round(x+6,y+6,w-12,20,6);ctx.fill();
   ctx.fillStyle='#c7cedb';ctx.font='11px system-ui,sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';
   let t=mt;const mw2=w-30;if(ctx.measureText(t).width>mw2){while(t.length&&ctx.measureText(t+'…').width>mw2)t=t.slice(0,-1);t+='…'}
@@ -647,6 +760,15 @@ function drawCard(n){const x=n.x,y=n.y,w=n.w,h=n.h,hovered=n===hoverNode;
     while(lines[1].length&&ctx.measureText(lines[1]+'…').width>lw)lines[1]=lines[1].slice(0,-1);lines[1]+='…'}
    if(lines[0])ctx.fillText(lines[0],px+8,py+36);
    if(lines[1])ctx.fillText(lines[1],px+8,py+50)}}
+ /* imageless CTA (drawn last so it sits above the hover sheet): muted line + orange button */
+ if(!cardHasImage(n)){const r=addImgRect(n);n._addImg=r;
+  if(r){ctx.textAlign='center';ctx.textBaseline='middle';
+   ctx.fillStyle='#8b93a5';ctx.font='11px system-ui,sans-serif';
+   ctx.fillText('No image yet',x+w/2,r.y-11);
+   ctx.fillStyle='#e8830c';round(r.x,r.y,r.w,r.h,7);ctx.fill();
+   ctx.fillStyle='#111';ctx.font='700 12px system-ui,sans-serif';
+   ctx.fillText('Add image',x+w/2,r.y+r.h/2+0.5)}}
+ else n._addImg=null;
  ctx.restore();
  if(hovered){ctx.strokeStyle=kc;ctx.lineWidth=2;round(x,y,w,h,10);ctx.stroke()}
  else if(n===selected){ctx.strokeStyle='rgba(255,255,255,.45)';ctx.lineWidth=1;round(x+0.5,y+0.5,w-1,h-1,10);ctx.stroke()}
@@ -664,6 +786,9 @@ function fileToDataURL(file){return new Promise((resolve,reject)=>{
  im.onerror=()=>{URL.revokeObjectURL(src);reject(new Error('decode'))};im.src=src})}
 function editLabel(n){const v=prompt('Label:',n.label||'');if(v!==null&&v.trim()){n.label=v.trim().slice(0,60);persist();draw()}}
 function editNote(n){const v=prompt('Note:',n.note||'');if(v!==null){n.note=v.trim().slice(0,300);persist();draw()}}
+function renameAsset(t){const n=(t&&t.id!=null)?(nodeById(t.id)||t):t;if(!n){flashHint('open a card first');return}
+ if(n.label!=null||n.title==null){editLabel(n)}else{const v=prompt('Title:',n.title||'');if(v!==null&&v.trim()){n.title=v.trim().slice(0,60);persist();draw()}}
+ try{if(drawerSub&&(drawerSub===n||(drawerSub.id!=null&&drawerSub.id===n.id))){const dt=document.getElementById('drawerTitle');if(dt)dt.textContent=n.title||n.label||'card'}}catch(e){}}
 /* ---- arrow picker ---- */
 let apTarget=null;
 function apRefresh(){if(!apTarget)return;document.querySelectorAll('#arrowpick button[data-end]').forEach(b=>{b.classList.toggle('on',apTarget[b.dataset.end]===b.dataset.val)})}
@@ -702,16 +827,17 @@ cv.addEventListener('pointermove',e=>{const[mx,my]=pos(e);mouse={x:mx,y:my};if(v
  if(drag){if(Math.hypot(mx-drag.sx,my-drag.sy)>6)drag.moved=true;const _bx=cam.x,_by=cam.y,_bw=W/cam.z,_bh=H/cam.z;drag.n.x=Math.max(_bx,Math.min(_bx+_bw-drag.n.w,wx-drag.dx));drag.n.y=Math.max(_by,Math.min(_by+_bh-drag.n.h,wy-drag.dy));draw();return}
  if(pending){hoverPort=portAt(wx,wy);hoverNode=hoverPort?hoverPort.node:null;
   cv.style.cursor=hoverPort?'crosshair':'grab';draw();return}
- updateHover(wx,wy);cv.style.cursor=hoverPort?'crosshair':'grab';draw()});
+ updateHover(wx,wy);cv.style.cursor=hoverPort?'crosshair':(hoverNode&&addImgHit(hoverNode,wx,wy))?'pointer':'grab';draw()});
 cv.addEventListener('pointerup',e=>{if(view==='scenes'){const _p=pos(e),_w=s2w(_p[0],_p[1]);return sceneUP(e,_p[0],_p[1],_w.x,_w.y)}if(panDrag){panDrag=null;cv.style.cursor='grab';draw();return}if(drag){const d=drag;persist();drag=null;cv.style.cursor='grab';
- if(!d.moved){const _u=pos(e),_uw=s2w(_u[0],_u[1]);if(at(_uw.x,_uw.y)===d.n){clearTimeout(clickT);clickT=setTimeout(()=>openDrawer(d.n),260)}}}
+ if(!d.moved){const _u=pos(e),_uw=s2w(_u[0],_u[1]);if(at(_uw.x,_uw.y)===d.n){if(addImgHit(d.n,_uw.x,_uw.y)){clearTimeout(clickT);clickT=null;fireCardAddImage(d.n)}else{clearTimeout(clickT);clickT=setTimeout(()=>openDrawer(d.n),260)}}}}
  if(pending){const[mx,my]=pos(e);mouse={x:mx,y:my};const _w=s2w(mx,my);const t=portAt(_w.x,_w.y);
   if(t&&t.node){const c=onDrop(t);if(c){persist();flashHint('linked '+t.node.label)}else pending=null}
   else pending=null;
   hoverPort=null;cv.style.cursor='grab';draw()}});
 cv.addEventListener('dblclick',e=>{clearTimeout(clickT);const[mx,my]=pos(e);if(view==='scenes'){const _w=s2w(mx,my);const s=sceneAt(_w.x,_w.y);if(s)renameScene(s);return}const _dw=s2w(mx,my),n=at(_dw.x,_dw.y);if(!n)return;
+ if(addImgHit(n,_dw.x,_dw.y))return;
  if(e.shiftKey)editNote(n);else editLabel(n)});
-addEventListener('keydown',e=>{if(e.key==='Escape'){closeCardMenu();try{const _dm=document.getElementById('drawerMenu');if(_dm)_dm.hidden=true}catch(_e){}closeDrawer();closeShotPicker();hidePicker();closeProjectModal();closePromptModal();selConn=null;pending=null;panDrag=null;draw()}
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeCardMenu();try{const _dm=document.getElementById('drawerMenu');if(_dm)_dm.hidden=true}catch(_e){}closeDrawer();closeShotPicker();hidePicker();closeProjectModal();closePromptModal();try{closeAssetEditor()}catch(_e){}selConn=null;pending=null;panDrag=null;draw()}
  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();if(e.shiftKey)redo();else undo();return}
  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='y'){e.preventDefault();redo();return}});
 /* ---- per-card image/URL menu (replaces the old global buttons) ---- */
@@ -751,6 +877,7 @@ function openCardMenu(card){
  cardMenu.innerHTML='';
  const add=(label,fn)=>{const b=document.createElement('button');b.type='button';b.setAttribute('role','menuitem');b.textContent=label;
   b.addEventListener('click',e=>{e.stopPropagation();closeCardMenu();fn()});cardMenu.appendChild(b);return b};
+ add('Rename asset…',()=>renameAsset(card));
  add('Change image…',()=>{pickTarget={k:'n',id:card.id};filePick.click()});
  add('Set/Edit URL…',()=>{const cur=card.imgUrl&&!card.imgUrl.startsWith('data:')?card.imgUrl:'';
   const v=prompt('Image URL or repo path (e.g. uploads/photo.jpg) for "'+card.label+'": (empty removes)',cur);
@@ -864,6 +991,7 @@ function syncDrawerImg(n){try{
  if(!((drawerSub.id!=null&&n&&drawerSub.id===n.id)||drawerSub===n))return;
  refreshDrawerAfterImg()}catch(_e){}}
 document.getElementById('menuImg').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}const m=document.getElementById('drawerMenu');if(m)m.hidden=true;const t=drawerLive();if(!t||t.id==null||!nodeById(t.id)){flashHint('open a card first');return}pickTarget={k:'n',id:t.id};filePick.click()};
+document.getElementById('menuRename').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}const m=document.getElementById('drawerMenu');if(m)m.hidden=true;const t=drawerLive();if(!t){flashHint('open a card first');return}renameAsset(t)};
 function syncDrawerEmpty(n){try{const e=document.getElementById('drawerEmpty');if(!e)return;e.hidden=!!(n&&(n.images||n.imgUrl))}catch(_e){}}
 document.getElementById('drawerAddImg').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}const t=drawerLive();if(!t||t.id==null||!nodeById(t.id)){flashHint('open a card first');return}pickTarget={k:'n',id:t.id};filePick.click()};
 document.getElementById('menuURL').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}const m=document.getElementById('drawerMenu');if(m)m.hidden=true;const t=drawerLive();if(!t||t.id==null||!nodeById(t.id)){flashHint('open a card first');return}const cur=t.imgUrl&&!t.imgUrl.startsWith('data:')?t.imgUrl:'';const v=prompt('Image URL or repo path (e.g. uploads/photo.jpg) for "'+(t.label||t.title||'card')+'": (empty removes)',cur);if(v===null)return;attachURL(t,v.trim());refreshDrawerAfterImg();refreshDrawerMenu()};
@@ -1282,8 +1410,9 @@ function renderProjectModal(){if(!PROJECT||!PROJECT.domains)return;if(!PROJECT.d
  for(const tid of Object.keys(D.tokens||{})){if(!isTokOn(tid))continue;const idxs=allowedValues(tid);if(!idxs.length)continue;const th=document.createElement('div');th.className='proj-code-tok';th.textContent=D.tokens[tid].label;codeHost.appendChild(th);idxs.forEach(i=>{codeHost.appendChild(projCodeRow(tid,i));nCodes++})}
  if(!nCodes){const e=document.createElement('div');e.className='proj-empty';e.textContent='No enabled values \u2014 flip a toggle to add codes.';codeHost.appendChild(e)}
  const c=projCounts();document.getElementById('projNote').textContent=c.d+' of '+c.dt+' domains \u00b7 '+c.t+' of '+c.tt+' tokens \u00b7 '+c.v+' of '+c.vt+' values enabled'}
-function openProjectModal(){if(PROJECT&&PROJECT.domains&&!PROJECT.domains[projTab])projTab=DOMAIN_ORDER[0];renderProjectModal();document.getElementById('projModal').hidden=false}
-function closeProjectModal(){document.getElementById('projModal').hidden=true}
+let projCloseT=null;
+function openProjectModal(){if(PROJECT&&PROJECT.domains&&!PROJECT.domains[projTab])projTab=DOMAIN_ORDER[0];renderProjectModal();const m=document.getElementById('projModal');clearTimeout(projCloseT);m.classList.remove('closing');m.hidden=false}
+function closeProjectModal(){const m=document.getElementById('projModal');if(m.hidden||m.classList.contains('closing'))return;m.classList.add('closing');clearTimeout(projCloseT);projCloseT=setTimeout(()=>{m.hidden=true;m.classList.remove('closing')},280)}
 /* ---- prompt modal (character exemplar, works for any card/scene) ---- */
 let pmTarget=null;
 function openPromptModal(n,hint){if(!n)return;drawerSub=n;pmTarget=n;const ps=n.promptState||(n.promptState={sels:{},action:'',mood:'',neg:NEG_DEFAULT,model:'universal'});
@@ -1566,6 +1695,211 @@ function renderAssetMenu(){const host=document.getElementById('assetList');host.
  else{const m=VIEW_META[view];h.textContent='assets — '+(m?m.one.toLowerCase()+'s':view);
   for(const n of nodes)pick(n.label,n,()=>{selected=n;selStrip=null;menuDrop.hidden=true;hoverNode=n;openDrawer(n);draw()})}
  if(!host.children.length+1||host.querySelectorAll('button').length===0){const d=document.createElement('div');d.className='ah';d.textContent='no assets yet';host.appendChild(d)}}
+/* ---- floating asset list (per-tab, in-canvas): same enumeration as the ⋯ menu ---- */
+function assetListEntries(){
+ if(view==='scenes'){const c=(typeof activeChapter==='function')?activeChapter():null;const ss=(c&&c.scenes)||[];
+  return{title:'assets — scenes · '+((c&&(c.name||('Chapter '+c.id)))||''),items:ss.map(s=>({ref:s,anchor:s.scAnchor||'?',label:s.title||'Scene'}))}}
+ const m=(typeof VIEW_META!=='undefined'&&VIEW_META[view])||null;
+ const list=(typeof nodes!=='undefined'&&Array.isArray(nodes))?nodes:[];
+ return{title:'assets — '+((m&&m.one)?m.one.toLowerCase()+'s':view),items:list.map(n=>({ref:n,anchor:n.anchor||n.scAnchor||'?',label:n.label||n.title||'card'}))}}
+function centerOnRect(x,y,w,h){try{const vw=W/cam.z,vh=H/cam.z;cam.x=x+w/2-vw/2;cam.y=y+h/2-vh/2}catch(e){}}
+function jumpToAsset(e){
+ try{document.getElementById('assetPanel').hidden=true;document.getElementById('assetBtn').setAttribute('aria-expanded','false')}catch(_e){}
+ if(!e||!e.ref)return;
+ if(view==='scenes'){selStrip=e.ref;selected=null;try{centerOnRect(e.ref.x,e.ref.y,e.ref.w||560,e.ref.h||340)}catch(_e2){}try{openDrawer(e.ref)}catch(_e3){}try{draw()}catch(_e4){}return}
+ selected=e.ref;selStrip=null;try{hoverNode=e.ref}catch(_e5){}
+ try{centerOnRect(e.ref.x,e.ref.y,e.ref.w||200,e.ref.h||190)}catch(_e6){}
+ try{openDrawer(e.ref)}catch(_e7){}try{draw()}catch(_e8){}}
+function renderAssetPanel(){const p=document.getElementById('assetPanel');if(!p)return;p.innerHTML='';
+ const o=assetListEntries(),items=o.items;
+ const head=document.createElement('div');head.className='ahead';
+ const h=document.createElement('div');h.className='ah';h.textContent=o.title+' · '+items.length;head.appendChild(h);
+ const edit=document.createElement('button');edit.type='button';edit.className='aedit';edit.id='assetEditOpen';edit.textContent='Edit';edit.title='Edit all assets';
+ edit.addEventListener('click',ev=>{ev.stopPropagation();openAssetEditor()});head.appendChild(edit);p.appendChild(head);
+ if(!items.length){const d=document.createElement('div');d.className='empty';d.textContent='no assets yet';p.appendChild(d);return}
+ for(const e of items){
+  const b=document.createElement('button');b.type='button';b.className='ajump';b.setAttribute('role','menuitem');
+  const url=assetImgUrl(e.ref);
+  if(url){const im=document.createElement('img');im.className='athumb';im.src=url;im.alt='';im.loading='lazy';b.appendChild(im)}
+  else{const ph=document.createElement('span');ph.className='athumb none';ph.textContent='◌';b.appendChild(ph)}
+  const tx=document.createElement('span');tx.className='atxt';
+  const bb=document.createElement('b');bb.textContent=e.anchor;tx.appendChild(bb);tx.appendChild(document.createTextNode(e.label||'card'));b.appendChild(tx);
+  b.title=(e.anchor||'')+' · '+(e.label||'card');
+  b.addEventListener('click',ev=>{ev.stopPropagation();jumpToAsset(e)});
+  p.appendChild(b)}}
+function syncAssetBtn(){const b=document.getElementById('assetBtn');if(!b)return;
+ const names={scenes:'Scenes',locations:'Locations',props:'Props',cast:'Cast',shots:'Shots'};
+ const short=names[view]||(view.charAt(0).toUpperCase()+view.slice(1));
+ let n=0;try{n=assetListEntries().items.length}catch(e){n=0}
+ b.textContent='☰ '+short+' ('+n+')';b.title='List '+String(short).toLowerCase()+' in this tab';b.setAttribute('aria-label',b.title)}
+;(function(){
+ const ab=document.getElementById('assetBtn'),ap=document.getElementById('assetPanel');
+ if(ab&&ap){ab.addEventListener('click',e=>{e.stopPropagation();
+   if(ap.hidden){renderAssetPanel();syncAssetBtn();ap.hidden=false;ab.setAttribute('aria-expanded','true')}
+   else{ap.hidden=true;ab.setAttribute('aria-expanded','false')}});
+  document.addEventListener('pointerdown',e=>{try{
+   if(!ap.hidden&&!(e.target&&e.target.closest&&(e.target.closest('#assetPanel')||e.target.closest('#assetBtn')))){ap.hidden=true;ab.setAttribute('aria-expanded','false')}}catch(_e){}},true);
+  document.addEventListener('keydown',e=>{try{
+   if(e.key==='Escape'&&!ap.hidden){ap.hidden=true;ab.setAttribute('aria-expanded','false')}}catch(_e){}});
+ try{if(typeof syncUI==='function'&&!syncUI._assetHooked){const _s=syncUI;const w=function(){try{_s()}catch(e){}try{syncAssetBtn();const q=document.getElementById('assetPanel');if(q&&!q.hidden)renderAssetPanel()}catch(_e){}};w._assetHooked=true;syncUI=w}}catch(e){}
+ try{if(typeof persist==='function'&&!persist._assetHooked){const _p=persist;const w=function(){let r;try{r=_p()}catch(e){}try{syncAssetBtn();const q=document.getElementById('assetPanel');if(q&&!q.hidden)renderAssetPanel()}catch(_e){}return r};w._assetHooked=true;persist=w}}catch(e){}
+ try{const cs=document.getElementById('chapterSel');if(cs)cs.addEventListener('change',()=>{try{syncAssetBtn();const q=document.getElementById('assetPanel');if(q&&!q.hidden)renderAssetPanel()}catch(e){}})}catch(e){}
+ try{syncAssetBtn()}catch(e){}
+}})();
+/* ---- global asset edit modal: ONE Edit button opens a list of ALL assets ----
+   Targets are stored as {view,id,isScene} and re-resolved live on every
+   action so persist/undo cycles never leave a stale object behind. */
+let assetImportTarget=null,assetDelArmedId=null;
+function assetRefOf(n){if(!n)return null;return{view:isSceneAsset(n)?'scenes':view,id:n.id,isScene:isSceneAsset(n)}}
+function assetDelKey(t){return t?(t.view+':'+t.id):''}
+function assetResolve(t){if(!t)return null;try{
+ if(t.isScene){for(const c of allChapters())for(const s of(c.scenes||[]))if(s&&s.id===t.id)return s;return null}
+ if(t.view===view&&typeof nodeById==='function'){const l=nodeById(t.id);if(l)return l}
+ const V=VIEWS[t.view];for(const n of((V&&V.nodes)||[]))if(n&&n.id===t.id)return n;
+ if(typeof nodeById==='function'){const l=nodeById(t.id);if(l)return l}}catch(e){}return null}
+function assetSlug(t){try{return((t.anchor||t.scAnchor||t.label||t.title||'asset')+'').replace(/[^A-Za-z0-9-_]+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'asset'}catch(e){return'asset'}}
+function downloadBlob(name,blob){try{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{try{URL.revokeObjectURL(a.href)}catch(e){}a.remove()},800);return true}catch(e){flashHint('download failed');return false}}
+function assetSnapshot(t){if(t.slots)return{kind:'scene',id:t.id,title:t.title||'',scAnchor:t.scAnchor||'',lanes:t.lanes||0,slots:t.slots||[]};
+ try{return dataOf([t])[0]}catch(e){const o={};for(const k of['id','kind','label','note','anchor','x','y','w','h','imgUrl'])o[k]=t[k];return o}}
+function assetImgUrl(t){try{if(t.imgUrl)return t.imgUrl;if(t.images&&t.images.length&&t.images[0].url)return t.images[0].url}catch(e){}return''}
+function isSceneAsset(n){return!!(n&&n.slots)}
+function openAssetEditor(){assetDelArmedId=null;assetImportTarget=null;
+ try{menuDrop.hidden=true}catch(e){}
+ try{document.getElementById('assetPanel').hidden=true;document.getElementById('assetBtn').setAttribute('aria-expanded','false')}catch(_e){}
+ renderAssetEditor();document.getElementById('assetModal').hidden=false}
+function closeAssetEditor(){assetDelArmedId=null;assetImportTarget=null;document.getElementById('assetModal').hidden=true}
+function renderAssetEditor(){
+ const list=document.getElementById('assetEditList');if(!list)return;list.innerHTML='';
+ const o=assetListEntries(),items=o.items;
+ document.getElementById('assetModalTitle').textContent='Edit assets';
+ document.getElementById('assetModalSub').textContent=o.title+' · '+items.length;
+ if(!items.length){const d=document.createElement('div');d.className='aeempty';d.textContent='no assets yet';list.appendChild(d);return}
+ for(const e of items){
+  const t=assetRefOf(e.ref),live=assetResolve(t)||e.ref;
+  const label=live.title||live.label||e.label||'card',an=live.anchor||live.scAnchor||e.anchor||'no anchor';
+  const row=document.createElement('div');row.className='aerow';
+  const url=assetImgUrl(live);
+  if(url){const im=document.createElement('img');im.className='aethumb';im.src=url;im.alt='';im.loading='lazy';row.appendChild(im)}
+  else{const ph=document.createElement('span');ph.className='aethumb none';ph.textContent='◌';row.appendChild(ph)}
+  const main=document.createElement('div');main.className='aemain';
+  const nm=document.createElement('div');nm.className='aename';
+  const bb=document.createElement('b');bb.textContent=an;nm.appendChild(bb);nm.appendChild(document.createTextNode(label));main.appendChild(nm);
+  const sb=document.createElement('div');sb.className='aesub';sb.textContent=live.note||'no note';main.appendChild(sb);
+  row.appendChild(main);
+  const act=document.createElement('div');act.className='aeactions';
+  const mk=(txt,fn,cls)=>{const b=document.createElement('button');b.type='button';b.textContent=txt;if(cls)b.className=cls;b.addEventListener('click',ev=>{ev.stopPropagation();fn()});act.appendChild(b);return b};
+  mk('Rename',()=>assetRowRename(t));
+  mk('Export',()=>assetRowExport(t));
+  mk('Import',()=>{assetImportTarget=t;document.getElementById('assetImportPick').click()});
+  if(assetDelArmedId===assetDelKey(t)){
+   mk('confirm delete?',()=>assetRowDelete(t),'danger armed');
+   mk('cancel',()=>{assetDelArmedId=null;renderAssetEditor()});
+  }else{
+   mk('delete',()=>{assetDelArmedId=assetDelKey(t);renderAssetEditor()},'danger');
+  }
+  row.appendChild(act);list.appendChild(row)}}
+function assetEditorRefresh(){try{if(!document.getElementById('assetModal').hidden)renderAssetEditor()}catch(e){}
+ try{if(!document.getElementById('assetPanel').hidden)renderAssetPanel()}catch(e2){}try{syncAssetBtn()}catch(e3){}try{renderAssetMenu()}catch(e4){}}
+function assetRowDelete(t){const live=assetResolve(t);if(!live){flashHint('nothing to delete');return}
+ snap();
+ if(t.isScene||(view==='scenes'&&live.slots)){const ch=activeChapter();const ix=(ch.scenes||[]).indexOf(live);
+  if(ix<0){flashHint('nothing to delete');return}
+  if(live.scAnchor)tombstone(live.scAnchor);ch.scenes.splice(ix,1);selStrip=null;
+  const ids=new Set(ch.scenes.map(s=>s.id));ch.conns=(ch.conns||[]).filter(cc=>ids.has(cc.a.id)&&ids.has(cc.b.id));conns=ch.conns;
+  assetDelArmedId=null;persist();draw();closeDrawer();assetEditorRefresh();showToast('Scene deleted');return}
+ const id=live.id;
+ if(!t.isScene){if(live.anchor)tombstone(live.anchor);
+  nodes=nodes.filter(n=>n.id!==id);conns=conns.filter(c=>c.a.id!==id&&c.b.id!==id);
+  if(selected&&selected.id===id)selected=null;hidePicker();
+  assetDelArmedId=null;persist();draw();closeDrawer();assetEditorRefresh();showToast('Card deleted');return}
+ flashHint('nothing to delete')}
+function assetRowExport(t){const live=assetResolve(t);if(!live){flashHint('nothing to export');return}
+ const slug=assetSlug(live);
+ downloadBlob(slug+'.json',new Blob([JSON.stringify(assetSnapshot(live),null,2)],{type:'application/json'}));
+ const url=assetImgUrl(live);
+ if(url){if(url.indexOf('data:')===0){const ext=url.indexOf('image/png')>=0?'png':'jpg';downloadBlob(slug+'.'+ext,dataURLtoBlob(url))}
+  else{fetch(url).then(r=>{if(!r.ok)throw 0;return r.blob()}).then(b=>downloadBlob(slug+'.img',b)).catch(()=>flashHint('image kept in JSON — remote fetch blocked'))}}
+ else flashHint('exported '+slug+'.json (no image)')}
+function assetRowImportFile(t,f){const live=assetResolve(t);if(!live){flashHint('asset gone — undo to restore');return}
+ if(!f)return;
+ const isJson=/json/i.test(f.type)||/\.json$/i.test(f.name||'');
+ if(isJson){const r=new FileReader();r.onload=()=>{let o=null;try{o=JSON.parse(r.result)}catch(e){flashHint('bad JSON file');return}
+   snap();
+   if(live.slots){if(typeof o.title==='string')live.title=o.title.slice(0,60);if(typeof o.note==='string')live.note=o.note.slice(0,300)}
+   else{if(typeof o.label==='string')live.label=o.label.slice(0,60);else if(typeof o.title==='string')live.label=o.title.slice(0,60);
+    if(typeof o.note==='string')live.note=o.note.slice(0,300);
+    if(typeof o.imgUrl==='string'&&o.imgUrl)live.imgUrl=o.imgUrl;
+    if(o.promptState&&typeof o.promptState==='object')live.promptState=o.promptState;
+    if(o.ps&&!o.promptState&&typeof o.ps==='object')live.promptState=o.ps}
+   if(live.imgUrl&&!live.slots)loadImage(live);else{persist();draw()}
+   try{assetEditorRefresh()}catch(e){}try{refreshDrawerAfterImg()}catch(e3){}
+   flashHint('imported into '+(live.anchor||live.scAnchor||'asset'))};
+  r.onerror=()=>flashHint('could not read file');r.readAsText(f);return}
+ fileToDataURL(f).then(url=>{const again=assetResolve(t);if(!again){flashHint('asset gone');return}
+  if(again.slots){flashHint('scenes take no image');return}
+  snap();again.imgUrl=url;loadImage(again);try{assetEditorRefresh()}catch(e){}try{renderAssetMenu()}catch(e2){}}).catch(()=>flashHint('could not read that image file'))}
+function assetRowRename(t){const live=assetResolve(t);if(!live){flashHint('nothing to rename');return}
+ renameAsset(live); /* single rename path: renameAsset delegates to editLabel / title prompt */
+ try{assetEditorRefresh()}catch(e){}}
+document.getElementById('assetImportPick').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];e.target.value='';const t=assetImportTarget;assetImportTarget=null;if(f&&t)assetRowImportFile(t,f)});
+document.getElementById('assetClose').onclick=()=>closeAssetEditor();
+document.getElementById('assetModal').addEventListener('click',e=>{if(e.target.id==='assetModal')closeAssetEditor()});
+document.addEventListener('pointerdown',e=>{if(assetDelArmedId&&!(e.target&&e.target.closest&&e.target.closest('#assetModal'))){assetDelArmedId=null;try{renderAssetEditor()}catch(_e){}}},true);
+/* ---- mobile touch layer (lane Engine-Mobile): pinch zoom, zoom cluster, sheet grab ----
+   Visual language only — canvas workflow IA unchanged. Single-pointer handlers above
+   are untouched; pinch pre-empts them via capture on #stage while 2 pointers are down. */
+(function(){
+ const stage=document.getElementById('stage'),drawer=document.getElementById('drawer');
+ function zoomAt(f,cx,cy){const nz=Math.max(.25,Math.min(3,cam.z*f));const wx=cx/cam.z+cam.x,wy=cy/cam.z+cam.y;cam.x=wx-cx/nz;cam.y=wy-cy/nz;cam.z=nz;draw()}
+ const zc=document.createElement('div');zc.id='zoomCtl';
+ zc.innerHTML='<button type="button" data-z="in" aria-label="Zoom in">+</button><button type="button" data-z="out" aria-label="Zoom out">\u2212</button><button type="button" data-z="reset" aria-label="Reset zoom" style="font-size:12px">1:1</button>';
+ stage.appendChild(zc);
+ zc.addEventListener('click',e=>{const b=e.target&&e.target.closest?e.target.closest('button'):null;if(!b)return;const r=cv.getBoundingClientRect(),cx=r.width/2,cy=r.height/2;
+  if(b.dataset.z==='in')zoomAt(1.25,cx,cy);else if(b.dataset.z==='out')zoomAt(1/1.25,cx,cy);else zoomAt(1/cam.z,cx,cy)});
+ const pts=new Map();let pinch=null;
+ const rel=()=>cv.getBoundingClientRect();
+ stage.addEventListener('pointerdown',e=>{
+  if(e.target!==cv)return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pts.size===2){
+   try{drag=null;panDrag=null;pending=null}catch(_){}
+   try{if(typeof dragS!=='undefined')dragS=null}catch(_){}
+   const r=rel(),p=[...pts.values()].map(q=>({x:q.x-r.left,y:q.y-r.top}));
+   pinch={d:Math.max(1,Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y)),mx:(p[0].x+p[1].x)/2,my:(p[0].y+p[1].y)/2,cam:{x:cam.x,y:cam.y,z:cam.z}};
+   e.stopPropagation();e.preventDefault();
+  }
+ },true);
+ stage.addEventListener('pointermove',e=>{
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pts.size===2&&pinch){
+   const r=rel(),p=[...pts.values()].map(q=>({x:q.x-r.left,y:q.y-r.top}));
+   const d=Math.max(1,Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y));
+   const mx=(p[0].x+p[1].x)/2,my=(p[0].y+p[1].y)/2;
+   const nz=Math.max(.25,Math.min(3,pinch.cam.z*(d/pinch.d)));
+   const wx0=pinch.mx/pinch.cam.z+pinch.cam.x,wy0=pinch.my/pinch.cam.z+pinch.cam.y;
+   cam.x=wx0-mx/nz;cam.y=wy0-my/nz;cam.z=nz;draw();
+   e.stopPropagation();e.preventDefault();
+  }
+ },true);
+ const pinchEnd=e=>{
+  const was=pts.size===2;
+  pts.delete(e.pointerId);
+  if(pts.size<2)pinch=null;
+  if(was){e.stopPropagation();e.preventDefault()}
+ };
+ stage.addEventListener('pointerup',pinchEnd,true);
+ stage.addEventListener('pointercancel',pinchEnd,true);
+ /* bottom-sheet grab handle (rendered <=860px via CSS) with swipe-to-close */
+ const grab=document.createElement('div');grab.id='sheetGrab';grab.setAttribute('aria-hidden','true');
+ drawer.insertBefore(grab,drawer.firstChild);
+ let gy=null;
+ grab.addEventListener('pointerdown',e=>{if(!drawer.classList.contains('open'))return;gy=e.clientY;try{grab.setPointerCapture(e.pointerId)}catch(_){}e.stopPropagation()});
+ grab.addEventListener('pointermove',e=>{if(gy==null)return;const dy=e.clientY-gy;drawer.style.transform=dy>0?('translateY('+dy+'px)'):'none';e.stopPropagation()});
+ const gEnd=e=>{if(gy==null)return;const dy=e.clientY-gy;gy=null;drawer.style.transform='';if(dy>96){try{closeDrawer()}catch(_){drawer.classList.remove('open')}}};
+ grab.addEventListener('pointerup',gEnd);
+ grab.addEventListener('pointercancel',()=>{gy=null;drawer.style.transform=''});
+})();
 attachZoom();
 restore();fit();
 try{if(typeof BoardSync!=='undefined'&&BoardSync.boot)BoardSync.boot()}catch(e){}
