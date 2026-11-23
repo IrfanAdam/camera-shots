@@ -10,19 +10,19 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 ```
 
 - Generated: 2026-11-23
-- Tokens defined: 214 (`design-system/tokens.css`)
+- Tokens defined: 217 (`design-system/tokens.css`)
 - Files scanned: `index.html`, `pitch.html`, `engine.html`, `design-system/index.html`
 - Result: **PASS** — 0 violation(s), 4 exempt, 0 bad-allow
 
 ## Per-file violations
 
-| File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | U1 dead var | exempt | bad-allow | `!important` | inline `style=` | `var(--)` uses |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 19 | 300 |
-| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 14 | 32 | 270 |
-| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 4 | 2 | 631 |
-| `design-system/index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 148 | 750 |
-| **Total** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **4** | **0** | **20** | **201** | **1951** |
+| File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | V7 border width | U1 dead var | exempt | bad-allow | `!important` | inline `style=` | `var(--)` uses |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 19 | 316 |
+| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 14 | 32 | 302 |
+| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 4 | 2 | 705 |
+| `design-system/index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 148 | 791 |
+| **Total** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **4** | **0** | **20** | **201** | **2114** |
 
 ## Violation detail
 
@@ -52,11 +52,12 @@ _No violations._
 | V4 | Raw `border-radius` (px/%/rem or bare 0) | `radius.*` → `var(--radius-none|xs|sm|md|card|lg|xl|pill|circle)` |
 | V5 | Inline `style="…"` attribute carrying color or px radius | Move to a class in `<style>`; paint via `var(--color-*)`, radius via `var(--radius-*)` |
 | V6 | SVG paint attribute `fill|stroke|stop-color="#…"` | `var(--color-*)` in a CSS rule (`fill:var(--color-…)`) or a token-backed class |
+| V7 | Raw px border width in `border` / `border-top|right|bottom|left` | `border.width.*` → `var(--border-width-hairline|strong|accent)` as the width position of the shorthand |
 | U1 | Dead `var(--name)`: not defined in tokens.css and not declared in this page | Add the token to `design-system/tokens.json` → regenerate, or use the existing token; never rely on a fallback |
 
 ### Exemptions (`lint-allow`)
 
-A hit may be tolerated only **in place, on the same line, with a reason**: `/* lint-allow: reason */` in CSS, `// lint-allow: reason` in JS, `<!-- lint-allow: reason -->` in HTML. The marker clears every hit on its own line (V1–V6, U1) and nothing on the next line. The reason must be at least 8 characters after trimming; a marker with no reason, or with `ok`, exempts nothing — the hit stays a violation and is additionally reported as **BAD-ALLOW**, so the mechanism cannot silently blanket-suppress.
+A hit may be tolerated only **in place, on the same line, with a reason**: `/* lint-allow: reason */` in CSS, `// lint-allow: reason` in JS, `<!-- lint-allow: reason -->` in HTML. The marker clears every hit on its own line (V1–V7, U1) and nothing on the next line. The reason must be at least 8 characters after trimming; a marker with no reason, or with `ok`, exempts nothing — the hit stays a violation and is additionally reported as **BAD-ALLOW**, so the mechanism cannot silently blanket-suppress.
 
 Legitimate only where **a browser cannot resolve the value from a custom property**: the `meta` theme-color tag, `@media` / `@supports` conditions, and canvas or gradient string composites assembled in JS. Never legitimate for any color, duration, radius or `z-index` that a token could hold — those get a token (or get fixed), because that is exactly the drift this gate exists to catch.
 

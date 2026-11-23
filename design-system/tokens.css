@@ -2,7 +2,7 @@
    tokens.css — GENERATED FILE, DO NOT EDIT BY HAND.
    Source:     design-system/tokens.json
    Regenerate: node scripts/build-tokens.mjs
-   Tokens:     214
+   Tokens:     217
    ========================================================================== */
 
 :root {
@@ -363,4 +363,9 @@
 
   /* focus.offset */
   --focus-offset: 2px;
+
+  /* border.width */
+  --border-width-hairline: 1px;
+  --border-width-strong: 2px;
+  --border-width-accent: 3px;
 }
