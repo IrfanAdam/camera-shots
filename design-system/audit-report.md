@@ -18,11 +18,11 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 
 | File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | U1 dead var | exempt | bad-allow | `!important` | inline `style=` | `var(--)` uses |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 19 | 228 |
+| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 19 | 300 |
 | `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 14 | 32 | 270 |
-| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 4 | 2 | 538 |
-| `design-system/index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 142 | 742 |
-| **Total** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **4** | **0** | **20** | **195** | **1778** |
+| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 4 | 2 | 631 |
+| `design-system/index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 148 | 750 |
+| **Total** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **4** | **0** | **20** | **201** | **1951** |
 
 ## Violation detail
 
