@@ -8,7 +8,7 @@ Three product surfaces (the wiki in `index.html`, the investor deck in `pitch.ht
 
 | Path | What it is | Generated | Safe to edit |
 |---|---|---|---|
-| `design-system/tokens.json` | Token source, 208 keys, 12 groups | no | yes, the only design-value source |
+| `design-system/tokens.json` | Token source, 229 keys, 13 groups | no | yes, the only design-value source |
 | `design-system/tokens.css` | Single `:root` block of custom properties | yes | never |
 | `scripts/build-tokens.mjs` | Generator, tokens.json to tokens.css | no | yes |
 | `scripts/lint-tokens.mjs` | Adherence gate, per-file line numbers, exit 1 on failure | no | yes |
@@ -27,7 +27,7 @@ node scripts/lint-tokens.mjs           # scan pages, print the table, write audi
 node scripts/lint-tokens.mjs --check   # CI gate: same scan, no write, exit 1 on failure
 ```
 
-`tokens.json` is the only file you edit by hand for a design value. `tokens.css` is regenerated; editing it is lost work. The generator is deterministic and idempotent (verified: a fresh run reproduces the on-disk 9304-byte file byte for byte).
+`tokens.json` is the only file you edit by hand for a design value. `tokens.css` is regenerated; editing it is lost work. The generator is deterministic and idempotent (verified: a fresh run reproduces the on-disk file byte for byte).
 
 ## Naming rule
 
@@ -70,8 +70,12 @@ Color, per surface:
 
 Type:
 
+Two families, no more: one sans for all text, one mono for labels, numbers, code and timecode. Hierarchy is size, weight and tracking only — there is no display face and no quote face.
+
 | Token | Value |
 |---|---|
+| `family.sans` | `system-ui, -apple-system, Segoe UI, sans-serif` |
+| `family.mono` | `ui-monospace, Menlo, monospace` |
 | `h1.pitch` | `clamp(2rem, 5vw, 3.1rem)` |
 | `h1.wiki` | `1.6rem` |
 | `h2.pitch` | `1.35rem` |
@@ -119,10 +123,11 @@ Type:
 
 ## Known debt
 
-`design-system/audit-report.md` (generated 2026-11-23) reports FAIL, 81 violations:
+`design-system/audit-report.md` (generated 2026-11-23) reports PASS, 0 violations, 21 documented exemptions — every raw paint, motion, z-index, radius, border width and spacing value now resolves from a token, and no page references an undefined token.
 
-- Raw colors sit almost entirely in `engine.html` (70 of 70); raw radius there is 3, raw z-index 2. `pitch.html` has 2 raw z-index values and the gallery has 1.
-- The type scale still sits beside literal sizes: distinct non-`var()` `font-size` values inside `<style>` blocks are 10 in `index.html`, 20 in `pitch.html`, 19 in `engine.html`.
-- `!important`: 2 in `index.html`, 14 in `pitch.html`, 4 in `engine.html`.
+What the gate does not judge:
 
-Consolidating the literal type sizes and `!important` overrides is the next pass; this README does not fix them.
+- Literal `font-size` values survive beside the type tokens: 2 distinct non-`var()` sizes per page (`index.html` `.7rem` / `22px`, `pitch.html` `.62rem` / `.9rem`, `engine.html` `.78rem` / `18px`). The gate has no font-size class; folding them into the scale is the next pass.
+- `!important`: 2 in `index.html`, 5 in `pitch.html`, 1 in `engine.html`. Same lane.
+
+Both are type-and-cascade cleanup, not token drift.

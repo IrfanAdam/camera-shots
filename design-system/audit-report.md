@@ -10,7 +10,7 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 ```
 
 - Generated: 2026-11-23
-- Tokens defined: 230 (`design-system/tokens.css`)
+- Tokens defined: 229 (`design-system/tokens.css`)
 - Files scanned: `index.html`, `pitch.html`, `engine.html`, `design-system/index.html`
 - Result: **PASS** — 0 violation(s), 21 exempt, 0 bad-allow
 
@@ -18,11 +18,11 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 
 | File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | V7 border width | V8 spacing | U1 dead var | exempt | bad-allow | `!important` | inline `style=` | `var(--)` uses |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 2 | 19 | 395 |
-| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 7 | 0 | 14 | 32 | 428 |
-| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10 | 0 | 1 | 2 | 973 |
-| `design-system/index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 0 | 148 | 795 |
-| **Total** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **21** | **0** | **17** | **201** | **2591** |
+| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 2 | 19 | 407 |
+| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 7 | 0 | 5 | 31 | 433 |
+| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10 | 0 | 1 | 2 | 976 |
+| `design-system/index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 0 | 148 | 794 |
+| **Total** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **21** | **0** | **8** | **200** | **2610** |
 
 ## Violation detail
 
@@ -59,15 +59,15 @@ _No violations._
 | 265 | V8 | `padding:1px var(--spacing-xs)` | 1px chip inset is an optical hairline; no 2px step exists |
 | 288 | V8 | `padding:0 0 0 3px` | 3px chip inset cancels the -3px gutter so the token stays flush |
 | 288 | V8 | `margin:0 0 0 -3px` | 3px chip inset cancels the -3px gutter so the token stays flush |
-| 1203 | V3 | `z-index:80` | fixed node-picker popover must clear --z-overlay (60) and stay below --z-canvas (90); no token holds 80 and inventing z.critical for one node would fork the scale |
+| 1204 | V3 | `z-index:80` | fixed node-picker popover must clear --z-overlay (60) and stay below --z-canvas (90); no token holds 80 and inventing z.critical for one node would fork the scale |
 
 ### `design-system/index.html` — Exempt (3)
 
 | Line | Class | Found | Reason |
 |---:|---|---|---|
 | 90 | V8 | `padding-left:calc(var(--spacing-sm) - 1px)` | 1px optical offset inside calc aligns the rail rule; no 2px step |
-| 183 | V8 | `margin-top:-10px` | negative half of the 20px dot centres it against the track |
-| 417 | V8 | `padding:1px var(--spacing-xs)` | 1px badge inset is an optical hairline; no 2px step exists |
+| 182 | V8 | `margin-top:-10px` | negative half of the 20px dot centres it against the track |
+| 416 | V8 | `padding:1px var(--spacing-xs)` | 1px badge inset is an optical hairline; no 2px step exists |
 
 ## How to fix
 

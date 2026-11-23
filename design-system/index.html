@@ -53,7 +53,7 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 a{color:inherit}
-code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:var(--typography-size-meta);letter-spacing:0}
+code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-size-meta);letter-spacing:0}
 ::selection{background:var(--color-pro-selection);color:var(--color-neutral-black)}
 
 .wrap{max-width:1100px;margin:0 auto;padding:0 var(--spacing-lg)}
@@ -137,8 +137,7 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
 .fam .fam-k{font-size:var(--typography-size-eyebrow);letter-spacing:var(--typography-tracking-eyebrow);text-transform:uppercase;color:var(--g-muted);margin-bottom:var(--spacing-2xs)}
 .fam .fam-spec{font-size:var(--typography-size-h2-wiki);line-height:1.2;margin-bottom:var(--spacing-xs)}
 .fam .fam-tok{font-size:var(--typography-size-eyebrow);color:var(--g-muted);overflow-wrap:break-word}
-.fam-display .fam-spec{font-family:var(--typography-family-display)}
-.fam-quote .fam-spec{font-family:var(--typography-family-quote);font-style:italic;font-weight:var(--typography-weight-regular)}
+.fam-mono .fam-spec{font-family:var(--typography-family-mono)}
 
 /* ---------- space / radius / elevation ---------- */
 .space-row{display:grid;grid-template-columns:132px minmax(0,1fr) 92px;gap:var(--spacing-md);align-items:center;padding:var(--spacing-2xs) 0}
@@ -473,7 +472,7 @@ footer code{color:var(--g-ink)}
     <h1>Design System — Camera Shots</h1>
     <p class="mast-lede">Every specimen below is drawn with the custom properties in <code>tokens.css</code>, so what you see is what ships. Three surfaces, one token layer: <b>Wiki</b> (read), <b>Pitch</b> (persuade), <b>Engine</b> (operate).</p>
     <dl class="stats">
-      <div><dt>Tokens</dt><dd><span class="js-token-count">206</span> · one <code>:root</code> block</dd></div>
+      <div><dt>Tokens</dt><dd><span class="js-token-count">229</span> · one <code>:root</code> block</dd></div>
       <div><dt>Surfaces</dt><dd>Wiki · Pitch · Engine</dd></div>
       <div><dt>Theme family</dt><dd>light+dark · warm dark · cool dark</dd></div>
     </dl>
@@ -675,7 +674,7 @@ footer code{color:var(--g-ink)}
       <div class="sec-head">
         <span class="sec-num">02</span>
         <h2 id="type-h">Type</h2>
-        <p>The shipped scale, set in the shipped families. Space Grotesk and Newsreader are real dependencies of the pages; without them the documented system stack takes over.</p>
+        <p>The shipped scale, set in the two shipped families. One sans carries all text; one mono carries labels, numbers and code. Nothing else is loaded, and hierarchy is size, weight and tracking.</p>
       </div>
 
       <div class="type-list">
@@ -731,15 +730,10 @@ footer code{color:var(--g-ink)}
           <p class="fam-spec">Handheld, motivated, honest</p>
           <p class="fam-tok">--typography-family-sans</p>
         </div>
-        <div class="fam fam-display">
-          <p class="fam-k">Display — headlines</p>
-          <p class="fam-spec">Intent before pixels</p>
-          <p class="fam-tok">--typography-family-display</p>
-        </div>
-        <div class="fam fam-quote">
-          <p class="fam-k">Quote — pull quotes</p>
-          <p class="fam-spec">Every cut is an argument.</p>
-          <p class="fam-tok">--typography-family-quote</p>
+        <div class="fam fam-mono">
+          <p class="fam-k">Mono — labels and numbers</p>
+          <p class="fam-spec">00:04:12:08 · 48 fps</p>
+          <p class="fam-tok">--typography-family-mono</p>
         </div>
       </div>
     </section>
@@ -1301,7 +1295,7 @@ footer code{color:var(--g-ink)}
 </div>
 
 <footer>
-  <div class="wrap">Generated from <code>design-system/tokens.css</code> · <span class="js-token-count">206</span> tokens · one <code>:root</code> block. Specimens are UI fragments, not a device mockup.</div>
+  <div class="wrap">Generated from <code>design-system/tokens.css</code> · <span class="js-token-count">229</span> tokens · one <code>:root</code> block. Specimens are UI fragments, not a device mockup.</div>
 </footer>
 
 <script>
