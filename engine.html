@@ -12,6 +12,10 @@ header .by{color:var(--mut);font-size:.8rem}
 .tools button{font:inherit;font-size:.82rem;font-weight:600;color:var(--ink);background:#222a36;border:1px solid #313b4a;border-radius:8px;padding:.35rem .7rem;cursor:pointer}
 .tools button:hover{border-color:var(--acc)}
 .tools button.warn:hover{border-color:#e5484d}
+.tools button:disabled{opacity:.35;cursor:default}
+.tools button:disabled:hover{border-color:#313b4a}
+.tools button.hist{padding:.35rem .55rem;display:inline-flex;align-items:center}
+.tools button.hist svg{display:block}
 #cv{flex:1;width:100%;display:block;cursor:grab;touch-action:none}
 .hint{position:fixed;left:1rem;bottom:.8rem;color:var(--mut);font-size:.78rem;pointer-events:none;max-width:90vw}
 #arrowpick{position:fixed;z-index:50;background:#161b22;color:#e8eaf0;border:1px solid #313b4a;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.45);padding:8px 10px;font:12px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column;gap:6px;user-select:none}
@@ -61,6 +65,11 @@ header .by{color:var(--mut);font-size:.8rem}
 #drawerStills{display:flex;flex-direction:column;gap:8px;padding:.2rem 1.1rem 0}
 #drawerStills:empty{display:none}
 #drawerStills img{width:100%;border-radius:8px;display:block}
+#drawerEmpty{margin:.4rem 1.1rem 0;border:1px dashed #313b4a;border-radius:8px;padding:.9rem .8rem;text-align:center;color:var(--mut);font-size:.85rem}
+#drawerEmpty[hidden]{display:none}
+#drawerEmpty p{margin:0 0 .6rem}
+#drawerAddImg{background:#e8830c;border:0;border-radius:7px;color:#111;font-weight:700;padding:.35rem .9rem;cursor:pointer;font-size:.82rem}
+#drawerAddImg:hover{filter:brightness(1.1)}
 #main{flex:1;display:flex;min-height:0}
 #side{width:148px;flex:none;background:var(--panel);border-right:1px solid #262d38;padding:.7rem .6rem;display:flex;flex-direction:column;gap:.35rem}
 #side button{font:inherit;font-size:.85rem;font-weight:600;color:var(--mut);background:transparent;border:1px solid transparent;border-radius:9px;padding:.5rem .6rem;text-align:left;cursor:pointer}
@@ -234,11 +243,26 @@ input.tin.tin-pilled{color:transparent !important}
 #assetList .ah{color:#8b93a5;font-size:.72rem;padding:.3rem .6rem .1rem;text-transform:uppercase;letter-spacing:.04em}
 #assetList button{white-space:normal;text-align:left}
 #assetList button b{color:#5eead4;font-weight:600}
+#refPop{position:fixed;z-index:130;width:240px;background:var(--panel);color:var(--ink);border:1px solid rgba(232,234,240,.16);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.45);padding:.6rem}
+#refPop[hidden]{display:none}
+#refPop img{width:100%;max-height:150px;object-fit:cover;border-radius:6px;display:block;background:#0b0e13}
+#refPop .rp-noimg{color:var(--mut);font-size:.78rem;font-style:italic;padding:.4rem 0}
+#refPop .rp-t{font-size:.85rem;font-weight:600;margin:.45rem 0 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#refPop .rp-a{font-size:.75rem;color:var(--acc);margin:.1rem 0 .5rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#refPop .rp-row{display:flex;gap:.4rem;align-items:center}
+#refPop #refOpen{background:#222a36;border:1px solid #313b4a;border-radius:7px;color:#e8eaf0;padding:.35rem .7rem;cursor:pointer;font-size:.8rem}
+#refPop #refOpen:hover{border-color:var(--acc)}
+#refPop #refX{background:transparent;border:1px solid #313b4a;border-radius:7px;color:#aab2c2;padding:.35rem .6rem;cursor:pointer;font-size:.8rem;margin-left:auto}
+#drawerBack{position:absolute;top:.6rem;left:.6rem;z-index:2;background:rgba(10,13,18,.72);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:7px;padding:.25rem .6rem;font-size:.78rem;cursor:pointer;backdrop-filter:blur(4px)}
+#drawerBack[hidden]{display:none}
+#drawerBack:hover{border-color:var(--acc)}
 </style></head><body>
 <header>
 <a class="back" href="index.html">← wiki</a><a class="back" href="pitch.html">pitch →</a>
 <h1>Prompt Engine</h1><span class="by">storyboard the beats, not the pixels</span>
 <span class="tools">
+<button id="histUndoBtn" class="hist" title="Undo (Ctrl+Z)" aria-label="Undo" disabled><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3 2.5 6.5 6 10"/><path d="M3 6.5h5.5a4.5 4.5 0 0 1 0 9H7"/></svg></button>
+<button id="histRedoBtn" class="hist" title="Redo (Ctrl+Shift+Z)" aria-label="Redo" disabled><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3l3.5 3.5L10 10"/><path d="M13 6.5H7.5a4.5 4.5 0 0 0 0 9H9"/></svg></button>
 <button id="addNode">+ location</button>
 <button id="projBtn" title="Project proprietary tokens — enable domains used in prompts">⚙ project</button>
 <span class="menu"><button id="dots" title="more">⋯</button><span id="menuDrop" hidden><button id="undoBtn">undo</button><button id="clear">clear canvas</button><div id="assetList"></div></span></span>
@@ -262,6 +286,7 @@ input.tin.tin-pilled{color:transparent !important}
 <aside id="drawer" aria-label="card detail">
 <button id="drawerX" title="close">×</button>
 <img id="drawerImg" alt="">
+<div id="drawerEmpty" hidden><p>No image yet — add one to set the look.</p><button id="drawerAddImg" type="button">Add image</button></div>
 <div id="drawerStills"></div>
 <div class="dp"><div id="drawerMenu" hidden><button id="menuImg">Change image…</button><button id="menuURL">Set/Edit URL…</button><button id="menuRem">Remove image</button><button id="menuDel">delete</button></div><div id="delConfirm" hidden><button id="drawerDel">delete</button><button id="drawerDelCancel" hidden>cancel</button></div><h3 id="drawerTitle"></h3>
 <div id="anchorRow" hidden><code id="anchorCode" title="copy anchor id"></code><button id="anchorVariant" title="Create variant (next letter)">+ variant</button><button id="anchorAssign" title="Assign a different anchor">assign</button><button id="drawerMenuBtn" title="more">⋯</button></div>
@@ -446,16 +471,38 @@ function saveView(){if(VIEW_META[view])VIEWS[view]={nodes:dataOf(nodes),conns,se
 function loadView(v){const d=VIEWS[v]||freshView();nodes=revive(d.nodes);conns=Array.isArray(d.conns)?d.conns.filter(c=>c&&c.a&&c.b&&nodes.some(n=>n.id===c.a.id)&&nodes.some(n=>n.id===c.b.id)):[];seq=d.seq||1;nextId=d.nextId||1;nextConnId=d.nextConnId||1;selected=nodes.length?nodes[nodes.length-1]:null;selConn=null;selStrip=null}
 function defaultScenes(){return{chapters:[{id:1,name:'Chapter 1',lanes:3,scenes:[],nextScene:1}],active:1}}
 function boardPayload(){return{views:VIEWS,scenes:SCENES,project:PROJECT,tombs:TOMBSTONES,ui:{view}}}
-function persist(){if(view==='scenes'){const _ac=activeChapter();if(_ac)_ac.conns=conns}saveView();const _p=boardPayload();Store.save(_p);try{if(typeof BoardSync!=='undefined')BoardSync.schedule(_p)}catch(e){}}
-let UNDO=[];
-function snap(){try{UNDO.push(JSON.stringify({views:VIEWS,scenes:SCENES,project:PROJECT,tombs:TOMBSTONES,view}));if(UNDO.length>50)UNDO.shift()}catch(e){}}
-function undo(){const s=UNDO.pop();if(!s){flashHint('nothing to undo');return}
- try{const d=JSON.parse(s);
-  for(const k of['locations','props','cast','shots']){const v=d.views[k]||{};VIEWS[k]={nodes:revive(v.nodes),conns:v.conns||[],seq:v.seq||1,nextId:v.nextId||1,nextConnId:v.nextConnId||1}}
-  SCENES=d.scenes;if(d.project&&d.project.domains)PROJECT=d.project;if(Array.isArray(d.tombs))TOMBSTONES=d.tombs;view=d.view||'scenes';
-  selStrip=null;selConn=null;selected=null;pending=null;drag=null;dragS=null;panDrag=null;hidePicker();closeShotPicker();closeDrawer();
-  if(view==='scenes'){const nc=activeChapter();conns=(nc&&nc.conns)||[]}else loadView(view);
-  syncUI();persist();draw();flashHint('undone')}catch(e){flashHint('undo failed')}}
+function persist(){if(view==='scenes'){const _ac=activeChapter();if(_ac)_ac.conns=conns}saveView();const _p=boardPayload();
+ if(!HIST_SUSPEND){try{histCommitNoSave(histPayloadStr())}catch(e){}}
+ Store.save(_p);try{if(typeof BoardSync!=='undefined')BoardSync.schedule(_p)}catch(e){}}
+/* ---- undo/redo history (depth 10, captured on persist) ----
+   Pre-state stack: HIST_UNDO holds board states from *before* each
+   committed edit, HIST_CUR is the last committed payload, HIST_REDO
+   holds states reached via undo. persist() records the transition
+   (and clears redo on a new edit); undo/redo apply a recorded payload
+   then save it with HIST_SUSPEND so the save itself records nothing. */
+const HIST_MAX=10;
+let HIST_UNDO=[],HIST_REDO=[],HIST_CUR=null,HIST_SUSPEND=false;
+function histPayloadStr(){try{return JSON.stringify({views:VIEWS,scenes:SCENES,project:PROJECT,tombs:TOMBSTONES,view})}catch(e){return null}}
+function updateHistButtons(){try{
+ const u=document.getElementById('histUndoBtn'),r=document.getElementById('histRedoBtn');
+ if(u){u.disabled=!HIST_UNDO.length;u.setAttribute('aria-disabled',u.disabled?'true':'false')}
+ if(r){r.disabled=!HIST_REDO.length;r.setAttribute('aria-disabled',r.disabled?'true':'false')}
+ const m=document.getElementById('undoBtn');if(m)m.disabled=!HIST_UNDO.length;
+}catch(e){}}
+function histCommitNoSave(cur){if(cur==null||cur===HIST_CUR)return;if(HIST_CUR!=null){HIST_UNDO.push(HIST_CUR);if(HIST_UNDO.length>HIST_MAX)HIST_UNDO.shift()}HIST_CUR=cur;HIST_REDO=[];updateHistButtons()}
+let UNDO=[]; /* legacy alias (unused; kept for compat) */
+function snap(){try{if(HIST_CUR==null){HIST_CUR=histPayloadStr();updateHistButtons()}}catch(e){}}
+function histApply(s){const d=JSON.parse(s);
+ for(const k of['locations','props','cast','shots']){const v=d.views[k]||{};VIEWS[k]={nodes:revive(v.nodes),conns:v.conns||[],seq:v.seq||1,nextId:v.nextId||1,nextConnId:v.nextConnId||1}}
+ SCENES=d.scenes;if(d.project&&d.project.domains)PROJECT=d.project;if(Array.isArray(d.tombs))TOMBSTONES=d.tombs;view=d.view||'scenes';
+ selStrip=null;selConn=null;selected=null;pending=null;drag=null;dragS=null;panDrag=null;hidePicker();closeShotPicker();closeDrawer();
+ if(view==='scenes'){const nc=activeChapter();conns=(nc&&nc.conns)||[]}else loadView(view);
+ syncUI();HIST_SUSPEND=true;try{persist()}finally{HIST_SUSPEND=false}draw()}
+function undo(){if(!HIST_UNDO.length){flashHint('nothing to undo');return}
+ try{HIST_REDO.push(HIST_CUR);HIST_CUR=HIST_UNDO.pop();histApply(HIST_CUR);updateHistButtons();flashHint('undone')}catch(e){flashHint('undo failed')}}
+function redo(){if(!HIST_REDO.length){flashHint('nothing to redo');return}
+ try{HIST_UNDO.push(HIST_CUR);if(HIST_UNDO.length>HIST_MAX)HIST_UNDO.shift();HIST_CUR=HIST_REDO.pop();histApply(HIST_CUR);updateHistButtons();flashHint('redone')}catch(e){flashHint('redo failed')}}
+function histSeed(){try{HIST_UNDO=[];HIST_REDO=[];HIST_CUR=histPayloadStr()}catch(e){HIST_UNDO=[];HIST_REDO=[];HIST_CUR=null}updateHistButtons()}
 function delSelected(){menuDrop.hidden=true;
  if(view==='scenes'&&selStrip){snap();const c=activeChapter();if(selStrip.scAnchor)tombstone(selStrip.scAnchor);c.scenes=c.scenes.filter(x=>x!==selStrip);selStrip=null;const ids=new Set(c.scenes.map(s=>s.id));c.conns=(c.conns||[]).filter(cc=>ids.has(cc.a.id)&&ids.has(cc.b.id));conns=c.conns;persist();draw();closeDrawer();showToast('Scene deleted');return true}
  if(selConn){snap();removeConn(selConn.id);selConn=null;hidePicker();persist();draw();showToast('Link deleted');return true}
@@ -490,7 +537,7 @@ function restore(){const r=Store.load();let _migP=false;
   const mx=Math.max(0,...c.scenes.map(s=>s.id));c.nextScene=Math.max(c.nextScene||1,mx+1)}
  try{if(_migP)Store.save({views:VIEWS,scenes:SCENES,project:PROJECT,tombs:TOMBSTONES,ui:{view}})}catch(e){}
  if(VIEW_META[view])loadView(view);if(view==='scenes'){const _nc=activeChapter();conns=(_nc&&_nc.conns)||[]}ensureAnchorsAll();syncShotMeta();
- syncUI()}
+ syncUI();histSeed()}
 function loadImage(n,silent){if(!n.imgUrl){n.img=null;if(n)n.imgErr='';return}const im=new Image();n.imgErr='';
  im.onload=()=>{n.img=im;n.imgErr='';fitCard(n);draw();if(!silent)persist();try{syncDrawerImg(n)}catch(_e){}};
  im.onerror=()=>{n.imgErr=n.imgUrl;n.imgUrl='';n.img=null;draw();if(!silent)flashHint('could not load that image — check the URL or uploads/ file');try{syncDrawerImg(n)}catch(_e){}};
@@ -665,7 +712,8 @@ cv.addEventListener('pointerup',e=>{if(view==='scenes'){const _p=pos(e),_w=s2w(_
 cv.addEventListener('dblclick',e=>{clearTimeout(clickT);const[mx,my]=pos(e);if(view==='scenes'){const _w=s2w(mx,my);const s=sceneAt(_w.x,_w.y);if(s)renameScene(s);return}const _dw=s2w(mx,my),n=at(_dw.x,_dw.y);if(!n)return;
  if(e.shiftKey)editNote(n);else editLabel(n)});
 addEventListener('keydown',e=>{if(e.key==='Escape'){closeCardMenu();try{const _dm=document.getElementById('drawerMenu');if(_dm)_dm.hidden=true}catch(_e){}closeDrawer();closeShotPicker();hidePicker();closeProjectModal();closePromptModal();selConn=null;pending=null;panDrag=null;draw()}
- if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();undo();return}});
+ if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();if(e.shiftKey)redo();else undo();return}
+ if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='y'){e.preventDefault();redo();return}});
 /* ---- per-card image/URL menu (replaces the old global buttons) ---- */
 const filePick=document.getElementById('filePick');let pickTarget=null;
 const cardMenuBtn=document.getElementById('cardMenuBtn'),cardMenu=document.getElementById('cardMenu');
@@ -743,8 +791,10 @@ document.addEventListener('paste',e=>{const items=(e.clipboardData&&e.clipboardD
 document.getElementById('addNode').onclick=()=>addNode();
 document.getElementById('clear').onclick=()=>{menuDrop.hidden=true;
  if(view==='scenes'){const ch=activeChapter();if(ch.scenes.length&&confirm('Clear this chapter?')){snap();ch.scenes=[];selStrip=null;persist();draw()}return}
- if((nodes.length||conns.length)&&confirm('Clear the canvas?')){snap();nodes=[];conns=[];selected=null;selConn=null;pending=null;hidePicker();Store.clear();draw()}};
+ if((nodes.length||conns.length)&&confirm('Clear the canvas?')){snap();nodes=[];conns=[];selected=null;selConn=null;pending=null;hidePicker();saveView();try{histCommitNoSave(histPayloadStr())}catch(e){}Store.clear();draw()}};
 document.getElementById('undoBtn').onclick=()=>{menuDrop.hidden=true;undo()};
+document.getElementById('histUndoBtn').onclick=()=>undo();
+document.getElementById('histRedoBtn').onclick=()=>redo();
 /* ---- drawer ---- */
 const drawer=document.getElementById('drawer'),scrim=document.getElementById('scrim'),drawerImg=document.getElementById('drawerImg'),drawerTitle=document.getElementById('drawerTitle');
 let drawerSub=null;
@@ -758,6 +808,7 @@ function openDrawer(n){drawerSub=n;disarmDrawerDel();
   if(!n.images.length)stills.innerHTML='<p style="color:var(--mut);font-size:.85rem">No stills yet — add shots in the Shots Composer.</p>';
   for(const im of n.images){const e=document.createElement('img');e.src=im.url;e.alt='';stills.appendChild(e)}}
  else{if(n.imgUrl){drawerImg.style.display='block';drawerImg.onerror=()=>{drawerImg.style.display='none';imgErr.style.display='block';imgErr.textContent='could not load '+(n.imgUrl.length>80?n.imgUrl.slice(0,80)+'…':n.imgUrl)+' — check the URL or uploads/ file'};drawerImg.src=n.imgUrl}else{drawerImg.style.display='none';drawerImg.removeAttribute('src')}}
+ syncDrawerEmpty(n);
  if(n.imgErr&&!n.images){imgErr.style.display='block';imgErr.textContent='could not load '+(n.imgErr.length>80?n.imgErr.slice(0,80)+'…':n.imgErr)+' — check the URL or uploads/ file'}
  if(n.kind==='shot'&&view==='shots')populateShotProps(n);
  renderAnchorRow(n);renderPromptPreview(n);
@@ -767,7 +818,7 @@ function openSlotDrawer(shotId,s,lane){const sh=shotById(shotId);if(!sh){selectS
  document.getElementById('slotBtns').hidden=false;document.getElementById('drawerDel').style.display='none';
  document.getElementById('goShot').onclick=()=>{closeDrawer();selectShot(shotId)};
  document.getElementById('removeSlot').onclick=()=>{unassignSlot(s,shotId);closeDrawer()}}
-function closeDrawer(){disarmDrawerDel();drawer.classList.remove('open');drawer.classList.remove('editing');scrim.classList.remove('open');pmTarget=null}
+function closeDrawer(){disarmDrawerDel();drawer.classList.remove('open');drawer.classList.remove('editing');scrim.classList.remove('open');pmTarget=null;try{drawerBackStack.length=0;renderDrawerBack()}catch(e){}try{closeRefPop()}catch(e2){}}
 function populateShotProps(n){const sp=document.getElementById('shotProps'),chS=document.getElementById('shotCh'),scS=document.getElementById('shotSc');
  sp.hidden=false;chS.innerHTML='';
  for(const c of(SCENES.chapters||[])){const o=document.createElement('option');o.value=c.id;o.textContent=c.name||('Chapter '+c.id);chS.appendChild(o)}
@@ -803,6 +854,7 @@ document.getElementById('drawerDelCancel').onclick=()=>{disarmDrawerDel()};
 function refreshDrawerMenu(){try{const r=document.getElementById('menuRem');if(r)r.hidden=!(drawerSub&&drawerSub.imgUrl)}catch(_e){}}
 function drawerLive(){return(drawerSub&&drawerSub.id!=null&&nodeById(drawerSub.id))||drawerSub}
 function refreshDrawerAfterImg(){try{if(!drawerSub)return;renderAnchorRow(drawerSub);renderPromptPreview(drawerSub)}catch(_e){}
+ try{syncDrawerEmpty(drawerSub)}catch(_e0){}
  try{if(drawerSub.images)return;const im=document.getElementById('drawerImg');let err=document.getElementById('drawerImgErr');
   if(drawerSub.imgUrl){im.style.display='block';if(err)err.style.display='none';if(im.getAttribute('src')!==drawerSub.imgUrl)im.src=drawerSub.imgUrl}
   else{im.style.display='none';im.removeAttribute('src')}}catch(_e2){}
@@ -812,6 +864,8 @@ function syncDrawerImg(n){try{
  if(!((drawerSub.id!=null&&n&&drawerSub.id===n.id)||drawerSub===n))return;
  refreshDrawerAfterImg()}catch(_e){}}
 document.getElementById('menuImg').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}const m=document.getElementById('drawerMenu');if(m)m.hidden=true;const t=drawerLive();if(!t||t.id==null||!nodeById(t.id)){flashHint('open a card first');return}pickTarget={k:'n',id:t.id};filePick.click()};
+function syncDrawerEmpty(n){try{const e=document.getElementById('drawerEmpty');if(!e)return;e.hidden=!!(n&&(n.images||n.imgUrl))}catch(_e){}}
+document.getElementById('drawerAddImg').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}const t=drawerLive();if(!t||t.id==null||!nodeById(t.id)){flashHint('open a card first');return}pickTarget={k:'n',id:t.id};filePick.click()};
 document.getElementById('menuURL').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}const m=document.getElementById('drawerMenu');if(m)m.hidden=true;const t=drawerLive();if(!t||t.id==null||!nodeById(t.id)){flashHint('open a card first');return}const cur=t.imgUrl&&!t.imgUrl.startsWith('data:')?t.imgUrl:'';const v=prompt('Image URL or repo path (e.g. uploads/photo.jpg) for "'+(t.label||t.title||'card')+'": (empty removes)',cur);if(v===null)return;attachURL(t,v.trim());refreshDrawerAfterImg();refreshDrawerMenu()};
 document.getElementById('menuRem').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}const m=document.getElementById('drawerMenu');if(m)m.hidden=true;const t=drawerLive();if(!t||t.id==null||!nodeById(t.id)){flashHint('open a card first');return}attachURL(t,'');refreshDrawerAfterImg();refreshDrawerMenu()};
 document.getElementById('drawerMenuBtn').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}const m=document.getElementById('drawerMenu');if(!m)return;if(m.hidden)refreshDrawerMenu();m.hidden=!m.hidden};
@@ -1427,7 +1481,7 @@ function jValEl(tab,k,v,free,node){const s=document.createElement('span');
  s.appendChild(document.createTextNode('"'));const str=String(v);let last=0,m;MEN_RE.lastIndex=0;
  while((m=MEN_RE.exec(str))){if(m.index>last)s.appendChild(document.createTextNode(str.slice(last,m.index)));
   const tok=m[0];let tgt=null;try{tgt=findAnchorNode(tok.slice(1))}catch(e){tgt=null}
-  if(tgt){const b=document.createElement('span');b.className='jval tok men tag';b.textContent=tok;b.title='open '+tok.slice(1);b.setAttribute('data-tag',tok.slice(1));b.style.cssText+=';background:rgba(232,131,12,.14);border:1px solid rgba(232,131,12,.5);border-radius:999px;padding:0 8px;display:inline-block;line-height:1.6;white-space:nowrap;text-decoration:none;';b.onclick=e=>{e.stopPropagation();try{openDrawer(liveNodeFor(tgt))}catch(err){}};s.appendChild(b)}
+  if(tgt){const b=document.createElement('span');b.className='jval tok men tag';b.textContent=tok;b.title='open '+tok.slice(1);b.setAttribute('data-tag',tok.slice(1));b.style.cssText+=';background:rgba(232,131,12,.14);border:1px solid rgba(232,131,12,.5);border-radius:999px;padding:0 8px;display:inline-block;line-height:1.6;white-space:nowrap;text-decoration:none;';b.onclick=e=>{e.stopPropagation();try{openRefPop(b,tok,tgt)}catch(err){}};s.appendChild(b)}
   else s.appendChild(document.createTextNode(tok));last=m.index+m[0].length}
  if(last<str.length)s.appendChild(document.createTextNode(str.slice(last)));
  s.appendChild(document.createTextNode('"'));return s}
@@ -1464,6 +1518,34 @@ function renderPmOut(){const box=document.getElementById('pmJson');if(box)box.in
  if(!o){if(box)box.textContent='⚠ assign an anchor first (drawer → assign).';return}
  pmJsonText=JSON.stringify(o,null,2);renderPromptPreview(pmTarget);
 }
+/* ---- asset reference popover + drawer back-stack (no lost context) ---- */
+let refAnchor=null;const drawerBackStack=[];
+function refImgFor(n){try{if(n.imgUrl)return n.imgUrl;if(n.images&&n.images.length&&n.images[0].url)return n.images[0].url}catch(e){}return ''}
+function refPopEl(){let d=document.getElementById('refPop');if(!d){d=document.createElement('div');d.id='refPop';d.hidden=true;
+ const im=document.createElement('img');im.id='refImg';im.alt='';d.appendChild(im);
+ const no=document.createElement('div');no.id='refNoImg';no.className='rp-noimg';no.textContent='no image';no.hidden=true;d.appendChild(no);
+ const t=document.createElement('div');t.id='refTitle';t.className='rp-t';d.appendChild(t);
+ const a=document.createElement('div');a.id='refAnchor';a.className='rp-a';d.appendChild(a);
+ const row=document.createElement('div');row.className='rp-row';
+ const open=document.createElement('button');open.id='refOpen';open.textContent='Open asset \u2192';
+ open.onclick=()=>{const tgt=refAnchor;closeRefPop();if(tgt)openAssetWithBack(tgt)};
+ const x=document.createElement('button');x.id='refX';x.textContent='close';x.onclick=closeRefPop;
+ row.appendChild(open);row.appendChild(x);d.appendChild(row);
+ document.body.appendChild(d)}return d}
+function openRefPop(anchorEl,tok,tgt){refAnchor=tgt;
+ const d=refPopEl();let live=null;try{live=liveNodeFor(tgt)}catch(e){live=tgt}
+ const src=live||tgt,url=refImgFor(src||{});
+ const im=d.querySelector('#refImg'),no=d.querySelector('#refNoImg');
+ if(url){im.style.display='block';im.src=url;no.hidden=true}else{im.style.display='none';im.removeAttribute('src');no.hidden=false}
+ d.querySelector('#refTitle').textContent=(src&&(src.title||src.label))||'card';
+ d.querySelector('#refAnchor').textContent=tok;
+ try{const r=anchorEl.getBoundingClientRect();d.style.left=Math.max(8,Math.min(Math.max(8,innerWidth-256),r.left))+'px';d.style.top=Math.min(Math.max(8,innerHeight-300),r.bottom+6)+'px'}catch(e2){}
+ d.hidden=false}
+function closeRefPop(){const d=document.getElementById('refPop');if(d)d.hidden=true;refAnchor=null}
+function drawerBackEl(){let b=document.getElementById('drawerBack');if(!b){b=document.createElement('button');b.id='drawerBack';b.hidden=true;b.textContent='\u2190 back';b.title='return to previous card';b.onclick=()=>{closeRefPop();const prev=drawerBackStack.pop();renderDrawerBack();if(prev)openDrawer(prev)};drawer.appendChild(b)}return b}
+function renderDrawerBack(){try{drawerBackEl().hidden=!drawerBackStack.length}catch(e){}}
+function openAssetWithBack(tgt){try{if(drawerSub)drawerBackStack.push(drawerSub)}catch(e){}closeRefPop();openDrawer(liveNodeFor(tgt));renderDrawerBack()}
+document.addEventListener('pointerdown',e=>{try{const d=document.getElementById('refPop');if(d&&!d.hidden&&!(e.target&&e.target.closest&&e.target.closest('#refPop,.jval.men')))closeRefPop()}catch(_e){}},true);
 /* ---- drawer wiring ---- */
 function renderAnchorRow(n){const row=document.getElementById('anchorRow'),code=document.getElementById('anchorCode');
  const a=n?n.anchor||n.scAnchor||'':'';if(!n||(!n.anchor&&!n.scAnchor)){row.hidden=false;code.textContent='no anchor';
