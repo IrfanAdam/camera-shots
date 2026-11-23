@@ -10,7 +10,7 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 ```
 
 - Generated: 2026-11-23
-- Tokens defined: 229 (`design-system/tokens.css`)
+- Tokens defined: 230 (`design-system/tokens.css`)
 - Files scanned: `index.html`, `pitch.html`, `engine.html`, `design-system/index.html`
 - Result: **PASS** — 0 violation(s), 21 exempt, 0 bad-allow
 
@@ -20,9 +20,9 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 2 | 19 | 395 |
 | `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 7 | 0 | 14 | 32 | 428 |
-| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10 | 0 | 1 | 2 | 961 |
+| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10 | 0 | 1 | 2 | 973 |
 | `design-system/index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 0 | 148 | 795 |
-| **Total** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **21** | **0** | **17** | **201** | **2579** |
+| **Total** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **21** | **0** | **17** | **201** | **2591** |
 
 ## Violation detail
 
@@ -53,13 +53,13 @@ _No violations._
 | 1 | V1 | `#0B0B0D` | meta theme-color cannot resolve custom properties; value mirrors --color-pro-surface-0 (#0B0B0D) |
 | 110 | V8 | `padding:5px` | 5px menu inset sits between 4 and 6; snapping reflows the menu rows |
 | 117 | V8 | `padding:5px` | 5px panel inset sits between 4 and 6; snapping reflows the asset rows |
-| 144 | V8 | `padding-top:2.3rem` | 2.3rem prompt-label clearance is layout-scale, beyond the 32px step |
-| 148 | V3 | `z-index:3` | drawer menu stacks one step above drawer content; no z token holds 3 (nearest --z-content 2) and adding z.raise.deep would invent a step for one element |
-| 259 | V8 | `margin:0 0 var(--spacing-2xs) 118px` | 118px label indent aligns to the field column, not the rhythm |
-| 260 | V8 | `padding:1px var(--spacing-xs)` | 1px chip inset is an optical hairline; no 2px step exists |
-| 283 | V8 | `padding:0 0 0 3px` | 3px chip inset cancels the -3px gutter so the token stays flush |
-| 283 | V8 | `margin:0 0 0 -3px` | 3px chip inset cancels the -3px gutter so the token stays flush |
-| 1198 | V3 | `z-index:80` | fixed node-picker popover must clear --z-overlay (60) and stay below --z-canvas (90); no token holds 80 and inventing z.critical for one node would fork the scale |
+| 149 | V8 | `padding-top:2.3rem` | 2.3rem prompt-label clearance is layout-scale, beyond the 32px step |
+| 153 | V3 | `z-index:3` | drawer menu stacks one step above drawer content; no z token holds 3 (nearest --z-content 2) and adding z.raise.deep would invent a step for one element |
+| 264 | V8 | `margin:0 0 var(--spacing-2xs) 118px` | 118px label indent aligns to the field column, not the rhythm |
+| 265 | V8 | `padding:1px var(--spacing-xs)` | 1px chip inset is an optical hairline; no 2px step exists |
+| 288 | V8 | `padding:0 0 0 3px` | 3px chip inset cancels the -3px gutter so the token stays flush |
+| 288 | V8 | `margin:0 0 0 -3px` | 3px chip inset cancels the -3px gutter so the token stays flush |
+| 1203 | V3 | `z-index:80` | fixed node-picker popover must clear --z-overlay (60) and stay below --z-canvas (90); no token holds 80 and inventing z.critical for one node would fork the scale |
 
 ### `design-system/index.html` — Exempt (3)
 

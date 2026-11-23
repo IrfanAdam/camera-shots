@@ -2,7 +2,7 @@
    tokens.css — GENERATED FILE, DO NOT EDIT BY HAND.
    Source:     design-system/tokens.json
    Regenerate: node scripts/build-tokens.mjs
-   Tokens:     229
+   Tokens:     230
    ========================================================================== */
 
 :root {
@@ -108,6 +108,7 @@
   --color-pro-surface-1: #1E1E22;
   --color-pro-surface-2: #2A2A2E;
   --color-pro-surface-deep: #0C0C0C;
+  --color-pro-canvas: #08080A;
   --color-pro-text-primary: #F5F5F7;
   --color-pro-text-secondary: #9A9AA0;
   --color-pro-tool: #1C1C1E;
