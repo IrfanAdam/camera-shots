@@ -12,32 +12,27 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 - Generated: 2026-11-23
 - Tokens defined: 214 (`design-system/tokens.css`)
 - Files scanned: `index.html`, `pitch.html`, `engine.html`, `design-system/index.html`
-- Result: **FAIL** — 3 violation(s), 3 exempt, 0 bad-allow
+- Result: **PASS** — 0 violation(s), 4 exempt, 0 bad-allow
 
 ## Per-file violations
 
 | File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | U1 dead var | exempt | bad-allow | `!important` | inline `style=` | `var(--)` uses |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 19 | 229 |
-| `pitch.html` | 0 | 0 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 14 | 32 | 269 |
+| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 19 | 228 |
+| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 14 | 32 | 270 |
 | `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 4 | 2 | 538 |
-| `design-system/index.html` | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 142 | 741 |
-| **Total** | **0** | **0** | **3** | **0** | **0** | **0** | **0** | **3** | **0** | **20** | **195** | **1777** |
+| `design-system/index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 142 | 742 |
+| **Total** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **4** | **0** | **20** | **195** | **1778** |
 
 ## Violation detail
 
-### `pitch.html`
+_No violations._
 
-| Line | Class | Found | Marker |
+### `pitch.html` — Exempt (1)
+
+| Line | Class | Found | Reason |
 |---:|---|---|---|
-| 144 | V3 | `z-index:61` |  |
-| 173 | V3 | `z-index:5` |  |
-
-### `design-system/index.html`
-
-| Line | Class | Found | Marker |
-|---:|---|---|---|
-| 431 | V3 | `z-index:30` |  |
+| 173 | V3 | `z-index:5` | no z step exists between --z-content (2) and --z-sticky (40); the frame tooltip must clear sibling cards inside its own stacking context without rising to the sticky header layer |
 
 ### `engine.html` — Exempt (3)
 
