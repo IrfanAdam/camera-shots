@@ -12,25 +12,32 @@ body.lock{overflow:hidden}
 a{color:inherit}
 .w{max-width:1080px;margin:0 auto;padding:0 1.2rem 4rem}
 /* header: brand + tabs + cross links (sticky; drawers/rails live on body) */
-.top{position:sticky;top:0;z-index:40;background:rgba(10,10,11,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);padding:.9rem 0 .7rem}
-.top .row{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+/* header: sticky top tabs right, brand left (skill Layout Shell reskinned to cinema) */
+.top{position:sticky;top:0;z-index:40;background:rgba(10,10,11,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.topin{display:flex;flex-direction:column;gap:.1rem;padding:.6rem 0 .3rem}
+@media(min-width:768px){.topin{flex-direction:row;align-items:center;justify-content:space-between;min-height:4rem;padding-top:0;padding-bottom:0}}
+.brandrow{display:flex;align-items:center;justify-content:space-between;gap:.8rem}
 .brand{font-size:.95rem;font-weight:650;letter-spacing:-.01em;text-decoration:none}
 .brand small{display:block;color:var(--mut);font-weight:400;font-size:.8rem}
-.hright{display:flex;align-items:center;gap:.6rem}
-.by{color:var(--mut);font-size:.85rem;white-space:nowrap}
-.hnav{display:flex;gap:.5rem}
-.hnav a{font-size:.82rem;font-weight:600;text-decoration:none;padding:.32rem .8rem;border-radius:99px;border:1px solid var(--rule);color:var(--ink);background:var(--s1)}
-.hnav a:hover{border-color:var(--acc)}
-/* sidebar: minimal doc tabs + export below tabs + active-panel TOC */
+.hnav{display:flex;gap:.9rem}
+.hnav a{font-size:.8rem;color:var(--mut);text-decoration:none}
+.hnav a:hover{color:var(--acc)}
+.hdricons{display:flex;align-items:center;gap:.25rem}
+@media(min-width:901px){.hdricons{display:none}}
+.hicon{display:flex;align-items:center;justify-content:center;width:2rem;height:2rem;border-radius:8px;background:transparent;border:0;color:var(--mut);font-size:1rem;cursor:pointer;font-family:inherit}
+.hicon:hover{color:var(--ink);background:var(--s2)}
+/* doc tabs: minimal text buttons right, 5px champagne dot under active */
+.doctabs{display:flex;align-items:center;justify-content:flex-start;gap:1.4rem;overflow-x:auto;scrollbar-width:none}
+.doctabs::-webkit-scrollbar{display:none}
+@media(min-width:768px){.doctabs{justify-content:center}}
+.tab-btn{position:relative;background:none;border:0;font-family:inherit;font-size:13px;line-height:1;white-space:nowrap;color:var(--mut);cursor:pointer;font-weight:400;padding:.55rem .1rem}
+@media(min-width:768px){.tab-btn{font-size:14px;padding-top:1rem;padding-bottom:1rem}}
+.tab-btn:hover{color:var(--ink)}
+.tab-btn:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.tab-btn.tab-active{color:var(--ink);font-weight:650}
+.tab-btn.tab-active::after{content:'';position:absolute;left:50%;bottom:4px;transform:translateX(-50%);width:5px;height:5px;border-radius:9999px;background:var(--acc)}
+/* sidebar: active-panel TOC rail + sidenav footer export row below it */
 .side{position:sticky;top:6.5rem;align-self:start;display:flex;flex-direction:column;min-width:0}
-.doctabs{display:flex;flex-direction:column;align-items:stretch;gap:0;border-bottom:1px solid var(--rule);padding-bottom:.7rem}
-.doctabs .cap{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);padding:.1rem 0 .5rem}
-.doctab{position:relative;display:flex;align-items:center;gap:.55rem;background:transparent;border:0;padding:.42rem 0 .42rem .85rem;font-size:.86rem;font-weight:400;color:var(--mut);cursor:pointer;font-family:inherit;text-align:left;white-space:nowrap}
-.doctab::before{content:"";position:absolute;left:0;top:50%;width:5px;height:5px;border-radius:50%;background:transparent;transform:translateY(-50%)}
-.doctab:hover{color:var(--ink)}
-.doctab:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-.doctab.on{color:var(--ink);font-weight:650}
-.doctab.on::before{background:var(--acc)}
 .sidexport{display:flex;flex-direction:column;gap:.45rem;border-bottom:1px solid var(--rule);padding:.7rem 0}
 .sidexport .explabel{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
 .sidexport .explabel b{color:var(--ink);font-weight:650}
@@ -40,8 +47,8 @@ a{color:inherit}
 .expstat{font-size:.78rem;color:var(--acc);min-height:1em}
 .layout{display:grid;grid-template-columns:220px 1fr;gap:2rem;margin-top:1.5rem}
 .panels{display:flex;flex-direction:column;min-width:0}
-/* active-panel TOC under the export block */
-.toc{display:none;flex-direction:column;gap:.15rem;border-left:1px solid var(--rule);padding-left:1rem;margin-top:.9rem}
+/* active-panel TOC above the sidenav export footer */
+.toc{display:none;flex-direction:column;gap:.15rem;border-left:1px solid var(--rule);padding-left:1rem;margin:.2rem 0 .9rem}
 .toc.on{display:flex}
 .toc a{position:relative;text-decoration:none;color:var(--mut);font-size:.85rem;padding:.3rem 0 .3rem .9rem}
 .toc a::before{content:"";position:absolute;left:-1rem;top:.75em;width:5px;height:5px;border-radius:50%;background:transparent;transform:translateX(-2.5px)}
@@ -118,6 +125,20 @@ tbody td:first-child{white-space:nowrap;font-weight:650;color:var(--ink)}
 .drawer.open{transform:none}
 .drawer h2{font-size:1.2rem}
 .drawer .x{float:right;background:transparent;border:1px solid var(--rule);color:var(--ink);border-radius:99px;padding:.3rem .8rem;cursor:pointer;font-family:inherit;font-size:.8rem}
+.dhead{display:flex;align-items:center;justify-content:flex-end;gap:.5rem;margin-bottom:.9rem}
+.dhead .x{float:none}
+.dpill{font-size:.78rem;font-weight:600;background:transparent;color:var(--mut);border:1px solid var(--rule);border-radius:99px;padding:.4rem .95rem;cursor:pointer;font-family:inherit}
+.dpill:hover{color:var(--ink);border-color:var(--acc)}
+.curtoggle{display:flex;gap:.4rem;margin:.4rem 0 1rem}
+/* fund chart: paired burn/MRR bars + hover/focus tooltip */
+.fchart{position:relative;margin-top:1.1rem;display:flex;flex-direction:column;gap:.32rem}
+.frow{display:grid;grid-template-columns:2.4rem 1fr;gap:.55rem;align-items:center;font-size:.72rem;color:var(--mut);border-radius:6px}
+.frow:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.fbars{display:flex;flex-direction:column;gap:3px;min-width:0}
+.fbar{height:8px;border-radius:99px;background:var(--acc);min-width:2px}
+.fbar.mrr{background:transparent;border:1px solid var(--acc)}
+.ftip{position:absolute;z-index:5;pointer-events:none;background:var(--s2);border:1px solid var(--acc);border-radius:8px;padding:.4rem .6rem;font-size:.72rem;color:var(--ink);white-space:nowrap;display:none;max-width:100%}
+.ftip.show{display:block}
 .pills{display:flex;gap:.4rem;flex-wrap:wrap;margin:1rem 0}
 .pill{font-size:.78rem;font-weight:650;border:1px solid var(--rule);background:transparent;color:var(--mut);border-radius:99px;padding:.35rem .9rem;cursor:pointer;font-family:inherit}
 .pill.on{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
@@ -137,15 +158,7 @@ footer{margin:3rem 0 1rem;color:var(--mut);font-size:.78rem;border-top:1px solid
 .mrail{display:none}
 @media(max-width:900px){
 .layout{grid-template-columns:1fr}
-.side{position:static}
-.doctabs{flex-direction:row;align-items:center;gap:.2rem;overflow-x:auto;border-bottom:0;padding-bottom:.55rem;scrollbar-width:none}
-.doctabs::-webkit-scrollbar{display:none}
-.doctabs .cap{display:none}
-.doctab{flex:none;padding:.35rem .1rem .35rem .8rem;font-size:.82rem}
-.sidexport{flex-direction:row;align-items:center;gap:.5rem;flex-wrap:wrap;border-bottom:0;padding:.1rem 0 .2rem}
-.sidexport .explabel{font-size:.72rem}
-.expbtns{flex-direction:row;flex-wrap:wrap}
-.expbtn{border-radius:99px;padding:.32rem .8rem;font-size:.76rem}
+.side{display:none}
 .toc,.toc.on{display:none}
 .grid{grid-template-columns:1fr}
 .metrics{grid-template-columns:1fr 1fr}
@@ -176,38 +189,34 @@ article{gap:1.5rem}
 @media(prefers-reduced-motion:reduce){
 html{scroll-behavior:auto}
 .panel.on{animation:none}
-.drawer,.backdrop,.doctab,.btn{transition:none!important}
+.drawer,.backdrop,.tab-btn,.btn{transition:none!important}
 *{animation:none!important}
 }
 </style></head>
 <body data-print-doc="story">
 <div class="w">
 <header class="top">
-<div class="row">
-<a class="brand" href="#story">Camera Shots<small>intent before pixels</small></a>
-<span class="hright"><span class="by">by irfan</span><span class="hnav"><a href="index.html">wiki</a><a href="engine.html">engine &rarr;</a></span></span>
+<div class="topin">
+<div class="brandrow">
+<a class="brand" href="#story" onclick="switchTab('story');return false;">Camera Shots<small>intent before pixels</small></a>
+<span style="display:flex;align-items:center;gap:.8rem"><span class="hnav"><a href="index.html">wiki</a><a href="engine.html">engine &rarr;</a></span>
+<span class="hdricons no-print">
+<button class="hicon" id="h-exp" type="button" title="Download .md of this tab" aria-label="Download active tab markdown">&#8681;</button>
+<button class="hicon" id="h-copy" type="button" title="Copy .md of this tab" aria-label="Copy active tab markdown">&#10697;</button>
+</span></span>
+</div>
+<nav class="doctabs" role="tablist" aria-label="Company Documents">
+<button class="tab-btn tab-active" id="tab-btn-story" role="tab" data-doc="story" aria-selected="true" tabindex="0" onclick="switchTab('story')">Story</button>
+<button class="tab-btn" id="tab-btn-investors" role="tab" data-doc="investors" aria-selected="false" tabindex="-1" onclick="switchTab('investors')">Investors</button>
+<button class="tab-btn" id="tab-btn-wiki" role="tab" data-doc="wiki" aria-selected="false" tabindex="-1" onclick="switchTab('wiki')">Wiki</button>
+<button class="tab-btn" id="tab-btn-mvp" role="tab" data-doc="mvp" aria-selected="false" tabindex="-1" onclick="switchTab('mvp')">MVP</button>
+</nav>
 </div>
 </header>
 
-<!-- ============ SHARED SIDEBAR: doc tabs, export below tabs, active TOC ============ -->
+<!-- ============ SIDEBAR: TOC rail + sidenav footer export below it ============ -->
 <div class="layout">
 <aside class="side">
-<nav class="doctabs" role="tablist" aria-label="Documents">
-<span class="cap" aria-hidden="true">Documents</span>
-<button class="doctab on" role="tab" data-doc="story" aria-selected="true" tabindex="0">Story</button>
-<button class="doctab" role="tab" data-doc="investors" aria-selected="false" tabindex="-1">Investors</button>
-<button class="doctab" role="tab" data-doc="wiki" aria-selected="false" tabindex="-1">Wiki</button>
-<button class="doctab" role="tab" data-doc="mvp" aria-selected="false" tabindex="-1">MVP</button>
-</nav>
-<div class="sidexport" role="group" aria-label="Export active document">
-<span class="explabel">Export: <b id="export-label">Story</b></span>
-<span class="expbtns">
-<button class="expbtn" id="exp-md" type="button">Download .md</button>
-<button class="expbtn" id="exp-copy" type="button">Copy .md</button>
-<button class="expbtn" id="exp-print" type="button">Print / PDF</button>
-</span>
-<span class="expstat" id="exp-stat" role="status" aria-live="polite"></span>
-</div>
 <nav class="toc on" data-toc="story" aria-label="Story contents">
 <a href="#s-hero">Intro</a><a href="#s-vision">01 — Vision</a><a href="#s-problem">02 — Problem</a><a href="#s-gap">03 — Craft Gap</a><a href="#s-how">04 — How It Works</a><a href="#s-built">05 — Built For</a><a href="#s-principles">06 — Principles</a><a href="#s-next">07 — What's Next</a><a href="#s-cta">Build with Intent</a>
 </nav>
@@ -220,6 +229,15 @@ html{scroll-behavior:auto}
 <nav class="toc" data-toc="mvp" aria-label="MVP contents">
 <a href="#d4-research">Research</a><a href="#d4-scope">Scope</a><a href="#d4-requirements">Requirements</a><a href="#d4-nfr">NFRs</a><a href="#d4-backlog">Backlog</a>
 </nav>
+<div class="sidexport no-print" role="group" aria-label="Export active document">
+<span class="explabel">Export: <b id="export-label">Story</b></span>
+<span class="expbtns">
+<button class="expbtn" id="exp-md" type="button">Download .md</button>
+<button class="expbtn" id="exp-copy" type="button">Copy .md</button>
+<button class="expbtn" id="exp-print" type="button">Print / PDF</button>
+</span>
+<span class="expstat" id="exp-stat" role="status" aria-live="polite"></span>
+</div>
 </aside>
 <div class="panels">
 
@@ -589,32 +607,29 @@ html{scroll-behavior:auto}
 <div class="backdrop" id="backdrop"></div>
 
 <aside class="drawer" id="fund-drawer" role="dialog" aria-modal="true" aria-label="Funding scenarios" hidden>
-<button class="x" data-close>Close ✕</button>
-<span class="draft">Draft — scenario model</span>
+<div class="dhead"><button class="dpill" id="fund-md" type="button">Export .md</button><button class="x" data-close>Close &#10005;</button></div>
+<span class="draft">Draft — scenario model, not a forecast</span>
 <p class="k">Funding scenarios</p>
 <h2>Four ways the raise could play.</h2>
-<p class="lede">Scenario math only — plan, not promise. All figures DRAFT pending founder inputs.</p>
+<p class="lede">Illustrative defaults only — plan, not promise. All figures DRAFT pending founder inputs.</p>
 <div class="pills" id="fund-pills">
-<button class="pill on">Minimal</button><button class="pill">Conservative</button><button class="pill">OK</button><button class="pill">Ideal</button>
+<button class="pill" data-fsc="minimal">Minimal</button><button class="pill" data-fsc="conservative">Conservative</button><button class="pill on" data-fsc="ok">OK</button><button class="pill" data-fsc="ideal">Ideal</button>
 </div>
-<div class="metrics" style="grid-template-columns:1fr 1fr" id="fund-kpis">
-<div class="metric"><div class="v">[BURN]</div><div class="l">Monthly burn (run-rate)</div><div class="q">scenario — being finalised</div></div>
-<div class="metric"><div class="v">[M6 MRR]</div><div class="l">M6 MRR (scenario)</div><div class="q">scenario model — plan, not promise</div></div>
+<div class="curtoggle" role="group" aria-label="Currency">
+<button class="pill on" data-cur="inr" type="button">&#8377; INR</button><button class="pill" data-cur="usd" type="button">$ USD</button>
 </div>
-<p class="draft-note" id="fund-assump">Assumption (Minimal): skeleton crew, static hosting, no inference spend; runway measured from close. Scenario — being finalised.</p>
-<div class="tbl" id="fund-chart"><table>
-<thead><tr><th>Scenario</th><th>Posture</th><th>Gate funded</th></tr></thead>
-<tbody>
-<tr><td>Minimal</td><td>Skeleton crew, static only</td><td>Phase 1 gate</td></tr>
-<tr><td>Conservative</td><td>Language + compose depth</td><td>Phase 2 gate</td></tr>
-<tr><td>OK</td><td>Full loop + team handoff</td><td>Scale gate</td></tr>
-<tr><td>Ideal</td><td>Loop + content engine</td><td>Scale gate + buffer</td></tr>
-</tbody>
+<div class="metrics" style="grid-template-columns:1fr 1fr" id="fund-kpis"></div>
+<p class="draft-note" id="fund-assump"></p>
+<div class="fchart" id="fund-chart" aria-label="Monthly burn versus scenario MRR"></div>
+<div class="tbl"><table>
+<thead><tr><th>M</th><th>Burn</th><th>MRR</th><th>Team</th><th>Gap</th></tr></thead>
+<tbody id="fund-rows"></tbody>
 </table></div>
+<p class="draft-note">Scenario model — illustrative defaults, not a forecast. Post-breakeven surplus is ring-fenced as profit, not spent. Plan, not promise.</p>
 </aside>
 
 <aside class="drawer" id="plan-drawer" role="dialog" aria-modal="true" aria-label="Eight week plan" hidden>
-<button class="x" data-close>Close ✕</button>
+<div class="dhead"><button class="dpill" id="plan-md" type="button">Export .md</button><button class="x" data-close>Close &#10005;</button></div>
 <span class="draft">Draft — plan, not promise</span>
 <p class="k">8-week plan</p>
 <h2>Week by week, gated twice.</h2>
@@ -642,7 +657,7 @@ investors:[["d3-thesis","Thesis"],["d3-market","Why Now"],["d3-model","Model"],[
 wiki:[["d2-principles","Principles"],["d2-architecture","Arch"],["d2-stack","Stack"],["d2-security","Security"],["d2-adr","ADRs"]],
 mvp:[["d4-research","Research"],["d4-scope","Scope"],["d4-requirements","Reqs"],["d4-nfr","NFRs"],["d4-backlog","Backlog"]]
 };
-var tabs=[].slice.call(document.querySelectorAll(".doctab"));
+var tabs=[].slice.call(document.querySelectorAll(".tab-btn"));
 var tocs=[].slice.call(document.querySelectorAll(".toc[data-toc]"));
 var current="story";
 var panels={};TABS.forEach(function(n){panels[n]=document.querySelector('[data-panel="'+n+'"]')});
@@ -679,9 +694,9 @@ function activate(name,skipScroll){
   [].slice.call(document.querySelectorAll(".toc a.on")).forEach(function(a){a.classList.remove("on")});
   tabs.forEach(function(t){
     var on=t.dataset.doc===name;
-    t.classList.toggle("on",on);t.setAttribute("aria-selected",on?"true":"false");t.tabIndex=on?0:-1;
+    t.classList.toggle("tab-active",on);t.setAttribute("aria-selected",on?"true":"false");t.tabIndex=on?0:-1;
   });
-  TABS.forEach(function(n){panels[n].classList.toggle("on",n===name)});
+  TABS.forEach(function(n){var on=n===name;panels[n].classList.toggle("on",on);panels[n].hidden=!on});
   tocs.forEach(function(c){c.classList.toggle("on",c.dataset.toc===name)});
   document.body.dataset.printDoc=name;
   var xl=document.getElementById("export-label");if(xl)xl.textContent=DOC_TITLES[name]||name;
@@ -689,6 +704,11 @@ function activate(name,skipScroll){
   try{history.replaceState(null,"","#"+name)}catch(e){}
   if(!skipScroll){window.scrollTo(0,0);mark(TOCS[name][0][0])}
 }
+/* skill Tab Wiring: global switchTab, unknown id falls back to first tab */
+window.switchTab=function(id){
+  if(TOCS[id]===undefined)id=TABS[0];
+  activate(id);
+};
 tabs.forEach(function(t){
   t.addEventListener("click",function(){activate(t.dataset.doc)});
 });
@@ -719,21 +739,120 @@ document.addEventListener("click",function(e){
   if(e.target.closest("[data-close]")||e.target===backdrop){closeDrawers()}
 });
 document.addEventListener("keydown",function(e){if(e.key==="Escape")closeDrawers()});
-/* fund scenario pills */
+/* funding scenarios — labelled illustrative defaults (DRAFT, scenario-not-forecast) */
+window.HEAL_FX_rate=function(){return 90};
+var FUND={B0:5500000,START:2083200,RAISE:126000000,HC_NON:1500000,HC_COST:180000,
+SC:{minimal:{label:"Minimal",g:0.045,bs:60000},conservative:{label:"Conservative",g:0.075,bs:110000},ok:{label:"OK",g:0.105,bs:150000},ideal:{label:"Ideal",g:0.13,bs:170000}}};
 var ASSUMPS={
-Minimal:"Assumption (Minimal): skeleton crew, static hosting, no inference spend; runway measured from close. Scenario — being finalised.",
-Conservative:"Assumption (Conservative): language + compose depth staffed; runway measured from close. Scenario — being finalised.",
-OK:"Assumption (OK): full loop plus team handoff staffed; runway measured from close. Scenario — plan, not promise.",
-Ideal:"Assumption (Ideal): loop plus content engine; buffer included; runway measured from close. Scenario — plan, not promise."
+Minimal:"Assumption (Minimal): skeleton crew, static hosting, no inference spend; runway measured from close. Illustrative default — scenario, not a forecast, being finalised.",
+Conservative:"Assumption (Conservative): language + compose depth staffed; runway measured from close. Illustrative default — scenario, not a forecast, being finalised.",
+OK:"Assumption (OK): full loop plus team handoff staffed; runway measured from close. Illustrative default — scenario, not a forecast, plan not promise.",
+Ideal:"Assumption (Ideal): loop plus content engine; buffer included; runway measured from close. Illustrative default — scenario, not a forecast, plan not promise."
 };
+var fundSc="ok",fundCur="inr";
+function burnAt(sc,m){return FUND.B0+sc.bs*m}
+function mrrAt(sc,m){return Math.round(FUND.START*Math.pow(1+sc.g,m))}
+function teamAt(burn){return Math.round((burn-FUND.HC_NON)/FUND.HC_COST)}
+function inr(n){return "\u20B9"+Math.round(n).toLocaleString("en-IN")}
+function usd(n){return "$"+Math.round(n/window.HEAL_FX_rate()).toLocaleString("en-US")}
+function fxSpan(n){return '<span data-fx data-inr="'+inr(n)+'" data-usd="'+usd(n)+'">'+(fundCur==="usd"?usd(n):inr(n))+"</span>"}
+function applyFx(root){[].slice.call((root||document).querySelectorAll("[data-fx]")).forEach(function(s){var v=fundCur==="usd"?s.getAttribute("data-usd"):s.getAttribute("data-inr");if(v)s.textContent=v})}
+function fundRender(id){
+  if(!FUND.SC[id])id="ok";fundSc=id;
+  var sc=FUND.SC[id];
+  [].slice.call(document.querySelectorAll("#fund-pills .pill")).forEach(function(p){p.classList.toggle("on",p.getAttribute("data-fsc")===id)});
+  [].slice.call(document.querySelectorAll("[data-cur]")).forEach(function(p){p.classList.toggle("on",p.getAttribute("data-cur")===fundCur)});
+  var be=null,m,gross=0;
+  for(m=1;m<=18;m++){gross+=burnAt(sc,m);if(be===null&&mrrAt(sc,m)>=burnAt(sc,m))be=m}
+  var left=FUND.RAISE-gross;
+  var kpis=document.getElementById("fund-kpis");
+  if(kpis)kpis.innerHTML=
+    '<div class="metric"><div class="v">'+fxSpan(burnAt(sc,1))+'</div><div class="l">Monthly burn M1 (run-rate)</div><div class="q">scenario — being finalised</div></div>'+
+    '<div class="metric"><div class="v">'+fxSpan(mrrAt(sc,6))+'</div><div class="l">M6 MRR (scenario)</div><div class="q">scenario model — plan, not promise</div></div>'+
+    '<div class="metric"><div class="v">'+(be?("M"+be):"Beyond M18")+'</div><div class="l">Breakeven (MRR \u2265 burn)</div><div class="q">scenario model — plan, not promise</div></div>'+
+    '<div class="metric"><div class="v">'+fxSpan(left)+'</div><div class="l">Funding left of '+fxSpan(FUND.RAISE)+'</div><div class="q">raise minus 18-mo spend; surplus ring-fenced</div></div>';
+  var assump=document.getElementById("fund-assump");
+  if(assump)assump.textContent=ASSUMPS[sc.label]||"";
+  var rows=document.getElementById("fund-rows");
+  if(rows){
+    var html="";
+    for(m=1;m<=18;m++){
+      var b=burnAt(sc,m),r=mrrAt(sc,m),gap=r-b;
+      html+="<tr><td>M"+m+"</td><td>"+fxSpan(b)+"</td><td>"+fxSpan(r)+"</td><td>"+teamAt(b)+"</td><td>"+(gap>=0?("+"+fxSpan(gap)+" surplus"):("\u2212"+fxSpan(-gap)+" burn"))+"</td></tr>";
+    }
+    rows.innerHTML=html;
+  }
+  var chart=document.getElementById("fund-chart");
+  if(chart){
+    var mx=1;for(m=1;m<=18;m++){mx=Math.max(mx,burnAt(sc,m),mrrAt(sc,m))}
+    var ch="";
+    for(m=1;m<=18;m++){
+      var bb=burnAt(sc,m),rr=mrrAt(sc,m);
+      ch+='<div class="frow" tabindex="0" data-tip="M'+m+" · burn "+inr(bb)+" · MRR "+inr(rr)+'"><span>M'+m+'</span><span class="fbars"><span class="fbar" style="width:'+Math.max(1,bb/mx*100).toFixed(1)+'%"></span><span class="fbar mrr" style="width:'+Math.max(1,rr/mx*100).toFixed(1)+'%"></span></span></div>';
+    }
+    ch+='<div class="ftip" id="fund-tip" role="status"></div>';
+    chart.innerHTML=ch;
+  }
+}
 var pills=[].slice.call(document.querySelectorAll("#fund-pills .pill"));
-var assump=document.getElementById("fund-assump");
 pills.forEach(function(p){
-  p.addEventListener("click",function(){
-    pills.forEach(function(q){q.classList.remove("on")});p.classList.add("on");
-    if(assump&&ASSUMPS[p.textContent])assump.textContent=ASSUMPS[p.textContent];
-  });
+  p.addEventListener("click",function(){fundRender(p.getAttribute("data-fsc"))});
 });
+[].slice.call(document.querySelectorAll("[data-cur]")).forEach(function(p){
+  p.addEventListener("click",function(){fundCur=p.getAttribute("data-cur");fundRender(fundSc);applyFx(document)});
+});
+/* fund chart tooltip: hover + keyboard focus */
+(function(){
+  var chart=document.getElementById("fund-chart");if(!chart)return;
+  function tip(){return document.getElementById("fund-tip")}
+  function show(el){
+    var t=tip();if(!t||!el.getAttribute("data-tip"))return;
+    t.textContent=el.getAttribute("data-tip");t.classList.add("show");
+    var cr=chart.getBoundingClientRect(),er=el.getBoundingClientRect();
+    t.style.top=Math.min(cr.height-30,Math.max(0,er.top-cr.top-8))+"px";
+    t.style.left="10px";
+  }
+  function hide(){var t=tip();if(t)t.classList.remove("show")}
+  chart.addEventListener("mousemove",function(e){var r=e.target.closest?e.target.closest(".frow"):null;if(r)show(r)});
+  chart.addEventListener("mouseleave",hide);
+  chart.addEventListener("focusin",function(e){var r=e.target.closest?e.target.closest(".frow"):null;if(r)show(r)});
+  chart.addEventListener("focusout",hide);
+})();
+/* drawer Export .md pills: render first, then serialize */
+function downloadText(name,text){
+  var blob=new Blob([text],{type:"text/markdown;charset=utf-8"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");a.href=url;a.download=name;
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(function(){URL.revokeObjectURL(url)},1000);
+}
+function fundDrawerToMarkdown(){
+  fundRender(fundSc);
+  var sc=FUND.SC[fundSc],date=new Date().toISOString().slice(0,10);
+  var be=null,m,gross=0;
+  for(m=1;m<=18;m++){gross+=burnAt(sc,m);if(be===null&&mrrAt(sc,m)>=burnAt(sc,m))be=m}
+  var L=["# Camera Shots — Funding scenarios ("+sc.label+")","","_Exported "+date+" · DRAFT illustrative defaults — scenario model, not a forecast._","","## Assumptions",(ASSUMPS[sc.label]||""),"",
+    "Constants: B0="+FUND.B0+", START="+FUND.START+", RAISE="+FUND.RAISE+", HC_NON="+FUND.HC_NON+", HC_COST="+FUND.HC_COST+"; growth="+(sc.g*100).toFixed(1)+"%, monthly burn step="+sc.bs+".","",
+    "## KPIs","- Monthly burn M1 (run-rate): "+inr(burnAt(sc,1))+" ("+usd(burnAt(sc,1))+")",
+    "- M6 MRR (scenario): "+inr(mrrAt(sc,6))+" ("+usd(mrrAt(sc,6))+")",
+    "- Breakeven: "+(be?("M"+be):"beyond M18")+" (first month MRR \u2265 burn)",
+    "- Funding left: "+inr(FUND.RAISE-gross)+" of "+inr(FUND.RAISE)+" (raise minus 18-mo spend; post-breakeven surplus ring-fenced as profit)","",
+    "## Month rows","| M | Burn | MRR | Team | Gap |","| --- | --- | --- | --- | --- |"];
+  for(m=1;m<=18;m++){var b=burnAt(sc,m),r=mrrAt(sc,m);L.push("| M"+m+" | "+inr(b)+" | "+inr(r)+" | "+teamAt(b)+" | "+(r>=b?"+":"")+inr(r-b)+" |")}
+  L.push("","_Scenario model — illustrative defaults, not a forecast. Plan, not promise._","");
+  return L.join("\n");
+}
+function exportFundDrawerMD(){var date=new Date().toISOString().slice(0,10);downloadText("camera-shots-fund-"+fundSc+"-"+date+".md",fundDrawerToMarkdown());expStat("Downloaded fund-"+fundSc+" scenario .md")}
+function exportPlanDrawerMD(){
+  var date=new Date().toISOString().slice(0,10);
+  var rows=[].slice.call(document.querySelectorAll("#plan-weeks .wrow")).map(function(w){return "- "+rich(w)});
+  var md=["# Camera Shots — 8-week plan","","_Exported "+date+" · DRAFT — plan, not promise._",""].concat(rows).join("\n")+"\n";
+  downloadText("camera-shots-plan-"+date+".md",md);expStat("Downloaded 8-week plan .md");
+}
+var fundMdBtn=document.getElementById("fund-md");if(fundMdBtn)fundMdBtn.addEventListener("click",exportFundDrawerMD);
+var planMdBtn=document.getElementById("plan-md");if(planMdBtn)planMdBtn.addEventListener("click",exportPlanDrawerMD);
+window.fundRender=fundRender;window.fundDrawerToMarkdown=fundDrawerToMarkdown;
+window.exportFundDrawerMD=exportFundDrawerMD;window.exportPlanDrawerMD=exportPlanDrawerMD;
 /* gantt toggle */
 var gt=document.getElementById("gantt-toggle"),g=document.getElementById("gantt");
 if(gt&&g)gt.addEventListener("click",function(){
@@ -881,6 +1000,10 @@ function copyMd(){
 document.getElementById("exp-md").addEventListener("click",downloadMd);
 document.getElementById("exp-copy").addEventListener("click",copyMd);
 document.getElementById("exp-print").addEventListener("click",function(){window.print()});
+var he=document.getElementById("h-exp");if(he)he.addEventListener("click",downloadMd);
+var hc2=document.getElementById("h-copy");if(hc2)hc2.addEventListener("click",copyMd);
+/* Projection Default-Data Rule: pre-render OK scenario before the drawer ever opens */
+fundRender("ok");
 /* init: #tab or #section-id deep links */
 var start=(location.hash||"").replace(/^#/,"");
 if(TOCS[start]!==undefined){activate(start,true);window.scrollTo(0,0)}
