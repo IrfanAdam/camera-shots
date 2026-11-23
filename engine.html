@@ -297,6 +297,93 @@ const Store={
  load(){try{const r=localStorage.getItem(this.key);if(r)return{ver:4,s:JSON.parse(r)};const q=localStorage.getItem('cse-engine-v3');if(q)return{ver:3,s:JSON.parse(q)};const o=localStorage.getItem('cse-engine-v2');return o?{ver:2,s:JSON.parse(o)}:null}catch(e){return null}},
  clear(){try{localStorage.removeItem(this.key);localStorage.removeItem('cse-engine-v3');localStorage.removeItem('cse-engine-v2');localStorage.removeItem('cse-engine-v1')}catch(e){}}
 };
+/* ---- remote image store (backend-pluggable; Supabase default, local fallback) ----
+   Backends (pick at most one; R2 wins when set):
+   - R2 via Worker: set localStorage['cse-remote-endpoint'] to the Worker URL
+     and optionally localStorage['cse-remote-token'] for Bearer auth when the
+     Worker has the UPLOAD_TOKEN secret.
+   - Supabase Storage (built-in default): bucket `shots` on
+     https://gyksaplsiiupvdbjhkte.supabase.co with the publishable key below
+     (publishable keys ship in client code by design — never commit a
+     service_role key). Override per-browser via localStorage['cse-backend']
+     JSON like {"url":"https://<ref>.supabase.co","anonKey":"<anon>",
+     "bucket":"shots"}.
+   If the bucket does not exist yet (anon keys cannot create buckets), create
+   it in the Supabase dashboard (Storage → New bucket → name `shots`, Public
+   ON) and add anon read/write policies in SQL, e.g.:
+     insert into storage.buckets (id,name,public) values ('shots','shots',true)
+     on conflict (id) do update set public=true;
+     create policy "public read shots" on storage.objects for select using (bucket_id='shots');
+     create policy "anon upload shots" on storage.objects for insert with check (bucket_id='shots');
+     create policy "anon delete shots" on storage.objects for delete using (bucket_id='shots');
+   Empty/unset = local-only. Uploads are best-effort: the
+   ≤768px dataURL is kept until the remote URL lands, so offline/unauthenticated
+   use persists exactly as before. */
+const REMOTE_ENDPOINT_DEFAULT='';
+/* Built-in Supabase default. Override per-browser via localStorage['cse-backend']. */
+const SUPABASE_DEFAULTS={url:'https://gyksaplsiiupvdbjhkte.supabase.co',anonKey:'sb_publishable_FDNwZSLsig9q2YuP-fUDow_oYU0IkKx',bucket:'shots'};
+function dataURLtoBlob(u){const m=/^data:([^;,]+)?(;base64)?,(.*)$/.exec(u||'');if(!m)throw new Error('bad data url');const mime=m[1]||'image/jpeg';const raw=m[2]?atob(m[3]):unescape(m[3]);const a=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)a[i]=raw.charCodeAt(i);return new Blob([a],{type:mime})}
+const Remote={
+ endpoint:'',token:'',
+ sb:{url:'',anonKey:'',bucket:'shots'},
+ init(){try{this.endpoint=localStorage.getItem('cse-remote-endpoint')||REMOTE_ENDPOINT_DEFAULT;this.token=localStorage.getItem('cse-remote-token')||''}catch(e){};
+  let cfg=null;try{cfg=JSON.parse(localStorage.getItem('cse-backend')||'null')}catch(e){cfg=null}
+  if(cfg&&cfg.url)this.sb={url:String(cfg.url).replace(/\/$/,''),anonKey:cfg.anonKey||cfg.anon||cfg.key||'',bucket:cfg.bucket||'shots'};
+  else this.sb={url:SUPABASE_DEFAULTS.url,anonKey:SUPABASE_DEFAULTS.anonKey,bucket:SUPABASE_DEFAULTS.bucket};},
+ get enabled(){return!!(this.endpoint||(this.sb.url&&this.sb.anonKey))},
+ get backend(){return this.endpoint?'r2':'supabase'},
+ async put(dataUrl){
+  if(this.endpoint){
+   const endpoint=this.endpoint.replace(/\/$/,'');
+   const headers={'Content-Type':'application/json'};if(this.token)headers.Authorization='Bearer '+this.token;
+   const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),20000);
+   try{
+    const r=await fetch(endpoint+'/upload',{method:'POST',headers,body:JSON.stringify({dataUrl}),signal:ctrl.signal});
+    if(!r.ok)throw new Error('http '+r.status);
+    const j=await r.json();return j&&j.url?j.url:null;
+   }finally{clearTimeout(t)}
+  }
+  return this.sbPut(dataUrl);
+ },
+ async sbPut(dataUrl){
+  const base=this.sb.url.replace(/\/$/,''),bucket=this.sb.bucket,key=this.sb.anonKey;
+  if(!base||!key)throw new Error('no supabase backend');
+  const blob=dataURLtoBlob(dataUrl);
+  const ext=blob.type==='image/png'?'png':'jpg';
+  const name='shot-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8)+'.'+ext;
+  const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),20000);
+  try{
+   const r=await fetch(base+'/storage/v1/object/'+encodeURIComponent(bucket)+'/'+name,{method:'POST',headers:{apikey:key,Authorization:'Bearer '+key,'Content-Type':blob.type||'image/jpeg','x-upsert':'true'},body:blob,signal:ctrl.signal});
+   if(!r.ok)throw new Error('http '+r.status);
+   return base+'/storage/v1/object/public/'+bucket+'/'+name;
+  }finally{clearTimeout(t)}
+ },
+ discard(url){
+  try{
+   if(typeof url!=='string')return;
+   if(this.endpoint&&url.startsWith(this.endpoint.replace(/\/$/,'')+'/i/')){
+    const headers={};if(this.token)headers.Authorization='Bearer '+this.token;
+    fetch(url,{method:'DELETE',headers}).catch(()=>{});return;
+   }
+   const base=(this.sb.url||'').replace(/\/$/,''),prefix=base+'/storage/v1/object/public/'+this.sb.bucket+'/';
+   if(base&&this.sb.anonKey&&url.startsWith(prefix)){
+    const key=this.sb.anonKey;
+    fetch(base+'/storage/v1/object/'+encodeURIComponent(this.sb.bucket)+'/'+url.slice(prefix.length),{method:'DELETE',headers:{apikey:key,Authorization:'Bearer '+key}}).catch(()=>{});
+   }
+  }catch(e){}
+ }
+};
+Remote.init();
+try{window.CSE_REMOTE=Remote}catch(e){}
+/* Best-effort remote backup for a freshly attached dataURL image. Keeps the local
+   dataURL (offline fallback) until the remote URL is confirmed, then swaps it
+   in and persists. All per-card menu / drawer flows are unchanged. */
+function remoteBackup(n,localUrl){
+ if(!n||!Remote.enabled||typeof localUrl!=='string'||!localUrl.startsWith('data:'))return;
+ Remote.put(localUrl).then(u=>{
+  if(!u||n.imgUrl!==localUrl)return;
+  n.imgUrl=u;loadImage(n);persist();
+ }).catch(()=>flashHint('saved locally — remote upload failed'))}
 function flashHint(t){hintEl.textContent=t;clearTimeout(flashHint._t);flashHint._t=setTimeout(()=>hintEl.textContent=HINT_DEFAULT,2200)}
 let toastT=null;
 function showToast(msg){document.getElementById('toastMsg').textContent=msg;const t=document.getElementById('toast');t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,5000)}
@@ -464,8 +551,8 @@ function drawCard(n){const x=n.x,y=n.y,w=n.w,h=n.h,hovered=n===hoverNode;
  if(hovered){ctx.strokeStyle=kc;ctx.lineWidth=2;round(x,y,w,h,10);ctx.stroke()}
  else if(n===selected){ctx.strokeStyle='rgba(255,255,255,.45)';ctx.lineWidth=1;round(x+0.5,y+0.5,w-1,h-1,10);ctx.stroke()}
  else{ctx.strokeStyle='rgba(255,255,255,.10)';ctx.lineWidth=1;round(x+0.5,y+0.5,w-1,h-1,10);ctx.stroke()}}
-function attachFile(n,file){if(!file)return;fileToDataURL(file).then(url=>{n.imgUrl=url;loadImage(n)}).catch(()=>flashHint('could not read that image file'))}
-function attachURL(n,url){if(!url){n.imgUrl='';n.img=null;n.w=200;n.h=190;persist();draw();return}n.imgUrl=url;loadImage(n)}
+function attachFile(n,file){if(!file)return;fileToDataURL(file).then(url=>{n.imgUrl=url;loadImage(n);remoteBackup(n,url)}).catch(()=>flashHint('could not read that image file'))}
+function attachURL(n,url){if(!url){Remote.discard(n.imgUrl);n.imgUrl='';n.img=null;n.w=200;n.h=190;persist();draw();return}n.imgUrl=url;loadImage(n)}
 function fileToDataURL(file){return new Promise((resolve,reject)=>{
  const src=URL.createObjectURL(file),im=new Image();
  im.onload=()=>{try{const MAX=768;let w=im.naturalWidth,h=im.naturalHeight;const s=Math.min(1,MAX/Math.max(w,h));
@@ -964,7 +1051,7 @@ function addShotNode(label,url,w,h){const n={id:nextId++,kind:'shot',label,note:
  n.anchor=mintAnchor('SHOT',label);
  nodes.push(n);seq++;selected=n;loadImage(n);persist();draw()}
 function shotFromFile(file){if(!file)return;fileToDataURL(file).then(url=>{const im=new Image();
- im.onload=()=>addShotNode('Shot '+seq,url,im.naturalWidth,im.naturalHeight);
+ im.onload=()=>{addShotNode('Shot '+seq,url,im.naturalWidth,im.naturalHeight);remoteBackup(selected,url)};
  im.onerror=()=>flashHint('could not read that image');im.src=url}).catch(()=>flashHint('could not read that image file'))}
 function shotFromURL(url){const im=new Image();
  im.onload=()=>addShotNode('Shot '+seq,url,im.naturalWidth,im.naturalHeight);
