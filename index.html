@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Cinematography and Direction Wiki</title>
 <style>
-:root{--bg:#FAFAF8;--card:#fff;--ink:#16181D;--mut:#5B6270;--rule:#E1E3E8;--acc:#0B5D66;--acc2:#DDEFF1;--amb:#B86A00;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{--bg:#FAFAF8;--card:#fff;--ink:#16181D;--mut:#5B6270;--rule:#E1E3E8;--acc:#0B5D66;--acc2:#DDEFF1;--amb:#B86A00;--ok:#2e7d46;--info:#8a5cf6;--neutral:#fff;--black:#000;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1213;--card:#151B1C;--ink:#ECF1F1;--mut:#9DAAAB;--rule:#243032;--acc:#5CC4D0;--acc2:#12383D;--amb:#F0A648}}
 :root[data-theme="dark"]{--bg:#0E1213;--card:#151B1C;--ink:#ECF1F1;--mut:#9DAAAB;--rule:#243032;--acc:#5CC4D0;--acc2:#12383D;--amb:#F0A648}
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-padding-top:env(safe-area-inset-top,0px)}
@@ -12,7 +12,7 @@ body{background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,-apple-system
 .top{position:sticky;top:0;z-index:40;background:var(--bg);border-bottom:1px solid var(--rule);padding-top:calc(.6rem + env(safe-area-inset-top,0px));padding-bottom:.6rem;display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
 .by{color:var(--mut);font-size:.85rem;white-space:nowrap}
 .hright{display:flex;align-items:center;gap:.6rem}
-.eng{font-size:.82rem;font-weight:600;color:#fff;background:var(--acc);padding:.32rem .8rem;border-radius:99px;text-decoration:none}
+.eng{font-size:.82rem;font-weight:600;color:var(--neutral);background:var(--acc);padding:.32rem .8rem;border-radius:99px;text-decoration:none}
 .eng:hover{filter:brightness(1.1)}
 .pitch{font-size:.82rem;font-weight:600;color:var(--acc);background:transparent;border:1px solid var(--acc);padding:.32rem .8rem;border-radius:99px;text-decoration:none}
 .pitch:hover{background:var(--acc2)}
@@ -22,7 +22,7 @@ h1{font-size:1.6rem;letter-spacing:-.02em}.sub{color:var(--mut);font-size:.9rem;
 #search{flex:1;min-width:180px;background:var(--card);border:1px solid var(--rule);color:var(--ink);border-radius:99px;padding:.5rem .9rem;font:inherit;font-size:.85rem}
 #theme{background:var(--card);border:1px solid var(--rule);color:var(--ink);border-radius:99px;padding:.5rem .9rem;font:inherit;font-size:.85rem;cursor:pointer}
 .tabs{display:flex;gap:.4rem;overflow-x:auto;padding-bottom:.4rem}
-.tab,.chip{border:1px solid var(--rule);background:var(--card);color:var(--ink);padding:.45rem .8rem;border-radius:99px;font:inherit;font-size:.85rem;cursor:pointer;white-space:nowrap}
+.tab,.chip{border:1px solid var(--rule);background:var(--card);color:var(--ink);padding:.45rem .8rem;border-radius:99px;font:inherit;font-size:.85rem;cursor:pointer;white-space:nowrap;min-height:40px}
 .tab[aria-selected=true],.chip[aria-selected=true]{background:var(--acc);color:var(--bg);border-color:var(--acc)}
 .main{display:grid;grid-template-columns:230px 1fr;gap:1rem;margin-top:.8rem}
 .list{display:flex;flex-direction:column;gap:.35rem;max-height:560px;overflow-y:auto}
@@ -46,16 +46,15 @@ table.map{width:100%;border-collapse:collapse;font-size:.84rem;margin-top:.6rem}
 .map td{padding:.4rem .5rem;border-bottom:1px solid var(--rule);vertical-align:top}
 .map td code{font-weight:700;color:var(--acc);white-space:nowrap}
 .map td button{background:none;border:1px solid var(--rule);color:var(--ink);border-radius:99px;padding:.15rem .6rem;font:inherit;font-size:.75rem;cursor:pointer;white-space:nowrap}
-.badge{font-size:.7rem;font-weight:800;letter-spacing:.08em;border-radius:99px;padding:.15rem .6rem;background:var(--amb);color:#fff}
-.badge.FREE{background:#2e7d46}.badge.PAID{background:#8a5cf6}.badge.UNVERIFIED{background:var(--mut)}
+.badge{font-size:.7rem;font-weight:800;letter-spacing:.08em;border-radius:99px;padding:.15rem .6rem;background:var(--amb);color:var(--neutral)}.badge.FREE{background:var(--ok)}.badge.PAID{background:var(--info)}.badge.UNVERIFIED{background:var(--mut)}
 .steps{display:flex;gap:.5rem;margin:.8rem 0 .2rem;flex-wrap:wrap}
-.step{font:inherit;font-weight:700;font-size:1.02rem;padding:.45rem .15rem;margin-right:1.1rem;border:none;border-bottom:2px solid transparent;background:none;color:var(--mut);cursor:pointer;border-radius:0}
+.step{font:inherit;font-weight:700;font-size:1.02rem;padding:.45rem .15rem;margin-right:1.1rem;border:none;border-bottom:2px solid transparent;background:none;color:var(--mut);cursor:pointer;border-radius:0;min-height:40px}
 .step:hover{color:var(--ink)}
 .step.on{color:var(--ink);border-bottom-color:var(--amb)}
 .blurb{font-size:.82rem;color:var(--mut);margin:.1rem 0 .4rem}
-.yt{position:relative;aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden;margin-top:.5rem;cursor:pointer}
+.yt{position:relative;aspect-ratio:16/9;background:var(--black);border-radius:8px;overflow:hidden;margin-top:.5rem;cursor:pointer}
 .yt img{width:100%;height:100%;object-fit:cover;opacity:.85}
-.yt span{position:absolute;inset:0;margin:auto;width:60px;height:60px;border-radius:50%;background:var(--amb);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px}
+.yt span{position:absolute;inset:0;margin:auto;width:60px;height:60px;border-radius:50%;background:var(--amb);color:var(--neutral);display:flex;align-items:center;justify-content:center;font-size:22px}
 .yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 footer{margin:2rem 0 1rem;color:var(--mut);font-size:.78rem}
 @media(max-width:800px){.main{grid-template-columns:1fr}.list{flex-direction:row;max-height:none;overflow-x:auto;overflow-y:hidden;align-items:center}.count{width:auto;flex:none}}
