@@ -27,11 +27,11 @@
   --color-pitch-overlay-bg: rgba(10,10,11,.92);
 
   /* color.wiki */
-  --color-wiki-light-bg: #FAFAF8;
+  --color-wiki-light-bg: #F8F8F4;
   --color-wiki-light-card: #FFFFFF;
   --color-wiki-light-ink: #16181D;
   --color-wiki-light-muted: #5B6270;
-  --color-wiki-light-rule: #E1E3E8;
+  --color-wiki-light-rule: #D2D6DE;
   --color-wiki-light-accent: #0B5D66;
   --color-wiki-light-accent-wash: #DDEFF1;
   --color-wiki-light-amber: #B86A00;
