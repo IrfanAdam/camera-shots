@@ -37,3 +37,14 @@ Method: static measurement (`grep` counts, `:root` values, target sizing). No la
 2. Touch-target fixes (cardMenu + tools + wiki steps + pitch hdr icons).
 3. Adopt timeline chips / inspector pills on next engine feature.
 4. Everything else is compliant — hold the line.
+
+## Token-gap closure (2026-11-23, tokens.json 118 → 155, additive only)
+
+All raw hexes in product CSS now have a token to re-point at. No visuals changed; html untouched.
+- Engine canvas/graph (touch-layer commit): `color.engine.accent.ink` (#111111), `canvas.bg`, `graph.title/node.top/node.bottom/edge/label/arc/handle`, `switch.track/border`, `code.punct/hover`, `input.focus/edge`, `row`, `panel.project/codes`, `placeholder`, `highlight`.
+- Pitch debt: `color.pitch.positive (+.ink)` (fx dots, surplus), `switch.bg`, `color.print.*` (rule/body/fine/accent/ink).
+- Wiki debt: `color.wiki.diagram.fill`, `color.wiki.scrim.thumb`.
+- Shared: `color.neutral.white/black`.
+- Touch scale: `touch.small` (28px legacy, debt — do not use new), `touch.field` (38px legacy, round up to `touch.min` on next edit), `layout.bar.transport` (62px, `--bar-h`), `layout.sheet.grab.width/height` (44px/5px). `--tap` 44px already = `touch.preferred`.
+- Not colors (excluded): `&#9654; &#8377; &#128065;` are HTML entities, not hex values.
+- Re-point map for the cleanup lane: `#fff`→neutral.white, `#111`→engine.accent.ink (engine) / print.ink (print sheet), `#000`→neutral.black, `#ddd/#333/#222`→print.rule/body/fine, `#8a6d2b`→print.accent, canvas `#1a2130/#1b2230/#1c2432/#0d1117/#9aa3b5/#c7cedb/#7c3aed/#2a3342`→canvas.bg/graph.*, `#2a3340/#3a4554`→switch.*, `#4b5563/#1b212b`→code.*, `#1e2632/#b45309`→input.*, `#0f141b/#10151c/#0d1218`→row/panel.*, `#5b6577`→placeholder, `#fbbf24`→highlight, `#10b981/#06110c`→pitch.positive(+.ink), `#101012`→pitch.switch.bg, `#9fc3d8`→wiki.diagram.fill, `#101828`→wiki.scrim.thumb.
