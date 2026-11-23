@@ -62,7 +62,7 @@ code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font
 .masthead{border-bottom:var(--border-width-hairline) solid var(--g-rule);padding:var(--spacing-2xl) 0 var(--spacing-xl)}
 .mast-top{display:flex;align-items:center;justify-content:space-between;gap:var(--spacing-md);flex-wrap:wrap;margin-bottom:var(--spacing-xl)}
 .kicker{font-size:var(--typography-size-eyebrow);letter-spacing:var(--typography-tracking-eyebrow);text-transform:uppercase;font-weight:var(--typography-weight-medium);color:var(--g-muted)}
-.themer{display:inline-flex;border:var(--border-width-hairline) solid var(--g-rule);border-radius:var(--radius-pill);padding:2px;background:var(--g-card)}
+.themer{display:inline-flex;border:var(--border-width-hairline) solid var(--g-rule);border-radius:var(--radius-pill);padding:var(--spacing-2);background:var(--g-card)}
 .themer button{
   font:inherit;font-size:var(--typography-size-meta);min-height:var(--touch-min);
   padding:0 var(--spacing-md);border:0;border-radius:var(--radius-pill);
@@ -87,7 +87,7 @@ code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font
   border-left:var(--border-width-hairline) solid var(--g-rule);line-height:1.4;
 }
 .side a:hover{color:var(--g-ink)}
-.side a.on{color:var(--g-ink);font-weight:var(--typography-weight-medium);border-left:var(--border-width-strong) solid var(--g-ink);padding-left:calc(var(--spacing-sm) - 1px)}
+.side a.on{color:var(--g-ink);font-weight:var(--typography-weight-medium);border-left:var(--border-width-strong) solid var(--g-ink);padding-left:calc(var(--spacing-sm) - 1px)} /* lint-allow: 1px optical offset inside calc aligns the rail rule; no 2px step */
 .side .side-label{font-size:var(--typography-size-eyebrow);letter-spacing:var(--typography-tracking-eyebrow);text-transform:uppercase;color:var(--g-muted);padding-bottom:var(--spacing-xs);border-bottom:var(--border-width-hairline) solid var(--g-rule);margin-bottom:var(--spacing-xs)}
 .side .side-foot{margin-top:var(--spacing-md);font-size:var(--typography-size-eyebrow);color:var(--g-muted);line-height:1.6}
 
@@ -115,7 +115,7 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
 /* ---------- type ---------- */
 .type-list{border-top:var(--border-width-hairline) solid var(--g-rule)}
 .type-row{display:grid;grid-template-columns:200px minmax(0,1fr);gap:var(--spacing-lg);align-items:baseline;padding:var(--spacing-md) 0;border-bottom:var(--border-width-hairline) solid var(--g-rule)}
-.type-meta{display:flex;flex-direction:column;gap:2px;font-size:var(--typography-size-eyebrow);color:var(--g-muted);line-height:1.5}
+.type-meta{display:flex;flex-direction:column;gap:var(--spacing-2);font-size:var(--typography-size-eyebrow);color:var(--g-muted);line-height:1.5}
 .type-meta code{color:var(--g-ink);font-size:var(--typography-size-eyebrow)}
 .type-val{font-size:11px;color:var(--g-ink);font-variant-numeric:tabular-nums}
 .type-spec{font-size:var(--typography-size-eyebrow);color:var(--g-muted)}
@@ -180,7 +180,7 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
 }
 .mplay:focus-visible{outline:2px solid var(--g-ink);outline-offset:2px}
 .mdot{
-  position:absolute;top:50%;left:4px;width:20px;height:20px;margin-top:-10px;
+  position:absolute;top:50%;left:4px;width:20px;height:20px;margin-top:-10px; /* lint-allow: negative half of the 20px dot centres it against the track */
   border-radius:var(--radius-circle);background:var(--g-ink);
   transition-property:transform;
   transition-duration:var(--motion-duration-base);
@@ -352,7 +352,7 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
 /* badge */
 .badge{
   display:inline-flex;align-items:center;border-radius:var(--radius-pill);
-  padding:2px var(--spacing-xs);
+  padding:var(--spacing-2) var(--spacing-xs);
   font-size:var(--typography-size-eyebrow);font-weight:var(--typography-weight-bold);
   letter-spacing:var(--typography-tracking-eyebrow);text-transform:uppercase;
   color:var(--color-neutral-white);
@@ -412,9 +412,9 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
 .matrix td .note{display:block;font-size:var(--typography-size-eyebrow);color:var(--g-muted);line-height:1.5;margin-top:var(--spacing-2xs);max-width:34ch}
 .matrix tr:last-child td,.matrix tr:last-child th{border-bottom:0}
 .badge-dev{
-  display:inline-flex;align-items:center;gap:4px;margin-bottom:var(--spacing-2xs);
+  display:inline-flex;align-items:center;gap:var(--spacing-2xs);margin-bottom:var(--spacing-2xs);
   border:var(--border-width-hairline) solid var(--color-semantic-danger);color:var(--color-semantic-danger);
-  border-radius:var(--radius-pill);padding:1px var(--spacing-xs);
+  border-radius:var(--radius-pill);padding:1px var(--spacing-xs); /* lint-allow: 1px badge inset is an optical hairline; no 2px step exists */
   font-size:var(--typography-size-eyebrow);font-weight:var(--typography-weight-bold);
   letter-spacing:0.08em;text-transform:uppercase;
 }
