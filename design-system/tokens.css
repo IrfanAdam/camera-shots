@@ -2,7 +2,7 @@
    tokens.css — GENERATED FILE, DO NOT EDIT BY HAND.
    Source:     design-system/tokens.json
    Regenerate: node scripts/build-tokens.mjs
-   Tokens:     230
+   Tokens:     231
    ========================================================================== */
 
 :root {
@@ -143,6 +143,7 @@
   --typography-family-sans: system-ui, -apple-system, Segoe UI, sans-serif;
   --typography-family-display: Space Grotesk, system-ui, sans-serif;
   --typography-family-quote: Newsreader, Georgia, serif;
+  --typography-family-mono: ui-monospace, Menlo, monospace;
 
   /* typography.size */
   --typography-size-h1-pitch: clamp(2rem, 5vw, 3.1rem);
