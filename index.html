@@ -9,7 +9,7 @@
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
 .w{max-width:980px;margin:0 auto;padding:1.2rem}
-.top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem}
+.top{position:sticky;top:0;z-index:40;background:var(--bg);border-bottom:1px solid var(--rule);padding-top:calc(.6rem + env(safe-area-inset-top,0px));padding-bottom:.6rem;display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
 .by{color:var(--mut);font-size:.85rem;white-space:nowrap}
 .hright{display:flex;align-items:center;gap:.6rem}
 .eng{font-size:.82rem;font-weight:600;color:#fff;background:var(--acc);padding:.32rem .8rem;border-radius:99px;text-decoration:none}
@@ -58,7 +58,27 @@ table.map{width:100%;border-collapse:collapse;font-size:.84rem;margin-top:.6rem}
 .yt span{position:absolute;inset:0;margin:auto;width:60px;height:60px;border-radius:50%;background:var(--amb);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px}
 .yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 footer{margin:2rem 0 1rem;color:var(--mut);font-size:.78rem}
-@media(max-width:720px){.main{grid-template-columns:1fr}.list{flex-direction:row;max-height:none;overflow-x:auto;overflow-y:hidden}.count{width:100%}}
+@media(max-width:800px){.main{grid-template-columns:1fr}.list{flex-direction:row;max-height:none;overflow-x:auto;overflow-y:hidden;align-items:center}.count{width:auto;flex:none}}
+/* mobile excellence (additive): bottom step rail, stacked map cards, 44px targets, reduced motion */
+@media(max-width:800px){
+body{padding-bottom:5.4rem}
+.steps{position:fixed;bottom:calc(.7rem + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);z-index:50;gap:.15rem;background:var(--card);border:1px solid var(--rule);border-radius:99px;padding:.3rem .45rem;margin:0;box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:calc(100vw - 1.5rem);overflow-x:auto;flex-wrap:nowrap}
+.step{margin-right:.2rem;white-space:nowrap;border-bottom-color:transparent}
+}
+@media(max-width:639px){
+table.map,table.map tbody,table.map tr,table.map td{display:block;width:100%}
+table.map tr:first-child{display:none}
+table.map tr{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:.6rem .8rem;margin-bottom:.6rem}
+table.map td{border-bottom:0;padding:.25rem 0}
+table.map td:last-child{display:flex;gap:.4rem}
+}
+@media(pointer:coarse){
+.tab,.chip,.step,#theme,.nav button,.token button,.map td button{min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+#search{min-height:44px}
+.eng,.pitch{padding:.6rem 1rem;display:inline-flex;align-items:center}
+.go{display:inline-flex;align-items:center;min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 </style></head><body><div class="w">
 <div class="top"><h1>Cinematography and Direction Wiki</h1><span class="hright"><span class="by">by irfan</span><a class="pitch" href="pitch.html">pitch →</a><a class="eng" href="engine.html">engine →</a></span></div>
 <p class="sub">A working reference for how films are shot and directed. Pick a concept, see what it does for the story, watch it explained, and copy the prompt phrase to use it.</p>
