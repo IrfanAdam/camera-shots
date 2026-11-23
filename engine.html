@@ -43,8 +43,8 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 .tools button:disabled:hover{border-color:var(--border-strong)}
 .tools button.hist{padding:var(--spacing-6) var(--spacing-xs);display:inline-flex;align-items:center}
 .tools button.hist svg{display:block}
-#cv{flex:1;width:auto;display:block;margin:var(--spacing-xs);background:var(--color-pro-canvas);border:var(--border-width-hairline) solid var(--border);cursor:grab;touch-action:none}
-.hint{position:fixed;left:1rem;bottom:.8rem;color:var(--mut);font-size:var(--typography-size-meta);pointer-events:none;max-width:90vw}
+#cv{flex:1;width:auto;display:block;margin:var(--spacing-xs);background:var(--color-pro-canvas);border:var(--border-width-hairline) solid var(--border-strong);cursor:grab;touch-action:none}
+.hint{position:fixed;left:1rem;bottom:.8rem;color:var(--color-pro-text-primary);font-size:var(--typography-size-meta);pointer-events:none;max-width:90vw}
 #arrowpick{position:fixed;z-index:var(--z-bar);background:var(--panel);color:var(--ink);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-sm);box-shadow:var(--elevation-popover);padding:var(--spacing-xs) var(--spacing-10);font:var(--typography-size-timecode)/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column;gap:var(--spacing-6);user-select:none}
 #arrowpick[hidden]{display:none}
 #arrowpick .ap-row{display:flex;align-items:center;gap:var(--spacing-6)}
@@ -103,7 +103,7 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 #side button:hover{color:var(--ink);background:var(--tool-hover)}
 #side button.on{color:var(--ink);background:var(--color-pro-surface-2);border-color:transparent;border-left-color:var(--sel)}
 .side-div{height:1px;background:var(--border);margin:var(--spacing-6) var(--spacing-2xs)}
-#stage{flex:1;display:flex;flex-direction:column;min-width:0;position:relative}
+#stage{flex:1;display:flex;flex-direction:column;min-width:0;position:relative;background:var(--panel)}
 #cardMenuBtn{position:absolute;z-index:var(--z-sticky);min-width:var(--tap-min);min-height:var(--tap-min);width:var(--tap-min);height:var(--tap-min);padding:0;border-radius:var(--radius-xs);border:var(--border-width-hairline) solid var(--color-engine-wash-25);background:var(--color-pro-overlay-scrim);color:var(--ink);font-size:var(--typography-size-body);line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
 #cardMenuBtn:hover,#cardMenuBtn:focus-visible{border-color:var(--color-pro-text-secondary)}
 #cardMenuBtn[hidden]{display:none}
@@ -730,9 +730,9 @@ function portPos(n,p){
  return{x:n.x+n.w,y:n.y+n.h/2}}
 function drawPorts(n){if(!n||n!==hoverNode)return;
  for(const p of PORTS){const q=portPos(n,p),hot=!!(hoverPort&&hoverPort.node===n&&hoverPort.port===p);
-  ctx.save();ctx.globalAlpha=hot?1:0.4;
+  ctx.save();ctx.globalAlpha=hot?1:0.75;
   ctx.beginPath();ctx.arc(q.x,q.y,(hot?8:6)/cam.z,0,Math.PI*2);
-  ctx.fillStyle=CT('--color-neutral-white');ctx.fill();ctx.lineWidth=2/cam.z;ctx.strokeStyle=CT('--color-pro-text-primary');ctx.stroke();ctx.restore()}}
+  ctx.fillStyle=CT(hot?'--color-pro-text-primary':'--color-pro-text-secondary');ctx.fill();ctx.lineWidth=1.5/cam.z;ctx.strokeStyle=CT('--color-pro-surface-1');ctx.stroke();ctx.restore()}}
 function portAt(mx,my){const R=12/cam.z;
  const check=n=>{for(const p of PORTS){const q=portPos(n,p);if(Math.hypot(mx-q.x,my-q.y)<=R)return{node:n,port:p}}return null};
  if(pending!=null){for(let i=nodes.length-1;i>=0;i--){const hit=check(nodes[i]);if(hit)return hit}return null}
@@ -795,11 +795,11 @@ function drawCard(n){const x=n.x,y=n.y,w=n.w,h=n.h,hovered=n===hoverNode;
   ctx.fillStyle=kc;ctx.font='44px system-ui,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.fillText(glyph,x+w/2,hovered?y+h*0.30:y+h*0.36)}
  if(n.kind==='shot'){const mt=(n.anchor?n.anchor+' · ':'')+shotMetaLine(n);ctx.fillStyle=CT('--color-pro-overlay-scrim');round(x+6,y+6,w-12,20,4);ctx.fill();
-  ctx.fillStyle=CT('--color-pro-text-secondary');ctx.font='11px system-ui,sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';
+  ctx.fillStyle=CT('--color-pro-text-primary');ctx.font='11px system-ui,sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';
   let t=mt;const mw2=w-30;if(ctx.measureText(t).width>mw2){while(t.length&&ctx.measureText(t+'…').width>mw2)t=t.slice(0,-1);t+='…'}
   ctx.fillText(t,x+13,y+16)}
  else{const at=(n.anchor||'no anchor')+' · '+String(n.label||'');ctx.fillStyle=CT('--color-pro-overlay-scrim');round(x+6,y+6,w-12,20,4);ctx.fill();
-  ctx.fillStyle=CT('--color-pro-text-secondary');ctx.font='11px system-ui,sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';
+  ctx.fillStyle=CT('--color-pro-text-primary');ctx.font='11px system-ui,sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';
   let t2=at;const mw3=w-30;if(ctx.measureText(t2).width>mw3){while(t2.length&&ctx.measureText(t2+'…').width>mw3)t2=t2.slice(0,-1);t2+='…'}
   ctx.fillText(t2,x+13,y+16)}
  if(hovered){const sh=Math.round(h*0.42),px=x+6,py=y+h-sh-6,pw=w-12;
@@ -1129,7 +1129,7 @@ function drawSceneBase(s,selected){const r=sceneRect(s),sel=!!selected;
  const bw=ctx.measureText(badge).width+16,bx=r.x+r.w-bw-10,by=r.y+(TITLE_H-20)/2;
  ctx.save();round(bx,by,bw,20,10);ctx.fillStyle=CT('--color-pro-tool');ctx.fill();
  ctx.strokeStyle=WA('--color-neutral-white',12);ctx.lineWidth=1;ctx.stroke();
- ctx.fillStyle=CT('--color-pro-text-secondary');ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(badge,bx+bw/2,by+11);ctx.restore();
+ ctx.fillStyle=CT('--color-pro-text-primary');ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(badge,bx+bw/2,by+11);ctx.restore();
  const n=Math.max(1,s.lanes|0);
  for(let i=0;i<n;i++){const row=laneRowRect(s,i);
   ctx.save();round(row.x,row.y,row.w,row.h,4);
@@ -1138,10 +1138,11 @@ function drawSceneBase(s,selected){const r=sceneRect(s),sel=!!selected;
   drawPlusBtn(plusBtnRect(s,i))}
  const hr=handleRect(s);ctx.save();
  ctx.fillStyle=sel?CT('--color-pro-selection'):CT('--color-pro-surface-2');ctx.fillRect(hr.x,hr.y,hr.w,hr.h);
- ctx.strokeStyle=WA('--color-neutral-black',50);ctx.lineWidth=1;ctx.strokeRect(hr.x+.5,hr.y+.5,hr.w-1,hr.h-1);
+ ctx.strokeStyle=sel?CT('--color-pro-selection'):WA('--color-neutral-black',50);ctx.lineWidth=1;ctx.strokeRect(hr.x+.5,hr.y+.5,hr.w-1,hr.h-1);
  ctx.strokeStyle=WA('--color-neutral-white',55);ctx.lineWidth=1.5;ctx.lineCap='round';ctx.beginPath();
  ctx.moveTo(hr.x+4,hr.y+10);ctx.lineTo(hr.x+10,hr.y+4);ctx.moveTo(hr.x+7,hr.y+10.5);ctx.lineTo(hr.x+10.5,hr.y+7);ctx.stroke();ctx.restore();
- ctx.strokeStyle=sel?CT('--color-pro-selection'):WA('--color-neutral-white',10);ctx.lineWidth=sel?2:1;round(r.x,r.y,r.w,r.h,4);ctx.stroke()}
+ ctx.strokeStyle=sel?CT('--color-pro-selection'):WA('--color-neutral-white',10);ctx.lineWidth=1;
+ if(sel)round(r.x+.5,r.y+.5,r.w-1,r.h-1,4);else round(r.x,r.y,r.w,r.h,4);ctx.stroke()}
 function slotRect(s,lane,idx){return{x:s.x+PAD+PLUS+GAP+idx*(THUMB+GAP),y:s.y+TITLE_H+PAD+lane*(ROW_H+GAP)+(ROW_H-THUMB)/2,w:THUMB,h:THUMB}}
 function rowCap(s){const avail=s.w-PAD*2-PLUS-GAP;return Math.max(1,Math.floor((avail+GAP)/(THUMB+GAP)))}
 function slotXRect(s,lane,idx){const r=slotRect(s,lane,idx);return{x:r.x+r.w-20,y:r.y+2,w:18,h:18}}
@@ -1245,8 +1246,8 @@ function scenePortPos(s,p){if(p==='t')return{x:s.x+s.w/2,y:s.y};
 function drawScenePorts(s){if(s!==selStrip&&s!==hoverScene&&!pending)return;
  for(const p of PORTS){const q=scenePortPos(s,p);
   const hot=!!(hoverPort&&hoverPort.node===s&&hoverPort.port===p)||!!(pending&&pending.node===s&&pending.port===p);
-  ctx.save();ctx.globalAlpha=hot?1:0.4;ctx.beginPath();ctx.arc(q.x,q.y,(hot?8:6)/cam.z,0,Math.PI*2);
-  ctx.fillStyle=CT('--color-neutral-white');ctx.fill();ctx.lineWidth=2/cam.z;ctx.strokeStyle=CT('--color-pro-text-primary');ctx.stroke();ctx.restore()}}
+  ctx.save();ctx.globalAlpha=hot?1:0.75;ctx.beginPath();ctx.arc(q.x,q.y,(hot?8:6)/cam.z,0,Math.PI*2);
+  ctx.fillStyle=CT(hot?'--color-pro-text-primary':'--color-pro-text-secondary');ctx.fill();ctx.lineWidth=1.5/cam.z;ctx.strokeStyle=CT('--color-pro-surface-1');ctx.stroke();ctx.restore()}}
 function scenePortAt(wx,wy){const R=12/cam.z,c=activeChapter();if(!c||!c.scenes)return null;
  for(let i=c.scenes.length-1;i>=0;i--){const s=c.scenes[i];
   for(const p of PORTS){const q=scenePortPos(s,p);
