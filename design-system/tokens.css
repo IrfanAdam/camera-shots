@@ -2,7 +2,7 @@
    tokens.css — GENERATED FILE, DO NOT EDIT BY HAND.
    Source:     design-system/tokens.json
    Regenerate: node scripts/build-tokens.mjs
-   Tokens:     155
+   Tokens:     206
    ========================================================================== */
 
 :root {
@@ -21,6 +21,10 @@
   --color-pitch-positive: #10B981;
   --color-pitch-positive-ink: #06110C;
   --color-pitch-switch-bg: #101012;
+  --color-pitch-scrim-soft: rgba(0,0,0,.5);
+  --color-pitch-scrim-mid: rgba(0,0,0,.6);
+  --color-pitch-overlay-surface: rgba(20,20,22,.92);
+  --color-pitch-overlay-bg: rgba(10,10,11,.92);
 
   /* color.wiki */
   --color-wiki-light-bg: #FAFAF8;
@@ -77,6 +81,24 @@
   --color-engine-panel-codes: #0D1218;
   --color-engine-placeholder: #5B6577;
   --color-engine-highlight: #FBBF24;
+  --color-engine-wash-6: rgba(232,234,240,.06);
+  --color-engine-wash-10: rgba(232,234,240,.10);
+  --color-engine-wash-12: rgba(232,234,240,.12);
+  --color-engine-wash-14: rgba(232,234,240,.14);
+  --color-engine-wash-16: rgba(232,234,240,.16);
+  --color-engine-accent-wash-10: rgba(232,131,12,.10);
+  --color-engine-accent-wash-12: rgba(232,131,12,.12);
+  --color-engine-accent-wash-14: rgba(232,131,12,.14);
+  --color-engine-accent-wash-18: rgba(232,131,12,.18);
+  --color-engine-accent-wash-35: rgba(232,131,12,.35);
+  --color-engine-accent-wash-50: rgba(232,131,12,.50);
+  --color-engine-scrim: rgba(0,0,0,.45);
+  --color-engine-scrim-strong: rgba(0,0,0,.55);
+  --color-engine-overlay-72: rgba(10,13,18,.72);
+  --color-engine-overlay-90: rgba(10,13,18,.9);
+  --color-engine-overlay-panel: rgba(22,27,34,.92);
+  --color-engine-overlay-panel-94: rgba(22,27,34,.94);
+  --color-engine-overlay-panel-97: rgba(22,27,34,.97);
 
   /* color.pro */
   --color-pro-surface-0: #0B0B0D;
@@ -182,6 +204,15 @@
   /* radius.circle */
   --radius-circle: 50%;
 
+  /* radius.xs */
+  --radius-xs: 4px;
+
+  /* radius.card */
+  --radius-card: 12px;
+
+  /* radius.xl */
+  --radius-xl: 18px;
+
   /* elevation.0 */
   --elevation-0: none;
 
@@ -194,15 +225,30 @@
   /* elevation.sheet */
   --elevation-sheet: 0 8px 24px rgba(0, 0, 0, 0.5);
 
+  /* elevation.float */
+  --elevation-float: 0 8px 24px rgba(0,0,0,.25);
+
+  /* elevation.ring */
+  --elevation-ring-accent: 0 0 0 2px rgba(232,131,12,.18);
+
+  /* elevation.inset */
+  --elevation-inset-accent: inset 0 0 0 1px rgba(232,131,12,.5);
+
   /* motion.duration */
   --motion-duration-fast: 0.22s;
   --motion-duration-base: 0.28s;
   --motion-duration-tab: 0.24s;
+  --motion-duration-instant: 0.16s;
+  --motion-duration-hover: 0.2s;
+  --motion-duration-opacity: 0.25s;
+  --motion-duration-slow: 0.32s;
 
   /* motion.easing */
   --motion-easing-drawer: cubic-bezier(0.32, 0.72, 0.24, 1);
   --motion-easing-standard: ease;
   --motion-easing-sheet: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-easing-emphasized: cubic-bezier(0.22,1,0.36,1);
+  --motion-easing-out: ease-out;
 
   /* opacity.disabled */
   --opacity-disabled: 0.35;
@@ -262,4 +308,51 @@
 
   /* breakpoint.table */
   --breakpoint-table-stack: 639px;
+
+  /* z.base */
+  --z-base: 0;
+
+  /* z.raise */
+  --z-raise: 1;
+
+  /* z.content */
+  --z-content: 2;
+
+  /* z.sticky */
+  --z-sticky: 40;
+  --z-sticky-rail: 41;
+
+  /* z.bar */
+  --z-bar: 50;
+
+  /* z.overlay */
+  --z-overlay: 60;
+
+  /* z.sheet */
+  --z-sheet: 65;
+
+  /* z.drawer */
+  --z-drawer: 70;
+  --z-drawer-child: 71;
+
+  /* z.popover */
+  --z-popover: 72;
+
+  /* z.canvas */
+  --z-canvas: 90;
+
+  /* z.toast */
+  --z-toast: 120;
+
+  /* z.menu */
+  --z-menu: 130;
+
+  /* z.max */
+  --z-max: 200;
+
+  /* focus.width */
+  --focus-width: 2px;
+
+  /* focus.offset */
+  --focus-offset: 2px;
 }
