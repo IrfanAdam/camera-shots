@@ -2,7 +2,8 @@
    tokens.css — GENERATED FILE, DO NOT EDIT BY HAND.
    Source:     design-system/tokens.json
    Regenerate: node scripts/build-tokens.mjs
-   Tokens:     229
+   Tokens:     249
+   Themes:     4 · role slots: 14 · role vars: 17
    ========================================================================== */
 
 :root {
@@ -215,6 +216,9 @@
   /* spacing.gutter */
   --spacing-gutter-pro: 16px;
 
+  /* spacing.section */
+  --spacing-section: 26px;
+
   /* radius.none */
   --radius-none: 0;
 
@@ -341,6 +345,12 @@
   /* breakpoint.table */
   --breakpoint-table-stack: 639px;
 
+  /* breakpoint.xs */
+  --breakpoint-xs: 390px;
+
+  /* breakpoint.lg */
+  --breakpoint-lg: 900px;
+
   /* z.base */
   --z-base: 0;
 
@@ -382,6 +392,12 @@
   /* z.max */
   --z-max: 200;
 
+  /* z.tooltip */
+  --z-tooltip: 5;
+
+  /* z.pinned */
+  --z-pinned: 80;
+
   /* focus.width */
   --focus-width: 2px;
 
@@ -392,4 +408,133 @@
   --border-width-hairline: 1px;
   --border-width-strong: 2px;
   --border-width-accent: 3px;
+
+  /* line-height.tight */
+  --line-height-tight: 1.25;
+
+  /* line-height.normal */
+  --line-height-normal: 1.5;
+
+  /* line-height.relaxed */
+  --line-height-relaxed: 1.6;
+
+  /* tracking.snug */
+  --tracking-snug: -0.01em;
+
+  /* tracking.label */
+  --tracking-label: 0.05em;
+
+  /* weight.heavy */
+  --weight-heavy: 800;
+
+  /* control.height */
+  --control-height-compact: 34px;
+  --control-height-default: 40px;
+  --control-height-touch: 44px;
+  --control-height-reading: 46px;
+
+  /* icon.size */
+  --icon-size-sm: 16px;
+  --icon-size-md: 20px;
+  --icon-size-lg: 24px;
+
+  /* dot.size */
+  --dot-size: 5px;
+
+  /* hover.lift */
+  --hover-lift: 1.06;
+}
+
+/* ---- theme maps (generated from tokens.json -> themes) ---- */
+[data-ds-theme] {
+  --ds-surface-alt: var(--ds-surface);
+  --ds-control: var(--ds-surface);
+  --ds-accent-soft: transparent;
+  --ds-ink-2: var(--ds-muted);
+  --ds-faint: var(--ds-muted);
+  --ds-rule-strong: var(--ds-rule);
+}
+
+/* pitch — 15 of 17 role vars (2 null, inherited from the fall-through block) */
+[data-ds-theme="pitch"] {
+  --ds-bg: var(--color-pitch-bg);
+  --ds-surface: var(--color-pitch-surface-1);
+  --ds-surface-alt: var(--color-pitch-surface-2);
+  --ds-control: var(--color-pitch-switch-bg);
+  /* --ds-accent-soft: null -> fall-through */
+  --ds-ink: var(--color-pitch-ink);
+  --ds-ink-2: var(--color-pitch-body);
+  --ds-muted: var(--color-pitch-muted);
+  --ds-faint: var(--color-pitch-muted-2);
+  --ds-on-accent: var(--color-pitch-accent-ink);
+  --ds-rule: var(--color-pitch-rule);
+  /* --ds-rule-strong: null -> fall-through */
+  --ds-accent: var(--color-pitch-accent);
+  --ds-success: var(--color-pitch-positive);
+  --ds-warning: var(--color-semantic-warning);
+  --ds-danger: var(--color-semantic-danger);
+  --ds-info: var(--color-semantic-info);
+}
+
+/* wiki-light — 12 of 17 role vars (5 null, inherited from the fall-through block) */
+[data-ds-theme="wiki-light"] {
+  --ds-bg: var(--color-wiki-light-bg);
+  --ds-surface: var(--color-wiki-light-card);
+  /* --ds-surface-alt: null -> fall-through */
+  /* --ds-control: null -> fall-through */
+  --ds-accent-soft: var(--color-wiki-light-accent-wash);
+  --ds-ink: var(--color-wiki-light-ink);
+  /* --ds-ink-2: null -> fall-through */
+  --ds-muted: var(--color-wiki-light-muted);
+  /* --ds-faint: null -> fall-through */
+  --ds-on-accent: var(--color-neutral-white);
+  --ds-rule: var(--color-wiki-light-rule);
+  /* --ds-rule-strong: null -> fall-through */
+  --ds-accent: var(--color-wiki-light-accent);
+  --ds-success: var(--color-semantic-success);
+  --ds-warning: var(--color-semantic-warning);
+  --ds-danger: var(--color-semantic-danger);
+  --ds-info: var(--color-semantic-info);
+}
+
+/* wiki-dark — 12 of 17 role vars (5 null, inherited from the fall-through block) */
+[data-ds-theme="wiki-dark"] {
+  --ds-bg: var(--color-wiki-dark-bg);
+  --ds-surface: var(--color-wiki-dark-card);
+  /* --ds-surface-alt: null -> fall-through */
+  /* --ds-control: null -> fall-through */
+  --ds-accent-soft: var(--color-wiki-dark-accent-wash);
+  --ds-ink: var(--color-wiki-dark-ink);
+  /* --ds-ink-2: null -> fall-through */
+  --ds-muted: var(--color-wiki-dark-muted);
+  /* --ds-faint: null -> fall-through */
+  --ds-on-accent: var(--color-wiki-dark-bg);
+  --ds-rule: var(--color-wiki-dark-rule);
+  /* --ds-rule-strong: null -> fall-through */
+  --ds-accent: var(--color-wiki-dark-accent);
+  --ds-success: var(--color-pitch-positive);
+  --ds-warning: var(--color-wiki-dark-amber);
+  --ds-danger: var(--color-semantic-danger);
+  --ds-info: var(--color-semantic-info);
+}
+
+/* engine — 14 of 17 role vars (3 null, inherited from the fall-through block) */
+[data-ds-theme="engine"] {
+  --ds-bg: var(--color-pro-surface-0);
+  --ds-surface: var(--color-pro-surface-1);
+  --ds-surface-alt: var(--color-pro-surface-2);
+  --ds-control: var(--color-pro-tool);
+  /* --ds-accent-soft: null -> fall-through */
+  --ds-ink: var(--color-pro-text-primary);
+  /* --ds-ink-2: null -> fall-through */
+  --ds-muted: var(--color-pro-text-secondary);
+  /* --ds-faint: null -> fall-through */
+  --ds-on-accent: var(--color-engine-accent-ink);
+  --ds-rule: var(--color-pro-divider);
+  --ds-rule-strong: var(--color-pro-divider-strong);
+  --ds-accent: var(--color-engine-accent);
+  --ds-success: var(--color-pitch-positive);
+  --ds-warning: var(--color-wiki-dark-amber);
+  --ds-danger: var(--color-semantic-danger);
+  --ds-info: var(--color-semantic-info);
 }

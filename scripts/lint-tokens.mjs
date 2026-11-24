@@ -11,20 +11,23 @@
      V2 motion           V6 svg paint               `font:` shorthand size)
      V3 z-index          V7 border width        T2  raw line-height (incl. the
      V4 radius           V8 spacing                 `font:` shorthand leading)
-     U1 dead var()                               T3  raw letter-spacing
-                                                 T4  raw font-weight / literal family
-                                                 T8  token with 0 product consumers
-                                                 T9  two role names, one value
-                                                 T10 light/dark theme key parity
-                                                 T11 `type` ↔ `value` shape
-                                                 T13 duplicate alias value in one :root
-                                                 T14 `!important`
-                                                 T15 inline `style=` attribute
+     U1 dead var()                              T3  raw letter-spacing
+                                                T4  raw font-weight / literal family
+                                                T8  token with 0 consumers
+                                                T9  two role names, one value
+                                                T10 role contract parity
+                                                T11 `type` ↔ `value` shape
+                                                T13 duplicate alias value in one :root
+                                                T14 `!important`
+                                                T15 inline `style=` attribute
 
-   T8/T9/T11 judge the token set, not a page; T10/T13/T15 are per file. T8
-   counts var() references in the three product pages only — a gallery swatch
-   is documentation, not consumption. T6 (@media px) and T7 (raw width/height)
-   are Phase 1 and deliberately absent.
+   T8/T9/T10/T11 judge the token set, not a page; T13/T15 are per file. T8
+   counts a `var()` reference from a product page, a `themes` map cell or
+   `components.css` — a gallery swatch is documentation, not consumption. T9
+   keeps the token-set duplicate check and adds a per-theme role check (two
+   slots in one map, one family, one primitive). T10 asserts the 14-slot
+   contract across all four maps, nulls included, and the emitted blocks. T6
+   (@media px) and T7 (raw width/height) are Phase 1 and deliberately absent.
 
    Budgets
    Every class carries the exact count measured on 2026-11-24 as an explicit
@@ -64,10 +67,14 @@ const TOKENS_JSON = path.join(ROOT, 'design-system', 'tokens.json');
 const REPORT = path.join(ROOT, 'design-system', 'audit-report.md');
 
 /* ---------------------------------------------------------------- budgets */
-/* Measured 2026-11-24 against the committed tree. A budget is a ceiling, not
-   a target: counts may fall freely, only the excess fails `--check`. T4 is
-   split (weight + literal family) because one class covers two properties;
-   T15 is per file so styles cannot migrate into the largest page unnoticed. */
+/* Measured 2026-11-24 against the committed tree, post Phase-1A. A budget is a
+   ceiling, not a target: counts may fall freely, only the excess fails
+   `--check`. T4 is split (weight + literal family) because one class covers two
+   properties; T15 is per file so styles cannot migrate into the largest page
+   unnoticed. T8 rose from 91 to 104 on this commit: 20 new scale steps have no
+   consumer yet (+18 after the 2 exempt breakpoints) and the theme maps buy back
+   5 primitives that only the role contract needed. T11 and T13 fell to 0 —
+   `other` types are gone and the engine duplicates were aliases. */
 const BUDGETS = {
   V1: 0, V2: 0, V3: 0, V4: 0, V5: 0, V6: 0, V7: 0, V8: 0, U1: 0,
   T1: 10,
@@ -75,11 +82,11 @@ const BUDGETS = {
   T3: 27,
   T4w: 52,
   T4f: 3,
-  T8: 91,
+  T8: 104,
   T9: 5,
   T10: 0,
-  T11: 1,
-  T13: 4,
+  T11: 0,
+  T13: 0,
   T14: 8,
   T15: 200,
 };
@@ -93,7 +100,6 @@ const BUDGET_SEED = {
   T3: { 'index.html': 2, 'pitch.html': 11, 'engine.html': 10, 'design-system/index.html': 4 },
   T4w: { 'index.html': 8, 'pitch.html': 22, 'engine.html': 22, 'design-system/index.html': 0 },
   T4f: { 'index.html': 0, 'pitch.html': 1, 'engine.html': 2, 'design-system/index.html': 0 },
-  T13: { 'engine.html': 4 },
   T14: { 'index.html': 2, 'pitch.html': 5, 'engine.html': 1, 'design-system/index.html': 0 },
   T15: { 'index.html': 19, 'pitch.html': 31, 'engine.html': 2, 'design-system/index.html': 148 },
 };
@@ -120,20 +126,54 @@ if (!fs.existsSync(TOKENS_CSS)) {
 
 /* ------------------------------------------------------------- token set */
 
+/* Only the `:root` block is the token set. The generated `[data-ds-theme]`
+   blocks live in the same file and declare --ds-* roles; counting them as
+   tokens would invent ~24 orphans on every run. */
+function rootBlock(text) {
+  const at = text.indexOf(':root');
+  if (at === -1) return '';
+  const open = text.indexOf('{', at);
+  if (open === -1) return '';
+  let depth = 0;
+  for (let i = open; i < text.length; i++) {
+    if (text[i] === '{') depth++;
+    else if (text[i] === '}') {
+      depth--;
+      if (depth === 0) return text.slice(open + 1, i);
+    }
+  }
+  return '';
+}
+
 const tokensText = fs.readFileSync(TOKENS_CSS, 'utf8');
+const rootBody = rootBlock(tokensText);
 const defined = new Set();
-for (const m of tokensText.matchAll(/^\s*(--[A-Za-z0-9_-]+)\s*:/gm)) defined.add(m[1]);
+for (const m of rootBody.matchAll(/(--[A-Za-z0-9_-]+)\s*:/g)) defined.add(m[1]);
+
+/* The role contract: `themes` is a sibling of the token map, never a token. */
+const THEME_ATTRIBUTE = 'data-ds-theme';
+const THEME_NAMES = ['pitch', 'wiki-light', 'wiki-dark', 'engine'];
+const THEME_SLOTS = [
+  'bg.page', 'bg.surface', 'bg.surface.alt', 'bg.control', 'bg.accent.soft',
+  'fg.primary', 'fg.secondary', 'fg.muted', 'fg.faint', 'fg.on.accent',
+  'line.default', 'line.strong', 'accent', 'status',
+];
+const STATUS_KEYS = ['success', 'warning', 'danger', 'info'];
+const ROLE_VAR_COUNT = 17;
 
 /* tokens.json is the source of truth for role identity and declared type;
-   T9 and T11 read it, the pages never do. */
+   T9, T10 and T11 read it, the pages never do. */
 let tokenEntries = [];
+let themes = null;
 if (!fs.existsSync(TOKENS_JSON)) {
   console.error('FATAL: design-system/tokens.json not found — cannot audit the token set.');
   process.exit(2);
 }
 try {
   const parsed = JSON.parse(fs.readFileSync(TOKENS_JSON, 'utf8'));
-  tokenEntries = Object.entries(parsed).map(([name, spec]) => ({
+  const { themes: themeContract, ...tokenMap } = parsed;
+  themes = themeContract ?? null;
+  tokenEntries = Object.entries(tokenMap).map(([name, spec]) => ({
     name,
     type: String(spec && spec.type || 'other'),
     value: String(spec && spec.value || ''),
@@ -142,6 +182,55 @@ try {
   console.error(`FATAL: design-system/tokens.json is not valid JSON — ${err.message}`);
   process.exit(2);
 }
+
+/** dotted token key -> emitted custom property name (no leading --) */
+function cssName(dotted) {
+  return String(dotted)
+    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+    .replace(/[\s_]+/g, '-')
+    .toLowerCase()
+    .replace(/\./g, '-');
+}
+
+function refsIn(value) {
+  const out = [];
+  for (const m of String(value ?? '').matchAll(/var\(\s*(--[A-Za-z0-9_-]+)/g)) out.push(m[1]);
+  return out;
+}
+
+/* A theme cell is a consumer: it is the reason a primitive exists even when no
+   page names it directly. The gallery is still not a consumer. */
+const themeRefs = new Set();
+if (themes && themes.maps && typeof themes.maps === 'object') {
+  for (const map of Object.values(themes.maps)) {
+    if (!map || typeof map !== 'object') continue;
+    for (const cell of Object.values(map)) {
+      if (typeof cell === 'string') for (const r of refsIn(cell)) themeRefs.add(r);
+      else if (cell && typeof cell === 'object') {
+        for (const v of Object.values(cell)) for (const r of refsIn(v)) themeRefs.add(r);
+      }
+    }
+  }
+}
+
+/* components.css does not exist yet (Phase 2); absence is zero consumers, not
+   an error. When it lands, its var() refs count exactly like a page's. */
+const COMPONENTS_CSS = path.join(ROOT, 'design-system', 'components.css');
+const componentRefs = new Set();
+if (fs.existsSync(COMPONENTS_CSS)) {
+  for (const r of refsIn(fs.readFileSync(COMPONENTS_CSS, 'utf8'))) componentRefs.add(r);
+}
+
+/* Aliases (`value: var(--other)`) and breakpoints can never be consumed by a
+   product page — an alias IS a pointer, and `var()` is invalid in @media. */
+const aliasNames = new Set(
+  tokenEntries
+    .filter((t) => /^var\(/i.test(t.value.trim()))
+    .map((t) => `--${cssName(t.name)}`),
+);
+const breakpointNames = new Set(
+  tokenEntries.filter((t) => t.name.startsWith('breakpoint.')).map((t) => `--${cssName(t.name)}`),
+);
 
 /* --------------------------------------------------------------- helpers */
 
@@ -597,7 +686,7 @@ for (const file of files) {
      BUDGETS after exemptions, and only the excess fails. A same-line
      lint-allow marker works here exactly as it does for V1–V8. */
   const budgetHits = {
-    T1: [], T2: [], T3: [], T4w: [], T4f: [], T10: [], T13: [], T14: [], T15: [],
+    T1: [], T2: [], T3: [], T4w: [], T4f: [], T13: [], T14: [], T15: [],
   };
   const hit = (cls, offset, found, note) => {
     const line = lineOf(starts, offset);
@@ -676,47 +765,14 @@ for (const file of files) {
     }
   }
 
-  /* T10/T13 — theme and :root blocks. Only leaf blocks (no nested rules) are
-     read, so `:root[data-theme] :focus-visible` cannot pollute a key set. */
+  /* T13 — duplicate alias value in one :root. An alias (`var(--other)`) is a
+     pointer, not a second truth, so it is skipped: only two literal values are
+     a duplicate. Theme role blocks are generated and own their own duplicates
+     (T10), so they are not scanned here. */
   const blocks = declBlocks(codeText);
-  const baseRootKeys = new Set();
-  for (const b of blocks) {
-    if (b.sel === ':root' && !/prefers-color-scheme\s*:\s*dark/i.test(b.parent)) {
-      for (const p of customProps(b.body)) baseRootKeys.add(p.name);
-    }
-  }
-  const darkBlocks = [];
-  for (const b of blocks) {
-    const look = `${b.parent} ${b.sel}`;
-    const isDark = /data-theme\s*=\s*["']dark["']/i.test(look) || /prefers-color-scheme\s*:\s*dark/i.test(look);
-    if (!isDark) continue;
-    const props = customProps(b.body);
-    if (!props.length) continue;
-    darkBlocks.push({ ...b, keys: props.map((p) => p.name) });
-  }
-  if (darkBlocks.length) {
-    if (!baseRootKeys.size) {
-      hit('T10', darkBlocks[0].offset, `${file.rel} dark theme`, 'no base :root theme map');
-    } else {
-      for (const b of darkBlocks) {
-        const missing = b.keys.filter((k) => !baseRootKeys.has(k));
-        if (missing.length) {
-          hit('T10', b.offset, `${short(b.sel, 48)} → ${missing.join(',')}`, 'theme role missing from base :root');
-        }
-      }
-    }
-    const [first, ...rest] = darkBlocks;
-    for (const b of rest) {
-      const extra = b.keys.filter((k) => !first.keys.includes(k));
-      const gone = first.keys.filter((k) => !b.keys.includes(k));
-      if (extra.length || gone.length) {
-        hit('T10', b.offset, `${short(b.sel, 48)} → +${extra.join(',') || '∅'} −${gone.join(',') || '∅'}`, 'theme maps disagree');
-      }
-    }
-  }
   for (const b of blocks) {
     if (b.sel !== ':root') continue;
-    const props = customProps(b.body, b.offset);
+    const props = customProps(b.body, b.offset).filter((p) => !/^var\(/i.test(p.value));
     const byValue = new Map();
     for (const p of props) {
       if (!byValue.has(p.value)) byValue.set(p.value, []);
@@ -840,7 +896,6 @@ for (const file of files) {
       T3: keptBudget.T3.length,
       T4w: keptBudget.T4w.length,
       T4f: keptBudget.T4f.length,
-      T10: keptBudget.T10.length,
       T13: keptBudget.T13.length,
       T14: keptBudget.T14.length,
       T15: keptBudget.T15.length,
@@ -851,18 +906,30 @@ for (const file of files) {
 /* ---------------------------------------------------------------- totals */
 
 const classes = ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'V8', 'U1'];
-const fileTClasses = ['T1', 'T2', 'T3', 'T4w', 'T4f', 'T10', 'T13', 'T14', 'T15'];
-const globalTClasses = ['T8', 'T9', 'T11'];
+const fileTClasses = ['T1', 'T2', 'T3', 'T4w', 'T4f', 'T13', 'T14', 'T15'];
+const globalTClasses = ['T8', 'T9', 'T10', 'T11'];
 const ALL_CLASSES = [...classes, ...fileTClasses, ...globalTClasses];
 
-/* T8 — a token defined in tokens.css that no product page consumes.
-   A gallery swatch proves the token renders; it does not prove a product uses
-   it, so `design-system/index.html` is deliberately outside productRefs. */
-const unusedTokens = [...defined].filter((name) => !productRefs.has(name)).sort();
+/* T8 — a token defined in the `:root` contract that nothing consumes.
+   Consumers are: a `var()` reference from a product page, a `themes` map cell
+   (the role contract is why the primitive exists), or `components.css` once it
+   lands. A gallery swatch proves the token renders; it does not prove a
+   product uses it, so `design-system/index.html` stays outside. Aliases
+   (`value: var(--other)`) and `breakpoint.*` are exempt: a pointer is its own
+   consumer, and `var()` cannot appear in `@media`. */
+const consumed = new Set([...productRefs, ...themeRefs, ...componentRefs]);
+const unusedTokens = [...defined]
+  .filter((name) => !consumed.has(name) && !aliasNames.has(name) && !breakpointNames.has(name))
+  .sort();
 
-/* T9 — two role names resolving to one value. Colors are compared across the
-   whole set; dimensions only between step names of the same scale, because
-   `spacing.xs` and `radius.sm` both being 8px is two scales, not two roles. */
+/* T9 — two role names resolving to one value.
+   (a) token set: colors compared across the whole set; dimensions only between
+       step names of the same scale, because `spacing.xs` and `radius.sm` both
+       being 8px is two scales, not two roles.
+   (b) role contract: within ONE theme map and ONE family (bg/fg/line/accent/
+       status), two slots pointing at the same primitive is one role too many.
+       Scoped per block: the same warning color in pitch and wiki-light is a
+       palette prior, not a duplicate role. */
 function t9Findings(entries) {
   const out = [];
   const colors = new Map();
@@ -895,6 +962,119 @@ function t9Findings(entries) {
 }
 const t9 = t9Findings(tokenEntries);
 
+function t9ThemeFindings(contract) {
+  const out = [];
+  if (!contract || !contract.maps || typeof contract.maps !== 'object') return out;
+  for (const name of THEME_NAMES) {
+    const map = contract.maps[name];
+    if (!map || typeof map !== 'object') continue;
+    const families = new Map();
+    const note = (family, slot, ref) => {
+      if (!families.has(family)) families.set(family, new Map());
+      const refs = families.get(family);
+      if (!refs.has(ref)) refs.set(ref, []);
+      refs.get(ref).push(slot);
+    };
+    for (const slot of THEME_SLOTS) {
+      const cell = map[slot];
+      if (slot === 'status') {
+        if (cell && typeof cell === 'object') {
+          for (const [key, value] of Object.entries(cell)) {
+            if (typeof value === 'string') note('status', `status.${key}`, value);
+          }
+        }
+      } else if (typeof cell === 'string') {
+        note(slot.split('.')[0], slot, cell);
+      }
+    }
+    for (const [family, refs] of families) {
+      for (const [ref, slots] of refs) {
+        if (slots.length < 2) continue;
+        out.push({ cls: 'T9', found: `${name}: ${slots.join(' ≡ ')}`, note: `two ${family} roles share ${ref}` });
+      }
+    }
+  }
+  return out;
+}
+const t9Themes = t9ThemeFindings(themes);
+
+/* T10 — the role contract. Not "every theme has the same non-null list"
+   (2/5/5/3 nulls are the design); every block must declare all 14 slots, the
+   nulls explicitly, and the emitted CSS must carry one block per map with
+   17 − nulls role vars. An accidental omission still fails. */
+function t10Findings(contract, cssText) {
+  const out = [];
+  const add = (found, note) => out.push({ cls: 'T10', found, note });
+  if (!contract || typeof contract !== 'object') {
+    add('themes', 'no role contract in tokens.json');
+    return out;
+  }
+  if (contract.attribute !== THEME_ATTRIBUTE) add(`attribute=${JSON.stringify(contract.attribute)}`, `expected "${THEME_ATTRIBUTE}"`);
+  if (!Array.isArray(contract.slots) || contract.slots.join('|') !== THEME_SLOTS.join('|')) {
+    add('themes.slots', 'the 14 locked slots are missing or reordered');
+  }
+  const maps = contract.maps;
+  if (!maps || typeof maps !== 'object') {
+    add('themes.maps', 'missing');
+    return out;
+  }
+  if (Object.keys(maps).join('|') !== THEME_NAMES.join('|')) {
+    add(`maps=${Object.keys(maps).join(',')}`, `expected ${THEME_NAMES.join(', ')} in order`);
+  }
+  const nullUnion = new Set();
+  for (const name of THEME_NAMES) {
+    const map = maps[name];
+    if (!map || typeof map !== 'object') {
+      add(name, 'theme map missing');
+      continue;
+    }
+    const keys = Object.keys(map);
+    for (const slot of THEME_SLOTS) if (!keys.includes(slot)) add(`${name}.${slot}`, 'slot not declared (declare null)');
+    for (const k of keys) if (!THEME_SLOTS.includes(k)) add(`${name}.${k}`, 'slot outside the contract');
+    const st = map.status;
+    if (!st || typeof st !== 'object') add(`${name}.status`, 'status slot missing');
+    else {
+      for (const k of STATUS_KEYS) if (!(k in st)) add(`${name}.status.${k}`, 'status role missing');
+      for (const k of Object.keys(st)) if (!STATUS_KEYS.includes(k)) add(`${name}.status.${k}`, 'status role outside the contract');
+    }
+    for (const slot of THEME_SLOTS) {
+      if (slot === 'status' || !(slot in map)) continue;
+      if (map[slot] === null) nullUnion.add(slot);
+      else if (!/^var\(--[a-z0-9-]+\)$/.test(String(map[slot]))) {
+        add(`${name}.${slot}`, `expected var(--primitive) or null, got ${short(map[slot], 40)}`);
+      }
+    }
+  }
+  const declared = Object.keys(contract.fallthrough || {}).sort().join('|');
+  const expected = [...nullUnion].sort().join('|');
+  if (declared !== expected) add('themes.fallthrough', `must cover exactly the null slots (${expected || 'none'})`);
+
+  const blocks = declBlocks(cssText.replace(/\/\*[\s\S]*?\*\//g, ' '));
+  const bySel = new Map();
+  for (const b of blocks) bySel.set(b.sel, b);
+  if (!bySel.has(`[${THEME_ATTRIBUTE}]`)) add('tokens.css', 'fall-through block missing');
+  for (const name of THEME_NAMES) {
+    const sel = `[${THEME_ATTRIBUTE}="${name}"]`;
+    const b = bySel.get(sel);
+    if (!b) {
+      add(`tokens.css ${sel}`, 'theme block missing');
+      continue;
+    }
+    const map = maps[name] || {};
+    const nulls = THEME_SLOTS.filter((s) => s !== 'status' && map[s] === null);
+    const want = ROLE_VAR_COUNT - nulls.length;
+    const got = customProps(b.body).length;
+    if (got !== want) add(`tokens.css ${sel}`, `${got} role vars, expected ${want} (${nulls.length} null)`);
+  }
+  const fallAt = cssText.indexOf(`[${THEME_ATTRIBUTE}] {`);
+  const firstMap = cssText.indexOf(`[${THEME_ATTRIBUTE}="`);
+  if (fallAt === -1 || firstMap === -1 || fallAt > firstMap) {
+    add('tokens.css order', 'fall-through block must precede the theme maps');
+  }
+  return out;
+}
+const t10 = t10Findings(themes, tokensText);
+
 /* T11 — `type` ↔ `value` shape; `other` stays out of the table on purpose. */
 const t11 = [];
 for (const t of tokenEntries) {
@@ -906,8 +1086,10 @@ for (const t of tokenEntries) {
 }
 
 const globalFindings = [
-  ...unusedTokens.map((name) => ({ cls: 'T8', found: name, note: 'no product consumer' })),
+  ...unusedTokens.map((name) => ({ cls: 'T8', found: name, note: 'no consumer (page, theme cell or components.css)' })),
   ...t9,
+  ...t9Themes,
+  ...t10,
   ...t11,
 ];
 
@@ -1010,7 +1192,7 @@ for (const r of results) {
   console.log(r.file.padEnd(26) + fileTClasses.map((c) => String(r.counts[c]).padStart(5)).join(''));
 }
 console.log(rule);
-console.log('token set (global)'.padEnd(26) + ['T8', 'T9', 'T11'].map((c) => String(totals[c]).padStart(5)).join(''));
+console.log('token set (global)'.padEnd(26) + globalTClasses.map((c) => String(totals[c]).padStart(5)).join(''));
 console.log(rule);
 
 console.log('');
@@ -1080,11 +1262,11 @@ const LEGEND = [
   ['T2', 'Raw numeric `line-height`, or a literal leading inside the `font:` shorthand', '`typography.lineheight.*` → `var(--line-height-*)` once the scale exists'],
   ['T3', 'Raw `letter-spacing` value', '`typography.tracking.*` → `var(--typography-tracking-*)`'],
   ['T4', 'Raw numeric `font-weight`, or a literal family stack', '`typography.weight.*` / `typography.family.*` → `var(--typography-weight-*)` / `var(--typography-family-*)`'],
-  ['T8', 'Token defined in tokens.css with no `var()` reference from a product page', 'Wire it in `index/pitch/engine.html` or delete it; gallery swatches do not count as consumption'],
-  ['T9', 'Two role names resolving to one value', 'Alias one name to the other (`--other`) and remove the duplicate role'],
-  ['T10', 'A dark theme block that invents a role or disagrees with the other dark map', 'Declare every theme role in the base `:root`; write the dark mapping once'],
+  ['T8', 'Token defined in the `:root` contract with no consumer (product page, `themes` map cell, or `components.css`)', 'Wire it in `index/pitch/engine.html`, in a theme map, or `components.css` — or delete it; gallery swatches do not count'],
+  ['T9', 'Two role names resolving to one value: in the token set, or in one theme map and family', 'Alias one name to the other (`--other`) and remove the duplicate role; a slot that legitimately has no own value is declared `null`'],
+  ['T10', 'Role contract parity: a map missing a slot, a slot outside the contract, or an emitted block with the wrong role-var count', 'Declare all 14 slots in every map (null where a theme has no value) and regenerate; nulls are explicit, not gaps'],
   ['T11', 'Token `type` does not match its `value` shape', 'Fix the type or the value in `tokens.json` → regenerate'],
-  ['T13', 'Two local aliases in one `:root` with the same value', 'Delete the redundant alias and keep one role name'],
+  ['T13', 'Two literal values in one `:root` (an alias `var(--other)` is skipped — it is a pointer, not a second truth)', 'Delete the redundant alias and keep one role name'],
   ['T14', '`!important`', 'Fix the cascade; `!important` is an escalation, not a style'],
   ['T15', 'Inline `style=` attribute', 'Move to a class in `<style>`; budget is per file'],
 ];
@@ -1114,13 +1296,13 @@ for (const r of results) {
 md += `| **Total** | **${totals.V1}** | **${totals.V2}** | **${totals.V3}** | **${totals.V4}** | **${totals.V5}** | **${totals.V6}** | **${totals.V7}** | **${totals.V8}** | **${totals.U1}** | **${totalExempt}** | **${totalBadAllow}** | **${totals.T15}** | **${totalVars}** |\n\n`;
 
 md += '## Type, consumer & theme counts\n\n';
-md += '| File | T1 font-size | T2 line-height | T3 tracking | T4 weight | T4 family | T10 theme parity | T13 dup alias | T14 `!important` | T15 inline `style=` |\n';
-md += '|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n';
+md += '| File | T1 font-size | T2 line-height | T3 tracking | T4 weight | T4 family | T13 dup alias | T14 `!important` | T15 inline `style=` |\n';
+md += '|---|---:|---:|---:|---:|---:|---:|---:|---:|\n';
 for (const r of results) {
-  md += `| \`${r.file}\` | ${r.counts.T1} | ${r.counts.T2} | ${r.counts.T3} | ${r.counts.T4w} | ${r.counts.T4f} | ${r.counts.T10} | ${r.counts.T13} | ${r.counts.T14} | ${r.counts.T15} |\n`;
+  md += `| \`${r.file}\` | ${r.counts.T1} | ${r.counts.T2} | ${r.counts.T3} | ${r.counts.T4w} | ${r.counts.T4f} | ${r.counts.T13} | ${r.counts.T14} | ${r.counts.T15} |\n`;
 }
-md += `| **Total** | **${totals.T1}** | **${totals.T2}** | **${totals.T3}** | **${totals.T4w}** | **${totals.T4f}** | **${totals.T10}** | **${totals.T13}** | **${totals.T14}** | **${totals.T15}** |\n\n`;
-md += `Token-set checks (not per file): **T8** ${totals.T8} unconsumed tokens · **T9** ${totals.T9} duplicate role values · **T11** ${totals.T11} type/value mismatch.\n\n`;
+md += `| **Total** | **${totals.T1}** | **${totals.T2}** | **${totals.T3}** | **${totals.T4w}** | **${totals.T4f}** | **${totals.T13}** | **${totals.T14}** | **${totals.T15}** |\n\n`;
+md += `Token-set checks (not per file): **T8** ${totals.T8} unconsumed tokens · **T9** ${totals.T9} duplicate role values · **T10** ${totals.T10} role-contract gaps · **T11** ${totals.T11} type/value mismatch.\n\n`;
 
 md += '## Budgets\n\n';
 md += 'Each class carries the count measured on 2026-11-24 as a ceiling. A count at or under its budget is PASS; only the excess is a violation, so this receipt is green on day one and every regression fails `--check`.\n\n';
@@ -1152,9 +1334,9 @@ for (const g of overGroups) {
 if (!anyDetail) md += '_No class is over budget._\n\n';
 
 md += '## Token-set baseline\n\n';
-md += 'The three set-level checks are budgeted at today\'s measured value, so they document the gap without failing the build until it grows.\n\n';
-md += `### T8 — no product consumer (${totals.T8})\n\n`;
-md += 'A `var()` reference in `index.html`, `pitch.html` or `engine.html` counts; a gallery swatch does not. Tokens are declared in `tokens.css` and referenced nowhere in the product.\n\n';
+md += 'The four set-level checks are budgeted at the measured post-Phase-1A value, so they document the gap without failing the build until it grows.\n\n';
+md += `### T8 — no consumer (${totals.T8})\n\n`;
+md += 'A `var()` reference in `index.html`, `pitch.html` or `engine.html`, a `themes` map cell, or (from Phase 2) `components.css` counts; a gallery swatch does not. Aliases (`value: var(--other)`) and `breakpoint.*` are exempt because neither can be consumed by a page.\n\n';
 md += '<details><summary>Unconsumed tokens</summary>\n\n';
 for (let i = 0; i < unusedTokens.length; i += 6) {
   md += '- ' + unusedTokens.slice(i, i + 6).map((n) => '`' + n + '`').join(', ') + '\n';
@@ -1220,10 +1402,10 @@ md += '- A hex color is legal only as a `var()` fallback: `var(--color-x, #fff)`
 md += '- Spacing is a 2px grid: `padding`/`margin`/`gap` take `var(--spacing-2|2xs|6|xs|10|sm|14|md|18|20|lg|xl|2xl)` or `0`/`auto`/a percentage. `width`, `height`, `top`, `left`, `inset`, `transform` and `grid-template` are geometry and stay out of V8.\n';
 md += '- Layout-scale padding above 48px, negative offsets, and off-grid values (22.4, 25.6, 41.6, 86.4, 118) that would move more than 0.9px are kept literal with an in-place `lint-allow` reason.\n';
 md += '- Budgets are ceilings, not exemptions: the count measured on 2026-11-24 stays visible, no file is excluded from any check, and a count below budget is progress. Only the excess fails `--check`.\n';
-md += '- `T8` counts `var()` references inside `<style>`/`<script>` of the three product pages; `design-system/index.html` is the system\'s own documentation and never counts as a consumer.\n';
-md += '- `T9` compares colors across the whole set but dimensions only between step names of one scale (`spacing.base ≡ spacing.2xs`), because `spacing.xs` and `radius.sm` both being 8px is two scales, not two roles.\n';
-md += '- `T10` compares each dark theme block with the base `:root` key set and with the other dark block in the same file; the duplicated dark map must stay identical.\n';
-md += '- `T11` validates the 11 declared types; the 24 tokens typed `other` are outside the table until Phase 2 retypes them.\n';
+md += '- `T8` counts `var()` references inside `<style>`/`<script>` of the three product pages, every `themes` map cell, and `design-system/components.css` when it exists; `design-system/index.html` is the system\'s own documentation and never counts as a consumer. Aliases (`value: var(--other)`) and `breakpoint.*` are exempt.\n';
+md += '- `T9` compares colors across the whole set but dimensions only between step names of one scale (`spacing.base ≡ spacing.2xs`), because `spacing.xs` and `radius.sm` both being 8px is two scales, not two roles. Role slots are compared only inside one theme map and one family, so the same warning color in two themes is a palette prior, not a duplicate role.\n';
+md += '- `T10` asserts the role contract: 14 slots in all four maps, nulls explicit, the fall-through covering exactly the null set, and one emitted block per map with 17 − nulls role vars. Themes legitimately differ in nulls (pitch 2, wiki-light 5, wiki-dark 5, engine 3).\n';
+md += '- `T11` validates the 9 canonical types; `other` is gone from the source and is rejected by the generator.\n';
 md += '- `T15` is budgeted per file (index 19, pitch 31, engine 2, gallery 148) so inline styles cannot migrate into the largest page without failing.\n';
 
 if (!CHECK) {

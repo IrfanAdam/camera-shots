@@ -13,12 +13,19 @@
  * error names both the key and the offending value, so a bad token never
  * reaches the committed CSS.
  *
+ * Three tiers: the token map is the primitive palette, the semantic status
+ * vocabulary and the component/scale steps; the top-level `themes` object is
+ * NOT a token branch — it is the role contract (14 slots -> 17 vars) mapped
+ * onto the four surfaces. It is destructured before flatten() so no map cell
+ * can become a phantom token, and it renders as one `[data-ds-theme]`
+ * fall-through block plus one block per theme.
+ *
  * Usage:
  *   node scripts/build-tokens.mjs                     # render + write tokens.css
  *   node scripts/build-tokens.mjs --check             # render, diff, never write
  *   node scripts/build-tokens.mjs --tokens <path> --check   # validate a scratch copy
  *   node scripts/build-tokens.mjs --tokens <path> --out <path>  # render a scratch copy
- *   node scripts/build-tokens.mjs --strict-types      # fail on the legacy "other" set
+ *   node scripts/build-tokens.mjs --strict-types      # kept for CI compat; the legacy set is gone
  *
  * Exit codes: 0 ok, 1 invalid tokens or out-of-date CSS, 2 bad usage.
  */
@@ -143,54 +150,26 @@ const TYPE_ALIASES = {
 };
 
 /**
- * The 24 tokens still declared `type: "other"` by the shipped source. They are
- * number / cubic-bezier / `none` shapes waiting for a real type in Phase 1
- * (Task 8 adds `number`, `cubicBezier`, `shadow`). Grandfathering is explicit
- * and printed on every run so the list cannot grow silently: a key outside this
- * set with `type: "other"` fails, and `--strict-types` fails this whole set.
- *
- * TODO(phase-1): convert these to number / cubicBezier / shadow, then delete
- * this ledger and drop the grandfathering branch.
+ * The role contract lives in `themes` (sibling of the token map, never a
+ * branch of it): 14 slots, 17 emitted vars, four surface maps, explicit nulls.
+ * These constants are asserted, so a new theme or a new slot cannot slip in
+ * without the generator and the gate agreeing.
  */
-const LEGACY_OTHER = new Set([
-  'elevation.0',
-  'motion.easing.drawer',
-  'motion.easing.standard',
-  'motion.easing.sheet',
-  'motion.easing.emphasized',
-  'motion.easing.out',
-  'opacity.disabled',
-  'opacity.overlay.thumb',
-  'opacity.scrim',
-  'z.base',
-  'z.raise',
-  'z.content',
-  'z.sticky',
-  'z.sticky.rail',
-  'z.bar',
-  'z.overlay',
-  'z.sheet',
-  'z.drawer',
-  'z.drawer.child',
-  'z.popover',
-  'z.canvas',
-  'z.toast',
-  'z.menu',
-  'z.max',
-]);
-
+const THEME_ATTRIBUTE = 'data-ds-theme';
+const THEME_NAMES = ['pitch', 'wiki-light', 'wiki-dark', 'engine'];
+const THEME_SLOTS = [
+  'bg.page', 'bg.surface', 'bg.surface.alt', 'bg.control', 'bg.accent.soft',
+  'fg.primary', 'fg.secondary', 'fg.muted', 'fg.faint', 'fg.on.accent',
+  'line.default', 'line.strong', 'accent', 'status',
+];
+const STATUS_KEYS = ['success', 'warning', 'danger', 'info'];
+const ROLE_VAR_COUNT = 17;
 /**
- * Baseline type mismatches already measured by the gate (T11 = 1). They are
- * grandfathered per key so the tree stays green on day one, but a mismatch on
- * any other key — or a new one on a listed key after this entry is removed —
- * fails. `--strict-types` fails these too.
- *
- * TODO(phase-1): retype typography.lineheight.pitch.h1 to `number`, then delete
- * this map.
+ * The committed token count. `themes` must never change it: a phantom
+ * `--themes-pitch-bg-page` would push this over and fail the build loudly
+ * instead of shipping ~70 invented properties.
  */
-const TYPE_DEBT = new Map([
-  ['typography.lineheight.pitch.h1', 'declares fontSize but the value "1.08" is a line-height ratio'],
-]);
+const EXPECTED_LEAVES = 249;
 
 const typeLabel = (path) => path.join('.');
 
@@ -198,7 +177,7 @@ const typeLabel = (path) => path.join('.');
  * Validate one leaf. Returns an error string, or null when the leaf is sound.
  * Every message carries the key and the offending value.
  */
-function validateLeaf(leaf, strictTypes, legacySeen, debtSeen) {
+function validateLeaf(leaf) {
   const key = typeLabel(leaf.path);
   const value = String(leaf.value).trim();
   const rawType = leaf.type;
@@ -207,30 +186,12 @@ function validateLeaf(leaf, strictTypes, legacySeen, debtSeen) {
   }
   const type = rawType.trim();
 
-  if (type === 'other') {
-    if (!LEGACY_OTHER.has(key)) {
-      return `${key}: type "other" is not a valid token type (value "${value}") — use one of ${Object.keys(TYPE_RULES).join(', ')}`;
-    }
-    legacySeen.push(key);
-    if (strictTypes) {
-      return `${key}: type "other" is grandfathered legacy only (value "${value}") — --strict-types rejects it; use one of ${Object.keys(TYPE_RULES).join(', ')}`;
-    }
-    return null;
-  }
-
   const canonical = TYPE_ALIASES[type] ?? type;
   const rule = TYPE_RULES[canonical];
   if (!rule) {
     return `${key}: unknown type "${type}" (value "${value}") — expected one of ${Object.keys(TYPE_RULES).join(', ')}`;
   }
   if (!rule.test(value)) {
-    if (TYPE_DEBT.has(key)) {
-      debtSeen.push(key);
-      if (strictTypes) {
-        return `${key}: type "${type}" does not match value "${value}" (known debt: ${TYPE_DEBT.get(key)}) — --strict-types rejects it`;
-      }
-      return null;
-    }
     return `${key}: type "${type}" does not match value "${value}"`;
   }
   return null;
@@ -286,6 +247,186 @@ function flatten(node, path, out, errors) {
 }
 
 // ---------------------------------------------------------------------------
+// Theme contract
+// ---------------------------------------------------------------------------
+
+const VAR_REF = /^var\((--[a-z0-9-]+)\)$/;
+
+/** Every emitted role var, in slot order (status expands to 4). */
+function roleVarList(themes) {
+  const out = [];
+  for (const slot of THEME_SLOTS) {
+    if (slot === 'status') for (const key of STATUS_KEYS) out.push(themes.roleVars.status[key]);
+    else out.push(themes.roleVars[slot]);
+  }
+  return out;
+}
+
+/**
+ * Validate the role contract before it is emitted. Four maps, 14 slots each,
+ * explicit nulls, and every cell a `var()` reference that resolves to a real
+ * primitive — a typo in a map is a dead reference in shipped CSS, so it fails
+ * here instead of painting nothing.
+ */
+function validateThemes(themes, tokenNames) {
+  const errs = [];
+  if (!themes || typeof themes !== 'object' || Array.isArray(themes)) {
+    return ['themes: missing — expected { attribute, slots, roleVars, fallthrough, maps }'];
+  }
+  if (themes.attribute !== THEME_ATTRIBUTE) {
+    errs.push(`themes.attribute: expected "${THEME_ATTRIBUTE}", got ${JSON.stringify(themes.attribute)}`);
+  }
+
+  const slots = themes.slots;
+  if (!Array.isArray(slots) || slots.join('|') !== THEME_SLOTS.join('|')) {
+    errs.push(`themes.slots: expected the 14 locked slots in order (${THEME_SLOTS.join(', ')})`);
+  }
+
+  const roleVars = themes.roleVars;
+  if (!roleVars || typeof roleVars !== 'object') {
+    errs.push('themes.roleVars: missing');
+  } else {
+    const keys = Object.keys(roleVars);
+    if (keys.join('|') !== THEME_SLOTS.join('|')) {
+      errs.push(`themes.roleVars: keys must be exactly the 14 slots, got ${keys.join(', ')}`);
+    }
+    for (const slot of THEME_SLOTS) {
+      if (slot === 'status') {
+        const st = roleVars.status;
+        if (!st || Object.keys(st).join('|') !== STATUS_KEYS.join('|')) {
+          errs.push(`themes.roleVars.status: expected ${STATUS_KEYS.join('/')}`);
+          continue;
+        }
+        for (const key of STATUS_KEYS) {
+          if (!/^--ds-[a-z0-9-]+$/.test(String(st[key]))) errs.push(`themes.roleVars.status.${key}: expected a --ds-* name`);
+        }
+      } else if (!/^--ds-[a-z0-9-]+$/.test(String(roleVars[slot]))) {
+        errs.push(`themes.roleVars.${slot}: expected a --ds-* name`);
+      }
+    }
+    const emitted = new Set(roleVarList(themes));
+    if (emitted.size !== ROLE_VAR_COUNT) errs.push(`themes.roleVars: ${emitted.size} distinct vars, expected ${ROLE_VAR_COUNT}`);
+  }
+
+  const maps = themes.maps;
+  if (!maps || typeof maps !== 'object' || Array.isArray(maps)) {
+    errs.push('themes.maps: missing');
+    return errs;
+  }
+  if (Object.keys(maps).join('|') !== THEME_NAMES.join('|')) {
+    errs.push(`themes.maps: expected exactly ${THEME_NAMES.join(', ')} in order, got ${Object.keys(maps).join(', ')}`);
+  }
+
+  const nullUnion = new Set();
+  for (const name of THEME_NAMES) {
+    const map = maps[name];
+    if (!map || typeof map !== 'object') {
+      errs.push(`themes.maps.${name}: missing`);
+      continue;
+    }
+    const keys = Object.keys(map);
+    const missing = THEME_SLOTS.filter((s) => !keys.includes(s));
+    const extra = keys.filter((k) => !THEME_SLOTS.includes(k));
+    if (missing.length) errs.push(`themes.maps.${name}: missing slot(s) ${missing.join(', ')} — declare null explicitly`);
+    if (extra.length) errs.push(`themes.maps.${name}: unknown slot(s) ${extra.join(', ')}`);
+    for (const slot of THEME_SLOTS) {
+      if (!keys.includes(slot)) continue;
+      const cell = map[slot];
+      if (slot === 'status') {
+        if (!cell || typeof cell !== 'object') {
+          errs.push(`themes.maps.${name}.status: expected { ${STATUS_KEYS.join(', ')} }`);
+          continue;
+        }
+        const stMissing = STATUS_KEYS.filter((k) => !(k in cell));
+        if (stMissing.length) errs.push(`themes.maps.${name}.status: missing ${stMissing.join(', ')}`);
+        for (const key of STATUS_KEYS) {
+          if (!(key in cell)) continue;
+          const ref = cell[key];
+          const m = typeof ref === 'string' && ref.match(VAR_REF);
+          if (!m) errs.push(`themes.maps.${name}.status.${key}: expected var(--primitive), got ${JSON.stringify(ref)}`);
+          else if (!tokenNames.has(m[1].slice(2))) errs.push(`themes.maps.${name}.status.${key}: dead reference ${ref}`);
+        }
+        continue;
+      }
+      if (cell === null) {
+        nullUnion.add(slot);
+        continue;
+      }
+      const m = typeof cell === 'string' && cell.match(VAR_REF);
+      if (!m) errs.push(`themes.maps.${name}.${slot}: expected var(--primitive) or null, got ${JSON.stringify(cell)}`);
+      else if (!tokenNames.has(m[1].slice(2))) errs.push(`themes.maps.${name}.${slot}: dead reference ${cell}`);
+    }
+  }
+
+  const fall = themes.fallthrough;
+  if (!fall || typeof fall !== 'object' || Array.isArray(fall)) {
+    errs.push('themes.fallthrough: missing');
+  } else {
+    const declared = Object.keys(fall).sort().join('|');
+    const expected = [...nullUnion].sort().join('|');
+    if (declared !== expected) {
+      errs.push(`themes.fallthrough: must cover exactly the null slots (${expected || 'none'}), got ${declared || 'none'}`);
+    }
+    const emitted = roleVars ? new Set(roleVarList(themes)) : new Set();
+    for (const [slot, value] of Object.entries(fall)) {
+      if (value === 'transparent') continue;
+      const m = typeof value === 'string' && value.match(VAR_REF);
+      if (!m) errs.push(`themes.fallthrough.${slot}: expected var(--ds-*) or transparent, got ${JSON.stringify(value)}`);
+      else if (!emitted.has(m[1])) errs.push(`themes.fallthrough.${slot}: ${value} is not an emitted role var`);
+    }
+  }
+  return errs;
+}
+
+/**
+ * Emitted shape, in this order and no other:
+ *   [data-ds-theme]        fall-through for every slot some theme leaves null
+ *   [data-ds-theme="…"]    one block per map, declared order, null slots skipped
+ * Both selectors are (0,1,0), so the fall-through block MUST precede the maps;
+ * the assertion in render() enforces it.
+ */
+function renderThemes(themes) {
+  const out = [];
+  out.push('/* ---- theme maps (generated from tokens.json -> themes) ---- */');
+  out.push(`[${THEME_ATTRIBUTE}] {`);
+  for (const [slot, value] of Object.entries(themes.fallthrough)) {
+    out.push(`  ${themes.roleVars[slot]}: ${value};`);
+  }
+  out.push('}');
+
+  for (const name of THEME_NAMES) {
+    const map = themes.maps[name];
+    const nulls = THEME_SLOTS.filter((slot) => slot !== 'status' && map[slot] === null);
+    const declared = ROLE_VAR_COUNT - nulls.length;
+    out.push('');
+    out.push(`/* ${name} — ${declared} of ${ROLE_VAR_COUNT} role vars (${nulls.length} null, inherited from the fall-through block) */`);
+    out.push(`[${THEME_ATTRIBUTE}="${name}"] {`);
+    let written = 0;
+    for (const slot of THEME_SLOTS) {
+      if (slot === 'status') {
+        for (const key of STATUS_KEYS) {
+          out.push(`  ${themes.roleVars.status[key]}: ${map.status[key]};`);
+          written += 1;
+        }
+        continue;
+      }
+      if (map[slot] === null) {
+        out.push(`  /* ${themes.roleVars[slot]}: null -> fall-through */`);
+        continue;
+      }
+      out.push(`  ${themes.roleVars[slot]}: ${map[slot]};`);
+      written += 1;
+    }
+    out.push('}');
+    if (written !== declared) {
+      console.error(`FAIL: theme "${name}" emitted ${written} declarations, expected ${declared}`);
+      process.exit(1);
+    }
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------------------
 // Render
 // ---------------------------------------------------------------------------
 
@@ -307,7 +448,11 @@ function render() {
 
   const leaves = [];
   const errors = [];
-  flatten(json, [], leaves, errors);
+  // `themes` is a sibling of the token map, not a branch of it. Destructuring
+  // here is the one change that stops every role cell from flattening into a
+  // phantom `--themes-*` property; the leaf count assertion below proves it.
+  const { themes, ...tokenTree } = json;
+  flatten(tokenTree, [], leaves, errors);
 
   if (errors.length) {
     console.error(`FAIL: ${errors.length} malformed token(s) in ${srcPath}:`);
@@ -318,13 +463,20 @@ function render() {
     console.error(`FAIL: no tokens found in ${srcPath}`);
     process.exit(1);
   }
+  if (leaves.length !== EXPECTED_LEAVES) {
+    console.error(`FAIL: ${leaves.length} token leaves in ${srcPath}, expected ${EXPECTED_LEAVES}.`);
+    console.error('  A new key means bumping EXPECTED_LEAVES on purpose; a jump of ~70 means `themes` was flattened.');
+    process.exit(1);
+  }
+  if (leaves.some((leaf) => leaf.path[0] === 'themes')) {
+    console.error('FAIL: `themes` leaked into the token map — role maps are not tokens.');
+    process.exit(1);
+  }
 
   // Type <-> value validation, before names or output.
-  const legacySeen = [];
-  const debtSeen = [];
   const typeErrors = [];
   for (const leaf of leaves) {
-    const problem = validateLeaf(leaf, opts.strictTypes, legacySeen, debtSeen);
+    const problem = validateLeaf(leaf);
     if (problem) typeErrors.push(problem);
   }
   if (typeErrors.length) {
@@ -349,6 +501,13 @@ function render() {
     leaf.name = name;
   }
 
+  const themeErrors = validateThemes(themes, names);
+  if (themeErrors.length) {
+    console.error(`FAIL: ${themeErrors.length} invalid theme map entr${themeErrors.length === 1 ? 'y' : 'ies'} in ${srcPath}:`);
+    for (const e of themeErrors) console.error(`  - ${e}`);
+    process.exit(1);
+  }
+
   // Group by top-level segment (order of first appearance), then by the first two
   // segments for a readable sub-heading. Token order inside a group stays source order.
   const groups = new Map();
@@ -367,6 +526,7 @@ function render() {
   lines.push('   Source:     design-system/tokens.json');
   lines.push('   Regenerate: node scripts/build-tokens.mjs');
   lines.push(`   Tokens:     ${leaves.length}`);
+  lines.push(`   Themes:     ${themes.maps ? Object.keys(themes.maps).length : 0} · role slots: ${THEME_SLOTS.length} · role vars: ${ROLE_VAR_COUNT}`);
   lines.push('   ========================================================================== */');
   lines.push('');
   lines.push(':root {');
@@ -385,8 +545,19 @@ function render() {
 
   lines.push('}');
   lines.push('');
+  lines.push(...renderThemes(themes));
 
-  return { css: lines.join('\n'), leaves, groups, legacySeen, debtSeen };
+  const css = lines.join('\n');
+  // Specificity is (0,1,0) for both selectors, so source order alone decides:
+  // the fall-through must be emitted before the first theme map.
+  const fallAt = css.indexOf(`[${THEME_ATTRIBUTE}] {`);
+  const firstMapAt = css.indexOf(`[${THEME_ATTRIBUTE}="`);
+  if (fallAt < 0 || firstMapAt < 0 || fallAt > firstMapAt) {
+    console.error('FAIL: theme emission order broken — [data-ds-theme] fall-through must precede the maps');
+    process.exit(1);
+  }
+
+  return { css, leaves, groups, themeCount: Object.keys(themes.maps).length };
 }
 
 // ---------------------------------------------------------------------------
@@ -423,15 +594,8 @@ function sha256(text) {
   return createHash('sha256').update(text, 'utf8').digest('hex');
 }
 
-const { css, leaves, groups, legacySeen, debtSeen } = render();
+const { css, leaves, groups, themeCount } = render();
 const label = rel(srcPath);
-
-if (legacySeen.length) {
-  console.warn(`TYPE-DEBT: ${legacySeen.length} token(s) still declared type "other" (grandfathered, TODO phase-1 task 8): ${legacySeen.join(', ')}`);
-}
-for (const key of debtSeen) {
-  console.warn(`TYPE-DEBT: ${key} — ${TYPE_DEBT.get(key)} (grandfathered, TODO phase-1 task 8)`);
-}
 
 if (opts.check) {
   if (!existsSync(outPath)) {
@@ -444,14 +608,14 @@ if (opts.check) {
     process.exit(1);
   }
   console.log(`OK: ${rel(outPath)} matches ${label} byte-for-byte`);
-  console.log(`Tokens: ${leaves.length}; Groups: ${groups.size}; bytes: ${Buffer.byteLength(css, 'utf8')}; sha256: ${sha256(css)}`);
+  console.log(`Tokens: ${leaves.length}; Groups: ${groups.size}; Themes: ${themeCount}; bytes: ${Buffer.byteLength(css, 'utf8')}; sha256: ${sha256(css)}`);
   process.exit(0);
 }
 
 if (outPath !== OUT) {
   writeFileSync(outPath, css, 'utf8');
   console.log(`Wrote ${outPath} (from ${label})`);
-  console.log(`Tokens: ${leaves.length}; Groups: ${groups.size}; bytes: ${Buffer.byteLength(css, 'utf8')}`);
+  console.log(`Tokens: ${leaves.length}; Groups: ${groups.size}; Themes: ${themeCount}; bytes: ${Buffer.byteLength(css, 'utf8')}`);
   process.exit(0);
 }
 
@@ -459,4 +623,4 @@ writeFileSync(outPath, css, 'utf8');
 
 console.log(`Wrote ${outPath}`);
 console.log(`Tokens: ${leaves.length}`);
-console.log(`Groups: ${groups.size}; bytes: ${Buffer.byteLength(css, 'utf8')}`);
+console.log(`Themes: ${themeCount}; Groups: ${groups.size}; bytes: ${Buffer.byteLength(css, 'utf8')}`);
