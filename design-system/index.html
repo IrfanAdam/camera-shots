@@ -209,195 +209,6 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
 .comp-head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--spacing-sm);flex-wrap:wrap;margin-bottom:var(--spacing-sm)}
 .comp-head h3{font-size:var(--typography-size-body);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-tight)}
 .comp-classes{font-size:var(--typography-size-eyebrow);color:var(--g-muted);word-break:break-word}
-.frame{border:var(--border-width-hairline) solid var(--g-rule);border-radius:var(--radius-md);overflow:hidden;background:var(--g-card)}
-.frame-bar{
-  display:flex;align-items:center;gap:var(--spacing-xs);
-  padding:var(--spacing-xs) var(--spacing-sm);border-bottom:var(--border-width-hairline) solid var(--g-rule);
-  font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);
-  text-transform:uppercase;color:var(--g-muted);
-}
-.frame-dot{width:6px;height:6px;border-radius:var(--radius-circle);background:var(--g-muted);display:inline-block}
-.frame-bar .frame-val{margin-left:auto;letter-spacing:0;text-transform:none;font-size:var(--typography-size-eyebrow);font-variant-numeric:tabular-nums}
-
-/* surface aliases — the only place specimen colors are chosen */
-.stage{
-  --s-bg: var(--color-wiki-light-bg);
-  --s-card: var(--color-wiki-light-card);
-  --s-wash: var(--color-wiki-light-accent-wash);
-  --s-ink: var(--color-wiki-light-ink);
-  --s-body: var(--color-wiki-light-muted);
-  --s-muted: var(--color-wiki-light-muted);
-  --s-rule: var(--color-wiki-light-rule);
-  --s-rule-strong: var(--color-wiki-light-rule);
-  --s-accent: var(--color-wiki-light-accent);
-  --s-accent-ink: var(--color-primitive-white);
-  background:var(--s-bg);color:var(--s-ink);
-  padding:var(--spacing-xl);
-  display:flex;flex-direction:column;gap:var(--spacing-md);
-  font-family:var(--typography-family-sans);
-}
-.stage[data-surface="pitch"]{
-  --s-bg: var(--color-pitch-bg);
-  --s-card: var(--color-pitch-surface-1);
-  --s-wash: var(--color-pitch-surface-2);
-  --s-ink: var(--color-pitch-ink);
-  --s-body: var(--color-pitch-body);
-  --s-muted: var(--color-pitch-muted);
-  --s-rule: var(--color-pitch-rule);
-  --s-rule-strong: var(--color-pitch-rule);
-  --s-accent: var(--color-pitch-accent);
-  --s-accent-ink: var(--color-pitch-accent-ink);
-}
-.stage[data-surface="engine"]{
-  --s-bg: var(--color-engine-surface-0);
-  --s-card: var(--color-engine-surface-1);
-  --s-wash: var(--color-engine-tool);
-  --s-ink: var(--color-engine-text-primary);
-  --s-body: var(--color-engine-text-secondary);
-  --s-muted: var(--color-engine-text-secondary);
-  --s-rule: var(--color-engine-divider);
-  --s-rule-strong: var(--color-engine-divider-strong);
-  --s-accent: var(--color-engine-accent);
-  --s-accent-ink: var(--color-engine-accent-ink);
-}
-
-
-.row{display:flex;align-items:center;gap:var(--spacing-sm);flex-wrap:wrap}
-.hint{font-size:var(--typography-size-meta);color:var(--s-muted)}
-
-/* button — shipped control geometry: 4px radius (--radius-xs), 40 / 44 / 46 heights */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:var(--spacing-xs);
-  min-height:var(--touch-preferred);padding:0 var(--spacing-lg);
-  border-radius:var(--radius-xs);border:var(--border-width-hairline) solid var(--s-rule);
-  background:transparent;color:var(--s-ink);cursor:pointer;
-  font-family:var(--typography-family-sans);font-size:var(--typography-size-small);
-  font-weight:var(--weight-semibold);
-  transition:background var(--motion-duration-fast) var(--motion-easing-standard),
-    border-color var(--motion-duration-fast) var(--motion-easing-standard),
-    color var(--motion-duration-fast) var(--motion-easing-standard);
-}
-.btn--compact{min-height:var(--touch-min)} /* wiki control row: 40 */
-.btn--tall{min-height:calc(var(--touch-preferred) + var(--spacing-2))} /* pitch .btn: 46 */
-.btn--primary{background:var(--s-accent);border-color:var(--s-accent);color:var(--s-accent-ink)}
-.btn--primary:hover{filter:brightness(1.06)}
-.btn--secondary:hover{border-color:var(--s-accent);color:var(--s-accent)}
-.btn--ghost{border-color:transparent;color:var(--s-muted)}
-.btn--ghost:hover{background:var(--s-wash);color:var(--s-ink)}
-.btn:focus-visible{outline:var(--focus-width) solid var(--s-accent);outline-offset:var(--focus-offset)}
-.btn:disabled{opacity:var(--opacity-disabled);cursor:not-allowed}
-.btn--primary:disabled{filter:none}
-
-/* filter chip — shipped geometry: 4px (--radius-xs), 40 (--touch-min); no pill-radius control exists */
-.chip{
-  display:inline-flex;align-items:center;min-height:var(--touch-min);padding:0 var(--spacing-md);
-  border-radius:var(--radius-xs);border:var(--border-width-hairline) solid var(--s-rule);
-  background:var(--s-card);color:var(--s-ink);cursor:pointer;
-  font-family:var(--typography-family-sans);font-size:var(--typography-size-small);
-  transition:background var(--motion-duration-fast) var(--motion-easing-standard),
-    border-color var(--motion-duration-fast) var(--motion-easing-standard);
-}
-.chip:hover{border-color:var(--s-accent)}
-.chip[aria-pressed="true"]{background:var(--s-accent);border-color:var(--s-accent);color:var(--s-accent-ink)}
-.chip:focus-visible{outline:var(--focus-width) solid var(--s-accent);outline-offset:var(--focus-offset)}
-.chip .count{font-size:var(--typography-size-eyebrow);opacity:.7;margin-left:var(--spacing-xs)}
-
-/* field */
-.field{display:flex;flex-direction:column;gap:var(--spacing-2xs);max-width:320px;width:100%}
-.field label{
-  font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);
-  text-transform:uppercase;font-weight:var(--weight-medium);color:var(--s-body);
-}
-.field input{
-  height:var(--touch-min);width:100%;border-radius:var(--radius-sm);
-  border:var(--border-width-hairline) solid var(--s-rule-strong);background:var(--s-wash);color:var(--s-ink);
-  padding:0 var(--spacing-sm);font-family:var(--typography-family-sans);font-size:var(--typography-size-small);
-}
-.field input::placeholder{color:var(--s-muted)}
-.field input:focus-visible{outline:var(--focus-width) solid var(--s-accent);outline-offset:1px;border-color:var(--s-accent)}
-.field-note{font-size:var(--typography-size-meta);color:var(--s-muted)}
-.field.is-error input{border-color:var(--color-status-danger)}
-.field.is-error input:focus-visible{outline-color:var(--color-status-danger)}
-.field.is-error .field-note{color:var(--color-status-danger)}
-
-/* card + panel */
-.card{background:var(--s-card);border:var(--border-width-hairline) solid var(--s-rule);border-radius:var(--radius-lg);padding:var(--spacing-lg);max-width:380px}
-.card .eyebrow{font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--s-accent);font-weight:var(--weight-bold)}
-.card h4{font-size:var(--typography-size-body);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-tight);margin:var(--spacing-xs) 0}
-.card p{font-size:var(--typography-size-small);color:var(--s-body);line-height:var(--line-height-reading)}
-.card .card-meta{display:flex;justify-content:space-between;gap:var(--spacing-sm);margin-top:var(--spacing-md);padding-top:var(--spacing-xs);border-top:var(--border-width-hairline) solid var(--s-rule);font-size:var(--typography-size-meta);color:var(--s-muted)}
-
-.panel{background:var(--s-card);border:var(--border-width-hairline) solid var(--s-rule);border-radius:var(--radius-md);padding:var(--spacing-lg);max-width:440px}
-.panel-h{display:flex;align-items:baseline;justify-content:space-between;gap:var(--spacing-sm);border-bottom:var(--border-width-hairline) solid var(--s-rule);padding-bottom:var(--spacing-xs);margin-bottom:var(--spacing-sm)}
-.panel-h h4{font-size:var(--typography-size-h3);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-tight)}
-.panel-h small{font-size:var(--typography-size-meta);color:var(--s-muted)}
-.panel-row{display:flex;justify-content:space-between;gap:var(--spacing-md);padding:var(--spacing-2xs) 0;font-size:var(--typography-size-small);border-bottom:var(--border-width-hairline) solid var(--s-rule)}
-.panel-row:last-child{border-bottom:0}
-.panel-row span:last-child{color:var(--s-muted)}
-
-/* tool button */
-.tool{
-  display:inline-flex;align-items:center;gap:var(--spacing-xs);
-  min-height:var(--touch-min);padding:0 var(--spacing-sm);
-  border-radius:var(--radius-sm);border:var(--border-width-hairline) solid var(--s-rule-strong);
-  background:var(--s-wash);color:var(--s-ink);cursor:pointer;
-  font-family:var(--typography-family-sans);font-size:var(--typography-size-small);
-  font-weight:var(--weight-medium);
-  transition:border-color var(--motion-duration-fast) var(--motion-easing-standard),color var(--motion-duration-fast) var(--motion-easing-standard);
-}
-.tool:hover{border-color:var(--s-accent)}
-.tool[aria-pressed="true"]{border-color:var(--s-accent);color:var(--s-accent)}
-.tool:focus-visible{outline:var(--focus-width) solid var(--s-accent);outline-offset:var(--focus-offset)}
-.tool svg{display:block;flex:none}
-
-/* badge */
-.badge{
-  display:inline-flex;align-items:center;border-radius:var(--radius-pill);
-  padding:var(--spacing-2) var(--spacing-xs);
-  font-size:var(--typography-size-eyebrow);font-weight:var(--weight-bold);
-  letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;
-  color:var(--color-primitive-white);
-}
-.badge--free{background:var(--color-status-success)}
-.badge--paid{background:var(--color-status-info)}
-.badge--unverified{background:var(--s-muted);color:var(--color-primitive-white)}
-
-/* toast */
-.toast{
-  display:flex;align-items:center;gap:var(--spacing-md);
-  background:var(--s-card);border:var(--border-width-hairline) solid var(--s-rule-strong);border-radius:var(--radius-md);
-  padding:var(--spacing-xs) var(--spacing-xs) var(--spacing-xs) var(--spacing-md);
-  box-shadow:var(--elevation-popover);max-width:440px;width:100%;
-  font-size:var(--typography-size-small);
-}
-.toast p{flex:1;color:var(--s-ink)}
-.toast button{
-  flex:none;min-height:var(--touch-min);padding:0 var(--spacing-md);
-  border:0;border-radius:var(--radius-sm);background:var(--s-accent);color:var(--s-accent-ink);
-  font-family:var(--typography-family-sans);font-size:var(--typography-size-meta);
-  font-weight:var(--weight-bold);cursor:pointer;
-}
-.toast button:focus-visible{outline:var(--focus-width) solid var(--s-accent);outline-offset:var(--focus-offset)}
-.toast button:hover{filter:brightness(1.06)}
-
-/* sheet */
-.sheet{max-width:360px;width:100%;background:var(--s-card);border:var(--border-width-hairline) solid var(--s-rule-strong);border-radius:var(--radius-lg);box-shadow:var(--elevation-sheet);overflow:hidden}
-.grab{display:block;width:var(--control-height-touch);height:var(--dot-size);border-radius:var(--radius-pill);background:var(--s-muted);margin:var(--spacing-sm) auto var(--spacing-2xs)}
-.sheet-h{display:flex;align-items:center;justify-content:space-between;gap:var(--spacing-sm);padding:var(--spacing-xs) var(--spacing-md) var(--spacing-md);border-bottom:var(--border-width-hairline) solid var(--s-rule)}
-.sheet-h h4{font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--s-muted);font-weight:var(--weight-bold)}
-.sheet-x{
-  width:var(--touch-min);height:var(--touch-min);border-radius:var(--radius-circle);
-  border:var(--border-width-hairline) solid var(--s-rule);background:transparent;color:var(--s-ink);
-  font-size:var(--typography-size-body);line-height:1;cursor:pointer;
-}
-.sheet-x:hover{border-color:var(--s-accent);color:var(--s-accent)}
-.sheet-x:focus-visible{outline:var(--focus-width) solid var(--s-accent);outline-offset:var(--focus-offset)}
-.sheet-body{padding:var(--spacing-md);font-size:var(--typography-size-small);color:var(--s-body)}
-
-.comp-props{margin-top:var(--spacing-sm)}
-.comp-props .tok-table{font-size:var(--typography-size-meta)}
-.comp-props .tok-table th{padding:var(--spacing-2xs) var(--spacing-sm)}
-.comp-props .tok-table td{padding:var(--spacing-2xs) var(--spacing-sm)}
 
 /* ---------- ds component specimens (Phase 2) ----------
    The cells carry data-ds-theme so the ds-* blocks resolve their --ds-* role
@@ -411,6 +222,7 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
   --x-bg:var(--color-wiki-light-bg);
   --x-ink:var(--color-wiki-light-ink);
   --x-rule:var(--color-wiki-light-rule);
+  --x-muted:var(--color-wiki-light-muted);
   display:flex;flex-direction:column;gap:var(--spacing-2xs);min-width:0;
   padding:var(--spacing-sm);
   border:var(--border-width-hairline) solid var(--x-rule);
@@ -418,13 +230,13 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
   background:var(--x-bg);color:var(--x-ink);
 }
 .spec-cell[data-surface="pitch"]{
-  --x-bg:var(--color-pitch-bg);--x-ink:var(--color-pitch-ink);--x-rule:var(--color-pitch-rule);
+  --x-bg:var(--color-pitch-bg);--x-ink:var(--color-pitch-ink);--x-rule:var(--color-pitch-rule);--x-muted:var(--color-pitch-muted);
 }
 .spec-cell[data-surface="wiki-dark"]{
-  --x-bg:var(--color-wiki-dark-bg);--x-ink:var(--color-wiki-dark-ink);--x-rule:var(--color-wiki-dark-rule);
+  --x-bg:var(--color-wiki-dark-bg);--x-ink:var(--color-wiki-dark-ink);--x-rule:var(--color-wiki-dark-rule);--x-muted:var(--color-wiki-dark-muted);
 }
 .spec-cell[data-surface="engine"]{
-  --x-bg:var(--color-engine-surface-0);--x-ink:var(--color-engine-text-primary);--x-rule:var(--color-engine-divider);
+  --x-bg:var(--color-engine-surface-0);--x-ink:var(--color-engine-text-primary);--x-rule:var(--color-engine-divider);--x-muted:var(--color-engine-text-secondary);
 }
 .spec-cell--wide{grid-column:1/-1}
 .spec-row{display:flex;align-items:center;flex-wrap:wrap;gap:var(--spacing-2xs)}
@@ -447,12 +259,27 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
 .spec-cell .ds-toast{position:static;inset:auto;z-index:auto;margin:0;inline-size:auto;max-inline-size:100%}
 .spec-cell .ds-tooltip{position:static;z-index:auto;white-space:normal}
 .spec-cell .ds-progress{inline-size:100%}
+/* the cell's own label takes the cell's muted ink: --g-muted (#5B6270)
+   measured 2.7-3.2:1 on the three dark surfaces */
+.spec-cell .kicker{color:var(--x-muted)}
 /* switch has no [data-state] hook in components.css; this mirrors its
    :focus-visible ring so the static Focus specimen is not the odd one out */
 .spec-cell .ds-switch[data-state~="focus"] .ds-switch__track{
   outline:var(--focus-width) solid var(--focus-color,currentColor);
   outline-offset:var(--focus-offset);
 }
+/* Danger ink: the shipped pair is primitive white on --ds-danger (#E5484D)
+   = 3.67:1, and --ds-danger as *text* on a surface = 3.67 light / 3.91 dark;
+   both miss AA at 11.5px. The armed and danger states render only in this
+   gallery, so the stage corrects the pair and keeps the finding for the
+   library (Phase 4) instead of editing components.css from a page lane:
+   primitive black is the measured 5.37:1 ink on the red fill, and a danger
+   control on the light surface takes the surface ink (the red border keeps
+   the signal). Armed wins over both because it is declared last. */
+.spec-cell .ds-menu__item[data-variant="danger"]{color:var(--x-ink)}
+.spec-cell[data-surface="wiki-light"] .ds-btn[data-variant="danger"]:not([data-armed]){color:var(--x-ink)}
+.spec-cell .ds-btn[data-armed],
+.spec-cell .ds-menu__item[data-armed]{color:var(--color-primitive-black)}
 /* icon sizing from the icons.svg contract (components.css ships .ds-icon-btn,
    not .ds-icon): one dialect, three sizes, stroke inherits the text colour */
 .ds-icon{
@@ -475,15 +302,10 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
 .matrix tbody th{font-weight:var(--weight-medium);font-size:var(--typography-size-small);width:150px}
 .matrix td code{font-size:var(--typography-size-eyebrow);color:var(--g-ink);word-break:break-word;display:block}
 .matrix td .note{display:block;font-size:var(--typography-size-eyebrow);color:var(--g-muted);line-height:1.5;margin-top:var(--spacing-2xs);max-width:32ch}
-.matrix td .cite{display:block;font-family:var(--typography-family-mono);font-size:var(--typography-size-eyebrow);color:var(--color-status-danger);margin-top:var(--spacing-2xs)}
+/* the worklist cite is mono meta, not an alert: --color-status-danger is
+   3.67:1 on the page background, --g-muted is 5.76:1 light / 8.04:1 dark */
+.matrix td .cite{display:block;font-family:var(--typography-family-mono);font-size:var(--typography-size-eyebrow);color:var(--g-muted);margin-top:var(--spacing-2xs)}
 .matrix tr:last-child td,.matrix tr:last-child th{border-bottom:0}
-.badge-dev{
-  display:inline-flex;align-items:center;gap:var(--spacing-2xs);margin-bottom:var(--spacing-2xs);
-  border:var(--border-width-hairline) solid var(--color-status-danger);color:var(--color-status-danger);
-  border-radius:var(--radius-pill);padding:1px var(--spacing-xs); /* lint-allow: 1px badge inset is an optical hairline; no 2px step exists */
-  font-size:var(--typography-size-eyebrow);font-weight:var(--weight-bold);
-  letter-spacing:0.08em;text-transform:uppercase;
-}
 .matrix-legend{display:flex;gap:var(--spacing-md);align-items:center;flex-wrap:wrap;font-size:var(--typography-size-meta);color:var(--g-muted);margin-top:var(--spacing-sm)}
 .matrix-sum{margin-top:var(--spacing-md);font-size:var(--typography-size-small);color:var(--g-muted);max-width:68ch}
 
@@ -515,7 +337,6 @@ footer code{color:var(--g-ink)}
   .masthead h1{font-size:var(--typography-size-display)}
   .type-row{grid-template-columns:1fr;gap:var(--spacing-xs)}
   .space-row{grid-template-columns:110px minmax(0,1fr) 72px;gap:var(--spacing-xs)}
-  .stage{padding:var(--spacing-md)}
   .tok-table td.live{white-space:normal}
   .matrix{min-width:640px}
   .spec-grid{grid-template-columns:1fr}
@@ -526,11 +347,13 @@ footer code{color:var(--g-ink)}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .mdot{transition:none}
-  .btn,.chip,.tool,.toast button,.themer button{transition:none}
+  .themer button{transition:none}
 }
 </style>
 </head>
 <body>
+
+<a class="ds-skip-link" href="#main">Skip to content</a>
 
 <header class="masthead">
   <div class="wrap">
@@ -559,13 +382,12 @@ footer code{color:var(--g-ink)}
     <a href="#space">03 · Space &amp; shape</a>
     <a href="#motion">04 · Motion</a>
     <a href="#touch">05 · Touch</a>
-    <a href="#components">06 · Components</a>
-    <a href="#matrix">07 · Consistency</a>
-    <a href="#specimens">08 · Component specimens</a>
+    <a href="#matrix">06 · Consistency</a>
+    <a href="#specimens">07 · Component specimens</a>
     <span class="side-foot">Swatch values are read live from the computed custom properties.</span>
   </nav>
 
-  <main>
+  <main id="main" tabindex="-1">
 
     <!-- ============ 01 COLOR ============ -->
     <section id="color" aria-labelledby="color-h">
@@ -914,311 +736,17 @@ footer code{color:var(--g-ink)}
       </div>
     </section>
 
-    <!-- ============ 06 COMPONENTS ============ -->
-    <section id="components" aria-labelledby="components-h">
+    <!-- ============ 06 MATRIX ============ -->
+    <!-- the deviation flag is the one ds- component on page chrome; the light
+         map resolves --ds-badge-ink to the measured 5.37:1 pair -->
+    <section id="matrix" aria-labelledby="matrix-h" data-ds-theme="wiki-light">
       <div class="sec-head">
         <span class="sec-num">06</span>
-        <h2 id="components-h">Components</h2>
-        <p>Real DOM, real states: hover with the pointer, tab for focus-visible, disabled by attribute. Each frame declares its surface.</p>
-      </div>
-
-      <!-- button -->
-      <article class="comp">
-        <div class="comp-head">
-          <h3>Button</h3>
-          <span class="comp-classes">.btn · .btn--primary · .btn--secondary · .btn--ghost · [disabled]</span>
-        </div>
-        <div class="frame">
-          <div class="frame-bar"><span class="frame-dot"></span> surface · pitch <span class="frame-val">accent → primary fill only</span></div>
-          <div class="stage" data-surface="pitch">
-            <div class="row">
-              <button class="btn btn--primary" type="button">Approve cut</button>
-              <button class="btn btn--secondary btn--compact" type="button">Compare</button>
-              <button class="btn btn--secondary btn--tall" type="button" data-measure="m-btn-tall">Frame</button>
-              <button class="btn btn--ghost" type="button">Skip</button>
-              <button class="btn btn--primary" type="button" disabled>Export</button>
-            </div>
-            <p class="hint">Shipped geometry: 4px radius, 44 default · 40 compact (wiki control row) · 46 tall (pitch .btn). Hover, Tab, and the disabled fourth button.</p>
-          </div>
-        </div>
-        <div class="comp-props">
-          <table class="tok-table">
-            <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
-            <tbody>
-              <tr><td>Radius</td><td><code>--radius-xs</code></td><td class="live" data-live="--radius-xs">—</td></tr>
-              <tr><td>Height default</td><td><code>--touch-preferred</code></td><td class="live" data-live="--touch-preferred">—</td></tr>
-              <tr><td>Height compact</td><td><code>--touch-min</code></td><td class="live" data-live="--touch-min">—</td></tr>
-              <tr><td>Height tall</td><td><code>--touch-preferred + --spacing-2</code></td><td class="live"><span id="m-btn-tall">—</span></td></tr>
-              <tr><td>Primary fill</td><td><code>--color-pitch-accent</code></td><td class="live" data-live="--color-pitch-accent">—</td></tr>
-              <tr><td>Primary label</td><td><code>--color-pitch-accent-ink</code></td><td class="live" data-live="--color-pitch-accent-ink">—</td></tr>
-              <tr><td>Focus width</td><td><code>--focus-width</code></td><td class="live" data-live="--focus-width">—</td></tr>
-              <tr><td>Focus offset</td><td><code>--focus-offset</code></td><td class="live" data-live="--focus-offset">—</td></tr>
-              <tr><td>Disabled</td><td><code>--opacity-disabled</code></td><td class="live" data-live="--opacity-disabled">—</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </article>
-
-      <!-- filter chip -->
-      <article class="comp">
-        <div class="comp-head">
-          <h3>Filter chip</h3>
-          <span class="comp-classes">.chip[aria-pressed="true|false"]</span>
-        </div>
-        <div class="frame">
-          <div class="frame-bar"><span class="frame-dot"></span> surface · wiki · light <span class="frame-val">on = accent fill, off = card</span></div>
-          <div class="stage" data-surface="wiki">
-            <div class="row" role="group" aria-label="Filter">
-              <button class="chip" type="button" aria-pressed="true">All shots</button>
-              <button class="chip" type="button" aria-pressed="false">Coverage</button>
-              <button class="chip" type="button" aria-pressed="false">Movement</button>
-            </div>
-            <p class="hint">Filters ship as 4px chips on every surface. Pill radius (<code>--radius-pill</code>) survives only on badges, switch tracks and the sheet grab — no product button is a pill, so the old pill specimen was removed rather than re-labelled.</p>
-          </div>
-        </div>
-        <div class="comp-props">
-          <table class="tok-table">
-            <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
-            <tbody>
-              <tr><td>Radius</td><td><code>--radius-xs</code></td><td class="live" data-live="--radius-xs">—</td></tr>
-              <tr><td>Height</td><td><code>--touch-min</code></td><td class="live" data-live="--touch-min">—</td></tr>
-              <tr><td>On fill</td><td><code>--color-wiki-light-accent</code></td><td class="live" data-live="--color-wiki-light-accent">—</td></tr>
-              <tr><td>Off fill</td><td><code>--color-wiki-light-card</code></td><td class="live" data-live="--color-wiki-light-card">—</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </article>
-
-      <!-- field -->
-      <article class="comp">
-        <div class="comp-head">
-          <h3>Field</h3>
-          <span class="comp-classes">.field · .field.is-error · label · input</span>
-        </div>
-        <div class="frame">
-          <div class="frame-bar"><span class="frame-dot"></span> surface · engine <span class="frame-val">error uses semantic danger</span></div>
-          <div class="stage" data-surface="engine">
-            <div class="field">
-              <label for="f-shot">Shot label</label>
-              <input id="f-shot" type="text" value="Handheld — corridor" placeholder="Name this shot">
-              <span class="field-note">Shown in the timeline and every prompt token.</span>
-            </div>
-            <div class="field is-error">
-              <label for="f-code">Code</label>
-              <input id="f-code" type="text" value="HH-CORRIDOR-EXTRA-LONG" aria-invalid="true" aria-describedby="f-code-err">
-              <span class="field-note" id="f-code-err">Max 12 characters.</span>
-            </div>
-          </div>
-        </div>
-        <div class="comp-props">
-          <table class="tok-table">
-            <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
-            <tbody>
-              <tr><td>Radius</td><td><code>--radius-sm</code></td><td class="live" data-live="--radius-sm">—</td></tr>
-              <tr><td>Height</td><td><code>--touch-min</code></td><td class="live" data-live="--touch-min">—</td></tr>
-              <tr><td>Border</td><td><code>--color-engine-divider-strong</code></td><td class="live" data-live="--color-engine-divider-strong">—</td></tr>
-              <tr><td>Error</td><td><code>--color-status-danger</code></td><td class="live" data-live="--color-status-danger">—</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </article>
-
-      <!-- card -->
-      <article class="comp">
-        <div class="comp-head">
-          <h3>Card</h3>
-          <span class="comp-classes">.card · .eyebrow · .card-meta</span>
-        </div>
-        <div class="frame">
-          <div class="frame-bar"><span class="frame-dot"></span> surface · pitch <span class="frame-val">hairline + tint, no shadow</span></div>
-          <div class="stage" data-surface="pitch">
-            <div class="card">
-              <p class="eyebrow">Shot size · 02</p>
-              <h4>Medium close-up</h4>
-              <p>Chest up. Favors the face while keeping a little distance, so the room still has a say in the scene.</p>
-              <div class="card-meta"><span>Coverage</span><span>4 prompts</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="comp-props">
-          <table class="tok-table">
-            <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
-            <tbody>
-              <tr><td>Radius</td><td><code>--radius-lg</code></td><td class="live" data-live="--radius-lg">—</td></tr>
-              <tr><td>Padding</td><td><code>--spacing-lg</code></td><td class="live" data-live="--spacing-lg">—</td></tr>
-              <tr><td>Fill</td><td><code>--color-pitch-surface-1</code></td><td class="live" data-live="--color-pitch-surface-1">—</td></tr>
-              <tr><td>Rule</td><td><code>--color-pitch-rule</code></td><td class="live" data-live="--color-pitch-rule">—</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </article>
-
-      <!-- panel -->
-      <article class="comp">
-        <div class="comp-head">
-          <h3>Panel</h3>
-          <span class="comp-classes">.panel · .panel-h · .panel-row</span>
-        </div>
-        <div class="frame">
-          <div class="frame-bar"><span class="frame-dot"></span> surface · wiki · light <span class="frame-val">reader container</span></div>
-          <div class="stage" data-surface="wiki">
-            <div class="panel">
-              <div class="panel-h"><h4>Rack focus</h4><small>Focus</small></div>
-              <div class="panel-row"><span>Use</span><span>Reveal, link two subjects</span></div>
-              <div class="panel-row"><span>Pairs with</span><span>Crab move</span></div>
-              <div class="panel-row"><span>Prompt token</span><span>RF — pull baton → eyes</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="comp-props">
-          <table class="tok-table">
-            <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
-            <tbody>
-              <tr><td>Radius</td><td><code>--radius-md</code></td><td class="live" data-live="--radius-md">—</td></tr>
-              <tr><td>Padding</td><td><code>--spacing-lg</code></td><td class="live" data-live="--spacing-lg">—</td></tr>
-              <tr><td>Fill</td><td><code>--color-wiki-light-card</code></td><td class="live" data-live="--color-wiki-light-card">—</td></tr>
-              <tr><td>Heading</td><td><code>--typography-size-h3</code></td><td class="live" data-live="--typography-size-h3">—</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </article>
-
-      <!-- tool button -->
-      <article class="comp">
-        <div class="comp-head">
-          <h3>Tool button</h3>
-          <span class="comp-classes">.tool · [aria-pressed] · svg glyph</span>
-        </div>
-        <div class="frame">
-          <div class="frame-bar"><span class="frame-dot"></span> surface · engine <span class="frame-val">40px hit area, 8px radius</span></div>
-          <div class="stage" data-surface="engine">
-            <div class="row">
-              <button class="tool" type="button" aria-pressed="true">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M7 2v10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-                Add shot
-              </button>
-              <button class="tool" type="button" aria-pressed="false">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Mark done
-              </button>
-              <button class="tool" type="button" aria-pressed="false">Zoom 100%</button>
-            </div>
-            <p class="hint">Border picks up accent on hover; pressed keeps accent.</p>
-          </div>
-        </div>
-        <div class="comp-props">
-          <table class="tok-table">
-            <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
-            <tbody>
-              <tr><td>Radius</td><td><code>--radius-sm</code></td><td class="live" data-live="--radius-sm">—</td></tr>
-              <tr><td>Height</td><td><code>--touch-min</code></td><td class="live" data-live="--touch-min">—</td></tr>
-              <tr><td>Fill</td><td><code>--color-engine-tool</code></td><td class="live" data-live="--color-engine-tool">—</td></tr>
-              <tr><td>Hover edge</td><td><code>--color-engine-accent</code></td><td class="live" data-live="--color-engine-accent">—</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </article>
-
-      <!-- badge -->
-      <article class="comp">
-        <div class="comp-head">
-          <h3>Badge</h3>
-          <span class="comp-classes">.badge · .badge--free · .badge--paid · .badge--unverified</span>
-        </div>
-        <div class="frame">
-          <div class="frame-bar"><span class="frame-dot"></span> surface · wiki · light <span class="frame-val">success / info / muted</span></div>
-          <div class="stage" data-surface="wiki">
-            <div class="row">
-              <span class="badge badge--free">Free</span>
-              <span class="badge badge--paid">Paid</span>
-              <span class="badge badge--unverified">Unverified</span>
-            </div>
-            <p class="hint">FREE → semantic success · PAID → semantic info · UNVERIFIED → surface muted.</p>
-          </div>
-        </div>
-        <div class="comp-props">
-          <table class="tok-table">
-            <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
-            <tbody>
-              <tr><td>Radius</td><td><code>--radius-pill</code></td><td class="live" data-live="--radius-pill">—</td></tr>
-              <tr><td>Size</td><td><code>--typography-size-eyebrow</code></td><td class="live" data-live="--typography-size-eyebrow">—</td></tr>
-              <tr><td>FREE</td><td><code>--color-status-success</code></td><td class="live" data-live="--color-status-success">—</td></tr>
-              <tr><td>PAID</td><td><code>--color-status-info</code></td><td class="live" data-live="--color-status-info">—</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </article>
-
-      <!-- toast -->
-      <article class="comp">
-        <div class="comp-head">
-          <h3>Toast</h3>
-          <span class="comp-classes">.toast · .toast button · elevation.popover</span>
-        </div>
-        <div class="frame">
-          <div class="frame-bar"><span class="frame-dot"></span> surface · engine <span class="frame-val">one action, never two</span></div>
-          <div class="stage" data-surface="engine">
-            <div class="toast" role="status">
-              <p>Shot deleted. 12 remain in this chapter.</p>
-              <button type="button">Undo</button>
-            </div>
-            <p class="hint">Floats above the canvas; the action keeps a 40px target.</p>
-          </div>
-        </div>
-        <div class="comp-props">
-          <table class="tok-table">
-            <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
-            <tbody>
-              <tr><td>Radius</td><td><code>--radius-md</code></td><td class="live" data-live="--radius-md">—</td></tr>
-              <tr><td>Fill</td><td><code>--color-engine-surface-1</code></td><td class="live" data-live="--color-engine-surface-1">—</td></tr>
-              <tr><td>Shadow</td><td><code>--elevation-popover</code></td><td class="live" data-live="--elevation-popover">—</td></tr>
-              <tr><td>Action fill</td><td><code>--color-engine-accent</code></td><td class="live" data-live="--color-engine-accent">—</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </article>
-
-      <!-- sheet -->
-      <article class="comp">
-        <div class="comp-head">
-          <h3>Drawer / sheet header</h3>
-          <span class="comp-classes">.sheet · .grab · .sheet-h · .sheet-x · .sheet-body</span>
-        </div>
-        <div class="frame">
-          <div class="frame-bar"><span class="frame-dot"></span> surface · engine <span class="frame-val">grab 44 × 5</span></div>
-          <div class="stage" data-surface="engine">
-            <div class="sheet">
-              <span class="grab" aria-hidden="true"></span>
-              <div class="sheet-h">
-                <h4>Shot properties</h4>
-                <button class="sheet-x" type="button" aria-label="Close">&times;</button>
-              </div>
-              <div class="sheet-body">Chapter 2 · coverage. Edit the label, pick a size, then commit the prompt.</div>
-            </div>
-            <p class="hint">Grab handle is decorative; Escape and the 40px close button are the real exits.</p>
-          </div>
-        </div>
-        <div class="comp-props">
-          <table class="tok-table">
-            <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
-            <tbody>
-              <tr><td>Radius</td><td><code>--radius-lg</code></td><td class="live" data-live="--radius-lg">—</td></tr>
-              <tr><td>Shadow</td><td><code>--elevation-sheet</code></td><td class="live" data-live="--elevation-sheet">—</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </article>
-    </section>
-
-    <!-- ============ 07 MATRIX ============ -->
-    <section id="matrix" aria-labelledby="matrix-h">
-      <div class="sec-head">
-        <span class="sec-num">07</span>
         <h2 id="matrix-h">Consistency matrix</h2>
         <p>Read at render from the shipped pages — an iframe per surface, <code>getComputedStyle</code> on the real selectors. No cell is typed by hand.</p>
       </div>
 
-      <div class="matrix-wrap">
+      <div class="matrix-wrap" role="region" aria-label="Consistency matrix table" tabindex="0">
         <table class="matrix">
           <thead>
             <tr><th scope="col">Element</th><th scope="col">Wiki</th><th scope="col">Pitch</th><th scope="col">Engine</th></tr>
@@ -1277,16 +805,16 @@ footer code{color:var(--g-ink)}
       </div>
 
       <div class="matrix-legend">
-        <span class="badge-dev">deviation</span>
+        <span class="ds-badge" data-variant="danger">deviation</span>
         <span>Computed value departs from the token named in its row; the cite under it is the line to fix. Wiki dark is measured on the same pass and reported in the wiki note where it differs.</span>
       </div>
       <p class="matrix-sum">Every cell above is a computed value from the shipped pages at a 1440 viewport, printed at render. Where a surface departs from the token the badge and the <code>file:line</code> are generated from the same measurement, so the worklist cannot drift from the CSS. A cell that reads “none in DOM” means the surface ships no such element — not that it was skipped.</p>
     </section>
 
-    <!-- ============ 08 COMPONENT SPECIMENS ============ -->
+    <!-- ============ 07 COMPONENT SPECIMENS ============ -->
     <section id="specimens" aria-labelledby="specimens-h">
       <div class="sec-head">
-        <span class="sec-num">08</span>
+        <span class="sec-num">07</span>
         <h2 id="specimens-h">Component specimens</h2>
         <p><span class="js-block-count">—</span> blocks · <span class="js-theme-count">—</span> theme wrappers · <span class="js-state-count">—</span> static states</p>
       </div>
@@ -1299,25 +827,25 @@ footer code{color:var(--g-ink)}
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="spec-row"><button class="ds-btn" data-variant="primary" type="button">Primary</button><button class="ds-btn" data-variant="secondary" type="button">Secondary</button><button class="ds-btn" data-variant="ghost" type="button">Ghost</button><button class="ds-btn" data-variant="danger" type="button">Danger</button></div>
-          <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-state="hover" type="button">Hover</button><button class="ds-btn" data-variant="secondary" data-state="focus" type="button">Focus</button><button class="ds-btn" data-variant="secondary" data-state="disabled" type="button">Disabled</button></div>
+          <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-state="hover" type="button">Hover</button><button class="ds-btn" data-variant="secondary" data-state="focus" type="button">Focus</button><button class="ds-btn" data-variant="secondary" data-state="disabled" type="button" disabled>Disabled</button></div>
           <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">xs</button><button class="ds-btn" data-variant="secondary" data-size="compact" type="button">compact</button><button class="ds-btn" data-variant="secondary" data-size="tall" type="button">tall</button></div>
         </div>
         <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
           <div class="spec-row"><button class="ds-btn" data-variant="primary" type="button">Primary</button><button class="ds-btn" data-variant="secondary" type="button">Secondary</button><button class="ds-btn" data-variant="ghost" type="button">Ghost</button><button class="ds-btn" data-variant="danger" type="button">Danger</button></div>
-          <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-state="hover" type="button">Hover</button><button class="ds-btn" data-variant="secondary" data-state="focus" type="button">Focus</button><button class="ds-btn" data-variant="secondary" data-state="disabled" type="button">Disabled</button></div>
+          <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-state="hover" type="button">Hover</button><button class="ds-btn" data-variant="secondary" data-state="focus" type="button">Focus</button><button class="ds-btn" data-variant="secondary" data-state="disabled" type="button" disabled>Disabled</button></div>
           <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">xs</button><button class="ds-btn" data-variant="secondary" data-size="compact" type="button">compact</button><button class="ds-btn" data-variant="secondary" data-size="tall" type="button">tall</button></div>
         </div>
         <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
           <div class="spec-row"><button class="ds-btn" data-variant="primary" type="button">Primary</button><button class="ds-btn" data-variant="secondary" type="button">Secondary</button><button class="ds-btn" data-variant="ghost" type="button">Ghost</button><button class="ds-btn" data-variant="danger" type="button">Danger</button></div>
-          <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-state="hover" type="button">Hover</button><button class="ds-btn" data-variant="secondary" data-state="focus" type="button">Focus</button><button class="ds-btn" data-variant="secondary" data-state="disabled" type="button">Disabled</button></div>
+          <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-state="hover" type="button">Hover</button><button class="ds-btn" data-variant="secondary" data-state="focus" type="button">Focus</button><button class="ds-btn" data-variant="secondary" data-state="disabled" type="button" disabled>Disabled</button></div>
           <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">xs</button><button class="ds-btn" data-variant="secondary" data-size="compact" type="button">compact</button><button class="ds-btn" data-variant="secondary" data-size="tall" type="button">tall</button></div>
         </div>
         <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
           <div class="spec-row"><button class="ds-btn" data-variant="primary" type="button">Primary</button><button class="ds-btn" data-variant="secondary" type="button">Secondary</button><button class="ds-btn" data-variant="ghost" type="button">Ghost</button><button class="ds-btn" data-variant="danger" type="button">Danger</button></div>
-          <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-state="hover" type="button">Hover</button><button class="ds-btn" data-variant="secondary" data-state="focus" type="button">Focus</button><button class="ds-btn" data-variant="secondary" data-state="disabled" type="button">Disabled</button></div>
+          <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-state="hover" type="button">Hover</button><button class="ds-btn" data-variant="secondary" data-state="focus" type="button">Focus</button><button class="ds-btn" data-variant="secondary" data-state="disabled" type="button" disabled>Disabled</button></div>
           <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">xs</button><button class="ds-btn" data-variant="secondary" data-size="compact" type="button">compact</button><button class="ds-btn" data-variant="secondary" data-size="tall" type="button">tall</button></div>
         </div>
         </div>
@@ -1327,22 +855,22 @@ footer code{color:var(--g-ink)}
         <div class="spec-grid">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
-          <div class="spec-row"><button class="ds-icon-btn" type="button" aria-label="Close"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button><button class="ds-icon-btn" data-variant="circle" type="button" aria-label="More"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-more-h"></use></svg></button><button class="ds-icon-btn" data-variant="circle" data-state="focus" type="button" aria-label="Settings"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-gear"></use></svg></button><button class="ds-icon-btn" data-state="hover" type="button" aria-label="Search"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-search"></use></svg></button><button class="ds-icon-btn" data-state="disabled" type="button" aria-label="Delete"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-trash"></use></svg></button></div>
+          <div class="spec-row"><button class="ds-icon-btn" type="button" aria-label="Close"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button><button class="ds-icon-btn" data-variant="circle" type="button" aria-label="More"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-more-h"></use></svg></button><button class="ds-icon-btn" data-variant="circle" data-state="focus" type="button" aria-label="Settings"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-gear"></use></svg></button><button class="ds-icon-btn" data-state="hover" type="button" aria-label="Search"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-search"></use></svg></button><button class="ds-icon-btn" data-state="disabled" type="button" aria-label="Delete" disabled><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-trash"></use></svg></button></div>
           <span class="spec-row"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-moon"></use></svg><svg class="ds-icon ds-icon--md" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-sun"></use></svg><svg class="ds-icon ds-icon--lg" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-play"></use></svg><span class="kicker">sm · md · lg</span></span>
         </div>
         <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
-          <div class="spec-row"><button class="ds-icon-btn" type="button" aria-label="Close"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button><button class="ds-icon-btn" data-variant="circle" type="button" aria-label="More"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-more-h"></use></svg></button><button class="ds-icon-btn" data-variant="circle" data-state="focus" type="button" aria-label="Settings"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-gear"></use></svg></button><button class="ds-icon-btn" data-state="hover" type="button" aria-label="Search"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-search"></use></svg></button><button class="ds-icon-btn" data-state="disabled" type="button" aria-label="Delete"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-trash"></use></svg></button></div>
+          <div class="spec-row"><button class="ds-icon-btn" type="button" aria-label="Close"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button><button class="ds-icon-btn" data-variant="circle" type="button" aria-label="More"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-more-h"></use></svg></button><button class="ds-icon-btn" data-variant="circle" data-state="focus" type="button" aria-label="Settings"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-gear"></use></svg></button><button class="ds-icon-btn" data-state="hover" type="button" aria-label="Search"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-search"></use></svg></button><button class="ds-icon-btn" data-state="disabled" type="button" aria-label="Delete" disabled><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-trash"></use></svg></button></div>
           <span class="spec-row"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-moon"></use></svg><svg class="ds-icon ds-icon--md" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-sun"></use></svg><svg class="ds-icon ds-icon--lg" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-play"></use></svg><span class="kicker">sm · md · lg</span></span>
         </div>
         <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
-          <div class="spec-row"><button class="ds-icon-btn" type="button" aria-label="Close"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button><button class="ds-icon-btn" data-variant="circle" type="button" aria-label="More"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-more-h"></use></svg></button><button class="ds-icon-btn" data-variant="circle" data-state="focus" type="button" aria-label="Settings"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-gear"></use></svg></button><button class="ds-icon-btn" data-state="hover" type="button" aria-label="Search"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-search"></use></svg></button><button class="ds-icon-btn" data-state="disabled" type="button" aria-label="Delete"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-trash"></use></svg></button></div>
+          <div class="spec-row"><button class="ds-icon-btn" type="button" aria-label="Close"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button><button class="ds-icon-btn" data-variant="circle" type="button" aria-label="More"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-more-h"></use></svg></button><button class="ds-icon-btn" data-variant="circle" data-state="focus" type="button" aria-label="Settings"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-gear"></use></svg></button><button class="ds-icon-btn" data-state="hover" type="button" aria-label="Search"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-search"></use></svg></button><button class="ds-icon-btn" data-state="disabled" type="button" aria-label="Delete" disabled><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-trash"></use></svg></button></div>
           <span class="spec-row"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-moon"></use></svg><svg class="ds-icon ds-icon--md" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-sun"></use></svg><svg class="ds-icon ds-icon--lg" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-play"></use></svg><span class="kicker">sm · md · lg</span></span>
         </div>
         <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
-          <div class="spec-row"><button class="ds-icon-btn" type="button" aria-label="Close"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button><button class="ds-icon-btn" data-variant="circle" type="button" aria-label="More"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-more-h"></use></svg></button><button class="ds-icon-btn" data-variant="circle" data-state="focus" type="button" aria-label="Settings"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-gear"></use></svg></button><button class="ds-icon-btn" data-state="hover" type="button" aria-label="Search"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-search"></use></svg></button><button class="ds-icon-btn" data-state="disabled" type="button" aria-label="Delete"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-trash"></use></svg></button></div>
+          <div class="spec-row"><button class="ds-icon-btn" type="button" aria-label="Close"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button><button class="ds-icon-btn" data-variant="circle" type="button" aria-label="More"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-more-h"></use></svg></button><button class="ds-icon-btn" data-variant="circle" data-state="focus" type="button" aria-label="Settings"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-gear"></use></svg></button><button class="ds-icon-btn" data-state="hover" type="button" aria-label="Search"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-search"></use></svg></button><button class="ds-icon-btn" data-state="disabled" type="button" aria-label="Delete" disabled><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-trash"></use></svg></button></div>
           <span class="spec-row"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-moon"></use></svg><svg class="ds-icon ds-icon--md" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-sun"></use></svg><svg class="ds-icon ds-icon--lg" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-play"></use></svg><span class="kicker">sm · md · lg</span></span>
         </div>
         </div>
@@ -2140,7 +1668,7 @@ footer code{color:var(--g-ink)}
 
   function paintCell(td, key, m, dark) {
     var code = td.querySelector('code'), note = td.querySelector('.note');
-    td.querySelectorAll('.badge-dev,.cite').forEach(function (n) { n.remove(); });
+    td.querySelectorAll('.ds-badge,.cite').forEach(function (n) { n.remove(); });
     if (!m) {
       if (code) code.textContent = 'unavailable';
       if (note) note.textContent = 'probe failed — this page must be served over http';
@@ -2152,7 +1680,8 @@ footer code{color:var(--g-ink)}
     if (note) note.textContent = parts.filter(Boolean).join(' · ');
     if (deviates(key, m)) {
       var badge = document.createElement('span');
-      badge.className = 'badge-dev';
+      badge.className = 'ds-badge';
+      badge.setAttribute('data-variant', 'danger');
       badge.textContent = 'deviation';
       td.insertBefore(badge, td.firstChild);
       var cite = td.getAttribute('data-cite');
