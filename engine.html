@@ -1,7 +1,8 @@
-<!doctype html><html lang="en" data-ds-theme="engine"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0B0B0D"><!-- lint-allow: meta theme-color cannot resolve custom properties; value mirrors --color-engine-surface-0 (#0B0B0D) --><title>Prompt Engine — Camera Shots</title>
+<!doctype html><html lang="en" data-ds-theme="pitch" data-ds-shell="pitch"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0A0A0B"><!-- lint-allow: meta theme-color cannot resolve custom properties; value mirrors --color-pitch-bg (#0A0A0B) --><title>Prompt Engine — Camera Shots</title>
 <link rel="stylesheet" href="design-system/tokens.css">
 <link rel="stylesheet" href="design-system/base.css">
 <link rel="stylesheet" href="design-system/components.css">
+<link rel="stylesheet" href="engine-pitch.css">
 <style>
 /* --------------------------------------------------------------------------
    Alias layer. Every local engine var resolves to a design-system token from
@@ -9,30 +10,34 @@
    Nothing below may carry a literal paint value; add tokens upstream instead.
    -------------------------------------------------------------------------- */
 :root{
-  --bg:var(--color-engine-surface-0);
-  --panel:var(--color-engine-surface-1);
-  --panel-deep:var(--color-engine-surface-deep);
-  --ink:var(--color-engine-text-primary);
-  --mut:var(--color-engine-text-secondary);
-  --mut2:var(--color-engine-text-secondary);
-  --code:var(--color-engine-text-primary);
-  --tool:var(--color-engine-tool);
-  --tool-hover:var(--color-pro-tool-hover);
-  --border:var(--color-engine-divider);
-  --border-strong:var(--color-engine-divider-strong);
+  /* pitch shell: every alias below resolves to a --color-pitch-* token, so the
+     chrome and the canvas read one warm palette. Functional canvas colours
+     (tracks, status, selection) stay on their own tokens — see engine-pitch.css. */
+  --bg:var(--color-pitch-bg);
+  --panel:var(--color-pitch-surface-1);
+  --panel-deep:var(--color-pitch-switch-bg);
+  --ink:var(--color-pitch-ink);
+  --mut:var(--color-pitch-muted);
+  --mut2:var(--color-pitch-muted-2);
+  --code:var(--color-pitch-body);
+  --tool:var(--color-pitch-switch-bg);
+  --tool-hover:var(--color-pitch-surface-2);
+  --border:var(--color-pitch-rule);
+  --border-strong:var(--color-pitch-rule);
   --sel:var(--color-engine-selection);
-  --acc:var(--color-engine-accent);
-  --teal:var(--color-engine-divider-strong);
-  --teal-bright:var(--color-engine-text-primary);
+  --acc:var(--color-pitch-accent);
+  --acc-ink:var(--color-pitch-accent-ink);
+  --teal:var(--color-pitch-accent);
+  --teal-bright:var(--color-pitch-accent);
   --danger:var(--color-status-danger);
   --_danger-ink:var(--color-status-danger-ink-dark);
   --tap:var(--touch-preferred);
   --tap-min:var(--touch-min);
   --bar-h:var(--layout-bar-engine);
   /* one ring for the whole surface: components paint :focus-visible at 0,2,0,
-     which beats the page ring below; re-point the token default (--ds-accent)
-     at the engine ink so every control keeps today's ring */
-  --focus-color:var(--color-engine-text-primary);
+     which beats the page ring below; re-point --focus-color at the pitch accent
+     so every control, canvas included, takes the cream ring */
+  --focus-color:var(--color-pitch-accent);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow-x:clip}
@@ -53,8 +58,8 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 #cv{flex:1;width:auto;display:block;margin:var(--spacing-xs);background:var(--color-engine-canvas);border:var(--border-width-hairline) solid var(--border-strong);cursor:grab;touch-action:none}
 /* the canvas is a focusable application region (keyboard layer, Task 25): its
    ring is drawn inside the frame so a full-bleed stage can never clip it, and it
-   is neutral ink — the selection accent stays reserved for the selected card */
-#cv:focus-visible{outline-style:solid;outline-width:var(--focus-width);outline-color:var(--color-engine-text-primary);outline-offset:calc(-1 * var(--focus-offset))}
+   is the pitch cream — the same accent as every other control's ring */
+#cv:focus-visible{outline-style:solid;outline-width:var(--focus-width);outline-color:var(--color-pitch-accent);outline-offset:calc(-1 * var(--focus-offset))}
 .hint{position:fixed;left:1rem;bottom:.8rem;color:var(--color-engine-text-primary);font-size:var(--typography-size-meta);pointer-events:none;max-width:90vw}
 #arrowpick{position:fixed;z-index:var(--z-bar);background:var(--panel);color:var(--ink);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-sm);box-shadow:var(--elevation-popover);padding:var(--spacing-xs) var(--spacing-10);font:var(--typography-size-timecode)/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column;gap:var(--spacing-6);user-select:none}
 #arrowpick[hidden]{display:none}
@@ -146,10 +151,10 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 #chapterbar button:hover{border-color:var(--color-engine-text-secondary)}
 #chapterbar .sp{flex:1}
 /* state: the visible chapter is the active one — selection colour marks it (declared on the base rule above) */
-/* primary affordance: one white/ink control per view (+ scene, or + shot/prop/cast/location) */
-#chapterbar #addScene,#addNode{background:var(--color-engine-text-primary);border-color:transparent;color:var(--color-engine-surface-0);font-weight:700}
-#chapterbar #addScene:hover,#addNode:hover{background:var(--color-engine-text-primary);border-color:transparent;color:var(--color-engine-surface-0)}
-#projBtn{border-color:var(--teal)}
+/* primary affordance: one cream control per view (+ scene, or + shot/prop/cast/location) */
+#chapterbar #addScene,#addNode{background:var(--acc);border-color:var(--acc);color:var(--acc-ink);font-weight:700}
+#chapterbar #addScene:hover,#addNode:hover{background:var(--acc);border-color:var(--acc);color:var(--acc-ink);filter:brightness(1.06)}
+#projBtn{border-color:var(--border-strong)}
 #anchorRow{display:flex;gap:var(--spacing-xs);align-items:center;font-size:var(--typography-size-meta);margin:var(--spacing-6) 0;flex-wrap:nowrap}
 #anchorRow code,#anchorRow button{min-height:var(--touch-min);display:inline-flex;align-items:center;padding:0 var(--spacing-10);font-size:var(--typography-size-meta);line-height:1;border-radius:var(--radius-xs);white-space:nowrap;margin:0;box-sizing:border-box}
 #anchorRow code{background:var(--panel-deep);border:var(--border-width-hairline) solid var(--teal);color:var(--teal-bright);cursor:pointer}
@@ -411,7 +416,7 @@ input.tin.tin-pilled{color:transparent !important}
    only exception is the visually hidden switch input, which paints the ring on
    its sibling track so the 34x19 glyph stays the visual affordance.
    -------------------------------------------------------------------------- */
-:focus-visible{outline:var(--focus-width) solid var(--color-engine-text-primary);outline-offset:var(--focus-offset)}
+:focus-visible{outline:var(--focus-width) solid var(--color-pitch-accent);outline-offset:var(--focus-offset)}
 :focus:not(:focus-visible){outline:none}
 .sw input:focus-visible{outline:none}
 /* --------------------------------------------------------------------------

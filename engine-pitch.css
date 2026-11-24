@@ -1,0 +1,87 @@
+/* ==========================================================================
+   engine-pitch.css — page-local pitch shell for engine.html
+
+   Loaded after design-system/{tokens,base,components}.css. It does two things:
+   1. re-point the engine paint tokens that the canvas and the JS-built popovers
+      read directly, so the stage and the chrome share the pitch palette;
+   2. restate the handful of engine states that were authored as generic
+      "selection" (yellow) where the pitch language wants cream chrome.
+
+   Chrome only. Track colours (--color-engine-track-*), status colours
+   (--color-status-*) and the canvas selection token are deliberately NOT
+   remapped: they are functional, not decorative.
+
+   No literal paint values below. Everything resolves through tokens.css.
+   ========================================================================== */
+
+/* 1 · paint bridge --------------------------------------------------------
+   --color-engine-* is what CT()/WA() read inside the canvas and what the
+   inline styles on the assets popover use. Re-pointing the surfaces here keeps
+   card fills, scene fills and the stage in the same warm family as the chrome
+   without touching a single geometry value. */
+html[data-ds-shell="pitch"]{
+  --color-engine-surface-0:var(--color-pitch-bg);
+  --color-engine-surface-1:var(--color-pitch-surface-1);
+  --color-engine-surface-2:var(--color-pitch-surface-2);
+  --color-engine-surface-deep:var(--color-pitch-switch-bg);
+  --color-engine-canvas:var(--color-pitch-bg);
+  --color-engine-text-primary:var(--color-pitch-ink);
+  --color-engine-text-secondary:var(--color-pitch-muted);
+  --color-engine-divider:var(--color-pitch-rule);
+  --color-engine-divider-strong:var(--color-pitch-rule);
+  --color-engine-tool:var(--color-pitch-switch-bg);
+  --color-engine-accent:var(--color-pitch-accent);
+  --color-engine-accent-ink:var(--color-pitch-accent-ink);
+  --color-engine-overlay-panel:color-mix(in srgb,var(--color-pitch-surface-1) 94%,transparent);
+  --color-engine-wash-25:color-mix(in srgb,var(--color-pitch-ink) 25%,transparent);
+}
+
+/* 2 · primary actions: cream surface, dark ink ---------------------------- */
+html[data-ds-shell="pitch"] #toastBtn,
+html[data-ds-shell="pitch"] #goShot,
+html[data-ds-shell="pitch"] #drawerAddImg,
+html[data-ds-shell="pitch"] #projClose{
+  background:var(--color-pitch-accent);
+  border-color:var(--color-pitch-accent);
+  color:var(--color-pitch-accent-ink);
+}
+html[data-ds-shell="pitch"] #toastBtn:hover,
+html[data-ds-shell="pitch"] #goShot:hover,
+html[data-ds-shell="pitch"] #drawerAddImg:hover,
+html[data-ds-shell="pitch"] #projClose:hover{filter:brightness(1.06)}
+
+/* 3 · chrome active state: cream, not the canvas selection yellow --------- */
+html[data-ds-shell="pitch"] #side button.on,
+html[data-ds-shell="pitch"] #projNav button.on,
+html[data-ds-shell="pitch"] #pmNav button.on{border-left-color:var(--color-pitch-accent)}
+html[data-ds-shell="pitch"] #chapterbar select{border-left-color:var(--color-pitch-accent)}
+html[data-ds-shell="pitch"] #menDrop button.on{box-shadow:inset var(--border-width-strong) 0 0 var(--color-pitch-accent)}
+html[data-ds-shell="pitch"] #arrowpick button.on,
+html[data-ds-shell="pitch"] .modal .tabs button.on,
+html[data-ds-shell="pitch"] #assetBtn[aria-expanded="true"]{
+  border-color:var(--color-pitch-accent);
+  color:var(--color-pitch-accent);
+}
+
+/* 4 · switch on-state: accent track, dark knob ---------------------------- */
+html[data-ds-shell="pitch"] .sw input:checked + .sl{
+  background:var(--color-pitch-accent);
+  border-color:var(--color-pitch-accent);
+}
+html[data-ds-shell="pitch"] .sw input:checked + .sl::after{background:var(--color-pitch-accent-ink)}
+
+/* 5 · text selection inside mention-pilled inputs: cream, dark ink -------- */
+html[data-ds-shell="pitch"] .tin-pilled::selection{
+  background:var(--color-pitch-accent);
+  color:var(--color-pitch-accent-ink);
+}
+
+/* 6 · phone nav: the bottom transport bar reads left-to-right, so the rail's
+   left edge becomes a top rule. Inset shadow keeps the bar height unchanged
+   (the canvas bottom pad is pinned to --bar-h). */
+@media (max-width:860px){/* lint-allow: 860px matches the engine's header/sidebar collapse query */
+  html[data-ds-shell="pitch"] #side button.on{
+    border-left-color:transparent;
+    box-shadow:inset 0 2px 0 var(--color-pitch-accent);
+  }
+}
