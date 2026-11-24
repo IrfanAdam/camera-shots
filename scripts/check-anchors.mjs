@@ -45,7 +45,9 @@ function repoFiles() {
       .split('\0')
       .filter(Boolean);
     const files = new Set([...list(['ls-files', '-z']), ...list(['ls-files', '-z', '-o', '--exclude-standard'])]);
-    return [...files].filter((f) => !SKIP_DIRS.some((dir) => f.startsWith(dir)));
+    return [...files].filter((f) => !SKIP_DIRS.some((dir) => f.startsWith(dir))
+      /* a nested install (scripts/a11y/node_modules) is never repo content */
+      && !f.includes('/node_modules/'));
   } catch (err) {
     console.error(`FAIL: cannot enumerate repository files — ${err.message}`);
     process.exit(2);

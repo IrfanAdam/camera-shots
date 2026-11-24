@@ -1,0 +1,18 @@
+{
+  "name": "ds-a11y-checks",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Pinned browser harness for the DS accessibility gate (axe, keyboard). Not a runtime dependency of the site.",
+  "type": "module",
+  "dependencies": {
+    "axe-core": "4.10.3",
+    "puppeteer": "24.15.0"
+  },
+  "scripts": {
+    "contrast": "node ../check-contrast.mjs",
+    "targets": "node ../check-targets.mjs",
+    "axe": "node ../check-axe.mjs",
+    "keyboard": "node ../check-keyboard.mjs",
+    "all": "node ../check-contrast.mjs && node ../check-targets.mjs && node ../check-axe.mjs && node ../check-keyboard.mjs"
+  }
+}
