@@ -41,13 +41,21 @@ p{font-size:var(--typography-size-body)}.ad{margin-top:var(--spacing-14);border-
 .panel .ds-copy{margin-top:var(--spacing-14);flex-wrap:wrap}
 .panel .ds-copy__code{font-weight:var(--weight-heavy)}
 .map{margin-top:var(--spacing-10)}
-.map th{text-align:left;font-family:var(--typography-family-mono);font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--mut);padding:var(--spacing-6) var(--spacing-xs);border-bottom:var(--border-width-hairline) solid var(--rule)}
-.map td{border-block-start:0;padding:var(--spacing-6) var(--spacing-xs);border-bottom:var(--border-width-hairline) solid var(--rule);vertical-align:top}
+.map th{text-align:left;font-family:var(--typography-family-mono);font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--mut);padding:0 var(--spacing-xs);block-size:var(--spacing-xl);vertical-align:middle;border-bottom:var(--border-width-hairline) solid var(--rule)}
+.map td{border-block-start:0;padding:0 var(--spacing-xs);border-bottom:var(--border-width-hairline) solid var(--rule);vertical-align:middle}
 .map td code{font-family:var(--typography-family-mono);font-weight:var(--weight-bold);color:var(--ink);white-space:nowrap}
-.map td button{background:none;border:var(--border-width-hairline) solid var(--rule);color:var(--ink);border-radius:var(--radius-xs);padding:var(--spacing-2) var(--spacing-10);font:inherit;font-size:var(--typography-size-timecode);cursor:pointer;white-space:nowrap;transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}
-.map td .maplink{background:none;border:0;padding:0;font:inherit;font-size:var(--typography-size-small);color:var(--mut);cursor:pointer;text-decoration:underline;text-underline-offset:var(--border-width-strong)}
+.map td button{background:none;border:var(--border-width-hairline) solid var(--rule);color:var(--ink);border-radius:var(--radius-xs);padding:var(--spacing-2) var(--spacing-10);font:inherit;font-size:var(--typography-size-timecode);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}
+.map td .maplink{background:none;border:0;margin:0;padding:0;font:inherit;font-size:var(--typography-size-small);color:var(--mut);cursor:pointer;text-decoration:none;text-underline-offset:var(--border-width-strong)}
+.map td .maplink:is(:hover,:focus-visible){text-decoration:underline;text-decoration-thickness:var(--border-width-hairline)}
 .map td .maplink code{color:var(--ink);text-decoration:inherit}
 .mapacts{display:flex;gap:var(--spacing-6)}
+.map td .mapacts{margin-inline-start:calc(-1 * var(--border-width-hairline))} /* cancels the action button's own hairline so its edge starts on the column's text axis */
+/* row-group head: one per group, mobile only. Desktop keeps the 4-column table
+   and drops it, so the 97 rows are declared once. */
+.map .map-grouphead{display:none}
+/* the two row actions are the thumb target: base.css §6/§8 set 40 (fine) and 44
+   (coarse) once [data-ds-compact] is gone; this only pins the square width */
+.mapacts button{min-inline-size:var(--touch-min)}
 .steps{display:flex;gap:var(--spacing-xs);margin:var(--spacing-sm) 0 var(--spacing-2xs);flex-wrap:wrap}
 .step{font-size:var(--typography-size-body);font-weight:var(--weight-semibold);padding:var(--spacing-xs) var(--spacing-2);margin-right:var(--spacing-18);border:none;border-bottom:var(--border-width-strong) solid transparent;background:none;color:var(--mut);cursor:pointer;border-radius:var(--radius-none);min-height:var(--control-height-default);transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}
 .step:hover{color:var(--ink)}
@@ -61,9 +69,31 @@ footer{margin:var(--spacing-xl) 0 var(--spacing-md);color:var(--mut);font-size:v
 @media(max-width:800px){.main{grid-template-columns:1fr}.list{flex-direction:row;max-height:none;overflow-x:auto;overflow-y:hidden;align-items:center}.count{width:auto;flex:none}}/* lint-allow: 800px sits between --breakpoint-md 767.5 and --breakpoint-lg 900; snapping moves the mobile rail 32-100px */
 /* mobile excellence (additive): bottom step rail, stacked map cards, 44px targets, reduced motion */
 @media(max-width:800px){/* lint-allow: 800px rail block matches the query above; 800 sits between --breakpoint-md 767.5 and --breakpoint-lg 900 */
-body{padding-bottom:5.4rem} /* lint-allow: 5.4rem mobile step-rail clearance is layout geometry, not UI rhythm */
-.steps{position:fixed;bottom:calc(.7rem + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);z-index:var(--z-bar);gap:var(--spacing-2);background:var(--card);border:var(--border-width-hairline) solid var(--rule);border-radius:var(--radius-sm);padding:var(--spacing-2xs) var(--spacing-xs);margin:0;box-shadow:var(--elevation-float);max-width:calc(100vw - 1.5rem);overflow-x:auto;flex-wrap:nowrap}
+body{padding-bottom:calc(var(--control-height-touch) + var(--spacing-xs) + var(--border-width-hairline) * 2 + var(--spacing-xs) + var(--spacing-md) + env(safe-area-inset-bottom,0px))} /* measured: rail 44 + its 8px padding + 2 hairlines, sat 8px off the edge, plus a 16px gap so the last card clears it */
+.steps{position:fixed;bottom:calc(var(--spacing-xs) + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);z-index:var(--z-bar);gap:var(--spacing-2);background:var(--card);border:var(--border-width-hairline) solid var(--rule);border-radius:var(--radius-sm);padding:var(--spacing-2xs) var(--spacing-xs);margin:0;box-shadow:var(--elevation-float);max-width:calc(100vw - 1.5rem);overflow-x:auto;flex-wrap:nowrap}
 .step{margin-right:var(--spacing-2xs);white-space:nowrap;border-bottom-color:transparent}
+}
+
+/* compact grouped map, ≤--breakpoint-sm 639: the DS table stacks into labelled
+   cards at a 40rem container, so this replaces those labels with one head per
+   group. Token, phrase and the two 40px actions per row; no repeated labels. */
+@media(max-width:639px){
+.map thead{display:none}
+.map tbody{display:block}
+.map tbody.map-group{margin-block-end:var(--spacing-md)}
+.map .map-grouphead{display:block}
+.map .map-grouphead th{display:block;block-size:auto;padding:var(--spacing-6) var(--spacing-xs);border:0;border-start-start-radius:var(--radius-xs);border-start-end-radius:var(--radius-xs);background:var(--acc2);color:var(--ink);font-size:var(--typography-size-meta)}
+.map tr:not(.map-grouphead){display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:var(--spacing-2xs) var(--spacing-xs);margin:0;padding:var(--spacing-6) var(--spacing-xs);border:0;border-block-end:var(--border-width-hairline) solid var(--rule);border-radius:var(--radius-none);background:transparent}
+.map td{display:block;padding:0;border:0}
+.map td::before{content:none}
+.map td[data-label="Group"]{display:none}
+.map td[data-label="Token"]{grid-area:1/1/2/2}
+.map td[data-label="Prompt phrase"]{grid-area:2/1/3/2;color:var(--mut)}
+.map td[data-label="Actions"]{grid-area:1/2/3/3;justify-self:end}
+.mapacts{gap:var(--spacing-xs)}
+#search{flex:1 0 100%;min-width:0}
+.list{scrollbar-width:thin;scrollbar-color:var(--rule) transparent;padding-inline-end:var(--spacing-md);mask-image:linear-gradient(to right,currentColor calc(100% - var(--spacing-2xl)),transparent)}
+.list .ds-chip{flex:none;white-space:nowrap}
 }
 @media(pointer:coarse){
 .step,.eng,.pitch,.go{min-height:var(--control-height-touch);display:inline-flex;align-items:center}
@@ -78,7 +108,7 @@ body{padding-bottom:5.4rem} /* lint-allow: 5.4rem mobile step-rail clearance is 
 <header class="top"><h1>Cinematography and Direction Wiki</h1><nav class="hright" aria-label="Other pages"><span class="by">by irfan</span><a class="pitch" href="pitch.html">pitch →</a><a class="eng" href="engine.html">engine →</a></nav></header>
 <main id="main" tabindex="-1">
 <p class="sub">A working reference for how films are shot and directed. Pick a concept, see what it does for the story, watch it explained, and copy the prompt phrase to use it.</p>
-<div class="controls"><label class="ds-sr-only" for="search">Filter cards in this tab</label><input id="search" class="ds-input" type="search" placeholder="Filter this tab… (e.g. rack, golden, 180)" autocomplete="off"><div class="ds-theme-toggle" role="group" aria-label="Colour theme"><button type="button" class="ds-btn" data-variant="ghost" data-theme-set="light" aria-pressed="false" aria-label="Light theme" title="Light theme">☀</button><button type="button" class="ds-btn" data-variant="ghost" data-theme-set="dark" aria-pressed="false" aria-label="Dark theme" title="Dark theme">☾</button></div></div>
+<div class="controls"><label class="ds-sr-only" for="search">Filter cards in this tab</label><input id="search" class="ds-input" type="search" placeholder="Filter this tab…" aria-describedby="search-hint" autocomplete="off"><span class="ds-sr-only" id="search-hint">Examples: rack, golden, 180.</span><div class="ds-theme-toggle" role="group" aria-label="Colour theme"><button type="button" class="ds-btn" data-variant="ghost" data-theme-set="light" aria-pressed="false" aria-label="Light theme" title="Light theme">☀</button><button type="button" class="ds-btn" data-variant="ghost" data-theme-set="dark" aria-pressed="false" aria-label="Dark theme" title="Dark theme">☾</button></div></div>
 <div class="steps" id="steps" role="region" aria-label="Steps" tabindex="0"></div><div class="blurb" id="blurb"></div><div class="ds-tabs" id="tabs"></div>
 <div class="main"><div class="list" id="list" role="region" aria-label="Cards in this tab" tabindex="0"></div><div class="panel" id="panel"></div></div>
 </main>
@@ -304,10 +334,14 @@ function mapRows(){let rows=[];GROUPS.forEach(g=>D[g].items.forEach(x=>rows.push
 if(mapGroup!='All')rows=rows.filter(r=>r.g==mapGroup);
 if(q){const s=q.toLowerCase();rows=rows.filter(r=>(r.n+' '+r.c+' '+r.p).toLowerCase().includes(s))}
 return rows}
+/* one tbody per group, in GROUPS order, so the group name is declared once; the
+   head row is mobile-only (desktop shows the 4-column table instead) */
+function mapGroups(rows){const out=[];rows.forEach(r=>{const last=out[out.length-1];if(!last||last.g!==r.g)out.push({g:r.g,rows:[]});out[out.length-1].rows.push(r)});return out}
+const mapRow=r=>`<tr><td data-label="Group"><button type="button" class="maplink" data-ds-compact data-view="${r.g}" data-code="${r.c}" data-ds-key="mapg-${r.c}">${r.g}</button></td><td data-label="Token"><button type="button" class="maplink" data-ds-compact data-view="${r.g}" data-code="${r.c}" data-ds-key="mapt-${r.c}"><code>${r.c}</code></button></td><td data-label="Prompt phrase">${r.p}</td><td data-label="Actions"><span class="mapacts"><button type="button" data-ds-copy="${r.c} — ${r.p}" data-ds-copy-message="Copied ${r.c} prompt phrase" aria-label="Copy ${r.c} prompt phrase">Copy</button><button type="button" data-view="${r.g}" data-code="${r.c}" title="Open card in wiki" aria-label="Open the ${r.c} card">↗</button></span></td></tr>`;
 function mapPanel(){const rows=mapRows();
 return `<div class="k" style="margin-top:0">Every token in one table — copy a phrase straight into a prompt · click a token to open its card</div>
-<div class="ds-table-wrap"><table class="ds-table map"><caption class="ds-sr-only">Every prompt token with its group, code and phrase, plus a copy action</caption><thead><tr><th scope="col">Group</th><th scope="col">Token</th><th scope="col">Prompt phrase</th><th scope="col"><span class="ds-sr-only">Actions</span></th></tr></thead><tbody>
-${rows.map(r=>`<tr><td data-label="Group"><button type="button" class="maplink" data-ds-compact data-view="${r.g}" data-code="${r.c}" data-ds-key="mapg-${r.c}">${r.g}</button></td><td data-label="Token"><button type="button" class="maplink" data-ds-compact data-view="${r.g}" data-code="${r.c}" data-ds-key="mapt-${r.c}"><code>${r.c}</code></button></td><td data-label="Prompt phrase">${r.p}</td><td data-label="Actions"><span class="mapacts"><button type="button" data-ds-compact data-ds-copy="${r.c} — ${r.p}" data-ds-copy-message="Copied ${r.c} prompt phrase" aria-label="Copy ${r.c} prompt phrase">Copy</button><button type="button" data-ds-compact data-view="${r.g}" data-code="${r.c}" title="Open card in wiki" aria-label="Open the ${r.c} card">↗</button></span></td></tr>`).join('')||'<tr><td colspan="4">No matches.</td></tr>'}</tbody></table></div>
+<div class="ds-table-wrap"><table class="ds-table map"><caption class="ds-sr-only">Every prompt token with its group, code and phrase, plus a copy action</caption><thead><tr><th scope="col">Group</th><th scope="col">Token</th><th scope="col">Prompt phrase</th><th scope="col"><span class="ds-sr-only">Actions</span></th></tr></thead>
+${rows.length?mapGroups(rows).map(g=>`<tbody class="map-group" data-group="${g.g}"><tr class="map-grouphead"><th colspan="4" scope="colgroup">${g.g}</th></tr>${g.rows.map(mapRow).join('')}</tbody>`).join(''):'<tbody><tr><td colspan="4">No matches.</td></tr></tbody>'}</table></div>
 <div class="ds-pager"><span>${rows.length} tokens</span><button type="button" class="ds-btn" data-variant="ghost" data-copyall="1" data-ds-copy-message="Copied all ${rows.length} prompt phrases">Copy all (${mapGroup})</button></div>`}
 function draw(){
 const curStep=stepOf(tab);
