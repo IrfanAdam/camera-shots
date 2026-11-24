@@ -28,7 +28,7 @@ Read order: [README](README.md) → this file → [components](components.md) �
 
 It is a **count of occurrences**, not the gate's T8 presence test: T8 asks only whether a product page, a theme cell or `components.css` names a token at all, and excludes the gallery. So a key can be T8-unconsumed and still show a non-zero count here — read the breakdown the gate prints, not this column, when judging orphans.
 
-Totals at committed HEAD: **1561 consumer references** across 186 keys, **16** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `elevation.inset`, `elevation.ring`, `focus.color`, `icon.size.lg`, `icon.size.md`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `spacing.section`, `tracking.label`).
+Totals at committed HEAD: **1471 consumer references** across 186 keys, **16** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `elevation.inset`, `elevation.ring`, `focus.color`, `icon.size.lg`, `icon.size.md`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `spacing.section`, `tracking.label`).
 
 Under the gate's narrower **T8** scope — `var()` in the three product pages plus theme-map cells plus `components.css`, gallery excluded, aliases and `breakpoint.*` exempt — **10** key(s) are unconsumed: `color.engine.track.audio`, `color.engine.track.fx`, `color.engine.track.title`, `elevation.inset`, `elevation.ring`, `icon.size.lg`, `icon.size.md`, `radius.lg`, `spacing.section`, `tracking.label`. Keys that differ between the two views are canvas-only (`CT()`/`WA()` strings the gate cannot see) or gallery-only consumers; `scripts/lint-tokens.mjs` prints the authoritative list and its budget note.
 
@@ -140,8 +140,8 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
 | `border.width.accent` | `3px` | dimension | — | 1 (1/0/0) |
-| `border.width.hairline` | `1px` | dimension | — | 119 (119/0/0) |
-| `border.width.strong` | `2px` | dimension | — | 9 (9/0/0) |
+| `border.width.hairline` | `1px` | dimension | — | 113 (113/0/0) |
+| `border.width.strong` | `2px` | dimension | — | 10 (10/0/0) |
 
 ### breakpoint
 
@@ -212,7 +212,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `color.status.info` | `#8A5CF6` | color | status.info | 6 (1/4/1) |
 | `color.status.success` | `#2E7D46` | color | status.success | 3 (1/1/1) |
 | `color.status.warning` | `#B86A00` | color | status.warning | 3 (0/2/1) |
-| `color.wiki.dark.accent` | `#5CC4D0` | color | accent | 9 (7/1/1) |
+| `color.wiki.dark.accent` | `#5CC4D0` | color | accent | 7 (5/1/1) |
 | `color.wiki.dark.accent.wash` | `#12383D` | color | bg.accent.soft | 4 (2/1/1) |
 | `color.wiki.dark.amber` | `#F0A648` | color | status.warning | 11 (8/2/1) |
 | `color.wiki.dark.bg` | `#0E1213` | color | bg.page, fg.on.accent | 5 (2/2/1) |
@@ -220,7 +220,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `color.wiki.dark.ink` | `#ECF1F1` | color | fg.primary | 4 (2/1/1) |
 | `color.wiki.dark.muted` | `#9DAAAB` | color | fg.muted | 4 (2/1/1) |
 | `color.wiki.dark.rule` | `#243032` | color | line.default | 4 (2/1/1) |
-| `color.wiki.light.accent` | `#0B5D66` | color | accent | 4 (2/1/1) |
+| `color.wiki.light.accent` | `#0B5D66` | color | accent | 3 (1/1/1) |
 | `color.wiki.light.accent.wash` | `#DDEFF1` | color | bg.accent.soft | 3 (1/1/1) |
 | `color.wiki.light.amber` | `var(--color-status-warning)` | color | — · alias → --color-status-warning | 2 (1/0/1) |
 | `color.wiki.light.bg` | `#F8F8F4` | color | bg.page | 3 (1/1/1) |
@@ -236,9 +236,9 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
 | `control.height.compact` | `34px` | dimension | — | 1 (1/0/0) |
-| `control.height.default` | `40px` | dimension | — | 6 (6/0/0) |
+| `control.height.default` | `40px` | dimension | — | 5 (5/0/0) |
 | `control.height.reading` | `46px` | dimension | — | 1 (1/0/0) |
-| `control.height.touch` | `44px` | dimension | — | 14 (14/0/0) |
+| `control.height.touch` | `44px` | dimension | — | 13 (13/0/0) |
 
 ### dot
 
@@ -268,8 +268,8 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
 | `focus.color` | `var(--ds-accent)` | color | — · alias → --ds-accent | 0 (0/0/0) |
-| `focus.offset` | `2px` | dimension | — | 7 (7/0/0) |
-| `focus.width` | `2px` | dimension | — | 7 (7/0/0) |
+| `focus.offset` | `2px` | dimension | — | 4 (4/0/0) |
+| `focus.width` | `2px` | dimension | — | 4 (4/0/0) |
 
 ### hover
 
@@ -313,7 +313,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `line-height.display` | `1.08` | number | — | 1 (1/0/0) |
 | `line-height.normal` | `1.5` | number | — | 1 (1/0/0) |
 | `line-height.reading` | `1.7` | number | — | 1 (1/0/0) |
-| `line-height.relaxed` | `1.6` | number | — | 3 (3/0/0) |
+| `line-height.relaxed` | `1.6` | number | — | 2 (2/0/0) |
 | `line-height.tight` | `1.25` | number | — | 1 (1/0/0) |
 
 ### motion
@@ -324,7 +324,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 |---|---|---|---|---|
 | `motion.duration.base` | `0.28s` | duration | — | 3 (3/0/0) |
 | `motion.duration.fast` | `0.22s` | duration | — | 2 (2/0/0) |
-| `motion.duration.hover` | `0.2s` | duration | — | 35 (35/0/0) |
+| `motion.duration.hover` | `0.2s` | duration | — | 20 (20/0/0) |
 | `motion.duration.instant` | `0.16s` | duration | — | 7 (7/0/0) |
 | `motion.duration.none` | `0s` | duration | — | 1 (1/0/0) |
 | `motion.duration.opacity` | `0.25s` | duration | — | 1 (1/0/0) |
@@ -335,7 +335,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `motion.easing.drawer` | `cubic-bezier(0.32, 0.72, 0.24, 1)` | cubicBezier | — | 1 (1/0/0) |
 | `motion.easing.emphasized` | `cubic-bezier(0.22,1,0.36,1)` | cubicBezier | — | 7 (7/0/0) |
 | `motion.easing.out` | `ease-out` | cubicBezier | — | 11 (11/0/0) |
-| `motion.easing.standard` | `ease` | cubicBezier | — | 41 (41/0/0) |
+| `motion.easing.standard` | `ease` | cubicBezier | — | 26 (26/0/0) |
 
 ### opacity
 
@@ -356,9 +356,9 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `radius.lg` | `14px` | dimension | — | 0 (0/0/0) |
 | `radius.md` | `10px` | dimension | — | 1 (1/0/0) |
 | `radius.none` | `0` | dimension | — | 7 (7/0/0) |
-| `radius.pill` | `9999px` | dimension | — | 13 (13/0/0) |
-| `radius.sm` | `8px` | dimension | — | 32 (32/0/0) |
-| `radius.xs` | `4px` | dimension | — | 63 (63/0/0) |
+| `radius.pill` | `9999px` | dimension | — | 12 (12/0/0) |
+| `radius.sm` | `8px` | dimension | — | 29 (29/0/0) |
+| `radius.xs` | `4px` | dimension | — | 59 (59/0/0) |
 
 ### spacing
 
@@ -366,22 +366,22 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
-| `spacing.10` | `10px` | dimension | — | 48 (48/0/0) |
-| `spacing.14` | `14px` | dimension | — | 28 (28/0/0) |
+| `spacing.10` | `10px` | dimension | — | 44 (44/0/0) |
+| `spacing.14` | `14px` | dimension | — | 25 (25/0/0) |
 | `spacing.18` | `18px` | dimension | — | 18 (18/0/0) |
-| `spacing.2` | `2px` | dimension | — | 23 (23/0/0) |
+| `spacing.2` | `2px` | dimension | — | 22 (22/0/0) |
 | `spacing.20` | `20px` | dimension | — | 13 (13/0/0) |
 | `spacing.2xl` | `48px` | dimension | — | 5 (5/0/0) |
-| `spacing.2xs` | `4px` | dimension | — | 66 (66/0/0) |
-| `spacing.6` | `6px` | dimension | — | 76 (76/0/0) |
+| `spacing.2xs` | `4px` | dimension | — | 64 (64/0/0) |
+| `spacing.6` | `6px` | dimension | — | 73 (73/0/0) |
 | `spacing.base` | `var(--spacing-2xs)` | dimension | — · alias → --spacing-2xs | 0 (0/0/0) |
 | `spacing.gutter.pro` | `var(--spacing-md)` | dimension | — · alias → --spacing-md | 0 (0/0/0) |
 | `spacing.lg` | `24px` | dimension | — | 9 (9/0/0) |
-| `spacing.md` | `16px` | dimension | — | 30 (30/0/0) |
+| `spacing.md` | `16px` | dimension | — | 29 (29/0/0) |
 | `spacing.section` | `26px` | dimension | — | 0 (0/0/0) |
-| `spacing.sm` | `12px` | dimension | — | 74 (74/0/0) |
+| `spacing.sm` | `12px` | dimension | — | 70 (70/0/0) |
 | `spacing.xl` | `32px` | dimension | — | 6 (6/0/0) |
-| `spacing.xs` | `8px` | dimension | — | 96 (96/0/0) |
+| `spacing.xs` | `8px` | dimension | — | 91 (91/0/0) |
 
 ### touch
 
@@ -398,7 +398,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
-| `tracking.eyebrow` | `0.16em` | dimension | — | 7 (7/0/0) |
+| `tracking.eyebrow` | `0.16em` | dimension | — | 6 (6/0/0) |
 | `tracking.label` | `0.05em` | dimension | — | 0 (0/0/0) |
 | `tracking.snug` | `-0.01em` | dimension | — | 2 (2/0/0) |
 | `tracking.tight` | `-0.02em` | dimension | — | 2 (2/0/0) |
@@ -409,17 +409,17 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
-| `typography.family.mono` | `ui-monospace, Menlo, monospace` | fontFamily | — | 15 (15/0/0) |
-| `typography.family.sans` | `system-ui, -apple-system, Segoe UI, sans-serif` | fontFamily | — | 2 (2/0/0) |
-| `typography.size.body` | `0.95rem` | fontSize | — | 12 (12/0/0) |
+| `typography.family.mono` | `ui-monospace, Menlo, monospace` | fontFamily | — | 13 (13/0/0) |
+| `typography.family.sans` | `system-ui, -apple-system, Segoe UI, sans-serif` | fontFamily | — | 1 (1/0/0) |
+| `typography.size.body` | `0.95rem` | fontSize | — | 13 (13/0/0) |
 | `typography.size.display` | `clamp(2rem, 5vw, 3.1rem)` | fontSize | — | 1 (1/0/0) |
-| `typography.size.eyebrow` | `0.72rem` | fontSize | — | 25 (25/0/0) |
+| `typography.size.eyebrow` | `0.72rem` | fontSize | — | 24 (24/0/0) |
 | `typography.size.h1` | `1.6rem` | fontSize | — | 1 (1/0/0) |
 | `typography.size.h2` | `1.35rem` | fontSize | — | 1 (1/0/0) |
 | `typography.size.h3` | `1.25rem` | fontSize | — | 2 (2/0/0) |
-| `typography.size.lede` | `1.05rem` | fontSize | — | 4 (4/0/0) |
-| `typography.size.meta` | `0.8rem` | fontSize | — | 40 (40/0/0) |
-| `typography.size.small` | `0.85rem` | fontSize | — | 53 (53/0/0) |
+| `typography.size.lede` | `1.05rem` | fontSize | — | 3 (3/0/0) |
+| `typography.size.meta` | `0.8rem` | fontSize | — | 39 (39/0/0) |
+| `typography.size.small` | `0.85rem` | fontSize | — | 48 (48/0/0) |
 | `typography.size.timecode` | `0.75rem` | fontSize | — | 21 (21/0/0) |
 | `typography.size.ui` | `1rem` | fontSize | — | 8 (8/0/0) |
 
@@ -429,11 +429,11 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
-| `weight.bold` | `700` | fontWeight | — | 12 (12/0/0) |
-| `weight.heavy` | `800` | fontWeight | — | 2 (2/0/0) |
+| `weight.bold` | `700` | fontWeight | — | 11 (11/0/0) |
+| `weight.heavy` | `800` | fontWeight | — | 1 (1/0/0) |
 | `weight.medium` | `600` | fontWeight | — | 6 (6/0/0) |
 | `weight.regular` | `400` | fontWeight | — | 2 (2/0/0) |
-| `weight.semibold` | `650` | fontWeight | — | 8 (8/0/0) |
+| `weight.semibold` | `650` | fontWeight | — | 9 (9/0/0) |
 
 ### z
 
