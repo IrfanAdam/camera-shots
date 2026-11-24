@@ -28,7 +28,7 @@ Read order: [README](README.md) → this file → [components](components.md) �
 
 It is a **count of occurrences**, not the gate's T8 presence test: T8 asks only whether a product page, a theme cell or `components.css` names a token at all, and excludes the gallery. So a key can be T8-unconsumed and still show a non-zero count here — read the breakdown the gate prints, not this column, when judging orphans.
 
-Totals at committed HEAD: **1471 consumer references** across 186 keys, **16** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `elevation.inset`, `elevation.ring`, `focus.color`, `icon.size.lg`, `icon.size.md`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `spacing.section`, `tracking.label`).
+Totals at committed HEAD: **1466 consumer references** across 186 keys, **16** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `elevation.inset`, `elevation.ring`, `focus.color`, `icon.size.lg`, `icon.size.md`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `spacing.section`, `tracking.label`).
 
 Under the gate's narrower **T8** scope — `var()` in the three product pages plus theme-map cells plus `components.css`, gallery excluded, aliases and `breakpoint.*` exempt — **10** key(s) are unconsumed: `color.engine.track.audio`, `color.engine.track.fx`, `color.engine.track.title`, `elevation.inset`, `elevation.ring`, `icon.size.lg`, `icon.size.md`, `radius.lg`, `spacing.section`, `tracking.label`. Keys that differ between the two views are canvas-only (`CT()`/`WA()` strings the gate cannot see) or gallery-only consumers; `scripts/lint-tokens.mjs` prints the authoritative list and its budget note.
 
@@ -140,7 +140,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
 | `border.width.accent` | `3px` | dimension | — | 1 (1/0/0) |
-| `border.width.hairline` | `1px` | dimension | — | 113 (113/0/0) |
+| `border.width.hairline` | `1px` | dimension | — | 111 (111/0/0) |
 | `border.width.strong` | `2px` | dimension | — | 10 (10/0/0) |
 
 ### breakpoint
@@ -177,7 +177,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `color.engine.surface.1` | `#1E1E22` | color | bg.surface | 8 (6/1/1) |
 | `color.engine.surface.2` | `#2A2A2E` | color | bg.surface.alt | 14 (12/1/1) |
 | `color.engine.surface.deep` | `#0C0C0C` | color | — | 2 (2/0/0) |
-| `color.engine.text.primary` | `#F5F5F7` | color | fg.primary | 20 (18/1/1) |
+| `color.engine.text.primary` | `#F5F5F7` | color | fg.primary | 21 (19/1/1) |
 | `color.engine.text.secondary` | `#9A9AA0` | color | fg.muted | 37 (35/1/1) |
 | `color.engine.tool` | `#1C1C1E` | color | bg.control | 7 (5/1/1) |
 | `color.engine.track.audio` | `#32ADE6` | color | — | 1 (0/0/1) |
@@ -357,7 +357,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `radius.md` | `10px` | dimension | — | 1 (1/0/0) |
 | `radius.none` | `0` | dimension | — | 7 (7/0/0) |
 | `radius.pill` | `9999px` | dimension | — | 12 (12/0/0) |
-| `radius.sm` | `8px` | dimension | — | 29 (29/0/0) |
+| `radius.sm` | `8px` | dimension | — | 27 (27/0/0) |
 | `radius.xs` | `4px` | dimension | — | 59 (59/0/0) |
 
 ### spacing
@@ -370,14 +370,14 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `spacing.14` | `14px` | dimension | — | 25 (25/0/0) |
 | `spacing.18` | `18px` | dimension | — | 18 (18/0/0) |
 | `spacing.2` | `2px` | dimension | — | 22 (22/0/0) |
-| `spacing.20` | `20px` | dimension | — | 13 (13/0/0) |
+| `spacing.20` | `20px` | dimension | — | 12 (12/0/0) |
 | `spacing.2xl` | `48px` | dimension | — | 5 (5/0/0) |
-| `spacing.2xs` | `4px` | dimension | — | 64 (64/0/0) |
+| `spacing.2xs` | `4px` | dimension | — | 63 (63/0/0) |
 | `spacing.6` | `6px` | dimension | — | 73 (73/0/0) |
 | `spacing.base` | `var(--spacing-2xs)` | dimension | — · alias → --spacing-2xs | 0 (0/0/0) |
 | `spacing.gutter.pro` | `var(--spacing-md)` | dimension | — · alias → --spacing-md | 0 (0/0/0) |
 | `spacing.lg` | `24px` | dimension | — | 9 (9/0/0) |
-| `spacing.md` | `16px` | dimension | — | 29 (29/0/0) |
+| `spacing.md` | `16px` | dimension | — | 28 (28/0/0) |
 | `spacing.section` | `26px` | dimension | — | 0 (0/0/0) |
 | `spacing.sm` | `12px` | dimension | — | 70 (70/0/0) |
 | `spacing.xl` | `32px` | dimension | — | 6 (6/0/0) |
@@ -419,9 +419,9 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `typography.size.h3` | `1.25rem` | fontSize | — | 2 (2/0/0) |
 | `typography.size.lede` | `1.05rem` | fontSize | — | 3 (3/0/0) |
 | `typography.size.meta` | `0.8rem` | fontSize | — | 39 (39/0/0) |
-| `typography.size.small` | `0.85rem` | fontSize | — | 48 (48/0/0) |
+| `typography.size.small` | `0.85rem` | fontSize | — | 47 (47/0/0) |
 | `typography.size.timecode` | `0.75rem` | fontSize | — | 21 (21/0/0) |
-| `typography.size.ui` | `1rem` | fontSize | — | 8 (8/0/0) |
+| `typography.size.ui` | `1rem` | fontSize | — | 7 (7/0/0) |
 
 ### weight
 
@@ -443,9 +443,9 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 |---|---|---|---|---|
 | `z.bar` | `50` | number | — | 3 (3/0/0) |
 | `z.base` | `0` | number | — | 1 (1/0/0) |
-| `z.canvas` | `90` | number | — | 1 (1/0/0) |
+| `z.canvas` | `90` | number | — | 3 (3/0/0) |
 | `z.content` | `2` | number | — | 3 (3/0/0) |
-| `z.drawer` | `70` | number | — | 2 (2/0/0) |
+| `z.drawer` | `70` | number | — | 3 (3/0/0) |
 | `z.drawer.child` | `71` | number | — | 1 (1/0/0) |
 | `z.max` | `200` | number | — | 1 (1/0/0) |
 | `z.menu` | `130` | number | — | 1 (1/0/0) |
