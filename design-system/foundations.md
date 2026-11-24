@@ -28,7 +28,7 @@ Read order: [README](README.md) → this file → [components](components.md) �
 
 It is a **count of occurrences**, not the gate's T8 presence test: T8 asks only whether a product page, a theme cell or `components.css` names a token at all, and excludes the gallery. So a key can be T8-unconsumed and still show a non-zero count here — read the breakdown the gate prints, not this column, when judging orphans.
 
-Totals at committed HEAD: **1481 consumer references** across 189 keys, **19** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `color.status.danger.ink.light`, `color.wiki.dark.accent.ink`, `elevation.1`, `elevation.inset`, `elevation.ring`, `focus.color`, `icon.size.lg`, `icon.size.md`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `spacing.section`, `tracking.label`).
+Totals at committed HEAD: **1478 consumer references** across 189 keys, **20** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `color.pro.tool.hover`, `color.status.danger.ink.light`, `color.wiki.dark.accent.ink`, `elevation.1`, `elevation.inset`, `elevation.ring`, `focus.color`, `icon.size.lg`, `icon.size.md`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `spacing.section`, `tracking.label`).
 
 Under the gate's narrower **T8** scope — `var()` in the three product pages plus theme-map cells plus `components.css`, gallery excluded, aliases and `breakpoint.*` exempt — **10** key(s) are unconsumed: `color.engine.track.audio`, `color.engine.track.fx`, `color.engine.track.title`, `elevation.inset`, `elevation.ring`, `icon.size.lg`, `icon.size.md`, `radius.lg`, `spacing.section`, `tracking.label`. Keys that differ between the two views are canvas-only (`CT()`/`WA()` strings the gate cannot see) or gallery-only consumers; `scripts/lint-tokens.mjs` prints the authoritative list and its budget note.
 
@@ -113,7 +113,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 |---|---|---|---|
 | `border` | 3 | 3 | 0 |
 | `breakpoint` | 5 | 0 | 5 |
-| `color` | 70 | 68 | 2 |
+| `color` | 70 | 67 | 3 |
 | `control` | 4 | 4 | 0 |
 | `dot` | 1 | 1 | 0 |
 | `elevation` | 6 | 3 | 3 |
@@ -131,7 +131,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `typography` | 13 | 13 | 0 |
 | `weight` | 5 | 5 | 0 |
 | `z` | 17 | 17 | 0 |
-| **total** | **189** | **170** | **19** |
+| **total** | **189** | **169** | **20** |
 
 ### border
 
@@ -163,43 +163,43 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 |---|---|---|---|---|
 | `color.diagram.fill.wiki` | `#9FC3D8` | color | — | 5 (4/0/1) |
 | `color.diagram.scrim.wiki` | `#101828` | color | — | 2 (1/0/1) |
-| `color.engine.accent` | `#E8830C` | color | accent | 3 (1/1/1) |
+| `color.engine.accent` | `#E8830C` | color | accent | 2 (0/1/1) |
 | `color.engine.accent.ink` | `#111111` | color | fg.on.accent | 6 (4/1/1) |
 | `color.engine.canvas` | `#08080A` | color | — | 1 (1/0/0) |
-| `color.engine.divider` | `#2C2C2E` | color | line.default | 4 (2/1/1) |
-| `color.engine.divider.strong` | `#3A3A3C` | color | line.strong | 5 (4/1/0) |
+| `color.engine.divider` | `#2C2C2E` | color | line.default | 3 (1/1/1) |
+| `color.engine.divider.strong` | `#3A3A3C` | color | line.strong | 3 (2/1/0) |
 | `color.engine.overlay.panel` | `rgba(30,30,34,.94)` | color | — | 4 (3/0/1) |
 | `color.engine.overlay.scrim` | `rgba(0,0,0,.9)` | color | — | 7 (7/0/0) |
 | `color.engine.scrim` | `rgba(0,0,0,.45)` | color | — | 3 (2/0/1) |
 | `color.engine.scrim.strong` | `rgba(0,0,0,.55)` | color | — | 2 (1/0/1) |
 | `color.engine.selection` | `#FFD60A` | color | — | 9 (8/0/1) |
-| `color.engine.surface.0` | `#0B0B0D` | color | bg.page | 10 (8/1/1) |
-| `color.engine.surface.1` | `#1E1E22` | color | bg.surface | 8 (6/1/1) |
+| `color.engine.surface.0` | `#0B0B0D` | color | bg.page | 7 (5/1/1) |
+| `color.engine.surface.1` | `#1E1E22` | color | bg.surface | 7 (5/1/1) |
 | `color.engine.surface.2` | `#2A2A2E` | color | bg.surface.alt | 14 (12/1/1) |
-| `color.engine.surface.deep` | `#0C0C0C` | color | — | 2 (2/0/0) |
-| `color.engine.text.primary` | `#F5F5F7` | color | fg.primary | 22 (20/1/1) |
-| `color.engine.text.secondary` | `#9A9AA0` | color | fg.muted | 37 (35/1/1) |
-| `color.engine.tool` | `#1C1C1E` | color | bg.control | 7 (5/1/1) |
+| `color.engine.surface.deep` | `#0C0C0C` | color | — | 1 (1/0/0) |
+| `color.engine.text.primary` | `#F5F5F7` | color | fg.primary | 14 (12/1/1) |
+| `color.engine.text.secondary` | `#9A9AA0` | color | fg.muted | 35 (33/1/1) |
+| `color.engine.tool` | `#1C1C1E` | color | bg.control | 6 (4/1/1) |
 | `color.engine.track.audio` | `#32ADE6` | color | — | 1 (0/0/1) |
 | `color.engine.track.fx` | `#5E5CE6` | color | — | 2 (1/0/1) |
 | `color.engine.track.title` | `#30D158` | color | — | 2 (1/0/1) |
 | `color.engine.wash.25` | `rgba(255,255,255,.25)` | color | — | 4 (3/0/1) |
-| `color.pitch.accent` | `#C8B28A` | color | accent | 8 (6/1/1) |
-| `color.pitch.accent.ink` | `#141310` | color | fg.on.accent | 4 (2/1/1) |
-| `color.pitch.bg` | `#0A0A0B` | color | bg.page | 6 (4/1/1) |
-| `color.pitch.body` | `#D9D7D2` | color | fg.secondary | 4 (2/1/1) |
-| `color.pitch.ink` | `#F2F0EB` | color | fg.primary | 5 (3/1/1) |
-| `color.pitch.muted` | `#A7A5A0` | color | fg.muted | 6 (4/1/1) |
-| `color.pitch.muted.2` | `#8E8C86` | color | fg.faint | 4 (2/1/1) |
+| `color.pitch.accent` | `#C8B28A` | color | accent | 14 (12/1/1) |
+| `color.pitch.accent.ink` | `#141310` | color | fg.on.accent | 5 (3/1/1) |
+| `color.pitch.bg` | `#0A0A0B` | color | bg.page | 7 (5/1/1) |
+| `color.pitch.body` | `#D9D7D2` | color | fg.secondary | 5 (3/1/1) |
+| `color.pitch.ink` | `#F2F0EB` | color | fg.primary | 6 (4/1/1) |
+| `color.pitch.muted` | `#A7A5A0` | color | fg.muted | 7 (5/1/1) |
+| `color.pitch.muted.2` | `#8E8C86` | color | fg.faint | 5 (3/1/1) |
 | `color.pitch.overlay.bg` | `rgba(10,10,11,.92)` | color | — | 3 (2/0/1) |
 | `color.pitch.overlay.surface` | `rgba(20,20,22,.92)` | color | — | 2 (1/0/1) |
 | `color.pitch.positive` | `#10B981` | color | status.success | 8 (4/3/1) |
 | `color.pitch.positive.ink` | `#06110C` | color | — | 2 (1/0/1) |
-| `color.pitch.rule` | `#26262B` | color | line.default | 5 (3/1/1) |
+| `color.pitch.rule` | `#26262B` | color | line.default | 7 (5/1/1) |
 | `color.pitch.scrim.mid` | `rgba(0,0,0,.6)` | color | — | 2 (1/0/1) |
-| `color.pitch.surface.1` | `#141416` | color | bg.surface | 4 (2/1/1) |
-| `color.pitch.surface.2` | `#1B1B1E` | color | bg.surface.alt | 4 (2/1/1) |
-| `color.pitch.switch.bg` | `#101012` | color | bg.control | 3 (1/1/1) |
+| `color.pitch.surface.1` | `#141416` | color | bg.surface | 5 (3/1/1) |
+| `color.pitch.surface.2` | `#1B1B1E` | color | bg.surface.alt | 5 (3/1/1) |
+| `color.pitch.switch.bg` | `#101012` | color | bg.control | 5 (3/1/1) |
 | `color.primitive.black` | `#000000` | color | — | 8 (7/0/1) |
 | `color.primitive.white` | `#FFFFFF` | color | fg.on.accent | 26 (24/1/1) |
 | `color.print.accent` | `#8A6D2B` | color | — | 2 (1/0/1) |
@@ -207,7 +207,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `color.print.fine` | `#222222` | color | — | 2 (1/0/1) |
 | `color.print.ink` | `var(--color-engine-accent-ink)` | color | — · alias → --color-engine-accent-ink | 2 (1/0/1) |
 | `color.print.rule` | `#DDDDDD` | color | — | 2 (1/0/1) |
-| `color.pro.tool.hover` | `var(--color-engine-divider)` | color | — · alias → --color-engine-divider | 1 (1/0/0) |
+| `color.pro.tool.hover` | `var(--color-engine-divider)` | color | — · alias → --color-engine-divider | 0 (0/0/0) |
 | `color.status.danger` | `#E5484D` | color | status.danger | 6 (1/4/1) |
 | `color.status.danger.ink.dark` | `#EA6C70` | color | — | 1 (1/0/0) |
 | `color.status.danger.ink.light` | `#C93F43` | color | — | 0 (0/0/0) |
