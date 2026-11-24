@@ -556,17 +556,21 @@ Re-run again at `c5eeca7` on a fresh `git archive HEAD` export: **all nine exit 
 
 **Final visual proof at `c5eeca7`** — two labelled contact sheets, captured headless on a private port (8803) from the same `git archive HEAD` export the gates ran on, at 1440×900 and 390×844: `/Users/irfan/.hermes/cache/scratch/ds-final/contact-1440.png` (wiki light, wiki dark, engine, gallery light) and `contact-390.png` (wiki light map, wiki dark map, engine, gallery light). The wiki panels are `Intro › Prompt map` with the grouped table live; **0 document overflow at both widths on all four surfaces** (`scrollWidth == innerWidth`, measured, not assumed). Re-measured rather than quoted: `.map` **4009.5px @1440 / 7882.40625px @390**, **11 groups / 97 data rows** (108 `tbody` rows before the 11 bands are subtracted); at 390 the first band is `display:block`, sits at **y166.39–200.86 with the sticky header bottom at 158.88**, so the band is fully visible and `elementFromPoint` returns its `TH` — the occlusion the earlier receipt found when the map top was scrolled to the viewport top does not recur at the natural position. At 1440 the bands are `display:none` by design and the `<thead>` starts at **y75.09** against a header bottom of 66.88, so no row is hidden under the sticky bar. Engine, seeded from `cse-engine-v4`: **1 node, image decoded, card @390 x94 y350 200×190** (in canvas, `cam.x` 467) and @1440 x709 y197 200×190; **at-rest frame diff 0 px at both widths**. Gallery: **19 `#spec-*` blocks / 76 `.spec-cell`s** at 1440 light, 1440 dark and 390 light, all three panels showing the Button specimen with its four theme cells. axe over the captured states (light/dark wiki at both widths, engine 390, gallery ×3): **0 serious/critical**, and `check-contrast` reports **0 failing** — consistent with the gate runs above rather than a second opinion.
 
+**Re-verified at `3833b23`** on a fresh `git archive HEAD` export (the two docs commits since then touch no token, page, script or workflow file): **all nine gates exit 0** — `build-tokens --check` (189 keys / 20 groups / 4 themes), `build-foundations --check` (17 role vars, nulls 2/5/5/3, 1495 consumer refs), `lint-tokens --check` (0 over budget, 27 exempt, 0 bad-allow), `check-doc-counts` (3 assertions PASS, 10 skipped), `check-anchors` (4 html + 25 markdown, 55 html targets, 48 non-document fragment skips, 0 unresolved — 25 markdown now, not 18, because Phase 6 added seven docs), `check-contrast` (**67 pairs / 0 failing / 5 known debt**), `check-targets` (11 checks, 0 failing), `check-axe` (**9 surfaces, 0 serious/critical**), `check-keyboard` (**19 assertions, 0 failing**). Visual numbers re-read from the same export rather than re-quoted: `.map` **4009.5px @1440 / 7882.4px @390**; at 390 the first band sits at **y166.39–200.86** against a sticky header bottom of **158.88**; engine card **x94 y350 200×190**; gallery **19 `#spec-*` / 76 `.spec-cell`**; **0 document overflow** at either width on any surface.
+
+Two lane-report numbers are corrected here, and the corrections are the ones already on record at `c5eeca7`, not new findings: the pre-contrast debt was **8 rows and 7 now pass**, not the **6** the lane claimed — pitch `warning/surface` 4.47 is latent, not retired, because pitch paints warning as a fill whose ink is `--ds-bg`; and the amber page-area census is **0.23% light / 0.12% dark** on an independent ΔRGB≤30 re-count against the lane's **0.14% / 0.49%**, so the magnitude holds but the two area definitions are not interchangeable and neither figure may be quoted as the other.
+
 ---
 
 ## Phase 5 — Visual reconciliation + reference intake {#phase-5}
 
-*Tags:* visual-language, reference, type, geometry, motion · *Status:* 0/7 tasks · GATE OPEN
+*Tags:* visual-language, reference, type, geometry, motion · *Status:* **1/7 · GATE OPEN** — 30 ✅ (protocol + template + intake #1, verdict DEFER); 31 ◐ contrast half only (`accent-ink` landed under Task 27); 32 ⛔ blocked by the foreign `pitch.html` edit; 33–36 not started
 
 Fix what the eye sees, after the structure is sound. Keep accents and IA distinct.
 
 | # | Task | Done when |
 |---|---|---|
-| 30 | Reference intake protocol + intake #1 | `design-system/references/` index + template + measured intake record |
+| 30 | Reference intake protocol + intake #1 | ✅ `ac0cd30` + `d71c060` — `references/` index + template + intake #1 (17 measured values, 17 mapping rows, 7 rejected, verdict **defer**; no assets dir) |
 | 31 | Accent-ink + two-hue discipline | no 2.05:1 accent text; amber = annotation only |
 | 32 | Pitch separation + heights | cards visible as cards; TOC/export targets on scale |
 | 33 | Label voice + type scale | two label roles; ≤6 sizes/surface; no literal sizes |
@@ -588,7 +592,12 @@ Fix what the eye sees, after the structure is sound. Keep accents and IA distinc
 5. Add a rule to the index: a reference changes values/components only; never page IA; every intake ends in a theme-map diff or a component variant, never page-specific CSS.
 **Verify:** intake file carries ≥6 measured values and a rejected-items list; the protocol is referenced from `README.md` and `governance.md`.
 
+**Shipped `ac0cd30` (protocol + intake) + `d71c060` (floor labelling) — Task 30 ✅, and nothing adopted.** `design-system/references/README.md` (44 L) states the mutability rule — a reference changes values or adds a variant, never page IA and never a page-specific override — and `TEMPLATE.md` (70 L) is the nine-section skeleton the plan specifies (source, measured, borrow, reject, map, decision, proof). Intake #1 (`2026-11-24-studio-editor.md`, 119 L) carries **17 measured values across 6 families** (5 palette, 4 radii, 2 control heights, 4 type sizes, 1 stroke, 1 label voice), **17 mapping rows** in §5 with our token and a `tokens.css:line` cite for each, **7 rejected items** in §4 (the editing IA, platform labels, brand assets, blue `#2E72FF`, page `#111111`, the 48/52 heights as global steps, radii 12/6 as new steps), and the verdict **defer** — language accepted as feel, zero values shipped, accent hue left to the owner as plan D4-C.
+
+Two facts a later reader must not lose: **no source image exists in the tree**, so `references/assets/` was deliberately **not created** and no path is invented; and every value was **transcribed from the brief, not sampled from a file we hold**, so a lane must **re-sample the pixels before it ships any theme edit** — the record says so in §1. The record's durable finding is the two-label-role argument (`label.ui` / `label.data`, now plan D5), recorded in §7 with `lint-tokens --check` unchanged because no token, component or page file moved in these commits.
+
 ### Task 31: Accent-ink + two-hue discipline
+**Status — ◐ partial, contrast half only.** Step 1 landed under Task 27 (`c5eeca7`): `color.wiki.dark.accent.ink` aliased to the page bg makes dark `.eng` clear 4.5:1 and axe's `.eng` node disappear. Steps 2–3 are untouched: amber is still a figure fill in places and the engine's primary accent visibility on the default screen has no receipt. Do not count this task done on the strength of a contrast row.
 **Files:** `tokens.json`, `index.html:16,50,58`, gallery.
 **Steps:**
 1. Add `color.wiki.light.accent-ink` and `color.wiki.dark.accent-ink`; consume on `.eng`, `.badge`, `.yt`.
@@ -597,6 +606,7 @@ Fix what the eye sees, after the structure is sound. Keep accents and IA distinc
 **Verify:** dark `.eng` ≥4.5; one chromatic role per surface in the computed colour census; screenshots both wiki themes.
 
 ### Task 32: Pitch separation + heights
+**Status — ⛔ blocked.** `pitch.html` carries a foreign drawer-v4 edit (63 changed lines: 43 insertions / 20 deletions, uncommitted) that another lane owns; re-pointing `color.pitch.rule`, the TOC/export heights and the header hit areas on top of it would make the visual diff unattributable and would overwrite work we cannot see the intent of. The 1.4.11 half of the same decision (`rule/surface` 1.19–1.46) is the Phase 5 `line.strong` value and lands with it.
 **Files:** `tokens.json`, `pitch.html`.
 **Steps:**
 1. Raise `color.pitch.rule` to ≈#33333A (≥1.5:1 on surface-1) or lift surface-1 one step; prefer the rule.
@@ -640,11 +650,13 @@ Fix what the eye sees, after the structure is sound. Keep accents and IA distinc
 
 **REF GATE 5 — how to judge:** open all four pages at 1440 and 390, wiki in both themes; the set reads as one product by geometry, hairline, label voice and colour-as-state while accents/IA stay distinct; computed counts (≤6 sizes, ≤3 heights, one accent role per surface) hold; the reference intake file explains every borrowed value and every rejected one.
 
+**Measured at HEAD `3833b23` — 1 of 7, GATE OPEN, not PASS.** Only the last condition holds: the intake file explains 17 borrowed values and 7 rejections, the protocol is linked from `README.md` and `governance.md`, and `check-anchors` resolves the intake's links. **None of the computed counts has been measured yet** — distinct sizes per surface, height families, and the per-surface accent census are all Task 33/34/36 work — and the 1.4.11 hairline debt (four rows, 1.19–1.46) is still on the contrast table because `line.strong` is Task 32's decision. The family-resemblance read is therefore a hypothesis, not a receipt: the four pages share tokens and components, but the visual statement has two blocked surfaces of four (pitch by the foreign edit, engine's chrome untouched since Phase 3). Honest score: **1/7**, with 31 half-credited and 32 unable to start.
+
 ---
 
 ## Phase 6 — Governance and release {#phase-6}
 
-*Tags:* docs, governance, changelog, ci, release · *Status:* 0/4 tasks · GATE OPEN
+*Tags:* docs, governance, changelog, ci, release · *Status:* **1/4 · GATE OPEN** — 37 ✅; 38–40 open
 
 | # | Task | Done when |
 |---|---|---|
@@ -660,6 +672,10 @@ Fix what the eye sees, after the structure is sound. Keep accents and IA distinc
 2. Fix `patterns.md` claims that reference unconsumed tokens or export behaviour only pitch has.
 3. Keep `audit-report.md` generated with a "machine receipt" footer; archive `audit.md`.
 **Verify:** every measured claim cites a command or `file:line`; doc-count script passes; no dead token references in docs.
+
+**Shipped `ac0cd30` (docs IA) + `d71c060` (floor labelling) — Task 37 ✅, with one honest qualifier.** `design-system/README.md` is now a **73-line router**: a docs map of eleven entries, a where-things-are table, the four-command pipeline, the page-consumption contract and the rules — no scale tables, no values, nothing to go stale. Three new contracts carry the claims that used to live nowhere: `surfaces.md` (137 L — per-page theme, print, breakpoints, export, browser floor, adoption state, blocked work), `verification.md` (155 L — the nine gates, what each proves, blind spots, CI, PR evidence), `governance.md` (90 L — six change classes with the evidence each demands, semver, deprecation, review) and `decisions.md` (143 L — five append-only ADRs: one sans + one mono, no display face, 2px grid, reference-is-feel-only, 40px floor). `patterns.md` was corrected to **169 L** with a status line per composition — three of eight are marked *proposed*, and every `pitch.html` composition is marked **BLOCKED** on the foreign edit rather than described as shipped.
+
+Every measured claim cites a command or `file:line` — `check-anchors` walks **25 markdown files** (was 18), 4 html files, 55 html targets and **1 plan anchor**, 0 unresolved; `check-doc-counts` passes 3 assertions with 10 runtime skips; `audit-report.md` keeps its generated machine-receipt footer and `audit/archive/audit-2026-11-23.md` holds the retired audit. The qualifier: **browser version floors are support-table knowledge, not gate output**, and `d71c060` exists precisely to say so — the feature-usage counts (`inert` 17 uses in `components.js`, 6 in `engine.html`; `container-type` at `components.css:548`, `@container` at `:577`) are measured, the Chrome/Safari/Firefox numbers beside them are labelled *"published support tables, not gate-verified"*, and `surfaces.md` states that Safari and Firefox behaviour is unverified by any automated check. Docs being true is Task 37; docs being *complete* is not — the remaining gaps are enumerated in the checklist below.
 
 ### Task 38: Version + changelog
 **Files:** `CHANGELOG.md`, `DESIGN-SYSTEM.md`, git tag.
@@ -686,6 +702,24 @@ Fix what the eye sees, after the structure is sound. Keep accents and IA distinc
 **Verify:** gate PASS, CI green, screenshots committed, and the "definition of done" below all true.
 
 **REF GATE 6 — how to judge:** from a fresh clone, one command regenerates tokens and foundations byte-identically; one command runs the gate and verification; every doc claim is checkable; `ds-v1.0.0` exists. **Pass means a stranger can maintain this without asking you.**
+
+**Measured at HEAD `3833b23` — 1 of 4, GATE OPEN, not PASS, and not v1.0.0.** Two conditions hold and two do not. *Holds:* regeneration is byte-identical on a clean `git archive HEAD` export — `build-tokens --check` prints `189 keys / 20 groups / 4 themes`, sha256 `1128…dab`, and `build-foundations --check` reproduces `foundations.md` exactly (17 role vars, nulls 2/5/5/3, 1495 consumer refs); and every doc claim is checkable by machine — `check-anchors` resolves 55 html targets, 39 markdown targets and 1 plan anchor with **0 unresolved and every id unique**, `check-doc-counts` passes **3 assertions**, and `lint-tokens --check` reports 0 dead token references. *Does not hold:* **`ds-v1.0.0` does not exist** (`git tag -l` is empty, no `CHANGELOG.md`, no `DESIGN-SYSTEM.md` — Task 38), and **"one command runs the gate and verification"** is only half-true: `.github/workflows/ds-gate.yml` runs the six script gates in three jobs, but the hardening Task 39 owns (link check, html-validate blocking, screenshot matrix with artifact upload, PR-evidence block) is in flight in another lane, so a stranger cloning today gets the scripts, not one documented entry point. Counting Task 37 as the whole gate would be the same optimism this plan keeps correcting: the docs are true and the pipeline is reproducible, but the release does not exist and the CI contract is not finished.
+
+### Remaining to close — measured `3833b23`, 2026-11-24
+
+| # | Item | State | What unblocks it |
+|---|---|---|---|
+| 22 | Pitch adoption | ⛔ **blocked** | a foreign 63-line drawer-v4 edit sits uncommitted in `pitch.html` (43 insertions / 20 deletions); merge or drop it before any pitch token/class work |
+| 26 | Cross-page announcement audit | open | pitch is one of the four surfaces it must cover; gallery announcements were exercised only through the specimen harness |
+| 28 | Pitch print / table scope | ◐ partial | wiki half shipped; pitch's 6 tables and print headers inherit Task 22's block |
+| 31 | Accent-ink + two-hue discipline | ◐ contrast half only | `accent-ink` landed under Task 27; amber confinement and engine accent visibility unproven |
+| 32 | Pitch separation + heights | ⛔ **blocked** | same foreign edit; also owns `line.strong`, which is what retires the four 1.19–1.46 hairline rows |
+| 33–36 | Label voice, control geometry, footer/chrome + motion, reference components | not started | 33/34/35 need pitch unblocked for a full four-surface pass; 36 needs the components built (`ds-segmented`, `ds-tabbar`, `ds-btn--block`, `ds-row`) |
+| 38 | Version + changelog | open | `CHANGELOG.md` + `DESIGN-SYSTEM.md` + a `ds-v1.0.0` tag that must not be created before 31–36 close |
+| 39 | CI hardening | in flight elsewhere | doc counts/anchors already blocking; link check, html-validate, screenshot matrix, PR evidence still owed |
+| 40 | Final audit | open | needs 22, 26, 28, 31–36, 38 first; publishes 91→0 orphans, 16→≤6 sizes, 24→0 forks, 4→0 contrast fails, 20→0 stale claims |
+
+**The system is not v1.0.0.** Nine gates are green and no regression is outstanding, but **nine of the eleven Phase 5/6 tasks are still open or blocked** (only 30 and 37 are closed), `ds-v1.0.0` is untagged, and one of four shipped surfaces cannot be edited by this lane. Anything that reports the design system as released, or as passing REF GATE 5/6, is wrong at this SHA.
 
 ---
 
