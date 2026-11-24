@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8">
+<html lang="en" data-ds-manual><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Cinematography and Direction Wiki</title>
 <link rel="stylesheet" href="design-system/tokens.css">
+<link rel="stylesheet" href="design-system/base.css">
+<link rel="stylesheet" href="design-system/components.css">
+<script>/* theme before first paint: the page scheme drives the DS role map so --ds-* is never empty */!function(){var s=null;try{s=localStorage.getItem('cse-theme')}catch(e){}var h=document.documentElement,mq=window.matchMedia('(prefers-color-scheme:dark)'),dark=s?s==='dark':mq.matches;if(s)h.dataset.theme=s;h.dataset.dsTheme=dark?'wiki-dark':'wiki-light'}();</script>
 <style>
 :root{--bg:var(--color-wiki-light-bg);--card:var(--color-wiki-light-card);--ink:var(--color-wiki-light-ink);--mut:var(--color-wiki-light-muted);--rule:var(--color-wiki-light-rule);--acc:var(--color-wiki-light-accent);--acc2:var(--color-wiki-light-accent-wash);--amb:var(--color-wiki-light-amber);--ok:var(--color-status-success);--info:var(--color-status-info);--neutral:var(--color-primitive-white);--black:var(--color-primitive-black);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:var(--color-wiki-dark-bg);--card:var(--color-wiki-dark-card);--ink:var(--color-wiki-dark-ink);--mut:var(--color-wiki-dark-muted);--rule:var(--color-wiki-dark-rule);--acc:var(--color-wiki-dark-accent);--acc2:var(--color-wiki-dark-accent-wash);--amb:var(--color-wiki-dark-amber)}}
 :root[data-theme="dark"]{--bg:var(--color-wiki-dark-bg);--card:var(--color-wiki-dark-card);--ink:var(--color-wiki-dark-ink);--mut:var(--color-wiki-dark-muted);--rule:var(--color-wiki-dark-rule);--acc:var(--color-wiki-dark-accent);--acc2:var(--color-wiki-dark-accent-wash);--amb:var(--color-wiki-dark-amber)}
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{background:var(--bg);color:var(--ink);font:15px/var(--line-height-relaxed) var(--typography-family-sans)}
+body{background:var(--bg);color:var(--ink)}
 .w{max-width:var(--layout-max-wiki);margin:0 auto;padding:var(--spacing-20)}
 .top{position:sticky;top:0;z-index:var(--z-sticky);background:var(--bg);border-bottom:var(--border-width-hairline) solid var(--rule);padding-top:calc(var(--spacing-10) + env(safe-area-inset-top,0px));padding-bottom:var(--spacing-10);display:flex;justify-content:space-between;align-items:baseline;gap:var(--spacing-md);flex-wrap:wrap}
 .by{font-family:var(--typography-family-mono);letter-spacing:var(--tracking-eyebrow);color:var(--mut);font-size:var(--typography-size-small);white-space:nowrap}
@@ -19,15 +22,12 @@ body{background:var(--bg);color:var(--ink);font:15px/var(--line-height-relaxed) 
 .pitch:hover{border-color:var(--ink);background:var(--card)}
 h1{font-size:var(--typography-size-h1);letter-spacing:var(--tracking-tight)}.sub{color:var(--mut);font-size:var(--typography-size-body);margin:var(--spacing-2xs) 0 0}
 .sub a{color:var(--acc);transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}
-.controls{display:flex;gap:var(--spacing-xs);margin:var(--spacing-sm) 0 var(--spacing-2xs);flex-wrap:wrap}
-#search{flex:1;min-width:180px;background:var(--card);border:var(--border-width-hairline) solid var(--rule);color:var(--ink);border-radius:var(--radius-xs);padding:var(--spacing-xs) var(--spacing-14);font:inherit;font-size:var(--typography-size-small);transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}
-#theme{background:var(--card);border:var(--border-width-hairline) solid var(--rule);color:var(--ink);border-radius:var(--radius-xs);padding:var(--spacing-xs) var(--spacing-14);font:inherit;font-size:var(--typography-size-small);cursor:pointer;transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}
-.tabs{display:flex;gap:var(--spacing-6);overflow-x:auto;padding-bottom:var(--spacing-6)}
-.tab,.chip{border:var(--border-width-hairline) solid var(--rule);background:var(--card);color:var(--ink);padding:var(--spacing-xs) var(--spacing-sm);border-radius:var(--radius-xs);font:inherit;font-size:var(--typography-size-small);cursor:pointer;white-space:nowrap;min-height:var(--control-height-default);transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}
-.tab[aria-selected=true],.chip[aria-selected=true]{background:var(--acc);color:var(--bg);border-color:var(--acc)}
+.controls{display:flex;gap:var(--spacing-xs);margin:var(--spacing-sm) 0 var(--spacing-2xs);flex-wrap:wrap;align-items:center}
+#search{flex:1;min-width:180px}
+#tabs{padding-bottom:var(--spacing-6)}
 .main{display:grid;grid-template-columns:var(--layout-sidebar-wiki) 1fr;gap:var(--spacing-md);margin-top:var(--spacing-sm)}
 .list{display:flex;flex-direction:column;gap:var(--spacing-6);max-height:560px;overflow-y:auto}
-.list .chip{text-align:left}
+.list .ds-chip{text-align:left}
 .count{font-family:var(--typography-family-mono);font-size:var(--typography-size-timecode);letter-spacing:var(--tracking-eyebrow);color:var(--mut);padding:var(--spacing-2) var(--spacing-2xs)}
 .panel{background:var(--card);border:var(--border-width-hairline) solid var(--rule);border-radius:var(--radius-sm);padding:var(--spacing-20);min-width:0;box-shadow:var(--elevation-1)}
 .viz{background:var(--bg);border-radius:var(--radius-sm);display:flex;justify-content:center}
@@ -37,19 +37,19 @@ h2{font-size:var(--typography-size-h3);margin:var(--spacing-14) 0 var(--spacing-
 p{font-size:var(--typography-size-body)}.ad{margin-top:var(--spacing-14);border-left:var(--border-width-accent) solid var(--amb);padding:var(--spacing-xs) var(--spacing-sm);background:var(--bg);font-size:var(--typography-size-small)}
 .note{margin-top:var(--spacing-14);border:var(--border-width-hairline) dashed var(--rule);border-radius:var(--radius-sm);padding:var(--spacing-xs) var(--spacing-sm);font-size:var(--typography-size-small);color:var(--mut)}
 .go{display:inline-block;margin-top:var(--spacing-14);color:var(--acc);font-weight:var(--weight-medium);text-decoration:none;transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}.go:hover{text-decoration:underline}
-.nav{display:flex;justify-content:space-between;align-items:center;margin-top:var(--spacing-md)}
-.nav button{background:none;border:var(--border-width-hairline) solid var(--rule);color:var(--ink);padding:var(--spacing-6) var(--spacing-14);border-radius:var(--radius-sm);cursor:pointer;font:inherit;transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}
-.token{display:flex;gap:var(--spacing-xs);align-items:center;margin-top:var(--spacing-14);background:var(--bg);border:var(--border-width-hairline) solid var(--rule);border-radius:var(--radius-sm);padding:var(--spacing-xs) var(--spacing-sm);font-size:var(--typography-size-small);flex-wrap:wrap}
-.token code{font-family:var(--typography-family-mono);font-weight:var(--weight-heavy);color:var(--ink);letter-spacing:.02em}
-.token button{margin-left:auto;background:var(--acc);color:var(--bg);border:none;border-radius:var(--radius-xs);padding:var(--spacing-2xs) var(--spacing-sm);font:inherit;font-size:var(--typography-size-meta);cursor:pointer;transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}
-table.map{width:100%;border-collapse:collapse;font-size:var(--typography-size-small);margin-top:var(--spacing-10)}
+.panel .ds-pager{margin-top:var(--spacing-md)}
+.panel .ds-copy{margin-top:var(--spacing-14);flex-wrap:wrap}
+.panel .ds-copy__code{font-weight:var(--weight-heavy)}
+.map{margin-top:var(--spacing-10)}
 .map th{text-align:left;font-family:var(--typography-family-mono);font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--mut);padding:var(--spacing-6) var(--spacing-xs);border-bottom:var(--border-width-hairline) solid var(--rule)}
-.map td{padding:var(--spacing-6) var(--spacing-xs);border-bottom:var(--border-width-hairline) solid var(--rule);vertical-align:top}
+.map td{border-block-start:0;padding:var(--spacing-6) var(--spacing-xs);border-bottom:var(--border-width-hairline) solid var(--rule);vertical-align:top}
 .map td code{font-family:var(--typography-family-mono);font-weight:var(--weight-bold);color:var(--ink);white-space:nowrap}
 .map td button{background:none;border:var(--border-width-hairline) solid var(--rule);color:var(--ink);border-radius:var(--radius-xs);padding:var(--spacing-2) var(--spacing-10);font:inherit;font-size:var(--typography-size-timecode);cursor:pointer;white-space:nowrap;transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}
-.badge{font-family:var(--typography-family-mono);font-size:var(--typography-size-eyebrow);font-weight:var(--weight-heavy);letter-spacing:var(--tracking-eyebrow);border-radius:var(--radius-pill);padding:var(--spacing-2) var(--spacing-10);background:var(--amb);color:var(--neutral)}.badge.FREE{background:var(--ok)}.badge.PAID{background:var(--info)}.badge.UNVERIFIED{background:var(--mut)}
+.map td .maplink{background:none;border:0;padding:0;font:inherit;font-size:var(--typography-size-small);color:var(--mut);cursor:pointer;text-decoration:underline;text-underline-offset:var(--border-width-strong)}
+.map td .maplink code{color:var(--ink);text-decoration:inherit}
+.mapacts{display:flex;gap:var(--spacing-6)}
 .steps{display:flex;gap:var(--spacing-xs);margin:var(--spacing-sm) 0 var(--spacing-2xs);flex-wrap:wrap}
-.step{font:inherit;font-weight:var(--weight-bold);font-size:var(--typography-size-lede);padding:var(--spacing-xs) var(--spacing-2);margin-right:var(--spacing-18);border:none;border-bottom:var(--border-width-strong) solid transparent;background:none;color:var(--mut);cursor:pointer;border-radius:var(--radius-none);min-height:var(--control-height-default);transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}
+.step{font-size:var(--typography-size-body);font-weight:var(--weight-semibold);padding:var(--spacing-xs) var(--spacing-2);margin-right:var(--spacing-18);border:none;border-bottom:var(--border-width-strong) solid transparent;background:none;color:var(--mut);cursor:pointer;border-radius:var(--radius-none);min-height:var(--control-height-default);transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}
 .step:hover{color:var(--ink)}
 .step.on{color:var(--ink);border-bottom-color:var(--acc)}
 .blurb{font-size:var(--typography-size-small);color:var(--mut);margin:var(--spacing-2) 0 var(--spacing-6)}
@@ -65,34 +65,26 @@ body{padding-bottom:5.4rem} /* lint-allow: 5.4rem mobile step-rail clearance is 
 .steps{position:fixed;bottom:calc(.7rem + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);z-index:var(--z-bar);gap:var(--spacing-2);background:var(--card);border:var(--border-width-hairline) solid var(--rule);border-radius:var(--radius-sm);padding:var(--spacing-2xs) var(--spacing-xs);margin:0;box-shadow:var(--elevation-float);max-width:calc(100vw - 1.5rem);overflow-x:auto;flex-wrap:nowrap}
 .step{margin-right:var(--spacing-2xs);white-space:nowrap;border-bottom-color:transparent}
 }
-@media(max-width:639px){
-table.map,table.map tbody,table.map tr,table.map td{display:block;width:100%}
-table.map tr:first-child{display:none}
-table.map tr{background:var(--card);border:var(--border-width-hairline) solid var(--rule);border-radius:var(--radius-sm);padding:var(--spacing-10) var(--spacing-sm);margin-bottom:var(--spacing-10)}
-table.map td{border-bottom:0;padding:var(--spacing-2xs) 0}
-table.map td:last-child{display:flex;gap:var(--spacing-6)}
-}
 @media(pointer:coarse){
-.tab,.chip,.step,#theme,.nav button,.token button,.map td button{min-height:var(--control-height-touch);display:inline-flex;align-items:center;justify-content:center}
-#search{min-height:var(--control-height-touch)}
-.eng,.pitch{padding:var(--spacing-10) var(--spacing-md);display:inline-flex;align-items:center}
-.go{display:inline-flex;align-items:center;min-height:var(--control-height-touch)}
+.step,.eng,.pitch,.go{min-height:var(--control-height-touch);display:inline-flex;align-items:center}
+#search,button[role="tab"],button[aria-pressed],.panel .ds-pager button,.panel .ds-copy button{min-height:var(--control-height-touch)}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 
-/* -- DS focus ring: one canonical ring (--focus-width / --focus-offset + per-surface accent) */
-a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:var(--focus-width) solid var(--color-wiki-light-accent);outline-offset:var(--focus-offset);border-radius:inherit}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) :focus-visible{outline:var(--focus-width) solid var(--color-wiki-dark-accent);outline-offset:var(--focus-offset);border-radius:inherit}}
-:root[data-theme="dark"] :focus-visible{outline:var(--focus-width) solid var(--color-wiki-dark-accent);outline-offset:var(--focus-offset);border-radius:inherit}
-:focus:not(:focus-visible){outline:none}
-</style></head><body><div class="w">
-<div class="top"><h1>Cinematography and Direction Wiki</h1><span class="hright"><span class="by">by irfan</span><a class="pitch" href="pitch.html">pitch →</a><a class="eng" href="engine.html">engine →</a></span></div>
+/* -- focus ring: base.css §2 is the one ring (--focus-width/--focus-offset + --ds-accent per theme) */
+</style></head><body>
+<a class="ds-skip-link" href="#main">Skip to content</a>
+<div class="w">
+<header class="top"><h1>Cinematography and Direction Wiki</h1><nav class="hright" aria-label="Other pages"><span class="by">by irfan</span><a class="pitch" href="pitch.html">pitch →</a><a class="eng" href="engine.html">engine →</a></nav></header>
+<main id="main" tabindex="-1">
 <p class="sub">A working reference for how films are shot and directed. Pick a concept, see what it does for the story, watch it explained, and copy the prompt phrase to use it.</p>
-<div class="controls"><input id="search" type="search" placeholder="Filter this tab… (e.g. rack, golden, 180)" autocomplete="off"><button id="theme" title="Toggle light / dark">☾ theme</button></div>
-<div class="steps" id="steps"></div><div class="blurb" id="blurb"></div><div class="tabs" role="tablist" id="tabs"></div>
-<div class="main"><div class="list" id="list"></div><div class="panel" id="panel"></div></div>
+<div class="controls"><label class="ds-sr-only" for="search">Filter cards in this tab</label><input id="search" class="ds-input" type="search" placeholder="Filter this tab… (e.g. rack, golden, 180)" autocomplete="off"><div class="ds-theme-toggle" role="group" aria-label="Colour theme"><button type="button" class="ds-btn" data-variant="ghost" data-theme-set="light" aria-pressed="false" aria-label="Light theme" title="Light theme">☀</button><button type="button" class="ds-btn" data-variant="ghost" data-theme-set="dark" aria-pressed="false" aria-label="Dark theme" title="Dark theme">☾</button></div></div>
+<div class="steps" id="steps" role="region" aria-label="Steps" tabindex="0"></div><div class="blurb" id="blurb"></div><div class="ds-tabs" id="tabs"></div>
+<div class="main"><div class="list" id="list" role="region" aria-label="Cards in this tab" tabindex="0"></div><div class="panel" id="panel"></div></div>
+</main>
 <footer>Tip: ← → keys step through cards · / focuses filter · token copy gives you <code>CODE — prompt phrase</code> ready to paste. Direction tab: shoot order for the set.</footer>
 </div>
+<script src="design-system/components.js"></script>
 <script>
 const B='https://www.studiobinder.com/blog/';
 const YT=q=>'https://www.youtube.com/results?search_query='+encodeURIComponent(q);
@@ -293,12 +285,11 @@ const CV={
 const stepOf=t=>(STEPS.find(s=>s.tabs.includes(t))||{name:'All'}).name;
 const $=id=>document.getElementById(id);
 const phrase=x=>PHRASE[x[1]]||x[1];
-function copyTxt(t,btn){const done=()=>{btn.textContent='Copied ✓';setTimeout(()=>btn.textContent='Copy',1200)};
-if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(done).catch(()=>fallback());else fallback();
-function fallback(){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(e){}ta.remove();done()}}
 function items(){const it=D[tab].items||[];if(!q)return it.map((x,i)=>[x,i]);
 const s=q.toLowerCase();return it.map((x,i)=>[x,i]).filter(([x])=>(x[0]+' '+x[1]+' '+x[2]+' '+x[3]).toLowerCase().includes(s))}
-function tokenBox(x){const p=phrase(x);return`<div class="token"><code>${x[1]}</code><span>${p}</span><button data-copy="${x[1]} — ${p}">Copy</button></div>`}
+function tokenBox(x){const p=phrase(x);const t=x[1]+' — '+p;return`<div class="ds-copy"><code class="ds-copy__code">${x[1]} — ${p}</code><button type="button" class="ds-btn" data-variant="primary" data-ds-copy="${t}" data-ds-copy-message="Copied ${x[1]} prompt phrase">Copy</button></div>`}
+const pager=n=>`<div class="ds-pager"><button type="button" class="ds-btn" data-variant="ghost" data-n="-1">&larr; Prev</button><span>${idx+1} / ${n}</span><button type="button" class="ds-btn" data-variant="ghost" data-n="1">Next &rarr;</button></div>`;
+const BADGE={FREE:'success',PAID:'info',UNVERIFIED:'neutral'};
 function lesson(x){const cv=(CV[tab]||{})[x[1]];let id=null,t=0,label='';
 if(cv){id=cv[0];t=cv[1];label=cv[2]}else if(TABVIDEO[tab]){id=TABVIDEO[tab]}else{return`<div class="k">See it</div><p><a class="go" style="margin:0" target="_blank" rel="noopener" href="${YT(x[0]+' cinematography')}">Search clips: ${x[0]} cinematography ▶</a></p>`};
 if(id.indexOf('PL')===0)return`<div class="k">Lesson — watch in place</div><div class="yt" data-yt="${id}" data-t="0"><span>▶</span></div>`;
@@ -307,49 +298,77 @@ return`<div class="k">Lesson — watch in place</div><div class="yt" data-yt="${
 function playYt(y){const id=y.dataset.yt;const t=+y.dataset.t||0;const src=id.indexOf('PL')===0?('https://www.youtube-nocookie.com/embed/videoseries?list='+id):('https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0'+(t>0?'&start='+t:''));y.innerHTML=`<iframe src="${src}" title="Video lesson" allow="accelerometer; autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`}
 function card(x){const viz=V[D[tab].t](x[5]);
 const so=!((CV[tab]||{})[x[1]])&&!TABVIDEO[tab];const f=EX[x[0]];let see='';if(f)see+=`<div class="k">See it in</div><p>${f}</p>`;if(so)see+=`<div class="k">See it</div><p><a class="go" style="margin:0" target="_blank" rel="noopener" href="${YT(x[0]+' cinematography')}">Watch clips ▶</a></p>`;
-return`<div class="viz">${viz}</div><h2>${x[0]}<small>${x[1]}</small></h2><p>${x[2]}</p><div class="k">Use it when</div><p>${x[3]}</p>${see}${lesson(x)}${x[6]?`<div class="ad"><b>In your ad:</b> ${x[6]}</div>`:''}${D[tab].note?`<div class="note">${D[tab].note}</div>`:''}${tokenBox(x)}<a class="go" href="${x[4]}" target="_blank" rel="noopener">Read the full guide &rarr;</a><div class="nav"><button data-n="-1">&larr; Prev</button><span>${idx+1} / ${(D[tab].items||[]).length}</span><button data-n="1">Next &rarr;</button></div>`}
-function resCard(x){return`<div class="viz">${V.res(x[5])}</div><h2>${x[0]} <span class="badge ${x[1]}">${x[1]}</span></h2><p>${x[2]}</p><div class="k">Best for</div><p>${x[3]}</p>${lesson(x)}${x[6]?`<div class="ad"><b>Note:</b> ${x[6]}</div>`:''}${x[4]?`<a class="go" href="${x[4]}" target="_blank" rel="noopener">Open resource &rarr;</a>`:`<div class="note">No stable link — search the title; availability unconfirmed.</div>`}<div class="nav"><button data-n="-1">&larr; Prev</button><span>${idx+1} / ${(D[tab].items||[]).length}</span><button data-n="1">Next &rarr;</button></div>`}
+return`<div class="viz">${viz}</div><h2>${x[0]}<small>${x[1]}</small></h2><p>${x[2]}</p><div class="k">Use it when</div><p>${x[3]}</p>${see}${lesson(x)}${x[6]?`<div class="ad"><b>In your ad:</b> ${x[6]}</div>`:''}${D[tab].note?`<div class="note">${D[tab].note}</div>`:''}${tokenBox(x)}<a class="go" href="${x[4]}" target="_blank" rel="noopener">Read the full guide &rarr;</a>${pager((D[tab].items||[]).length)}`}
+function resCard(x){return`<div class="viz">${V.res(x[5])}</div><h2>${x[0]} <span class="ds-badge" data-variant="${BADGE[x[1]]||'neutral'}">${x[1]}</span></h2><p>${x[2]}</p><div class="k">Best for</div><p>${x[3]}</p>${lesson(x)}${x[6]?`<div class="ad"><b>Note:</b> ${x[6]}</div>`:''}${x[4]?`<a class="go" href="${x[4]}" target="_blank" rel="noopener">Open resource &rarr;</a>`:`<div class="note">No stable link — search the title; availability unconfirmed.</div>`}${pager((D[tab].items||[]).length)}`}
 function mapRows(){let rows=[];GROUPS.forEach(g=>D[g].items.forEach(x=>rows.push({g:g,n:x[0],c:x[1],p:phrase(x)})));
 if(mapGroup!='All')rows=rows.filter(r=>r.g==mapGroup);
 if(q){const s=q.toLowerCase();rows=rows.filter(r=>(r.n+' '+r.c+' '+r.p).toLowerCase().includes(s))}
 return rows}
 function mapPanel(){const rows=mapRows();
-return`<div class="k" style="margin-top:0">Every token in one table — copy a phrase straight into a prompt · click a token to open its card</div>
-<table class="map"><tr><th>Group</th><th>Token</th><th>Prompt phrase</th><th></th></tr>
-${rows.map(r=>`<tr><td><button data-view="${r.g}" data-code="${r.c}" style="background:none;border:none;padding:0;font:inherit;font-size:var(--typography-size-small);color:var(--mut);cursor:pointer;text-decoration:underline;text-underline-offset:2px">${r.g}</button></td><td><button data-view="${r.g}" data-code="${r.c}" style="background:none;border:none;padding:0;cursor:pointer"><code>${r.c}</code></button></td><td>${r.p}</td><td style="display:flex;gap:var(--spacing-6)"><button data-copy="${r.c} — ${r.p}">Copy</button><button data-view="${r.g}" data-code="${r.c}" title="Open card in wiki">↗</button></td></tr>`).join('')||'<tr><td colspan="4">No matches.</td></tr>'}</table>
-<div class="nav"><span>${rows.length} tokens</span><button data-copyall="1">Copy all (${mapGroup})</button></div>`}
+return `<div class="k" style="margin-top:0">Every token in one table — copy a phrase straight into a prompt · click a token to open its card</div>
+<div class="ds-table-wrap"><table class="ds-table map"><caption class="ds-sr-only">Every prompt token with its group, code and phrase, plus a copy action</caption><thead><tr><th scope="col">Group</th><th scope="col">Token</th><th scope="col">Prompt phrase</th><th scope="col"><span class="ds-sr-only">Actions</span></th></tr></thead><tbody>
+${rows.map(r=>`<tr><td data-label="Group"><button type="button" class="maplink" data-ds-compact data-view="${r.g}" data-code="${r.c}" data-ds-key="mapg-${r.c}">${r.g}</button></td><td data-label="Token"><button type="button" class="maplink" data-ds-compact data-view="${r.g}" data-code="${r.c}" data-ds-key="mapt-${r.c}"><code>${r.c}</code></button></td><td data-label="Prompt phrase">${r.p}</td><td data-label="Actions"><span class="mapacts"><button type="button" data-ds-compact data-ds-copy="${r.c} — ${r.p}" data-ds-copy-message="Copied ${r.c} prompt phrase" aria-label="Copy ${r.c} prompt phrase">Copy</button><button type="button" data-ds-compact data-view="${r.g}" data-code="${r.c}" title="Open card in wiki" aria-label="Open the ${r.c} card">↗</button></span></td></tr>`).join('')||'<tr><td colspan="4">No matches.</td></tr>'}</tbody></table></div>
+<div class="ds-pager"><span>${rows.length} tokens</span><button type="button" class="ds-btn" data-variant="ghost" data-copyall="1" data-ds-copy-message="Copied all ${rows.length} prompt phrases">Copy all (${mapGroup})</button></div>`}
 function draw(){
 const curStep=stepOf(tab);
-$('steps').innerHTML=STEPS.map(s=>`<button class="step${s.name==curStep?' on':''}" data-step="${s.name}">${s.name}</button>`).join('');
+$('steps').innerHTML=STEPS.map(s=>`<button type="button" class="step${s.name==curStep?' on':''}" data-step="${s.name}" data-ds-key="step-${s.name}"${s.name==curStep?' aria-current="step"':''}>${s.name}</button>`).join('');
 $('blurb').textContent=STEPS.find(s=>s.name==curStep).blurb;
 const pillTabs=STEPS.find(s=>s.name==curStep).tabs;
 const tabsEl=$('tabs');
-if(pillTabs.length<=1){tabsEl.innerHTML='';tabsEl.style.display='none'}else{tabsEl.style.display='';tabsEl.innerHTML=pillTabs.map(k=>`<button class="tab" role="tab" aria-selected="${k==tab}" data-t="${k}">${k}</button>`).join('')};
+if(pillTabs.length<=1){tabsEl.innerHTML='';tabsEl.style.display='none';tabsEl.removeAttribute('role');tabsEl.removeAttribute('aria-label')}
+else{tabsEl.style.display='';tabsEl.setAttribute('role','tablist');tabsEl.setAttribute('aria-label','Tabs in '+curStep);
+tabsEl.innerHTML=pillTabs.map(k=>`<button type="button" class="ds-tab" role="tab" id="${tabId(k)}" aria-selected="${k==tab}" aria-controls="panel" tabindex="${k==tab?0:-1}" data-t="${k}" data-ds-key="tab-${k}">${k}</button>`).join('')};
 const list=$('list'),panel=$('panel');
+if(pillTabs.length>1){panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby',tabId(tab));panel.removeAttribute('aria-label')}
+else{panel.setAttribute('role','region');panel.removeAttribute('aria-labelledby');panel.setAttribute('aria-label',tab+' cards')}
 if(tab=='Prompt map'){const gs=['All',...GROUPS];
-list.innerHTML=`<div class="count">${mapRows().length} tokens${mapGroup!='All'?' in '+mapGroup:''}</div>`+gs.map(g=>`<button class="chip" aria-selected="${g==mapGroup}" data-g="${g}">${g}</button>`).join('');
+list.innerHTML=`<div class="count">${mapRows().length} tokens${mapGroup!='All'?' in '+mapGroup:''}</div>`+gs.map(g=>`<button type="button" class="ds-chip" aria-pressed="${g==mapGroup}" data-g="${g}" data-ds-key="group-${g}">${g}</button>`).join('');
 panel.innerHTML=mapPanel();return}
 const fl=items();
-list.innerHTML=`<div class="count">${fl.length} / ${(D[tab].items||[]).length}</div>`+fl.map(([x,i])=>`<button class="chip" aria-selected="${i==idx}" data-i="${i}">${x[0]}</button>`).join('');
+list.innerHTML=`<div class="count">${fl.length} / ${(D[tab].items||[]).length}</div>`+fl.map(([x,i])=>`<button type="button" class="ds-chip" aria-pressed="${i==idx}" data-i="${i}" data-ds-key="chip-${i}">${x[0]}</button>`).join('');
 const x=(D[tab].items||[])[idx];
 if(!x){panel.innerHTML='<p>No matches in this tab.</p>';return}
 panel.innerHTML=(tab=='Resources')?resCard(x):card(x);
 }
-document.addEventListener('click',e=>{const y=e.target.closest('.yt');if(y&&!y.querySelector('iframe')){playYt(y);return}const b=e.target.closest('button');if(!b)return;
-if(b.dataset.copy){copyTxt(b.dataset.copy,b);return}
-if(b.dataset.copyall){copyTxt(mapRows().map(r=>r.c+' — '+r.p).join('\n'),b);return}
-if(b.dataset.view){tab=b.dataset.view;const code=b.dataset.code;const arr=D[tab].items||[];const fi=arr.findIndex(x=>x[1]===code);idx=fi>=0?fi:0;q='';const se=$('search');if(se)se.value='';}
+const tabId=k=>'tab-'+k.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+function render(){DS.focusPreserve(document.body,draw)}
+let announceTimer;
+function announceCount(){clearTimeout(announceTimer);announceTimer=setTimeout(()=>{
+const n=tab=='Prompt map'?mapRows().length:items().length;const total=tab=='Prompt map'?mapRows().length:(D[tab].items||[]).length;
+DS.announce(q?`${n} of ${total} ${tab=='Prompt map'?'tokens':'cards'} match “${q}”`:`Filter cleared. ${total} ${tab=='Prompt map'?'tokens':'cards'} in ${tab}.`)},320)}
+let jump=false;
+document.addEventListener('click',e=>{const y=e.target.closest('.yt');if(y&&!y.querySelector('iframe')){playYt(y);return}
+const th=e.target.closest('[data-theme-set]');if(th){setTheme(th.dataset.themeSet);return}
+const cp=e.target.closest('[data-ds-copy]');if(cp){const done=()=>{if(document.activeElement===document.body)cp.focus()};try{Promise.resolve(DS.copy(cp.dataset.dsCopy,cp)).then(done,done)}catch(err){done()}return}
+const b=e.target.closest('button');if(!b)return;
+if(b.dataset.copyall){const done=()=>{if(document.activeElement===document.body)b.focus()};try{Promise.resolve(DS.copy(mapRows().map(r=>r.c+' — '+r.p).join('\n'),b)).then(done,done)}catch(err){done()}return}
+if(b.dataset.view){tab=b.dataset.view;const code=b.dataset.code;const arr=D[tab].items||[];const fi=arr.findIndex(x=>x[1]===code);idx=fi>=0?fi:0;q='';const se=$('search');if(se)se.value='';jump=true}
 else if(b.dataset.step){tab=STEPS.find(s=>s.name===b.dataset.step).tabs[0];idx=0}
 else if(b.dataset.t){tab=b.dataset.t;idx=0}
 else if(b.dataset.g){mapGroup=b.dataset.g}
 else if(b.dataset.i)idx=+b.dataset.i;
-else if(b.dataset.n){const n=(D[tab].items||[]).length;idx=(idx+ +b.dataset.n+n)%n}else return;draw()});
-$('search').addEventListener('input',e=>{q=e.target.value.trim();draw()});
+else if(b.dataset.n){const n=(D[tab].items||[]).length;idx=(idx+ +b.dataset.n+n)%n}else return;render();
+if(jump){jump=false;const c=$('list').querySelector('.ds-chip[aria-pressed="true"]');if(c)c.focus()}});
+$('search').addEventListener('input',e=>{q=e.target.value.trim();render();announceCount()});
+$('tabs').addEventListener('keydown',e=>{if(!/^(ArrowLeft|ArrowRight|Home|End)$/.test(e.key))return;
+const tabs=[...$('tabs').querySelectorAll('[role="tab"]')];if(!tabs.length)return;
+e.preventDefault();e.stopPropagation();
+const i=tabs.indexOf(document.activeElement);if(i<0)return;
+let n=i;if(e.key=='ArrowRight')n=(i+1)%tabs.length;else if(e.key=='ArrowLeft')n=(i-1+tabs.length)%tabs.length;else n=e.key=='Home'?0:tabs.length-1;
+tab=tabs[n].dataset.t;idx=0;draw();
+const nx=$('tabs').querySelector('[role="tab"][aria-selected="true"]');if(nx)nx.focus()});
 document.addEventListener('keydown',e=>{const ae=document.activeElement;const typing=ae&&/INPUT|TEXTAREA/.test(ae.tagName||'');
 if(e.key=='/'&&!typing){e.preventDefault();$('search').focus();return}
 if(typing||tab=='Prompt map')return;
-if(e.key=='ArrowRight'||e.key=='ArrowLeft'){const n=(D[tab].items||[]).length;idx=(idx+(e.key=='ArrowRight'?1:-1)+n)%n;draw()}});
-(function theme(){const s=localStorage.getItem('cse-theme');if(s)document.documentElement.dataset.theme=s;
-$('theme').onclick=()=>{const cur=document.documentElement.dataset.theme=='dark'?'light':'dark';document.documentElement.dataset.theme=cur;localStorage.setItem('cse-theme',cur)}})();
+if(e.target.closest&&e.target.closest('[role="tablist"]'))return;
+if(e.key=='ArrowRight'||e.key=='ArrowLeft'){const n=(D[tab].items||[]).length;idx=(idx+(e.key=='ArrowRight'?1:-1)+n)%n;render()}});
+const mqDark=matchMedia('(prefers-color-scheme:dark)');
+function themeMode(){return document.documentElement.dataset.theme||(mqDark.matches?'dark':'light')}
+function syncTheme(){const m=themeMode(),h=document.documentElement;
+h.dataset.dsTheme=m=='dark'?'wiki-dark':'wiki-light';
+document.querySelectorAll('[data-theme-set]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.themeSet===m)))}
+function setTheme(m){const h=document.documentElement;h.dataset.theme=m;try{localStorage.setItem('cse-theme',m)}catch(e){}syncTheme()}
+if(mqDark.addEventListener)mqDark.addEventListener('change',()=>{if(!document.documentElement.dataset.theme)syncTheme()});
+syncTheme();
 draw();
 </script></body></html>
