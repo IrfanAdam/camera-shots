@@ -1,10 +1,13 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-ds-manual>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Design System — Camera Shots</title>
 <link rel="stylesheet" href="tokens.css">
+<!-- the gallery is the only page that opts into the component layer in Phase 2 -->
+<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="components.css">
 <style>
 /* ---------- gallery chrome: neutral, token-fed ---------- */
 :root{
@@ -396,6 +399,70 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
 .comp-props .tok-table th{padding:var(--spacing-2xs) var(--spacing-sm)}
 .comp-props .tok-table td{padding:var(--spacing-2xs) var(--spacing-sm)}
 
+/* ---------- ds component specimens (Phase 2) ----------
+   The cells carry data-ds-theme so the ds-* blocks resolve their --ds-* role
+   vars from tokens.css. Gallery chrome cannot read --ds-* (they are declared
+   in the theme maps, not :root), so each cell also paints itself from the same
+   :root tokens through --x-* — the aliases stay page-local, like --g-*.
+   data-ds-theme decides what the components see; data-surface decides what the
+   cell looks like. Neither one touches the page's own theme. */
+.spec-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--spacing-sm)}
+.spec-cell{
+  --x-bg:var(--color-wiki-light-bg);
+  --x-ink:var(--color-wiki-light-ink);
+  --x-rule:var(--color-wiki-light-rule);
+  display:flex;flex-direction:column;gap:var(--spacing-2xs);min-width:0;
+  padding:var(--spacing-sm);
+  border:var(--border-width-hairline) solid var(--x-rule);
+  border-radius:var(--radius-xs);
+  background:var(--x-bg);color:var(--x-ink);
+}
+.spec-cell[data-surface="pitch"]{
+  --x-bg:var(--color-pitch-bg);--x-ink:var(--color-pitch-ink);--x-rule:var(--color-pitch-rule);
+}
+.spec-cell[data-surface="wiki-dark"]{
+  --x-bg:var(--color-wiki-dark-bg);--x-ink:var(--color-wiki-dark-ink);--x-rule:var(--color-wiki-dark-rule);
+}
+.spec-cell[data-surface="engine"]{
+  --x-bg:var(--color-engine-surface-0);--x-ink:var(--color-engine-text-primary);--x-rule:var(--color-engine-divider);
+}
+.spec-cell--wide{grid-column:1/-1}
+.spec-row{display:flex;align-items:center;flex-wrap:wrap;gap:var(--spacing-2xs)}
+.spec-stack{display:flex;flex-direction:column;gap:var(--spacing-2xs)}
+.spec-cell .ds-card p{margin-block:var(--spacing-2xs)}
+.spec-cell .ds-pager{flex-wrap:wrap}
+.spec-cell .ds-tabs{flex-wrap:wrap;overflow:visible}
+.spec-cell .ds-table-wrap{max-inline-size:100%}
+/* the four overlay blocks ship position:fixed / absolute; a specimen has to sit
+   in the flow of its cell, so the placement is reset here and only here */
+.spec-cell .ds-drawer{
+  position:relative;inset:auto;z-index:auto;inline-size:100%;block-size:auto;max-block-size:none;
+  transform:none;padding:var(--spacing-sm);border:var(--border-width-hairline) solid var(--x-rule);
+  border-radius:var(--radius-xs);
+}
+.spec-cell .ds-dialog{position:relative;inset:auto;z-index:auto;display:block;padding:0}
+.spec-cell .ds-dialog__scrim{display:none}
+.spec-cell .ds-dialog__box{inline-size:100%;max-block-size:none;padding:var(--spacing-sm)}
+.spec-cell .ds-menu{position:static;z-index:auto;min-inline-size:0;inline-size:100%}
+.spec-cell .ds-toast{position:static;inset:auto;z-index:auto;margin:0;inline-size:auto;max-inline-size:100%}
+.spec-cell .ds-tooltip{position:static;z-index:auto;white-space:normal}
+.spec-cell .ds-progress{inline-size:100%}
+/* switch has no [data-state] hook in components.css; this mirrors its
+   :focus-visible ring so the static Focus specimen is not the odd one out */
+.spec-cell .ds-switch[data-state~="focus"] .ds-switch__track{
+  outline:var(--focus-width) solid var(--focus-color,currentColor);
+  outline-offset:var(--focus-offset);
+}
+/* icon sizing from the icons.svg contract (components.css ships .ds-icon-btn,
+   not .ds-icon): one dialect, three sizes, stroke inherits the text colour */
+.ds-icon{
+  display:block;flex:none;
+  inline-size:var(--icon-size-sm);block-size:var(--icon-size-sm);
+  fill:none;stroke:currentColor;
+}
+.ds-icon--md{inline-size:var(--icon-size-md);block-size:var(--icon-size-md)}
+.ds-icon--lg{inline-size:var(--icon-size-lg);block-size:var(--icon-size-lg)}
+
 /* ---------- consistency matrix ---------- */
 .matrix-wrap{overflow-x:auto;border:var(--border-width-hairline) solid var(--g-rule);border-radius:var(--radius-md)}
 .matrix{width:100%;border-collapse:collapse;font-size:var(--typography-size-small);min-width:720px}
@@ -440,6 +507,7 @@ footer code{color:var(--g-ink)}
   .side a.on{border-left:0;border-bottom-color:var(--g-ink);padding-left:0}
   section{scroll-margin-top:64px}
   .sec-head p{margin-left:0;text-align:left}
+  .spec-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:640px){
   .swgrid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
@@ -450,6 +518,7 @@ footer code{color:var(--g-ink)}
   .stage{padding:var(--spacing-md)}
   .tok-table td.live{white-space:normal}
   .matrix{min-width:640px}
+  .spec-grid{grid-template-columns:1fr}
   .radius-box,.radius-cell{width:64px}
   .radius-box{height:64px}
   .touch-row{gap:var(--spacing-lg)}
@@ -492,6 +561,7 @@ footer code{color:var(--g-ink)}
     <a href="#touch">05 · Touch</a>
     <a href="#components">06 · Components</a>
     <a href="#matrix">07 · Consistency</a>
+    <a href="#specimens">08 · Component specimens</a>
     <span class="side-foot">Swatch values are read live from the computed custom properties.</span>
   </nav>
 
@@ -1213,6 +1283,580 @@ footer code{color:var(--g-ink)}
       <p class="matrix-sum">Every cell above is a computed value from the shipped pages at a 1440 viewport, printed at render. Where a surface departs from the token the badge and the <code>file:line</code> are generated from the same measurement, so the worklist cannot drift from the CSS. A cell that reads “none in DOM” means the surface ships no such element — not that it was skipped.</p>
     </section>
 
+    <!-- ============ 08 COMPONENT SPECIMENS ============ -->
+    <section id="specimens" aria-labelledby="specimens-h">
+      <div class="sec-head">
+        <span class="sec-num">08</span>
+        <h2 id="specimens-h">Component specimens</h2>
+        <p><span class="js-block-count">—</span> blocks · <span class="js-theme-count">—</span> theme wrappers · <span class="js-state-count">—</span> static states</p>
+      </div>
+
+      <p class="sec-intro">The shipped library, rendered rather than described. Every block is drawn once per theme map in <code>tokens.css</code>: the only thing that changes between the four cells is <code>data-ds-theme</code>, so a role token that fails to resolve shows up as a hole instead of a caption. Rest, hover, focus and disabled are static <code>[data-state]</code> cells where the CSS has that hook, and the same elements are real controls, so Tab reaches them. The page keeps its own light/dark theme — only these wrappers carry a theme map. <code>components.js</code> is loaded with <code>data-ds-manual</code> so the specimens stay exactly as authored.</p>
+
+      <article class="comp" id="spec-btn" data-specimen="btn">
+        <div class="comp-head"><h3>Button</h3><span class="comp-classes">.ds-btn · [data-variant] primary|secondary|ghost|danger · [data-size] xs|compact|tall · [data-state]</span></div>
+        <div class="spec-grid">
+        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <span class="kicker">pitch</span>
+          <div class="spec-row"><button class="ds-btn" data-variant="primary" type="button">Primary</button><button class="ds-btn" data-variant="secondary" type="button">Secondary</button><button class="ds-btn" data-variant="ghost" type="button">Ghost</button><button class="ds-btn" data-variant="danger" type="button">Danger</button></div>
+          <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-state="hover" type="button">Hover</button><button class="ds-btn" data-variant="secondary" data-state="focus" type="button">Focus</button><button class="ds-btn" data-variant="secondary" data-state="disabled" type="button">Disabled</button></div>
+          <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">xs</button><button class="ds-btn" data-variant="secondary" data-size="compact" type="button">compact</button><button class="ds-btn" data-variant="secondary" data-size="tall" type="button">tall</button></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+          <span class="kicker">wiki-light</span>
+          <div class="spec-row"><button class="ds-btn" data-variant="primary" type="button">Primary</button><button class="ds-btn" data-variant="secondary" type="button">Secondary</button><button class="ds-btn" data-variant="ghost" type="button">Ghost</button><button class="ds-btn" data-variant="danger" type="button">Danger</button></div>
+          <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-state="hover" type="button">Hover</button><button class="ds-btn" data-variant="secondary" data-state="focus" type="button">Focus</button><button class="ds-btn" data-variant="secondary" data-state="disabled" type="button">Disabled</button></div>
+          <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">xs</button><button class="ds-btn" data-variant="secondary" data-size="compact" type="button">compact</button><button class="ds-btn" data-variant="secondary" data-size="tall" type="button">tall</button></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+          <span class="kicker">wiki-dark</span>
+          <div class="spec-row"><button class="ds-btn" data-variant="primary" type="button">Primary</button><button class="ds-btn" data-variant="secondary" type="button">Secondary</button><button class="ds-btn" data-variant="ghost" type="button">Ghost</button><button class="ds-btn" data-variant="danger" type="button">Danger</button></div>
+          <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-state="hover" type="button">Hover</button><button class="ds-btn" data-variant="secondary" data-state="focus" type="button">Focus</button><button class="ds-btn" data-variant="secondary" data-state="disabled" type="button">Disabled</button></div>
+          <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">xs</button><button class="ds-btn" data-variant="secondary" data-size="compact" type="button">compact</button><button class="ds-btn" data-variant="secondary" data-size="tall" type="button">tall</button></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+          <span class="kicker">engine</span>
+          <div class="spec-row"><button class="ds-btn" data-variant="primary" type="button">Primary</button><button class="ds-btn" data-variant="secondary" type="button">Secondary</button><button class="ds-btn" data-variant="ghost" type="button">Ghost</button><button class="ds-btn" data-variant="danger" type="button">Danger</button></div>
+          <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-state="hover" type="button">Hover</button><button class="ds-btn" data-variant="secondary" data-state="focus" type="button">Focus</button><button class="ds-btn" data-variant="secondary" data-state="disabled" type="button">Disabled</button></div>
+          <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">xs</button><button class="ds-btn" data-variant="secondary" data-size="compact" type="button">compact</button><button class="ds-btn" data-variant="secondary" data-size="tall" type="button">tall</button></div>
+        </div>
+        </div>
+      </article>
+      <article class="comp" id="spec-icon-btn" data-specimen="icon-btn">
+        <div class="comp-head"><h3>Icon button</h3><span class="comp-classes">.ds-icon-btn · [data-variant=circle] · [data-state]</span></div>
+        <div class="spec-grid">
+        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <span class="kicker">pitch</span>
+          <div class="spec-row"><button class="ds-icon-btn" type="button" aria-label="Close"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button><button class="ds-icon-btn" data-variant="circle" type="button" aria-label="More"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-more-h"></use></svg></button><button class="ds-icon-btn" data-variant="circle" data-state="focus" type="button" aria-label="Settings"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-gear"></use></svg></button><button class="ds-icon-btn" data-state="hover" type="button" aria-label="Search"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-search"></use></svg></button><button class="ds-icon-btn" data-state="disabled" type="button" aria-label="Delete"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-trash"></use></svg></button></div>
+          <span class="spec-row"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-moon"></use></svg><svg class="ds-icon ds-icon--md" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-sun"></use></svg><svg class="ds-icon ds-icon--lg" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-play"></use></svg><span class="kicker">sm · md · lg</span></span>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+          <span class="kicker">wiki-light</span>
+          <div class="spec-row"><button class="ds-icon-btn" type="button" aria-label="Close"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button><button class="ds-icon-btn" data-variant="circle" type="button" aria-label="More"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-more-h"></use></svg></button><button class="ds-icon-btn" data-variant="circle" data-state="focus" type="button" aria-label="Settings"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-gear"></use></svg></button><button class="ds-icon-btn" data-state="hover" type="button" aria-label="Search"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-search"></use></svg></button><button class="ds-icon-btn" data-state="disabled" type="button" aria-label="Delete"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-trash"></use></svg></button></div>
+          <span class="spec-row"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-moon"></use></svg><svg class="ds-icon ds-icon--md" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-sun"></use></svg><svg class="ds-icon ds-icon--lg" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-play"></use></svg><span class="kicker">sm · md · lg</span></span>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+          <span class="kicker">wiki-dark</span>
+          <div class="spec-row"><button class="ds-icon-btn" type="button" aria-label="Close"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button><button class="ds-icon-btn" data-variant="circle" type="button" aria-label="More"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-more-h"></use></svg></button><button class="ds-icon-btn" data-variant="circle" data-state="focus" type="button" aria-label="Settings"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-gear"></use></svg></button><button class="ds-icon-btn" data-state="hover" type="button" aria-label="Search"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-search"></use></svg></button><button class="ds-icon-btn" data-state="disabled" type="button" aria-label="Delete"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-trash"></use></svg></button></div>
+          <span class="spec-row"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-moon"></use></svg><svg class="ds-icon ds-icon--md" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-sun"></use></svg><svg class="ds-icon ds-icon--lg" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-play"></use></svg><span class="kicker">sm · md · lg</span></span>
+        </div>
+        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+          <span class="kicker">engine</span>
+          <div class="spec-row"><button class="ds-icon-btn" type="button" aria-label="Close"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button><button class="ds-icon-btn" data-variant="circle" type="button" aria-label="More"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-more-h"></use></svg></button><button class="ds-icon-btn" data-variant="circle" data-state="focus" type="button" aria-label="Settings"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-gear"></use></svg></button><button class="ds-icon-btn" data-state="hover" type="button" aria-label="Search"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-search"></use></svg></button><button class="ds-icon-btn" data-state="disabled" type="button" aria-label="Delete"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-trash"></use></svg></button></div>
+          <span class="spec-row"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-moon"></use></svg><svg class="ds-icon ds-icon--md" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-sun"></use></svg><svg class="ds-icon ds-icon--lg" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-play"></use></svg><span class="kicker">sm · md · lg</span></span>
+        </div>
+        </div>
+      </article>
+      <article class="comp" id="spec-field" data-specimen="field">
+        <div class="comp-head"><h3>Field</h3><span class="comp-classes">.ds-field · .ds-label · .ds-input · .ds-select · .ds-textarea · .ds-note · [data-invalid]</span></div>
+        <div class="spec-grid">
+        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <span class="kicker">pitch</span>
+          <label class="ds-field"><span class="ds-label">Shot label</span><input class="ds-input" type="text" value="Handheld — corridor"><span class="ds-note">Shown in the timeline and every prompt token.</span></label>
+          <label class="ds-field"><span class="ds-label">Lens</span><select class="ds-select"><option>32mm</option><option>50mm</option></select></label>
+          <label class="ds-field"><span class="ds-label">Prompt</span><textarea class="ds-textarea" rows="2">Slow push in, rack focus to eyes.</textarea></label>
+          <label class="ds-field"><span class="ds-label">Focus</span><input class="ds-input" type="text" value="Focused" data-state="focus"></label>
+          <label class="ds-field" data-invalid="true"><span class="ds-label">Code</span><input class="ds-input" type="text" value="HH-CORRIDOR-EXTRA-LONG" aria-invalid="true"><span class="ds-note">Max 12 characters.</span></label>
+          <label class="ds-field"><span class="ds-label">Disabled</span><input class="ds-input" type="text" value="Locked" disabled></label>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+          <span class="kicker">wiki-light</span>
+          <label class="ds-field"><span class="ds-label">Shot label</span><input class="ds-input" type="text" value="Handheld — corridor"><span class="ds-note">Shown in the timeline and every prompt token.</span></label>
+          <label class="ds-field"><span class="ds-label">Lens</span><select class="ds-select"><option>32mm</option><option>50mm</option></select></label>
+          <label class="ds-field"><span class="ds-label">Prompt</span><textarea class="ds-textarea" rows="2">Slow push in, rack focus to eyes.</textarea></label>
+          <label class="ds-field"><span class="ds-label">Focus</span><input class="ds-input" type="text" value="Focused" data-state="focus"></label>
+          <label class="ds-field" data-invalid="true"><span class="ds-label">Code</span><input class="ds-input" type="text" value="HH-CORRIDOR-EXTRA-LONG" aria-invalid="true"><span class="ds-note">Max 12 characters.</span></label>
+          <label class="ds-field"><span class="ds-label">Disabled</span><input class="ds-input" type="text" value="Locked" disabled></label>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+          <span class="kicker">wiki-dark</span>
+          <label class="ds-field"><span class="ds-label">Shot label</span><input class="ds-input" type="text" value="Handheld — corridor"><span class="ds-note">Shown in the timeline and every prompt token.</span></label>
+          <label class="ds-field"><span class="ds-label">Lens</span><select class="ds-select"><option>32mm</option><option>50mm</option></select></label>
+          <label class="ds-field"><span class="ds-label">Prompt</span><textarea class="ds-textarea" rows="2">Slow push in, rack focus to eyes.</textarea></label>
+          <label class="ds-field"><span class="ds-label">Focus</span><input class="ds-input" type="text" value="Focused" data-state="focus"></label>
+          <label class="ds-field" data-invalid="true"><span class="ds-label">Code</span><input class="ds-input" type="text" value="HH-CORRIDOR-EXTRA-LONG" aria-invalid="true"><span class="ds-note">Max 12 characters.</span></label>
+          <label class="ds-field"><span class="ds-label">Disabled</span><input class="ds-input" type="text" value="Locked" disabled></label>
+        </div>
+        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+          <span class="kicker">engine</span>
+          <label class="ds-field"><span class="ds-label">Shot label</span><input class="ds-input" type="text" value="Handheld — corridor"><span class="ds-note">Shown in the timeline and every prompt token.</span></label>
+          <label class="ds-field"><span class="ds-label">Lens</span><select class="ds-select"><option>32mm</option><option>50mm</option></select></label>
+          <label class="ds-field"><span class="ds-label">Prompt</span><textarea class="ds-textarea" rows="2">Slow push in, rack focus to eyes.</textarea></label>
+          <label class="ds-field"><span class="ds-label">Focus</span><input class="ds-input" type="text" value="Focused" data-state="focus"></label>
+          <label class="ds-field" data-invalid="true"><span class="ds-label">Code</span><input class="ds-input" type="text" value="HH-CORRIDOR-EXTRA-LONG" aria-invalid="true"><span class="ds-note">Max 12 characters.</span></label>
+          <label class="ds-field"><span class="ds-label">Disabled</span><input class="ds-input" type="text" value="Locked" disabled></label>
+        </div>
+        </div>
+      </article>
+      <article class="comp" id="spec-switch" data-specimen="switch">
+        <div class="comp-head"><h3>Switch</h3><span class="comp-classes">.ds-switch · __input · __track · __label (real checkbox)</span></div>
+        <div class="spec-grid">
+        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <span class="kicker">pitch</span>
+          <div class="spec-row"><label class="ds-switch"><input class="ds-switch__input" type="checkbox"><span class="ds-switch__track"></span><span class="ds-switch__label">Off</span></label><label class="ds-switch"><input class="ds-switch__input" type="checkbox" checked><span class="ds-switch__track"></span><span class="ds-switch__label">On</span></label></div>
+          <div class="spec-row"><label class="ds-switch" data-state="focus"><input class="ds-switch__input" type="checkbox" checked><span class="ds-switch__track"></span><span class="ds-switch__label">Focus</span></label><label class="ds-switch"><input class="ds-switch__input" type="checkbox" disabled><span class="ds-switch__track"></span><span class="ds-switch__label">Disabled</span></label></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+          <span class="kicker">wiki-light</span>
+          <div class="spec-row"><label class="ds-switch"><input class="ds-switch__input" type="checkbox"><span class="ds-switch__track"></span><span class="ds-switch__label">Off</span></label><label class="ds-switch"><input class="ds-switch__input" type="checkbox" checked><span class="ds-switch__track"></span><span class="ds-switch__label">On</span></label></div>
+          <div class="spec-row"><label class="ds-switch" data-state="focus"><input class="ds-switch__input" type="checkbox" checked><span class="ds-switch__track"></span><span class="ds-switch__label">Focus</span></label><label class="ds-switch"><input class="ds-switch__input" type="checkbox" disabled><span class="ds-switch__track"></span><span class="ds-switch__label">Disabled</span></label></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+          <span class="kicker">wiki-dark</span>
+          <div class="spec-row"><label class="ds-switch"><input class="ds-switch__input" type="checkbox"><span class="ds-switch__track"></span><span class="ds-switch__label">Off</span></label><label class="ds-switch"><input class="ds-switch__input" type="checkbox" checked><span class="ds-switch__track"></span><span class="ds-switch__label">On</span></label></div>
+          <div class="spec-row"><label class="ds-switch" data-state="focus"><input class="ds-switch__input" type="checkbox" checked><span class="ds-switch__track"></span><span class="ds-switch__label">Focus</span></label><label class="ds-switch"><input class="ds-switch__input" type="checkbox" disabled><span class="ds-switch__track"></span><span class="ds-switch__label">Disabled</span></label></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+          <span class="kicker">engine</span>
+          <div class="spec-row"><label class="ds-switch"><input class="ds-switch__input" type="checkbox"><span class="ds-switch__track"></span><span class="ds-switch__label">Off</span></label><label class="ds-switch"><input class="ds-switch__input" type="checkbox" checked><span class="ds-switch__track"></span><span class="ds-switch__label">On</span></label></div>
+          <div class="spec-row"><label class="ds-switch" data-state="focus"><input class="ds-switch__input" type="checkbox" checked><span class="ds-switch__track"></span><span class="ds-switch__label">Focus</span></label><label class="ds-switch"><input class="ds-switch__input" type="checkbox" disabled><span class="ds-switch__track"></span><span class="ds-switch__label">Disabled</span></label></div>
+        </div>
+        </div>
+      </article>
+      <article class="comp" id="spec-tabs" data-specimen="tabs">
+        <div class="comp-head"><h3>Tabs</h3><span class="comp-classes">.ds-tabs · .ds-tab · [data-variant] underline|rail</span></div>
+        <div class="spec-grid">
+        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <span class="kicker">pitch</span>
+          <div class="ds-tabs" role="tablist" aria-label="Tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
+          <div class="ds-tabs" data-variant="underline" role="tablist" aria-label="Underline tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
+          <div class="ds-tabs" data-variant="rail" role="tablist" aria-label="Rail tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Coverage</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Movement</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Focus</button></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+          <span class="kicker">wiki-light</span>
+          <div class="ds-tabs" role="tablist" aria-label="Tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
+          <div class="ds-tabs" data-variant="underline" role="tablist" aria-label="Underline tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
+          <div class="ds-tabs" data-variant="rail" role="tablist" aria-label="Rail tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Coverage</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Movement</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Focus</button></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+          <span class="kicker">wiki-dark</span>
+          <div class="ds-tabs" role="tablist" aria-label="Tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
+          <div class="ds-tabs" data-variant="underline" role="tablist" aria-label="Underline tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
+          <div class="ds-tabs" data-variant="rail" role="tablist" aria-label="Rail tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Coverage</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Movement</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Focus</button></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+          <span class="kicker">engine</span>
+          <div class="ds-tabs" role="tablist" aria-label="Tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
+          <div class="ds-tabs" data-variant="underline" role="tablist" aria-label="Underline tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
+          <div class="ds-tabs" data-variant="rail" role="tablist" aria-label="Rail tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Coverage</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Movement</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Focus</button></div>
+        </div>
+        </div>
+      </article>
+      <article class="comp" id="spec-chip" data-specimen="chip">
+        <div class="comp-head"><h3>Chip</h3><span class="comp-classes">.ds-chip · __count · [data-variant=pill] · [aria-pressed]</span></div>
+        <div class="spec-grid">
+        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <span class="kicker">pitch</span>
+          <div class="spec-row"><button class="ds-chip" type="button" aria-pressed="false">All shots</button><button class="ds-chip" data-state="hover" type="button" aria-pressed="false">Hover</button></div>
+          <div class="spec-row"><button class="ds-chip" type="button" aria-pressed="true">Coverage <span class="ds-chip__count">12</span></button><button class="ds-chip" data-variant="pill" type="button" aria-pressed="false">Pill</button></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+          <span class="kicker">wiki-light</span>
+          <div class="spec-row"><button class="ds-chip" type="button" aria-pressed="false">All shots</button><button class="ds-chip" data-state="hover" type="button" aria-pressed="false">Hover</button></div>
+          <div class="spec-row"><button class="ds-chip" type="button" aria-pressed="true">Coverage <span class="ds-chip__count">12</span></button><button class="ds-chip" data-variant="pill" type="button" aria-pressed="false">Pill</button></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+          <span class="kicker">wiki-dark</span>
+          <div class="spec-row"><button class="ds-chip" type="button" aria-pressed="false">All shots</button><button class="ds-chip" data-state="hover" type="button" aria-pressed="false">Hover</button></div>
+          <div class="spec-row"><button class="ds-chip" type="button" aria-pressed="true">Coverage <span class="ds-chip__count">12</span></button><button class="ds-chip" data-variant="pill" type="button" aria-pressed="false">Pill</button></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+          <span class="kicker">engine</span>
+          <div class="spec-row"><button class="ds-chip" type="button" aria-pressed="false">All shots</button><button class="ds-chip" data-state="hover" type="button" aria-pressed="false">Hover</button></div>
+          <div class="spec-row"><button class="ds-chip" type="button" aria-pressed="true">Coverage <span class="ds-chip__count">12</span></button><button class="ds-chip" data-variant="pill" type="button" aria-pressed="false">Pill</button></div>
+        </div>
+        </div>
+      </article>
+      <article class="comp" id="spec-badge" data-specimen="badge">
+        <div class="comp-head"><h3>Badge</h3><span class="comp-classes">.ds-badge · [data-variant] success|info|warning|danger|neutral|outline</span></div>
+        <div class="spec-grid">
+        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <span class="kicker">pitch</span>
+          <div class="spec-row"><span class="ds-badge" data-variant="success">Free</span><span class="ds-badge" data-variant="info">Paid</span><span class="ds-badge" data-variant="warning">Draft</span><span class="ds-badge" data-variant="danger">Flagged</span><span class="ds-badge" data-variant="neutral">Unverified</span><span class="ds-badge" data-variant="outline">Queued</span></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+          <span class="kicker">wiki-light</span>
+          <div class="spec-row"><span class="ds-badge" data-variant="success">Free</span><span class="ds-badge" data-variant="info">Paid</span><span class="ds-badge" data-variant="warning">Draft</span><span class="ds-badge" data-variant="danger">Flagged</span><span class="ds-badge" data-variant="neutral">Unverified</span><span class="ds-badge" data-variant="outline">Queued</span></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+          <span class="kicker">wiki-dark</span>
+          <div class="spec-row"><span class="ds-badge" data-variant="success">Free</span><span class="ds-badge" data-variant="info">Paid</span><span class="ds-badge" data-variant="warning">Draft</span><span class="ds-badge" data-variant="danger">Flagged</span><span class="ds-badge" data-variant="neutral">Unverified</span><span class="ds-badge" data-variant="outline">Queued</span></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+          <span class="kicker">engine</span>
+          <div class="spec-row"><span class="ds-badge" data-variant="success">Free</span><span class="ds-badge" data-variant="info">Paid</span><span class="ds-badge" data-variant="warning">Draft</span><span class="ds-badge" data-variant="danger">Flagged</span><span class="ds-badge" data-variant="neutral">Unverified</span><span class="ds-badge" data-variant="outline">Queued</span></div>
+        </div>
+        </div>
+      </article>
+      <article class="comp" id="spec-card" data-specimen="card">
+        <div class="comp-head"><h3>Card</h3><span class="comp-classes">.ds-card · __head · __eyebrow · __meta · [data-variant=accent]</span></div>
+        <div class="spec-grid">
+        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <span class="kicker">pitch</span>
+          <div class="ds-card"><div class="ds-card__head"><span class="ds-card__eyebrow">Shot size · 02</span><span class="ds-badge" data-variant="success">Free</span></div><p>Medium close-up. Chest up, room still in the frame.</p><div class="ds-card__meta"><span>Coverage</span><span>4 prompts</span></div></div>
+          <div class="ds-card" data-variant="accent"><div class="ds-card__head"><span class="ds-card__eyebrow">Gate</span></div><p>Accent bar marks the one row that changed.</p></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+          <span class="kicker">wiki-light</span>
+          <div class="ds-card"><div class="ds-card__head"><span class="ds-card__eyebrow">Shot size · 02</span><span class="ds-badge" data-variant="success">Free</span></div><p>Medium close-up. Chest up, room still in the frame.</p><div class="ds-card__meta"><span>Coverage</span><span>4 prompts</span></div></div>
+          <div class="ds-card" data-variant="accent"><div class="ds-card__head"><span class="ds-card__eyebrow">Gate</span></div><p>Accent bar marks the one row that changed.</p></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+          <span class="kicker">wiki-dark</span>
+          <div class="ds-card"><div class="ds-card__head"><span class="ds-card__eyebrow">Shot size · 02</span><span class="ds-badge" data-variant="success">Free</span></div><p>Medium close-up. Chest up, room still in the frame.</p><div class="ds-card__meta"><span>Coverage</span><span>4 prompts</span></div></div>
+          <div class="ds-card" data-variant="accent"><div class="ds-card__head"><span class="ds-card__eyebrow">Gate</span></div><p>Accent bar marks the one row that changed.</p></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+          <span class="kicker">engine</span>
+          <div class="ds-card"><div class="ds-card__head"><span class="ds-card__eyebrow">Shot size · 02</span><span class="ds-badge" data-variant="success">Free</span></div><p>Medium close-up. Chest up, room still in the frame.</p><div class="ds-card__meta"><span>Coverage</span><span>4 prompts</span></div></div>
+          <div class="ds-card" data-variant="accent"><div class="ds-card__head"><span class="ds-card__eyebrow">Gate</span></div><p>Accent bar marks the one row that changed.</p></div>
+        </div>
+        </div>
+      </article>
+      <article class="comp" id="spec-surface" data-specimen="surface">
+        <div class="comp-head"><h3>Surface</h3><span class="comp-classes">.ds-surface · [data-variant] raised|inset</span></div>
+        <div class="spec-grid">
+        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <span class="kicker">pitch</span>
+          <div class="ds-surface"><span class="kicker">Surface</span><p>Reader container, no elevation.</p></div>
+          <div class="ds-surface" data-variant="raised"><span class="kicker">Raised</span><p>Adds the elevation token.</p></div>
+          <div class="ds-surface" data-variant="inset"><span class="kicker">Inset</span><p>Sits on the page background.</p></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+          <span class="kicker">wiki-light</span>
+          <div class="ds-surface"><span class="kicker">Surface</span><p>Reader container, no elevation.</p></div>
+          <div class="ds-surface" data-variant="raised"><span class="kicker">Raised</span><p>Adds the elevation token.</p></div>
+          <div class="ds-surface" data-variant="inset"><span class="kicker">Inset</span><p>Sits on the page background.</p></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+          <span class="kicker">wiki-dark</span>
+          <div class="ds-surface"><span class="kicker">Surface</span><p>Reader container, no elevation.</p></div>
+          <div class="ds-surface" data-variant="raised"><span class="kicker">Raised</span><p>Adds the elevation token.</p></div>
+          <div class="ds-surface" data-variant="inset"><span class="kicker">Inset</span><p>Sits on the page background.</p></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+          <span class="kicker">engine</span>
+          <div class="ds-surface"><span class="kicker">Surface</span><p>Reader container, no elevation.</p></div>
+          <div class="ds-surface" data-variant="raised"><span class="kicker">Raised</span><p>Adds the elevation token.</p></div>
+          <div class="ds-surface" data-variant="inset"><span class="kicker">Inset</span><p>Sits on the page background.</p></div>
+        </div>
+        </div>
+      </article>
+      <article class="comp" id="spec-table" data-specimen="table">
+        <div class="comp-head"><h3>Table</h3><span class="comp-classes">.ds-table-wrap · .ds-table · td[data-label] stacks under the container query</span></div>
+        <div class="spec-grid">
+        <div class="spec-cell spec-cell--wide" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <span class="kicker">pitch</span>
+          <div class="ds-table-wrap">
+            <table class="ds-table">
+              <thead><tr><th scope="col">Shot</th><th scope="col">Lens</th><th scope="col">Use</th></tr></thead>
+              <tbody>
+                <tr><td data-label="Shot">MCU</td><td data-label="Lens">50mm</td><td data-label="Use">Reveal</td></tr>
+                <tr><td data-label="Shot">CU</td><td data-label="Lens">85mm</td><td data-label="Use">Pressure</td></tr>
+                <tr><td data-label="Shot">WS</td><td data-label="Lens">24mm</td><td data-label="Use">Place</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="spec-cell spec-cell--wide" data-ds-theme="wiki-light" data-surface="wiki-light">
+          <span class="kicker">wiki-light</span>
+          <div class="ds-table-wrap">
+            <table class="ds-table">
+              <thead><tr><th scope="col">Shot</th><th scope="col">Lens</th><th scope="col">Use</th></tr></thead>
+              <tbody>
+                <tr><td data-label="Shot">MCU</td><td data-label="Lens">50mm</td><td data-label="Use">Reveal</td></tr>
+                <tr><td data-label="Shot">CU</td><td data-label="Lens">85mm</td><td data-label="Use">Pressure</td></tr>
+                <tr><td data-label="Shot">WS</td><td data-label="Lens">24mm</td><td data-label="Use">Place</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="spec-cell spec-cell--wide" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+          <span class="kicker">wiki-dark</span>
+          <div class="ds-table-wrap">
+            <table class="ds-table">
+              <thead><tr><th scope="col">Shot</th><th scope="col">Lens</th><th scope="col">Use</th></tr></thead>
+              <tbody>
+                <tr><td data-label="Shot">MCU</td><td data-label="Lens">50mm</td><td data-label="Use">Reveal</td></tr>
+                <tr><td data-label="Shot">CU</td><td data-label="Lens">85mm</td><td data-label="Use">Pressure</td></tr>
+                <tr><td data-label="Shot">WS</td><td data-label="Lens">24mm</td><td data-label="Use">Place</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="spec-cell spec-cell--wide" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+          <span class="kicker">engine</span>
+          <div class="ds-table-wrap">
+            <table class="ds-table">
+              <thead><tr><th scope="col">Shot</th><th scope="col">Lens</th><th scope="col">Use</th></tr></thead>
+              <tbody>
+                <tr><td data-label="Shot">MCU</td><td data-label="Lens">50mm</td><td data-label="Use">Reveal</td></tr>
+                <tr><td data-label="Shot">CU</td><td data-label="Lens">85mm</td><td data-label="Use">Pressure</td></tr>
+                <tr><td data-label="Shot">WS</td><td data-label="Lens">24mm</td><td data-label="Use">Place</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+      </article>
+      <article class="comp" id="spec-drawer" data-specimen="drawer">
+        <div class="comp-head"><h3>Drawer</h3><span class="comp-classes">.ds-drawer · [data-open] · [data-variant=wide] · [hidden]</span></div>
+        <div class="spec-grid">
+        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <span class="kicker">pitch</span>
+          <div class="ds-drawer" data-open>
+            <div class="ds-card__head"><h4>Shot 04 · Corridor</h4><button class="ds-icon-btn" type="button" aria-label="Close drawer"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button></div>
+            <p>Right edge, full height. Closed is hidden + inert, never transform-only.</p>
+            <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Back</button><button class="ds-btn" data-variant="danger" data-size="xs" data-armed type="button">Delete</button></div>
+          </div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+          <span class="kicker">wiki-light</span>
+          <div class="ds-drawer" data-open>
+            <div class="ds-card__head"><h4>Shot 04 · Corridor</h4><button class="ds-icon-btn" type="button" aria-label="Close drawer"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button></div>
+            <p>Right edge, full height. Closed is hidden + inert, never transform-only.</p>
+            <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Back</button><button class="ds-btn" data-variant="danger" data-size="xs" data-armed type="button">Delete</button></div>
+          </div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+          <span class="kicker">wiki-dark</span>
+          <div class="ds-drawer" data-open>
+            <div class="ds-card__head"><h4>Shot 04 · Corridor</h4><button class="ds-icon-btn" type="button" aria-label="Close drawer"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button></div>
+            <p>Right edge, full height. Closed is hidden + inert, never transform-only.</p>
+            <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Back</button><button class="ds-btn" data-variant="danger" data-size="xs" data-armed type="button">Delete</button></div>
+          </div>
+        </div>
+        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+          <span class="kicker">engine</span>
+          <div class="ds-drawer" data-open>
+            <div class="ds-card__head"><h4>Shot 04 · Corridor</h4><button class="ds-icon-btn" type="button" aria-label="Close drawer"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button></div>
+            <p>Right edge, full height. Closed is hidden + inert, never transform-only.</p>
+            <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Back</button><button class="ds-btn" data-variant="danger" data-size="xs" data-armed type="button">Delete</button></div>
+          </div>
+        </div>
+        </div>
+      </article>
+      <article class="comp" id="spec-dialog" data-specimen="dialog">
+        <div class="comp-head"><h3>Dialog</h3><span class="comp-classes">.ds-dialog · __scrim · __box · [data-variant=sheet]</span></div>
+        <div class="spec-grid">
+        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <span class="kicker">pitch</span>
+          <div class="ds-dialog">
+            <div class="ds-dialog__scrim"></div>
+            <div class="ds-dialog__box"><h4>Project settings</h4><p>Centred box, <code>aria-modal</code> on open.</p>
+            <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Cancel</button><button class="ds-btn" data-variant="primary" data-size="xs" type="button">Save</button></div></div>
+          </div>
+          <div class="ds-dialog" data-variant="sheet">
+            <div class="ds-dialog__scrim"></div>
+            <div class="ds-dialog__box"><h4>Sheet variant</h4><p>Pinned to the inline end.</p></div>
+          </div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+          <span class="kicker">wiki-light</span>
+          <div class="ds-dialog">
+            <div class="ds-dialog__scrim"></div>
+            <div class="ds-dialog__box"><h4>Project settings</h4><p>Centred box, <code>aria-modal</code> on open.</p>
+            <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Cancel</button><button class="ds-btn" data-variant="primary" data-size="xs" type="button">Save</button></div></div>
+          </div>
+          <div class="ds-dialog" data-variant="sheet">
+            <div class="ds-dialog__scrim"></div>
+            <div class="ds-dialog__box"><h4>Sheet variant</h4><p>Pinned to the inline end.</p></div>
+          </div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+          <span class="kicker">wiki-dark</span>
+          <div class="ds-dialog">
+            <div class="ds-dialog__scrim"></div>
+            <div class="ds-dialog__box"><h4>Project settings</h4><p>Centred box, <code>aria-modal</code> on open.</p>
+            <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Cancel</button><button class="ds-btn" data-variant="primary" data-size="xs" type="button">Save</button></div></div>
+          </div>
+          <div class="ds-dialog" data-variant="sheet">
+            <div class="ds-dialog__scrim"></div>
+            <div class="ds-dialog__box"><h4>Sheet variant</h4><p>Pinned to the inline end.</p></div>
+          </div>
+        </div>
+        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+          <span class="kicker">engine</span>
+          <div class="ds-dialog">
+            <div class="ds-dialog__scrim"></div>
+            <div class="ds-dialog__box"><h4>Project settings</h4><p>Centred box, <code>aria-modal</code> on open.</p>
+            <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Cancel</button><button class="ds-btn" data-variant="primary" data-size="xs" type="button">Save</button></div></div>
+          </div>
+          <div class="ds-dialog" data-variant="sheet">
+            <div class="ds-dialog__scrim"></div>
+            <div class="ds-dialog__box"><h4>Sheet variant</h4><p>Pinned to the inline end.</p></div>
+          </div>
+        </div>
+        </div>
+      </article>
+      <article class="comp" id="spec-menu" data-specimen="menu">
+        <div class="comp-head"><h3>Menu</h3><span class="comp-classes">.ds-menu · __item · [data-variant=danger] · [data-armed]</span></div>
+        <div class="spec-grid">
+        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <span class="kicker">pitch</span>
+          <div class="ds-menu" role="menu" aria-label="Shot actions"><button class="ds-menu__item" role="menuitem" type="button">Duplicate</button><button class="ds-menu__item" role="menuitem" data-state="hover" type="button">Rename</button><button class="ds-menu__item" role="menuitem" data-variant="danger" type="button">Delete</button><button class="ds-menu__item" role="menuitem" data-variant="danger" data-armed type="button">Delete again?</button></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+          <span class="kicker">wiki-light</span>
+          <div class="ds-menu" role="menu" aria-label="Shot actions"><button class="ds-menu__item" role="menuitem" type="button">Duplicate</button><button class="ds-menu__item" role="menuitem" data-state="hover" type="button">Rename</button><button class="ds-menu__item" role="menuitem" data-variant="danger" type="button">Delete</button><button class="ds-menu__item" role="menuitem" data-variant="danger" data-armed type="button">Delete again?</button></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+          <span class="kicker">wiki-dark</span>
+          <div class="ds-menu" role="menu" aria-label="Shot actions"><button class="ds-menu__item" role="menuitem" type="button">Duplicate</button><button class="ds-menu__item" role="menuitem" data-state="hover" type="button">Rename</button><button class="ds-menu__item" role="menuitem" data-variant="danger" type="button">Delete</button><button class="ds-menu__item" role="menuitem" data-variant="danger" data-armed type="button">Delete again?</button></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+          <span class="kicker">engine</span>
+          <div class="ds-menu" role="menu" aria-label="Shot actions"><button class="ds-menu__item" role="menuitem" type="button">Duplicate</button><button class="ds-menu__item" role="menuitem" data-state="hover" type="button">Rename</button><button class="ds-menu__item" role="menuitem" data-variant="danger" type="button">Delete</button><button class="ds-menu__item" role="menuitem" data-variant="danger" data-armed type="button">Delete again?</button></div>
+        </div>
+        </div>
+      </article>
+      <article class="comp" id="spec-toast" data-specimen="toast">
+        <div class="comp-head"><h3>Toast</h3><span class="comp-classes">.ds-toast · action button · [hidden]</span></div>
+        <div class="spec-grid">
+        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <span class="kicker">pitch</span>
+          <div class="ds-toast" role="status"><span>Prompt copied to the clipboard</span><button class="ds-btn" data-variant="primary" data-size="xs" type="button">Undo</button></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+          <span class="kicker">wiki-light</span>
+          <div class="ds-toast" role="status"><span>Prompt copied to the clipboard</span><button class="ds-btn" data-variant="primary" data-size="xs" type="button">Undo</button></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+          <span class="kicker">wiki-dark</span>
+          <div class="ds-toast" role="status"><span>Prompt copied to the clipboard</span><button class="ds-btn" data-variant="primary" data-size="xs" type="button">Undo</button></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+          <span class="kicker">engine</span>
+          <div class="ds-toast" role="status"><span>Prompt copied to the clipboard</span><button class="ds-btn" data-variant="primary" data-size="xs" type="button">Undo</button></div>
+        </div>
+        </div>
+      </article>
+      <article class="comp" id="spec-empty" data-specimen="empty">
+        <div class="comp-head"><h3>Empty state</h3><span class="comp-classes">.ds-empty · __title · [data-variant=inline]</span></div>
+        <div class="spec-grid">
+        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <span class="kicker">pitch</span>
+          <div class="ds-empty"><span class="ds-empty__title">No shots yet</span><span>Add a shot to start the board.</span></div>
+          <div class="ds-empty" data-variant="inline">No matches in this tab.</div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+          <span class="kicker">wiki-light</span>
+          <div class="ds-empty"><span class="ds-empty__title">No shots yet</span><span>Add a shot to start the board.</span></div>
+          <div class="ds-empty" data-variant="inline">No matches in this tab.</div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+          <span class="kicker">wiki-dark</span>
+          <div class="ds-empty"><span class="ds-empty__title">No shots yet</span><span>Add a shot to start the board.</span></div>
+          <div class="ds-empty" data-variant="inline">No matches in this tab.</div>
+        </div>
+        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+          <span class="kicker">engine</span>
+          <div class="ds-empty"><span class="ds-empty__title">No shots yet</span><span>Add a shot to start the board.</span></div>
+          <div class="ds-empty" data-variant="inline">No matches in this tab.</div>
+        </div>
+        </div>
+      </article>
+      <article class="comp" id="spec-progress" data-specimen="progress">
+        <div class="comp-head"><h3>Progress</h3><span class="comp-classes">.ds-progress · __bar · [data-variant] thick|ghost · aria-valuenow</span></div>
+        <div class="spec-grid">
+        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <span class="kicker">pitch</span>
+          <div class="ds-progress" role="progressbar" aria-label="Coverage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"><div class="ds-progress__bar"></div></div>
+          <div class="ds-progress" data-variant="thick" role="progressbar" aria-label="Rendered" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div class="ds-progress__bar"></div></div>
+          <div class="ds-progress" data-variant="ghost" role="progressbar" aria-label="Draft" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60"><div class="ds-progress__bar"></div></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+          <span class="kicker">wiki-light</span>
+          <div class="ds-progress" role="progressbar" aria-label="Coverage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"><div class="ds-progress__bar"></div></div>
+          <div class="ds-progress" data-variant="thick" role="progressbar" aria-label="Rendered" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div class="ds-progress__bar"></div></div>
+          <div class="ds-progress" data-variant="ghost" role="progressbar" aria-label="Draft" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60"><div class="ds-progress__bar"></div></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+          <span class="kicker">wiki-dark</span>
+          <div class="ds-progress" role="progressbar" aria-label="Coverage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"><div class="ds-progress__bar"></div></div>
+          <div class="ds-progress" data-variant="thick" role="progressbar" aria-label="Rendered" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div class="ds-progress__bar"></div></div>
+          <div class="ds-progress" data-variant="ghost" role="progressbar" aria-label="Draft" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60"><div class="ds-progress__bar"></div></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+          <span class="kicker">engine</span>
+          <div class="ds-progress" role="progressbar" aria-label="Coverage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"><div class="ds-progress__bar"></div></div>
+          <div class="ds-progress" data-variant="thick" role="progressbar" aria-label="Rendered" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div class="ds-progress__bar"></div></div>
+          <div class="ds-progress" data-variant="ghost" role="progressbar" aria-label="Draft" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60"><div class="ds-progress__bar"></div></div>
+        </div>
+        </div>
+      </article>
+      <article class="comp" id="spec-tooltip" data-specimen="tooltip">
+        <div class="comp-head"><h3>Tooltip</h3><span class="comp-classes">.ds-tooltip · [hidden]</span></div>
+        <div class="spec-grid">
+        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <span class="kicker">pitch</span>
+          <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Hover target</button><span class="ds-tooltip" role="tooltip">Rack focus</span></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+          <span class="kicker">wiki-light</span>
+          <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Hover target</button><span class="ds-tooltip" role="tooltip">Rack focus</span></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+          <span class="kicker">wiki-dark</span>
+          <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Hover target</button><span class="ds-tooltip" role="tooltip">Rack focus</span></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+          <span class="kicker">engine</span>
+          <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Hover target</button><span class="ds-tooltip" role="tooltip">Rack focus</span></div>
+        </div>
+        </div>
+      </article>
+      <article class="comp" id="spec-nav" data-specimen="nav">
+        <div class="comp-head"><h3>Pager · nav item · theme toggle</h3><span class="comp-classes">.ds-pager · .ds-nav-item[data-variant] rail|dot · .ds-theme-toggle</span></div>
+        <div class="spec-grid">
+        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <span class="kicker">pitch</span>
+          <div class="ds-pager"><button class="ds-btn" data-size="xs" type="button"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-arrow-left"></use></svg> Prev</button><span class="kicker">Page 2</span><button class="ds-btn" data-size="xs" type="button">Next <svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-arrow-right"></use></svg></button></div>
+          <div class="spec-stack"><a class="ds-nav-item" data-variant="rail" href="#specimens" aria-current="page">Coverage</a><a class="ds-nav-item" data-variant="rail" href="#specimens">Movement</a><a class="ds-nav-item" data-variant="dot" href="#specimens" aria-current="page">Focus</a></div>
+          <div class="ds-theme-toggle" role="group" aria-label="Theme"><button class="ds-btn" data-variant="ghost" type="button" aria-pressed="true">Light</button><button class="ds-btn" data-variant="ghost" type="button" aria-pressed="false">Dark</button></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+          <span class="kicker">wiki-light</span>
+          <div class="ds-pager"><button class="ds-btn" data-size="xs" type="button"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-arrow-left"></use></svg> Prev</button><span class="kicker">Page 2</span><button class="ds-btn" data-size="xs" type="button">Next <svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-arrow-right"></use></svg></button></div>
+          <div class="spec-stack"><a class="ds-nav-item" data-variant="rail" href="#specimens" aria-current="page">Coverage</a><a class="ds-nav-item" data-variant="rail" href="#specimens">Movement</a><a class="ds-nav-item" data-variant="dot" href="#specimens" aria-current="page">Focus</a></div>
+          <div class="ds-theme-toggle" role="group" aria-label="Theme"><button class="ds-btn" data-variant="ghost" type="button" aria-pressed="true">Light</button><button class="ds-btn" data-variant="ghost" type="button" aria-pressed="false">Dark</button></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+          <span class="kicker">wiki-dark</span>
+          <div class="ds-pager"><button class="ds-btn" data-size="xs" type="button"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-arrow-left"></use></svg> Prev</button><span class="kicker">Page 2</span><button class="ds-btn" data-size="xs" type="button">Next <svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-arrow-right"></use></svg></button></div>
+          <div class="spec-stack"><a class="ds-nav-item" data-variant="rail" href="#specimens" aria-current="page">Coverage</a><a class="ds-nav-item" data-variant="rail" href="#specimens">Movement</a><a class="ds-nav-item" data-variant="dot" href="#specimens" aria-current="page">Focus</a></div>
+          <div class="ds-theme-toggle" role="group" aria-label="Theme"><button class="ds-btn" data-variant="ghost" type="button" aria-pressed="true">Light</button><button class="ds-btn" data-variant="ghost" type="button" aria-pressed="false">Dark</button></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+          <span class="kicker">engine</span>
+          <div class="ds-pager"><button class="ds-btn" data-size="xs" type="button"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-arrow-left"></use></svg> Prev</button><span class="kicker">Page 2</span><button class="ds-btn" data-size="xs" type="button">Next <svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-arrow-right"></use></svg></button></div>
+          <div class="spec-stack"><a class="ds-nav-item" data-variant="rail" href="#specimens" aria-current="page">Coverage</a><a class="ds-nav-item" data-variant="rail" href="#specimens">Movement</a><a class="ds-nav-item" data-variant="dot" href="#specimens" aria-current="page">Focus</a></div>
+          <div class="ds-theme-toggle" role="group" aria-label="Theme"><button class="ds-btn" data-variant="ghost" type="button" aria-pressed="true">Light</button><button class="ds-btn" data-variant="ghost" type="button" aria-pressed="false">Dark</button></div>
+        </div>
+        </div>
+      </article>
+      <article class="comp" id="spec-copy" data-specimen="copy">
+        <div class="comp-head"><h3>Copy field</h3><span class="comp-classes">.ds-copy · __code · .ds-btn[data-size=xs]</span></div>
+        <div class="spec-grid">
+        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <span class="kicker">pitch</span>
+          <div class="ds-copy"><code class="ds-copy__code">--color-pitch-accent</code><button class="ds-btn" data-size="xs" type="button"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-copy"></use></svg> Copy</button></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+          <span class="kicker">wiki-light</span>
+          <div class="ds-copy"><code class="ds-copy__code">--color-pitch-accent</code><button class="ds-btn" data-size="xs" type="button"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-copy"></use></svg> Copy</button></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+          <span class="kicker">wiki-dark</span>
+          <div class="ds-copy"><code class="ds-copy__code">--color-pitch-accent</code><button class="ds-btn" data-size="xs" type="button"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-copy"></use></svg> Copy</button></div>
+        </div>
+        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+          <span class="kicker">engine</span>
+          <div class="ds-copy"><code class="ds-copy__code">--color-pitch-accent</code><button class="ds-btn" data-size="xs" type="button"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-copy"></use></svg> Copy</button></div>
+        </div>
+        </div>
+      </article>
+    </section>
   </main>
 </div>
 
@@ -1222,6 +1866,9 @@ footer code{color:var(--g-ink)}
 
 <div id="probe-host" aria-hidden="true"></div>
 
+<!-- the component behaviours; the gallery opts out of auto-init (data-ds-manual)
+     so the static specimens are never rewritten by Overlay/Tabs/MenuButton -->
+<script src="components.js"></script>
 <script>
 (function () {
   var root = document.documentElement;
@@ -1281,9 +1928,34 @@ footer code{color:var(--g-ink)}
   function paintCount() {
     paintGroupCounts();
     paintSpaceCaption();
+    paintSpecimenCounts();
     var n = countRootTokens();
     if (!n) return;
     document.querySelectorAll('.js-token-count').forEach(function (el) { el.textContent = n; });
+  }
+
+  /* ---------- ds specimens: counts and data-driven geometry ----------
+     Both numbers are counted from the rendered DOM, so the caption cannot
+     claim a block or a state the markup does not carry. */
+  function paintSpecimenCounts() {
+    var blocks = document.querySelectorAll('[data-specimen]').length;
+    var themes = document.querySelectorAll('[data-specimen] [data-ds-theme]').length;
+    var states = document.querySelectorAll('[data-specimen] [data-state]').length;
+    [['.js-block-count', blocks], ['.js-theme-count', themes], ['.js-state-count', states]]
+      .forEach(function (pair) {
+        document.querySelectorAll(pair[0]).forEach(function (el) { el.textContent = pair[1]; });
+      });
+  }
+
+  /* progress value is data, not a design value: the bar width comes from the
+     specimen's own aria-valuenow so no percentage is authored in the markup */
+  function paintProgress() {
+    document.querySelectorAll('[data-specimen="progress"] [role="progressbar"]').forEach(function (bar) {
+      var value = parseFloat(bar.getAttribute('aria-valuenow'));
+      var fill = bar.querySelector('.ds-progress__bar');
+      if (!fill || isNaN(value)) return;
+      fill.style.inlineSize = Math.max(0, Math.min(100, value)) + '%';
+    });
   }
 
   /* ---------- consistency matrix: measured from the shipped pages ---------- */
@@ -1592,10 +2264,11 @@ footer code{color:var(--g-ink)}
 
   paintCount();
   paint();
+  paintProgress();
   probeMatrix();
   /* counts are recomputed from tokens.css on demand — used by the doc-count check */
   document.addEventListener('ds:recount', paintCount);
-  window.addEventListener('load', function () { paintCount(); paint(); });
+  window.addEventListener('load', function () { paintCount(); paint(); paintProgress(); });
   window.addEventListener('resize', paint);
 
   /* scrollspy — deterministic, section whose top passed 30% of viewport */
