@@ -8,6 +8,10 @@ Three product surfaces — the wiki in `index.html`, the investor deck in `pitch
 |---|---|---|
 | `design-system/tokens.json` | Token source: **186 keys, 20 groups**, 4 theme maps | no — the only hand-edited value source |
 | `design-system/tokens.css` | Generated `:root` properties + `[data-ds-theme]` role blocks | yes |
+| `design-system/base.css` | Base layer: reset, the one focus ring, skip link, scroll regions, target floor, reduced motion | no |
+| `design-system/components.css` | Component layer: 19 blocks, `var()` only, four densities via `data-ds-density` | no |
+| `design-system/components.js` | Behaviour: `DS.init/tabs/menu/overlay/toast/announce/copy/focusPreserve` | no |
+| `design-system/icons.svg` | 24-symbol sprite, `currentColor`, `<use href="icons.svg#ds-icon-…">` | no |
 | `design-system/foundations.md` | Generated scale reference: every group, theme contract, type scale with line-height, consumer counts | yes |
 | `scripts/build-tokens.mjs` | `tokens.json` → `tokens.css`, with type validation and `--check` | no |
 | `scripts/build-foundations.mjs` | `tokens.json` + `tokens.css` → `foundations.md`, with `--check` | no |
@@ -15,7 +19,7 @@ Three product surfaces — the wiki in `index.html`, the investor deck in `pitch
 | `scripts/check-doc-counts.mjs` | Docs may not state a count the source contradicts | no |
 | `scripts/check-anchors.mjs` | Fragment links, ids and `[plan:…]` anchors resolve | no |
 | `design-system/index.html` | Rendered gallery: swatches, type, motion, shape, components, consistency matrix | no |
-| `design-system/components.md` | Component specs | no |
+| `design-system/components.md` | Component specs: 19 live, each linked to its gallery frame, plus a not-built appendix | no |
 | `design-system/patterns.md` | Shell and composition patterns | no |
 | `design-system/DEPRECATIONS.md` | Every retired key, with its replacement | no |
 | `design-system/audit-report.md` | Machine receipt written by the gate | yes — never edit |
@@ -56,4 +60,4 @@ Themes are one attribute: `data-ds-theme="pitch|wiki-light|wiki-dark|engine"` de
 
 ## Read next
 
-[foundations.md](foundations.md) for values and roles · [components.md](components.md) for specs · [patterns.md](patterns.md) for compositions · `design-system/audit-report.md` for the measured counts the gate reports against explicit per-class budgets (and the exemptions that carry their reasons on the line they excuse) · `design-system/audit/2026-11-24/` for the baseline those budgets were seeded from.
+[foundations.md](foundations.md) for values and roles · [components.md](components.md) for the 19 live component specs (each with a gallery frame) and the proposed appendix · [patterns.md](patterns.md) for compositions · `design-system/audit-report.md` for the measured counts the gate reports against explicit per-class budgets, including the component classes C1–C6 (and the exemptions that carry their reasons on the line they excuse) · `design-system/audit/2026-11-24/` for the baseline those budgets were seeded from.

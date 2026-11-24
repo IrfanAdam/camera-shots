@@ -159,7 +159,7 @@ One role contract, four theme maps, every scale consumed. No new values until th
 | 7 | Role contract + theme maps | ✅ 14 slots × 4 themes emitted as `[data-ds-theme]` blocks (17 role vars each, nulls explicit) · shipped `a05cefa` |
 | 8 | Add missing scales | ✅ line-height, tracking, weight, control heights, icon/dot sizes, hover lift, section spacing, z tooltip/pinned, breakpoints, layout roles emitted · shipped `a05cefa` |
 | 9 | Alias / rename / delete | ✅ 229 → **186** keys (185 recon + `focus.color`); 44 renames + 6 aliases in Phase 1A stages, then **106 removals** (44 deprecated `var()` aliases + 48 decoys + 14 dead) · shipped `2897a73` |
-| 10 | Wire the 39 orphans | ✅ every wired key has a consumer; T8 104 → **11**, all 11 recorded in the budget note (2 canvas-only `CT()` names — `color.engine.track.fx` and `.title` — + 9 gallery/doc consumers) · wired `7733da1`+`10285cc`, count closed `2897a73` |
+| 10 | Wire the 39 orphans | ✅ every wired key has a consumer; T8 104 → **11** at the Phase 1 close, then **10** once `components.css` consumed `opacity.disabled` — all recorded in the budget note (2 canvas-only `CT()` names — `color.engine.track.fx` and `.title` — + 8 gallery/doc consumers) · wired `7733da1`+`10285cc`, count closed `2897a73`, re-seeded in the Phase 2 gate commit |
 | 11 | Resolve the engine palette | ✅ engine renders one palette; 48 decoy keys deleted, 2 collision names revalued in place; gallery group relabelled "Engine — surface language" · `2897a73`+`3dc58e0` |
 | 12 | Reconcile breakpoints | **PARTIAL** — index/engine/gallery carry budget 0 (6 one-off queries with same-line reasons: 800×2, 760×2, 860, 520). Deferred: **pitch.html is under foreign editing**, so its 4 counted queries stay — `pitch.html:37,52,54` (`min-width:768px` vs `breakpoint.md` 767.5) and `pitch.html:45` (`min-width:901px`) — plus 2 equality-only queries the snap must revisit: `pitch.html:193` (900) and `pitch.html:205` (639, equals today's `breakpoint.sm` but not the 640 step). The token-side snap (`sm` 639→640, `md` 767.5→768, `xl` 1023.5→1024) cannot land alone: it flips T6 on `index.html:68` and `pitch.html:205` in the same commit, so it ships with the pitch lane |
 | 13 | Generate `foundations.md` | ✅ `scripts/build-foundations.mjs` + generated `foundations.md` (186 keys in 20 group tables, theme + type contract) + 59-line README router · shipped in this commit |
@@ -208,7 +208,7 @@ One role contract, four theme maps, every scale consumed. No new values until th
 4. Elevation: consume `0/1/ring/inset` or delete; weights/tracking wired on every heading and label.
 **Verify:** T1/T2/T4 = 0; T7 literal widths drops by 5; computed body = 15.2px on all 3 product pages; T8 = 0 with all 39 keys either consumed or recorded as delete-adjacent (`radius.lg`) / exempt (`spacing.base`, `spacing.gutter.pro`, `breakpoint.*`).
 
-**Shipped:** body type, layout widths, touch, elevation and weight/tracking wiring landed in `7733da1`+`10285cc`. The count is **T8 11, not 0**, and the 11 are named rather than waived: **2** are canvas-only — `color.engine.track.fx` and `color.engine.track.title` are read only through `CT('--…')` string arguments in `engine.html:804`, which a `var()` counter cannot see — and **9** are gallery/doc consumers whose product wiring is Phase 2–3 work: `color.engine.track.audio` (gallery swatch only; it appears in no page at all), `elevation.ring/inset`, `icon.size.md/lg`, `opacity.disabled`, `radius.lg`, `spacing.section`, `tracking.label`. `scripts/lint-tokens.mjs` prints the list on every run and the budget note explains it, so the debt is visible instead of hidden behind a 0.
+**Shipped:** body type, layout widths, touch, elevation and weight/tracking wiring landed in `7733da1`+`10285cc`. The count is **T8 11, not 0** at that SHA, now **10**, and every key is named rather than waived: **2** are canvas-only — `color.engine.track.fx` and `color.engine.track.title` are read only through `CT('--…')` string arguments in `engine.html:804`, which a `var()` counter cannot see — and **8** remain gallery/doc consumers whose product wiring is Phase 3 work: `color.engine.track.audio` (gallery swatch only; it appears in no page at all), `elevation.ring/inset`, `icon.size.md/lg`, `radius.lg`, `spacing.section`, `tracking.label`. `opacity.disabled` left the list when `components.css` shipped, which is why the Phase 2 receipt reads **10**, not 11. `scripts/lint-tokens.mjs` prints the list on every run and the budget note explains it, so the debt is visible instead of hidden behind a 0.
 
 ### Task 11: Resolve the engine palette
 **Objective:** Token names must describe what the page renders.
@@ -247,7 +247,7 @@ One role contract, four theme maps, every scale consumed. No new values until th
 
 **Consumer counts are HEAD-pinned (determinism fix, this commit):** the consumer files — the 3 product pages, the gallery, and `components.css` for the T8 sentence — are read as committed at `HEAD` (`git show HEAD:<path>`), never from the dirty worktree; `tokens.json` and `tokens.css` still come from disk so a token edit regenerates here before it is committed. The first generation was rendered while `pitch.html` was under foreign editing, so the committed doc baked **1573** refs where committed HEAD yields **1561** — it recorded another lane's uncommitted page. Exactly 7 rows moved: `border.width.hairline` 120→119, `radius.none` 6→7, `radius.xs` 64→63, `spacing.2xs` 67→66, `spacing.lg` 16→9, `spacing.sm` 75→74, `spacing.xs` 98→96. A generated doc must not state a count no commit contains, so **commit page changes before regenerating**; the generator falls back to the worktree only when git is unavailable (an exported tree) or the file is untracked. Proven: `--check` exits 0 with the dirty `pitch.html` present, a further simulated pitch worktree edit leaves the output byte-identical, a tracked-page-only worktree edit leaves it byte-identical, and a clean `git archive` of the commit plus a fresh clone both reproduce the same bytes.
 
-**REF GATE 1 — how to judge:** `node scripts/lint-tokens.mjs --check` reports the token-set classes at their measured ceilings — T8 **11** (not 0: 2 canvas-only `CT()` names + 9 gallery/doc consumers are recorded in the budget note), T9 **0**, T10 0, T11 0, T13 0 — and `tokens.json` lands at **186 keys / 20 groups**; `tokens.css` has 4 theme blocks, each declaring all 14 slots with explicit nulls (2/5/5/3), and setting `data-ds-theme` on an element makes those blocks flip all 17 role vars — note that **no product page sets the attribute or consumes a `--ds-*` var yet**, so the re-skin is proven at the block level only and per-page opt-in is Phase 2 work; engine renders one palette with the decoys gone and 0.000% pixel diff; `foundations.md` **exists and is generated** — 186 rows across 20 group tables, the 4-map/17-var theme contract with nulls 2/5/5/3, every type step with its line-height, and `node scripts/build-foundations.mjs` reproducing it byte-for-byte (CI runs the same script with `--check`); `design-system/README.md` is a router with no scale tables.
+**REF GATE 1 — how to judge:** `node scripts/lint-tokens.mjs --check` reports the token-set classes at their measured ceilings — T8 **11** at the Phase 1 close, **10** from the Phase 2 gate commit (2 canvas-only `CT()` names + 8 gallery/doc consumers are recorded in the budget note; `components.css` took `opacity.disabled`), T9 **0**, T10 0, T11 0, T13 0 — and `tokens.json` lands at **186 keys / 20 groups**; `tokens.css` has 4 theme blocks, each declaring all 14 slots with explicit nulls (2/5/5/3), and setting `data-ds-theme` on an element makes those blocks flip all 17 role vars — note that **no product page sets the attribute or consumes a `--ds-*` var yet**, so the re-skin is proven at the block level only and per-page opt-in is Phase 2 work; engine renders one palette with the decoys gone and 0.000% pixel diff; `foundations.md` **exists and is generated** — 186 rows across 20 group tables, the 4-map/17-var theme contract with nulls 2/5/5/3, every type step with its line-height, and `node scripts/build-foundations.mjs` reproducing it byte-for-byte (CI runs the same script with `--check`); `design-system/README.md` is a router with no scale tables.
 
 **Measured at this lane's HEAD:** build `--check` byte-stable (186 keys / 20 groups / 4 themes, sha256 `1a2c1d33…`); foundations `--check` byte-stable (20 group tables / 186 rows / **1561** HEAD-pinned consumer refs, sha256 `26267319…`); lint `--check` PASS 0 over budget, 28 exempt, 0 bad-allow; doc-counts PASS (README 186 keys / 20 groups = source, 59 lines); anchors PASS; U1 0; index/engine pixel diff 0 at 1440 and 390; pitch.html untouched by this lane.
 
@@ -255,19 +255,21 @@ One role contract, four theme maps, every scale consumed. No new values until th
 
 ## Phase 2 — Component library {#phase-2}
 
-*Tags:* components, css, js, icons, gallery · *Status:* 0/7 tasks · GATE OPEN
+*Tags:* components, css, js, icons, gallery · *Status:* **7/7** · **GATE PASS**
 
 One vocabulary, one behaviour contract, per-surface accent via variables. Additive: pages keep their IA.
 
+**Shipped:** `f912979` (Tasks 14–15: `base.css` + `components.css`), `ac314aa` (Tasks 16–17: `components.js` + `icons.svg`), `0e23798` (AA on the status badges — the `info`/`warning` tones carry a per-theme `--_badge-ink`), `d719a51` (Task 18: the gallery's 19 specimen blocks), `83f2403` (the `[data-ds-compact]` floor opt-out that base.css §6/§8 needed), `595206c` (Task 20: the component gate + the anchor fix + the regenerated receipts), and the Phase 2 close-out docs commit (Task 19). The library is **19 numbered blocks** in `components.css`, 24 symbols in `icons.svg`, and 8 public behaviours in `components.js` (`init tabs menu overlay toast announce copy focusPreserve`) — none of it adopted by a page yet, by design: adoption is Phase 3.
+
 | # | Task | Done when |
 |---|---|---|
-| 14 | `base.css` | focus ring, sr-only, skip link, scroll-x, target floor, reduced motion — one rule each |
-| 15 | `components.css` | 18 blocks, 100% `var()`, four densities, no page colour |
-| 16 | `components.js` | Overlay, Tabs, MenuButton, Toast/announce, focus-preserve, field clear |
-| 17 | `icons.svg` | 24 symbols, `currentColor`, size tokens, `aria-hidden` convention |
-| 18 | Gallery specimens | 12+ canonical components with live hover/focus/disabled/error and consumer counts |
-| 19 | `components.md` | 19 specs with status; deferred pro-editor specs moved to `proposed/` |
-| 20 | Component gate | new files scanned; duplicate selectors and dialog semantics statically checked |
+| 14 | `base.css` | ✅ reset, one focus ring (longhands, `:where()` 0-specificity), `.ds-sr-only`, `.ds-skip-link`, `.ds-scroll-x/y`, target floor with the `[data-ds-compact]` opt-out, reduced motion — 0 raw px except the `calc()` sign and the iteration count · shipped `f912979`, floor opt-out added later |
+| 15 | `components.css` | ✅ 19 blocks, `var()` throughout, four densities (34/40/44/46 via `data-ds-density`), no page colour; the only literals are the 6 C1-listed values (dialog geometry, the `--_scrim` default, the `40rem` container threshold) · shipped `f912979` |
+| 16 | `components.js` | ✅ `Overlay` (role/`aria-modal`/label/trap/inert/return), `Tabs` (roving + `aria-controls`), `MenuButton`, `Toast`/`announce`, `focusPreserve`, `copy`; auto-init off under `data-ds-manual` · shipped `ac314aa` |
+| 17 | `icons.svg` | ✅ 24 symbols, `currentColor`, `icon.size.*`, `<use href="icons.svg#ds-icon-…">` convention, 0 unresolved references (C5) · shipped `ac314aa` |
+| 18 | Gallery specimens | ✅ 19 `#spec-*` blocks × 4 theme cells = **76 cells**, every state pinned with `data-state`, `data-ds-manual` (no auto-init), legacy forks still present in the page's `<style>` (Task 24 removes them) · shipped `d719a51` |
+| 19 | `components.md` | ✅ **19 live sections** + **3 proposed** (not built) + **3 page patterns** + the **10 newly specified** components; every live section links its gallery frame · shipped in the Phase 2 close-out commit |
+| 20 | Component gate | ✅ C1–C6 enforced with measured budgets; `--check` green; each class negative-tested · shipped `595206c` |
 
 ### Task 14: `base.css`
 **Objective:** One place for the rules currently duplicated on every page.
@@ -321,25 +323,50 @@ One vocabulary, one behaviour contract, per-surface accent via variables. Additi
 
 ### Task 19: `components.md`
 **Objective:** Specs describe the shipped library, not a deferred pro editor.
-**Files:** `design-system/components.md`.
+**Files:** `design-system/components.md`, `design-system/README.md`.
 **Steps:**
-1. 19 sections: purpose, anatomy, variants, states, token map, dos/don'ts, a11y.
-2. Status column: `live` / `proposed`; move Timeline Chips, Inspector Pills, Transport Bar to a `## Proposed` appendix with a "not built" banner.
+1. 19 live sections, each with purpose, anatomy, variants, states, token map, dos/don'ts, a11y and a gallery anchor.
+2. Status column: `live` / `proposed`; Timeline Chips, Inspector Pills and Transport Bar move to a `## Proposed` appendix behind a "nothing here ships" banner.
 3. Add the 10 missing specs: theme toggle, step rail, table, footer, select, file picker, project modal, asset modal, context menu, scroll region.
 4. Link each spec to its gallery frame id.
 **Verify:** every live component in the register has a section; every section has a gallery anchor; no `proposed` item is presented as shipped.
 
+**Shipped — what the counts are:** **19 live sections**, each with `**Gallery** → index.html#spec-…` and every one of the 19 frame ids used at least once (Card and Surface share a section; Table and Scroll region share a section; Dialog carries the project-modal sheet and the asset-modal box as variants) · **3 proposed** (Timeline Chips, Inspector Pills, Transport Bar — each opens with "**Status: not built**" and names the blocker: no component, no markup, no page usage) · **3 page patterns** (step rail, footer, file picker — page-local, no shipped equivalent) · **10 specs new in this revision** in a register at the top that says, per item, whether it is live and where it lives. README links the file and keeps the `186 keys, 20 groups` line; it gained rows for `base.css`/`components.css`/`components.js`/`icons.svg` and carries no scale table. `check-anchors` resolves all 31 markdown targets the gallery links added.
+
 ### Task 20: Component gate
 **Objective:** Keep the new layer from drifting the moment it lands.
-**Files:** `scripts/lint-tokens.mjs`.
+**Files:** `scripts/lint-tokens.mjs`, `scripts/check-anchors.mjs`, `.github/workflows/ds-gate.yml`.
 **Steps:**
-1. Add `components.css` / `base.css` to scanned files; raw values fail.
-2. Fail duplicate selector blocks with identical declarations inside one page (the 8 engine duplicates).
-3. Static check: an element with `aria-modal` must also have `role=dialog` and `aria-labelledby`.
+1. Add `components.css` / `base.css` to the scanned set; raw values fail.
+2. Fail duplicate selector blocks inside one page — keyed by selector **+ at-scope + nesting**, not by identical declarations.
+3. Static check: an element with `aria-modal` must also have `role=dialog` and `aria-label` **or** `aria-labelledby`.
 4. Fail a component class defined in two files.
+5. Resolve `svg#id` references.
+6. Ban paint literals in `components.js` / `icons.svg`.
 **Verify:** current tree fails with the 8 duplicates listed; after cleanup passes; a deliberately unlabelled modal fails.
 
-**REF GATE 2 — how to judge:** open the gallery at 1440; every component shows four states without hovering a picture; resize to 390 and the table/specimens reflow without page overflow; run the gate (0 raw values in the new CSS); keyboard through the gallery with the components.js loaded and confirm dialog trap/return, tab arrows, toast announcement.
+**Shipped — the six classes, their measured budgets and why each is real:**
+
+| Class | What it judges | Budget (measured 2026-11-24) |
+|---|---|---|
+| C1 | raw value in `base.css` / `components.css`: hex, `rgb()`/`hsl()`, or a number with a unit that is not structural | **6** — components.css 6, base.css 0 |
+| C2 | duplicate selector in one page, keyed selector + at-scope (`@media`/`@supports`/`@container`) + nesting | **12** — pitch 4, engine 8, index 0, gallery 0 |
+| C3 | `aria-modal` ⇒ `role="dialog"` and `aria-label` or `aria-labelledby` | **0** (2 `aria-modal` nodes checked) |
+| C4 | a `.ds-*` class defined at top level in two stylesheet sources | **0** |
+| C5 | every `<use href="…svg#id">` names a symbol that SVG declares | **0** (48 refs, 24 symbols) |
+| C6 | no hex / `rgb()` / `hsl()` in `components.js` or `icons.svg` outside comments | **0** |
+
+C1's structural whitelist is `0`, any `%`, any `fr`, `100vw/dvh`, `2px` only as `outline-offset`, a unitless factor multiplied into a token (`calc(var(--x) * 2)`), a `flex`/`order` factor, the `calc()` sign, and `animation-iteration-count:1`. Everything else is listed in `C1_ALLOW` with a reason and a ceiling of 1 — the six are `560px`, `94vw`, `88vh`, `92vw` (dialog geometry), `rgb(0 0 0 / .6)` (the component-local `--_scrim` default) and `40rem` (the table's `@container` threshold, where `var()` is invalid). An **unlisted** value fails even when the file is under its total, so deleting a listed literal cannot buy room for a new one.
+
+**C2 corrected the plan.** The plan said "fail duplicate selector blocks with identical declarations". Measured, that catches **0** of engine's 8 and **0** of pitch's: every later block adds a declaration (safe-area padding, a tap size, a border-left accent). The rule is now "same selector, same cascade context". C2 is measured on the **committed HEAD blob** — a sibling lane's uncommitted `pitch.html` has 5 duplicates against HEAD's 4, and the gate follows HEAD (CI checks out HEAD) rather than baking another lane's half-finished markup into a budget. The divergence is printed every run.
+
+**check-anchors fixed.** Its HTML branch treated `<use href="icons.svg#ds-icon-…">` as a fragment link and failed 48 times. It now skips a non-`.md`/`.html` target exactly as the markdown branch does, counts the skips (48 today) so they stay visible, and C5 makes the skip non-blind by resolving every symbol. Local and cross-page broken fragments still fail.
+
+**Negative-tested** (a pristine `git archive HEAD` export in scratch, one mutation per case, 16/16 as expected): unlisted hex and `13px` → exit 1 · the structural whitelist (0, 100%, 1fr, `outline-offset:2px`, `flex:1`) → exit 0 · a duplicate selector in the gallery (budget 0) and a 5th in pitch (budget 4) → exit 1 · `aria-modal` without `role`, and `role="dialog"` without a name → exit 1 · `.ds-btn` added to `base.css` → C4 exit 1 · a `<use>` renamed to a missing symbol → C5 exit 1 while anchors stay green · a hex in `components.js` → C6 exit 1 · a local and a cross-page broken fragment → anchors exit 1.
+
+**REF GATE 2 — how to judge:** open the gallery at 1440; **19 specimen blocks × 4 theme cells = 76 cells**, every component showing its states without hovering a picture; resize to 390 and the table/specimens reflow without page overflow; run `node scripts/lint-tokens.mjs --check` — **PASS**, 0 over budget, and the component table reads C1 6/6 · C2 12/12 · C3 0/0 · C4 0/0 · C5 0/0 · C6 0/0; `node scripts/build-foundations.mjs --check` is byte-stable at **186 keys / 20 groups** and **T8 10**; `node scripts/check-anchors.mjs` exits 0 with 48 non-document targets skipped; keyboard through the gallery with `components.js` loaded and confirm dialog trap/return, tab arrows, toast announcement.
+
+**Declared contrast residuals (not Phase 2's to fix, recorded here so no gate claims otherwise):** the gallery's legacy specimens still fail 100 nodes @1440 light / 41 dark — `.badge--paid` is white on `#8A5CF6` = **4.24**, plus `.badge-dev` and the danger-red `.cite` eyebrow; @390 add `scrollable-region-focusable` on `.matrix-wrap`. The shipped `.ds-badge` tones do **not** inherit those ratios (each carries `--_badge-ink`, which is what `0e23798` fixed). Wiki dark still measures `.eng` **2.04** (white on `#5CC4D0`) and light `h2 small` amber **4.11** — both are Task 27 token work, and Task 21's verify is therefore scoped to "no new violations".
 
 ---
 
@@ -349,53 +376,73 @@ One vocabulary, one behaviour contract, per-surface accent via variables. Additi
 
 File-disjoint lanes. Each page keeps its own `<style>` for layout and its own accent. Every visual delta must be declared in the lane report.
 
+**Corrections folded in from the Phase 3 recon** (`/Users/irfan/.hermes/cache/scratch/ds-p3-recon/phase3-recon.md`, measured 2026-11-24 13:55–14:12 IST, live DOM + axe-core 4.10.2). The recon beat the plan on ten points; the tasks below are the corrected versions:
+
+1. **`base.css` is a visible change, not a neutral link.** Linking it resizes **5 of 28** wiki controls, **14 of 27** pitch controls and **2 of 20** engine controls (the two `x=-9999` file inputs); the wiki's prompt-map table grows **3,736 → 5,173px (+38%)**. The floor now has a documented opt-out — `[data-ds-compact]` on the control (base.css §6/§8) — and the lane must apply it, with the reason, or declare the delta.
+2. **The theme attribute must land with the first class swap, in one commit.** `--focus-color` resolves only under `[data-ds-theme]`; the `.ds-*` focus rules are 0,2,0 and beat the page rings, so a page that swaps a class before it sets the attribute computes `outline-style:none` — no ring at all. Measured on a real `.ds-btn` in the wiki: no attribute → no ring; `<html data-ds-theme="wiki-light">` → 2px solid `#0B5D66`.
+3. **`DS.tabs` does not fit the wiki.** It assumes one tab → one panel and hides every non-selected panel; the wiki re-renders **one shared `#panel`**. Wiki takes `.ds-tab` CSS + manual `aria-controls`/roving tabindex; wiring `DS.tabs` waits for a 3-panel render (Phase 4).
+4. **Engine needs `--_z` and box-geometry overrides.** `.ds-dialog` defaults to `--z-overlay` (60) while engine modals sit at `--z-canvas` (90) → both modals set `--_z:var(--z-canvas)`; `#projModal .box.proj-box` is an 880px full-height sheet, so its geometry stays as a `.ds-dialog__box` override or it collapses to the centred 560px box.
+5. **Pitch is deferred, not skipped.** `pitch.html` is under foreign editing (dirty worktree, moving selectors). Task 22 starts only after that lane commits; until then its line numbers are stale and every edit must be selector-anchored and re-read.
+6. **Gallery is verification, not a rewrite.** It is already on the library (95% converted) and is being rewritten live. Task 24 = re-measure, verification, add the skip link, swap the **last 5/2/3/3/1** legacy specimens.
+7. **No shipped equivalent exists for five things** — the step rail (wiki, 7 instances), pitch's ≤639px drawer bottom-sheet, pitch's two-label INR/USD FX switch (`aria-checked` segmented, not a `.ds-switch`), and the **32px / 36px** control heights the earlier plan asked for (the scale is 34/40/44/46; there is no 32 or 36 token). Do not invent one: use the nearest step and declare it, or keep the page rule.
+8. **The duplicate-selector rule keys on selector + cascade context**, not identical declarations (Task 20 shipped it; it catches 8/8 engine and 4/4 pitch at HEAD).
+9. **`aria-label` is accepted** on a modal — `Overlay.label()` accepts it and only synthesises `aria-labelledby` when no label exists. C3 enforces `role="dialog"` + one of the two; it does not force `aria-labelledby`, so pitch's correctly-adopted drawers pass.
+10. **"0 off-viewport tab stops" is now defined.** A raw geometric count fails good pages: at 390 the wiki has **10** and pitch **2** stops inside same-page `overflow-x` rails that scroll into view on focus. The gate is **unreachable-only** — outside the viewport *and* outside any scrollable ancestor that can bring it into view — plus a separate assertion that every scrollable region is keyboard reachable and named (`tabindex="0" role="region" aria-label`), which is what `.ds-scroll-x` documents.
+
+**Recommended lane order (recon §G, not the plan's original order):** engine → pitch (blocked) → wiki → gallery. Engine is file-disjoint, already at DS type and heights, exercises the riskiest JS (Overlay ×3, Menu, Toast) on the page with the fewest visual deltas, and is the only page that can prove a 0.000% pixel diff.
+
 | # | Task | Done when |
 |---|---|---|
-| 21 | Wiki adoption | wiki consumes ds- classes, landmarks, tabs, focus preservation; both themes pass |
-| 22 | Pitch adoption | pitch consumes ds- classes, trapped drawers, correct tabs/tables/export targets |
-| 23 | Engine adoption | engine consumes ds- classes, dialog semantics, live toast, one palette, menu contract |
-| 24 | Gallery adoption | gallery's own specimens use ds- classes; docs-only forks removed |
+| 21 | Wiki adoption | wiki consumes ds- classes, landmarks, tabs, focus preservation; **no new** axe violations in both themes (dark is Task 27) |
+| 22 | Pitch adoption | pitch consumes ds- classes, trapped drawers, correct tabs/tables/export targets — **starts after its foreign lane commits** |
+| 23 | Engine adoption | engine consumes ds- classes, dialog semantics, live toast, one palette, menu contract, `--_z` overrides |
+| 24 | Gallery adoption | verification + skip link + the last 5/2/3/3/1 legacy specimens; docs-only forks removed |
 
 ### Task 21: Wiki adoption
 **Files:** `index.html` (all inline CSS/JS).
 **Steps:**
-1. Link `base.css` + `components.css` + `components.js`; keep layout CSS.
-2. Replace `.eng`, `.pitch`, `.tab`, `.chip`, `.step`, `#search`, `#theme`, `.badge`, `.nav button`, `.token button`, `table.map` with `ds-` classes.
-3. Add `<header>`, `<nav aria-label>`, `<main>`, keep `<footer>`; add skip link.
-4. Tabs: real tablist/tab/tabpanel + `aria-controls`; chips become `aria-pressed`; steps get `aria-current`.
-5. Wrap `draw()` in `focusPreserve`; add `announce()` for filter count and copy.
-6. Target sizes: copy 28→40 (hit area), pager 38→40; body 15→15.2; `.step` 16.8→15.2/600.
-**Verify:** axe 0 serious/critical at 1440/390 light+dark; focus survives tab/chip activation; 0 off-viewport stops; screenshots both themes.
+1. Link `base.css` + `components.css` + `components.js` before `<style>`, in the documented order (tokens → base → components → page).
+2. **Same commit:** `data-ds-theme="wiki-light|wiki-dark"` on `<html>`, written by the one function that also sets `data-theme` and `localStorage['cse-theme']` (two writers half-apply dark mode), **and** `[data-ds-compact]` on the controls that must stay dense — the map table's row buttons above all, or the table grows 1,437px.
+3. Replace `.eng`, `.pitch` (rename the class — it collides with the page name), `.tab`, `.chip`, `#search`, `#theme`, `.badge`, `.nav button`, `.token button`, `table.map` with `ds-` classes. `.step` and the chip rail stay page-local (no component; see correction 7).
+4. Add `<header>`, `<nav aria-label>`, `<main id="main" tabindex="-1">`, keep `<footer>`, add `.ds-skip-link` as the first focusable element.
+5. Tabs: `.ds-tab` + real `role="tablist"/"tab"` + `aria-controls` + roving tabindex, **manual** — not `DS.tabs` (correction 3). Chips: `aria-selected` → `aria-pressed` (the 10 illegal attributes are the page's only axe **critical**). Steps: `aria-current="step"`.
+6. `draw()` → `DS.focusPreserve`; `DS.announce` for the filter count and copy; `[data-ds-copy]` replaces `copyTxt()`.
+7. Declared deltas: body 15 → 15.2 (delete the `font:` shorthand — the page rule beats base.css), `.step` 16.8/700 → 15.2/600, copy 28 → 40, pager 38 → 40, `.eng` 34 → 40, `.pitch` link 36 → 40, `.go` 24 → 40, map table +1,437px unless `[data-ds-compact]` is applied.
+**Verify:** axe **no new** serious/critical at 1440/390 in both themes (the dark `.eng` 2.04 and light `h2 small` 4.11 stay until Task 27, or Task 27's two tokens land first and the verify becomes 0/0); focus survives tab/chip activation; off-viewport = 0 **unreachable** stops (10 reachable rail stops at 390 are expected and must be listed); every scrollable region focusable + named; screenshots both themes.
 
 ### Task 22: Pitch adoption
 **Files:** `pitch.html`.
 **Steps:**
-1. Replace `.btn`/`.btn.ghost`/`.tab-btn`/`.hicon`/`.expbtn`/`.dpill`/`.pill`/`.fxswitch`/`.drawer`/`.tbl`/`.track`/`.ftip`.
-2. Drawers through `Overlay` (trap, return, `inert`); tabs keep roving + `aria-controls`.
-3. Export targets 27→32 min, text 11.52→12.8; TOC rows 31→36; mobile tabs 30→40 on coarse pointers.
-4. Table heads get `scope`; print repeats `thead`.
-5. Chart rects get `role="img"`; keep the focus tooltip.
-**Verify:** Tab 24 no longer escapes the drawer; axe 0 serious; print preview repeats headers; 1440/390 screenshots; no page overflow.
+1. **Wait for the current dirty lane to commit; rebase; re-read each selector anchor.** Nothing in this task may be started against the moving file.
+2. Replace `.btn`, `.tab-btn`, `.hicon`, `.expbtn`, `.dpill`, `.pill`, `.drawer`, `.tbl`, `.track`, `.ftip`; `data-ds-theme="pitch"` on `<body>` (not `<html>` — the print sheet's `--paper/--prt*` must stay out of the theme map).
+3. Drawers through `DS.overlay` (trap, return, `inert`); delete the page's Esc/backdrop handlers; **keep the ≤639px bottom-sheet CSS** — `.ds-drawer` has no sheet variant, so dropping it turns the phone drawer into a full-height side panel (correction 7).
+4. Tabs: `DS.tabs` with `aria-controls` per tab and `onChange` → the existing `showPanel`; keep the 5px dot indicator or declare its removal (underline is a different indicator, not a rename).
+5. Tables: `scope` on all 21 `th`, `data-label` on `td`, a `caption`/`aria-label`; `@media print{thead{display:table-header-group}}` (new behaviour — declare it).
+6. Resolve the height targets **before** writing CSS: **32 and 36 do not exist** — use `control.height.compact` 34 / `default` 40 and record the decision (correction 7). The FX switch stays page-local unless a segmented component ships (Task 36).
+7. Chart rects: keep them focusable and give each an accessible name; do **not** put `role="img"` on 18 focusable rects (anti-pattern — recon risk 8).
+**Verify:** axe 0/0 ×4 (its baseline is already 0); open `#fund-drawer` and Tab 30× — focus never leaves (today it escapes at **#24**); print preview repeats headers; 390 has no page overflow and 2 reachable rail stops are listed as reachable.
 
 ### Task 23: Engine adoption
 **Files:** `engine.html`.
 **Steps:**
-1. Replace `.tools button`, `#addNode`, `#addScene`, `#goShot`, `#side button`, `#projNav`, `#pmNav`, `.sw`, `#drawer`, `#projModal`, `#assetModal`, `.modal .box`, 7 menus, `#toast`, `#drawerX`, `.tchip`, `.filehide`.
-2. Overlay controller on drawer + both modals: labels, trap, return, background `inert`; closed state `hidden`+`inert`.
-3. Toast `role=status` + pause; `#dots` becomes `MenuButton`; remove the 8 duplicate selectors.
-4. Label `#chapterSel`; file inputs `tabindex=-1` behind visible triggers.
-5. One palette (Task 11) and `aria-label` on the 3 navs; add `<main>` and `<footer>`.
-**Verify:** 0 off-viewport tab stops; axe 0 serious; modal open→focus-in, Tab cycles, Esc→return; 1440/390 screenshots; pixel diff 0.000% except declared deltas.
+1. `data-ds-theme="engine"` on `<body>` in the **same commit** as the first class swap; keep the `--panel/--tool/--border/--tap` aliases (canvas chrome reads them from JS-drawn SVG).
+2. Merge the **8** duplicate selectors (`html,body`, `body`, `header`, `#arrowpick button`, `#drawerX`, `.dp h3`, `#chapterbar select`, `#anchorRow code`) — C2 is the check.
+3. Overlays: `.ds-drawer`, `.ds-dialog[data-variant="sheet"]` (project), `.ds-dialog` (asset), `DS.overlay` ×3, **`--_z:var(--z-canvas)` on both modals**, `.proj-box` geometry kept as a `.ds-dialog__box` override (correction 4). Closed = `hidden` + `inert`, so the drawer's 5 controls leave the tab order.
+4. `#dots` → `DS.menu` with `role=menu`/`role=menuitem` on all 6 popovers (`#assetPanel`, `#cardMenu`, `#drawerMenu`, `#menuDrop`, `#arrowpick`, `#delConfirm` — note `#refPop` is referenced in JS but **does not exist in the DOM**); `#toast` → `.ds-toast` + `DS.toast` (`role=status`).
+5. `#chapterSel` gets a label; both file inputs get `tabindex="-1" aria-hidden="true"` (they are 4×4px at `x=-9999` **and tabbable** — 2 axe criticals); `<main>`, `<footer>` and a skip link; `aria-label` on `#side`, `#pmNav`, `#projNav`.
+6. Declared deltas: toast bottom 56 → 48 (`spacing.2xl`), the two file inputs 4 → 40 (invisible), canvas z-index unchanged via `--_z`, `.proj-box` geometry unchanged.
+**Verify:** axe 0/0 ×4; off-viewport **unreachable** stops = 0 at both widths (7 at 1440 today); modal open → focus in, Tab cycles, Esc returns; drawer closed ⇒ its 5 controls are not tab stops; pixel diff 0.000% except the toast's 8px.
 
 ### Task 24: Gallery adoption
 **Files:** `design-system/index.html`.
 **Steps:**
-1. Replace `.btn--*`/`.field`/`.tool`/`.sheet`/`.pill`/`.badge`/`.toast` specimens with `ds-` classes.
-2. Delete specimens for components that do not ship; add the new primitives.
-3. Ensure the page itself consumes the same CSS the product does (no parallel specimen vocabulary).
-**Verify:** gallery CSS contains no component definitions; only layout + specimen frames; axe 0 serious.
+1. **Re-measure first** — the file is being rewritten live (1,640 → 2,312 lines during the recon) and may already be done.
+2. Swap the remaining legacy specimens: **5 `.btn`, 2 `.field`, 3 `.tool`, 1 `.sheet`, 3 `.badge`, 1 `.toast`, 1 `.card`, 1 `.panel`** (the 128-line fork block plus the reduced-motion selector line).
+3. Add `.ds-skip-link` + `id="main"` on `<main>` (the page has `<main>` but **no id**, and no skip link — the recon measured 0).
+4. Make `.matrix-wrap` focusable and named (`tabindex="0" role="region" aria-label` — the @390 `scrollable-region-focusable` violation), and either fix the 100/41 contrast nodes (`badge--paid` 4.24, `badge-dev`, `.cite`) or hand them to Task 27 with a citation.
+**Verify:** the page's `<style>` contains no component definition (grep `^\.(btn|field|tool|sheet|badge|toast|chip|card)`); 19 specimen frames still resolve (`check-anchors`); axe serious/critical 0 ×4 or the contrast set explicitly cited to Task 27.
 
-**REF GATE 3 — how to judge:** for each page, compare 1440 and 390 before/after. The only differences allowed are the declared deltas in the lane report. Every page uses `ds-` classes for controls, has one `<main>`, a skip link, and no off-viewport tab stops. Axe baseline is 0 serious/critical.
+**REF GATE 3 — how to judge:** for each page, compare 1440 and 390 before/after. The only differences allowed are the declared deltas in the lane report — and the recon's list (wiki 8, pitch 14, engine 4, gallery 0) is the starting point, not a guess. Every page uses `ds-` classes for controls, has one `<main>` with `id="main"`, a skip link, and 0 **unreachable** off-viewport stops. Axe baseline is 0 serious/critical, except the two contrast pairs explicitly owned by Task 27. Each lane's first commit carries the theme attribute and the floor decision with it.
 
 ---
 
@@ -617,11 +664,11 @@ Each intake is a file in `design-system/references/` with:
 | `design-system/tokens.json` | only hand-edited value source; 3 tiers, 4 theme maps |
 | `design-system/tokens.css` | generated `:root` + `[data-ds-theme]` blocks |
 | `design-system/base.css` | focus, sr-only, skip link, scroll-x, target floor, reduced motion |
-| `design-system/components.css` | 18 canonical blocks, token-only |
+| `design-system/components.css` | 19 canonical blocks, token-only (6 C1-listed literals) |
 | `design-system/components.js` | Overlay/Tabs/Menu/Toast/focus-preserve |
 | `design-system/icons.svg` | 24-symbol sprite |
 | `design-system/foundations.md` | generated scale/role reference |
-| `design-system/components.md` | 19 specs, status column |
+| `design-system/components.md` | 19 live specs (each with a gallery frame) + 3 proposed + 3 page patterns |
 | `design-system/patterns.md` | 8 compositions |
 | `design-system/surfaces.md` | per-page contract |
 | `design-system/accessibility.md` | generated contrast + a11y contract |
@@ -632,7 +679,7 @@ Each intake is a file in `design-system/references/` with:
 | `design-system/index.html` | rendered gallery, computed counts |
 | `scripts/build-tokens.mjs` | generator + `--check` + type validation |
 | `scripts/build-foundations.mjs` | generated docs tables |
-| `scripts/lint-tokens.mjs` | V1–V8, U1 + T1–T15 |
+| `scripts/lint-tokens.mjs` | V1–V8, U1 + T1–T15 (pages, tokens) + C1–C6 (component layer) |
 | `scripts/check-doc-counts.mjs` | docs-vs-source assertion |
 | `scripts/check-anchors.mjs` | ids/anchors |
 | `tools/` | playwright + axe dev deps (nested manifest) |

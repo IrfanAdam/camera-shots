@@ -1,392 +1,726 @@
 # Component Specs
 
-All specs reference `tokens.json` by name. Shipped geometry is named by token, with its resolved px in parentheses so the doc cannot drift from the sheet.
+**Status:** **19 live sections** (each linked to the gallery frame that renders it) · **3 proposed** (not built — appendix) · **3 page patterns** (spec'd, not shipped — appendix) · **10 specs new in this revision**.
 
-**Radius truth (Phase 0, measured):** controls take `radius.xs` (4px), panels and cards take `radius.sm` (8px). `radius.pill` (9999px) is shipped only on badges, switch tracks/thumb, progress track/fill, and the sheet grab — never on a filter chip, button, or input.
+Everything below is verified against the shipped layer: `design-system/base.css` (reset, focus ring, skip link, scroll regions, target floor), `design-system/components.css` (19 numbered blocks), `design-system/components.js` (Overlay, Tabs, MenuButton, Toast/announce, copy, focus-preserve) and `design-system/icons.svg` (24 symbols). Values are named by token; the gallery at [`design-system/index.html`](index.html) renders every state in four theme cells (pitch, wiki-light, wiki-dark, engine), so a claim here can be checked by eye in one frame.
 
-## Engine role palette
+**Read order:** [README](README.md) → [foundations](foundations.md) → this file → [patterns](patterns.md).
 
-Every engine component below cites these sixteen roles and nothing else; the values live in `tokens.json`, not in this file. A spec that needs a colour the roles do not express is a gap to file, not a licence to reach for a deprecated alias.
+## Geometry rules that hold for every live component
 
-| Role | Token | Use |
+| Rule | Value | Token |
 |---|---|---|
-| App background | `color.engine.surface.0` | page behind the shell |
-| Panel | `color.engine.surface.1` | drawers, toasts, asset panel |
-| Raised row | `color.engine.surface.2` | hovered row, slider track |
-| Deep panel | `color.engine.surface.deep` | inset wells, code blocks |
-| Canvas | `color.engine.canvas` | stage fill under the graph |
-| Text primary | `color.engine.text.primary` | labels, icons, values |
-| Text secondary | `color.engine.text.secondary` | meta, placeholder, inactive icon |
-| Tool surface | `color.engine.tool` | tool and transport buttons |
-| Divider | `color.engine.divider` | hairlines, hover surface |
-| Divider strong | `color.engine.divider.strong` | control borders, sheet grab |
-| Selection | `color.engine.selection` | selected edge, playhead, handles |
-| Track FX / title / audio | `color.engine.track.fx` / `.title` / `.audio` | one hue per lane type |
-| Overlay scrim | `color.engine.overlay.scrim` | modal backdrop |
-| Overlay panel | `color.engine.overlay.panel` | floating pill, translucent panel |
+| Control radius | 4px | `radius.xs` |
+| Panel / card / dialog radius | 8px | `radius.sm` (card/surface), `radius.md` on `.ds-surface` |
+| Pill radius — **only** badges, switch track, progress track/fill, sheet grab, `[data-variant=pill]` chip | 9999px | `radius.pill` |
+| Control height | compact 34 · default 40 · engine 44 · pitch 46 | `control.height.*` via `data-ds-density` on any wrapper |
+| Hit floor | `touch.min`, coarse pointer → `control.height.touch` | `base.css` §6/§8, specificity `:where()` |
+| Focus | `outline-style:solid` + `--focus-width` / `--focus-color` / `--focus-offset`, longhands only | `base.css` §2 |
+| Theming | every colour is a `--ds-*` role; **nothing paints without `[data-ds-theme]` on an ancestor** | `tokens.css` role maps |
+| State | a real attribute (`aria-pressed`, `aria-selected`, `aria-expanded`, `aria-disabled`, `[hidden]`, `[data-armed]`, `[data-loading]`, `:disabled`, `:focus-visible`). `data-state~=…` exists only so the gallery can pin a state in a still frame | `components.css` header |
 
-## Doc Tabs (pitch header, active-dot style)
+## Spec register — the 10 specs added in this revision
 
-**Purpose**
-Switch document panels within one page shell while keeping brand and export controls mounted.
+| # | Spec | Status | Where it lives |
+|---|---|---|---|
+| 1 | Theme toggle | **live** | [Pager · nav item · theme toggle](#ds-nav) — `.ds-theme-toggle`, frame `#spec-nav` |
+| 2 | Step rail | page pattern, **not built** | [Page patterns](#pattern-step-rail) — no `.ds-*` block exists |
+| 3 | Table | **live** | [Table & scroll region](#ds-table) — `.ds-table-wrap` / `.ds-table`, frame `#spec-table` |
+| 4 | Footer | page pattern, **not built** | [Page patterns](#pattern-footer) — engine ships no `<footer>` today |
+| 5 | Select | **live** | [Select](#ds-select) — `.ds-select`, frame `#spec-field` |
+| 6 | File picker | page pattern, **not built** | [Page patterns](#pattern-file-picker) — hidden input + visible trigger |
+| 7 | Project modal | **live** variant | [Dialog](#ds-dialog) — `[data-variant=sheet]`, frame `#spec-dialog`; engine adoption is Task 23 |
+| 8 | Asset modal | **live** variant | [Dialog](#ds-dialog) — centred `__box`, frame `#spec-dialog`; engine adoption is Task 23 |
+| 9 | Context menu | **live** | [Menu & context menu](#ds-menu) — `.ds-menu` + `DS.menu`, frame `#spec-menu` |
+| 10 | Scroll region | **live** | [Table & scroll region](#ds-table) — `.ds-scroll-x` / `.ds-scroll-y`, frame `#spec-table` |
 
-**Anatomy**
-Row container; text-only tab buttons; 5px active dot (`::after`, centered under active tab); hidden panels with one active panel.
+---
+
+## Live components
+
+<a id="live"></a>
+
+### Button {#ds-btn}
+
+**Purpose** — the only action primitive. One primary per view; everything else steps down to secondary, ghost, or danger.
+
+**Anatomy** — `<button class="ds-btn" data-variant="primary">` (or `<a>`), optional leading/trailing `<svg class="ds-icon" aria-hidden="true">`, label text or `.ds-btn__label` when the label swaps during loading.
 
 **Variants**
 
-| Variant | Description | Key differences |
+| Variant | Attribute | What changes |
 |---|---|---|
-| Pitch header tabs | Brand left, tabs right, sticky header | Dot token `color.pitch.accent`; type `typography.size.small` |
-| Wiki step tabs | Underline style, not dot | Active = ink text + amber underline (`color.wiki.light.amber`) |
-| Wiki chip tabs | Filter chips, `radius.xs` (4px) | Active = accent-filled chip, `radius.xs` |
+| Primary | `data-variant="primary"` | `--ds-accent` fill, `--ds-on-accent` text |
+| Secondary (default) | — / `data-variant="secondary"` | transparent fill, `--ds-rule` border, `--ds-ink` text |
+| Ghost | `data-variant="ghost"` | no border, ink → `--ds-accent-soft` on hover |
+| Danger | `data-variant="danger"` | `--ds-danger` ink/border; `[data-armed]` fills |
+| Compact / tall | `data-size="xs"｜"compact"｜"tall"` | height from `--_ctl-h`, padding `spacing.xs`…`spacing.md` |
 
-**States**
-Default (muted, regular) | Hover (ink) | Active (ink, semibold, dot visible) | Focus-visible (accent outline) | Panel swap (fadeSlideIn, `motion.duration.tab` + rise, opacity-led).
+**States** — default · hover (`--hover-lift` 1.06 + surface step) · focus-visible (ring) · disabled (`opacity.disabled`, `:disabled` **and** `aria-disabled="true"`) · armed (`[data-armed]`, two-tap destroy) · loading (`[data-loading]`, label at `opacity.media`, `cursor:progress`).
 
-**Token Usage**
+**Token map**
 
 | Property | Token |
 |---|---|
-| Tab text default | color.pitch.muted |
-| Tab text active/hover | color.pitch.ink |
-| Active dot | color.pitch.accent |
-| Focus outline | color.pitch.accent |
-| Panel animation | motion.duration.tab / motion.easing.standard |
-| Scroll offset under sticky header | layout + scroll-margin (see Patterns) |
+| Fill / ink | `--ds-accent`, `--ds-on-accent`, `--ds-accent-soft` |
+| Surface | `--ds-surface-alt` (hover), `--ds-rule` / `--ds-rule-strong` (border) |
+| Height | `control.height.compact｜default｜touch｜reading` via `--_ctl-h` |
+| Radius / spacing | `radius.xs`, `spacing.xs`, `spacing.md`, `spacing.lg` |
+| Type | `typography.size.small`, `typography.size.meta`, `weight.semibold`, `line-height.tight` |
+| Motion | `motion.duration.hover`, `motion.easing.standard`, `hover.lift` |
+| Disabled / focus | `opacity.disabled`, `focus.width`, `focus.color`, `focus.offset` |
 
-**Dos and Don'ts**
-- DO keep tabs text-only; the dot is the only indicator.
-- DO NOT add underline + dot together.
-- DO move focus to panel top on switch.
+**Dos and don'ts** — DO keep one `primary` per view; DO require `[data-armed]` for anything destructive. DON'T put two primaries side by side; DON'T fake a disabled button with `opacity` alone (it stays focusable and clickable).
 
-**Accessibility**
-Min target `touch.min`; `role=tablist`, `aria-selected`; keyboard arrow navigation.
+**Accessibility** — real `<button>` or `<a href>`; the label is the accessible name (an icon-only action is an `.ds-icon-btn` with `aria-label`); `:disabled` for inert, `aria-disabled="true"` when the control must stay focusable; focus ring comes from `base.css` §2 and cannot be removed per page.
 
-## Transport Bar (engine / pro feel)
+**Gallery** — [Button frame](index.html#spec-btn) · `#spec-btn`
 
-**Purpose**
-Playback and edit-action cluster for canvas and timeline control.
+---
 
-**Anatomy**
-Icon-only button cluster, no background container; frame counter readout; grouped edit actions (cut, split, duplicate, trim).
+### Icon button {#ds-icon-btn}
+
+**Purpose** — a single icon action with no label: close, overflow, undo, copy, theme.
+
+**Anatomy** — `<button class="ds-icon-btn" aria-label="…">` + one 20px `ds-icon` from the sprite; the square is `--_ctl-h` so it aligns with text buttons in the same row.
 
 **Variants**
 
-| Variant | Description | Key differences |
+| Variant | Attribute | What changes |
 |---|---|---|
-| Canvas tools | Engine header row | Tool-surface buttons (`color.engine.tool`) |
-| Pro transport | Reference feel | Containerless icons; active = full primary vs dimmed secondary |
+| Square (default) | — | `radius.xs`, hairline border, `--ds-surface-alt` |
+| Circle | `data-variant="circle"` | `radius.circle`, filled surface — used for a drawer close |
 
-**States**
-Default | Hover (accent border) | Active/selected (accent) | Disabled (`opacity.disabled`, no hover shift).
+**States** — default · hover · focus-visible · disabled (`opacity.disabled`).
 
-**Token Usage**
+**Token map**
 
 | Property | Token |
 |---|---|
-| Button surface | color.engine.tool |
-| Button hover surface | color.engine.divider |
-| Icon/text | color.engine.text.primary |
-| Secondary label | color.engine.text.secondary |
-| Active edge | color.engine.accent |
-| Destructive hover | color.status.danger |
-| Radius | radius.sm |
-| Target size | touch.min minimum, touch.preferred for transport |
+| Ink / surface | `--ds-ink`, `--ds-muted`, `--ds-surface-alt`, `--ds-rule` |
+| Size / radius | `--_ctl-h`, `radius.xs`, `radius.circle` |
+| Motion | `motion.duration.hover`, `motion.easing.standard` |
 
-**Dos and Don'ts**
-- DO keep transport containerless; buttons carry the affordance.
-- DO NOT shrink transport targets below `touch.min`.
+**Dos and don'ts** — DO give every icon button an `aria-label`; DO use `ds-icon` at 20px (`icon.size.md`) so the stroke weight matches. DON'T ship a button whose only affordance is a glyph with no name.
 
-**Accessibility**
-Every icon button has `aria-label`; frame counter uses tabular numbers (`typography.size.timecode`).
+**Accessibility** — `aria-label` is mandatory (the gallery enforces the convention, the gate enforces `svg#id` resolution); the icon keeps `aria-hidden="true" focusable="false"`; hit area is `touch.min` from `base.css` §6.
 
-## Timeline Chips (pro track segments)
+**Gallery** — [Icon button frame](index.html#spec-icon-btn) · `#spec-icon-btn`
 
-**Purpose**
-Color-coded selectable segments on track lanes: FX, title/graphics, audio.
+---
 
-**Anatomy**
-Rounded bar; leading glyph icon; short label; selection handles on active chip.
+### Field & input {#ds-field}
+
+**Purpose** — one labelled control row: label, control, note, error.
+
+**Anatomy** — `<label class="ds-field">` wrapping `.ds-label`, the control (`.ds-input` / `.ds-textarea` / `.ds-select`), and an optional `.ds-note`. The wrapper is the label, so no `for`/`id` pairing is needed and clicking the label focuses the control.
 
 **Variants**
 
-| Variant | Description | Key differences |
+| Variant | Attribute | What changes |
 |---|---|---|
-| FX chip | Color/effect segment | `color.engine.track.fx` fill |
-| Title chip | Graphics/title segment | `color.engine.track.title` fill |
-| Audio chip | Music/dialogue segment | `color.engine.track.audio` fill |
-| Selected chip | Any active segment | `color.engine.selection` border + handles |
+| Default | — | `--ds-control` fill, `--ds-rule` border, `radius.xs` |
+| Quiet | `data-variant="quiet"` on the control | transparent fill, border only on focus |
+| Invalid | `data-invalid="true"` on the field + `aria-invalid="true"` on the control | `--ds-danger` border, `--_alert-ink` label/note |
+| Multiline | `.ds-textarea` + `rows` | `min-block-size:calc(--_ctl-h * 2)`, `resize:vertical` |
 
-**States**
-Default | Hover (brightness lift) | Selected (selection border + handles) | Muted/locked track (dimmed).
+**States** — default · focus (ring + `--ds-accent` border) · populated · placeholder (`--ds-faint`) · invalid · disabled (`opacity.disabled`).
 
-**Token Usage**
+**Token map**
 
 | Property | Token |
 |---|---|
-| FX fill | color.engine.track.fx |
-| Title fill | color.engine.track.title |
-| Audio fill | color.engine.track.audio |
-| Selection edge/handles | color.engine.selection |
-| Label text | color.engine.text.primary |
-| Radius | radius.sm |
-| Handle thickness | spacing.xl (32px) |
+| Surface / border | `--ds-control`, `--ds-rule`, `--ds-rule-strong` |
+| Ink | `--ds-ink`, `--ds-ink-2`, `--ds-muted`, `--ds-faint` |
+| Invalid | `--ds-danger`, `--_alert-ink` (per-theme alert ink) |
+| Label / note | `typography.size.eyebrow` + `tracking.eyebrow` (uppercase label), `typography.size.meta` (note) |
+| Geometry | `radius.xs`, `spacing.2`, `spacing.xs`, `spacing.sm`, `spacing.lg` |
 
-**Dos and Don'ts**
-- DO keep one hue per track type, always.
-- DO NOT use neon fills; saturated mid-tones only.
+**Dos and don'ts** — DO keep the label above the control and the note below; DO let the note carry the rule ("Max 12 characters"). DON'T replace the label with a placeholder — it disappears on input.
 
-**Accessibility**
-Selected state must never rely on color alone — handles + label change required; contrast against surface per audit checklist.
+**Accessibility** — the `<label>` wrapper is the accessible name; errors use `aria-invalid` **and** the `data-invalid` wrapper (colour is never the only signal — the note changes text); disabled controls use `:disabled`, not a class.
 
-## Inspector Pills (floating status overlays) — proposed
+**Gallery** — [Field frame](index.html#spec-field) · `#spec-field`
 
-Not shipped: no page renders an inspector overlay yet (`patterns.md` marks it proposed). The shape below is the acceptance spec for when one lands, not a description of current UI.
+---
 
-**Purpose**
-Transient floating status over the canvas (selection length, applied effect + navigation).
+### Select {#ds-select}
 
-**Anatomy**
-Dark translucent pill; optional split: white active segment + dark navigation segment.
+**Purpose** — choose one value from a short list without leaving the form. Shipped as the native control, styled; there is no custom listbox.
+
+**Anatomy** — `<label class="ds-field"><span class="ds-label">Lens</span><select class="ds-select">…</select></label>`. Native popup, native keyboard, native mobile sheet.
 
 **Variants**
 
-| Variant | Description | Key differences |
+| Variant | Attribute | What changes |
 |---|---|---|
-| Status pill | One-line readout (e.g. selection length) | Single dark segment |
-| Split pill | Effect state + drill-in | White segment + dark `>` segment |
+| Default | `class="ds-select"` | same skin as `.ds-input` |
+| Quiet | `data-variant="quiet"` | transparent fill |
+| In a dense row | inherits `data-ds-density` from the wrapper | 34 / 40 / 44 / 46 height |
 
-**States**
-Visible | Hidden (no selection) | Hover on navigation segment.
+**States** — default · focus-visible (ring) · invalid (`aria-invalid`) · disabled.
 
-**Token Usage**
+**Token map**
 
 | Property | Token |
 |---|---|
-| Pill surface | color.engine.overlay.panel |
-| Active segment | color.engine.text.primary surface with `color.engine.accent.ink` text |
-| Text | color.engine.text.primary / color.engine.text.secondary |
-| Shadow | elevation.popover |
-| Radius | radius.pill |
-| Padding | spacing.sm / spacing.md |
+| Surface / border | `--ds-control`, `--ds-rule`, `--ds-rule-strong` |
+| Ink | `--ds-ink`, `--ds-muted` |
+| Geometry | `radius.xs`, `--_ctl-h`, `spacing.xs`, `spacing.sm` |
+| Focus | `focus.width`, `focus.color`, `focus.offset` |
 
-**Dos and Don'ts**
-- DO keep pills overlay-only; they never push layout.
-- DO NOT stack more than two pills over the canvas.
+**Dos and don'ts** — DO use it for 3–15 options; DO keep the option text short enough for 390px. DON'T build a `<div role="listbox">` for a plain choice — the native element is the whole a11y contract here; DON'T use a select for navigation.
 
-**Accessibility**
-Pills are `role=status` live regions; never the sole carrier of critical state.
+**Accessibility** — native `<select>` inside a `<label>`; the popup is the platform's, so type-ahead, arrow keys and the mobile picker all work; `aria-invalid` + note for errors. Engine's `#chapterSel` currently has **no label** — that is Task 23's fix, not the component's.
 
-## Cards
+**Gallery** — [Select specimen inside the field frame](index.html#spec-field) · `#spec-field`
 
-**Purpose**
-Grouped content blocks in pitch articles and wiki panels.
+---
 
-**Anatomy**
-Surface container; title; body; optional gate/qualifier line.
+### Switch {#ds-switch}
+
+**Purpose** — an on/off setting that applies immediately (no Save).
+
+**Anatomy** — `<label class="ds-switch">` + `<input class="ds-switch__input" type="checkbox">` + `<span class="ds-switch__track">` + `<span class="ds-switch__label">`. A real checkbox: form-submittable, screen-reader-legible, no JS.
 
 **Variants**
 
-| Variant | Description | Key differences |
+| Variant | Attribute | What changes |
 |---|---|---|
-| Pitch card | Dark surface block | `color.pitch.surface.1`, `radius.sm` |
-| Pitch accent card | Gated/emphasis block | Accent border |
-| Wiki panel | Light/dark dual-theme panel | `color.wiki.*.card`, `radius.sm` |
+| Checkbox semantics | `type="checkbox"` | default; `:checked` fills the track |
+| Switch semantics | `role="switch" aria-checked` (markup choice) | same skin, `aria-checked` instead of `checked` |
 
-**States**
-Default | Hover (subtle lift, linked cards only) | Accent (gate state).
+**States** — off · on (`:checked` → `--ds-accent` track, thumb to the end) · focus-visible (ring on the **track**, not the clipped input) · disabled (`opacity.disabled`, no pointer).
 
-**Token Usage**
+**Token map**
 
 | Property | Token |
 |---|---|
-| Surface | color.pitch.surface.1 / color.wiki.light.card / color.wiki.dark.card |
-| Border | color.pitch.rule / color.wiki.light.rule / color.wiki.dark.rule |
-| Title | color.pitch.ink / color.wiki.*.ink |
-| Body | color.pitch.muted / color.wiki.*.muted |
-| Gate line | color.pitch.accent / color.wiki.*.accent |
-| Radius | radius.sm (both surfaces) |
-| Padding | spacing.md |
+| Track | `--ds-control` (off), `--ds-accent` (on), `--ds-rule` border |
+| Thumb | `--ds-muted` → `--color-primitive-white` when checked |
+| Geometry | `spacing.2xl` × `spacing.lg` track, `radius.pill`, `radius.circle` thumb, `spacing.2` inset |
+| Motion | `motion.duration.hover`, `motion.easing.standard` |
 
-**Dos and Don'ts**
-- DO put one idea per card.
-- DO NOT nest cards more than one level.
+**Dos and don'ts** — DO use a switch for a setting that takes effect at once; DO pair it with a label that names the state ("Autosave"). DON'T use a switch for a choice that needs a Save, and DON'T build a two-label segmented control out of it — pitch's INR/USD control is a different mechanism (see [Proposed](#proposed)).
 
-**Accessibility**
-Card titles are real headings; linked cards are single `<a>` wrappers, not div-soup.
+**Accessibility** — the input is visually hidden with the hairline-box technique, never `display:none` (it must stay focusable); `:focus-visible` paints the track; `:disabled` dims both parts. 19 engine switches already use this exact `<label class=sw><input type=checkbox>` shape.
 
-## Buttons
+**Gallery** — [Switch frame](index.html#spec-switch) · `#spec-switch`
 
-**Purpose**
-Primary, secondary, and destructive actions across all three surfaces.
+---
 
-**Anatomy**
-Label (+ optional icon); 4px rounded-rect container (`radius.xs`), 8px panel when it wraps a block.
+### Tabs {#ds-tabs}
+
+**Purpose** — switch between sibling panels in place, without a page load.
+
+**Anatomy** — `<div class="ds-tabs" role="tablist">` of `.ds-tab[role="tab"]`, each with `aria-controls`; panels are `.ds-tabpanel` and are `hidden` when not selected. `DS.tabs(root)` supplies roving tabindex, ←/→/Home/End and the panel swap.
 
 **Variants**
 
-| Variant | Description | Key differences |
+| Variant | Attribute | What changes |
 |---|---|---|
-| Primary | Single main action | Accent fill, dark ink text |
-| Ghost/secondary | Companion actions | Transparent, bordered |
-| Danger | Destructive (delete drawer item) | Danger border/text; armed fill state |
-| Export button | Small export trigger | Compact 4px button (`radius.xs`), muted → ink hover |
+| Boxed (default) | — | bordered pills, `radius.xs`, selected = `--ds-accent-soft` |
+| Underline | `data-variant="underline"` | no boxes; 2px `border-width.strong` rule under the selected tab |
+| Rail | `data-variant="rail"` | vertical stack for a modal's left rail |
 
-**States**
-Default | Hover (brightness/border shift) | Armed (danger confirm, two-tap) | Disabled (`opacity.disabled`).
+**States** — default · hover (`--ds-rule-strong` border) · selected (`aria-selected="true"`) · focus-visible · panel hidden/shown.
 
-**Token Usage**
+**Token map**
 
 | Property | Token |
 |---|---|
-| Primary fill | color.pitch.accent / color.engine.accent (surface-appropriate) |
-| Primary text | color.pitch.accent.ink |
-| Ghost border | color.pitch.rule / color.engine.divider.strong |
-| Danger | color.status.danger |
-| Radius | radius.xs — 4px on every button, pitch CTAs and engine tools alike; panels take radius.sm (8px) |
-| Disabled | opacity.disabled |
+| Ink / surface | `--ds-ink`, `--ds-muted`, `--ds-surface`, `--ds-surface-alt`, `--ds-accent-soft` |
+| Rule | `--ds-rule`, `--ds-rule-strong`, `border-width.hairline`, `border-width.strong` |
+| Geometry | `radius.xs` (boxed), `radius.none` (underline), `spacing.6`, `spacing.10`, `spacing.sm` |
+| Motion | `motion.duration.hover`, `motion.easing.standard` |
 
-**Dos and Don'ts**
-- DO use one primary per view.
-- DO require armed two-tap for destructive actions.
+**Dos and don'ts** — DO give every tab `aria-controls` pointing at a real panel id. DON'T wire `DS.tabs` onto a page that re-renders one shared panel — `apply()` hides every non-selected panel, which would hide the only one (wiki's exact blocker; it adopts `.ds-tab` CSS + manual ARIA in Phase 3 and defers the JS).
 
-**Accessibility**
-Min target `touch.min`; visible focus ring; danger actions announced.
+**Accessibility** — `role="tablist"` / `role="tab"` / `role="tabpanel"`; exactly one tab in the tab order; `aria-selected` on the tab, `aria-labelledby` on the panel; panels get `hidden` (not `display:none` by hand).
 
-## Search / Filter Input
+**Gallery** — [Tabs frame](index.html#spec-tabs) · `#spec-tabs`
 
-**Purpose**
-Filter lists in place (wiki concept filter).
+---
 
-**Anatomy**
-4px rounded field (`radius.xs`), full-width flex; optional theme toggle companion.
+### Chip {#ds-chip}
+
+**Purpose** — a filter token: press to narrow a list, press again to release.
+
+**Anatomy** — `<button class="ds-chip" aria-pressed="false">` + label + optional `.ds-chip__count` (the number of matches behind the filter).
 
 **Variants**
 
-| Variant | Description | Key differences |
+| Variant | Attribute | What changes |
 |---|---|---|
-| Filter field | In-list filter | Surface fill, rule border, 4px radius (`radius.xs`) |
+| Rectangular (default) | — | `radius.xs` |
+| Pill | `data-variant="pill"` | `radius.pill` — the one chip allowed to be a pill |
+| With count | `.ds-chip__count` child | mono count, inherits the pressed ink |
 
-**States**
-Default | Focus (accent border) | Populated (clearable).
+**States** — default · hover (`--ds-accent` border) · pressed (`aria-pressed="true"` → accent fill, `--ds-on-accent` text) · focus-visible · disabled.
 
-**Token Usage**
+**Token map**
 
 | Property | Token |
 |---|---|
-| Surface | color.wiki.*.card |
-| Border / focus | color.wiki.*.rule → color.wiki.*.accent on focus |
-| Text | color.wiki.*.ink |
-| Radius | radius.xs (4px); pill is badges/tracks/grab only |
-| Type | typography.size.small |
+| Surface / ink | `--ds-surface`, `--ds-accent`, `--ds-on-accent`, `--ds-ink`, `--ds-muted` |
+| Geometry | `radius.xs` / `radius.pill`, `spacing.xs`, `spacing.md` |
+| Type | `typography.size.small`, `typography.size.eyebrow`, `typography.family.mono` (count) |
 
-**Dos and Don'ts**
-- DO filter in place; never navigate away on keystroke.
-- DO pair with `/` keyboard shortcut where applicable.
+**Dos and don'ts** — DO use `aria-pressed`, never `aria-selected`, on a `<button>` (the wiki's 10 `aria-selected` chips are its only axe **critical**); DO show the count when the list is filtered. DON'T use a chip for navigation or for a destructive action.
 
-**Accessibility**
-Real `<label>` (visually hidden ok); `type=search`.
+**Accessibility** — `<button aria-pressed>`; the pressed state is announced; the visible ink change is paired with the attribute so colour is not the only signal.
 
-## Drawers (edit panel / plan panel)
+**Gallery** — [Chip frame](index.html#spec-chip) · `#spec-chip`
 
-**Purpose**
-Side editing surface that preserves canvas/article context.
+---
 
-**Anatomy**
-Slide-in panel; header with close + export; scrollable body; scrim backdrop.
+### Badge {#ds-badge}
+
+**Purpose** — a non-interactive status word: FREE / PAID / UNVERIFIED, success, warning, danger.
+
+**Anatomy** — `<span class="ds-badge" data-variant="success">` + short uppercase text; mono, tracked, `radius.pill`.
 
 **Variants**
 
-| Variant | Description | Key differences |
+| Variant | Attribute | Ink |
 |---|---|---|
-| Engine drawer | Narrow asset editor | `layout.drawer.engine.width` |
-| Pitch drawer | Wide plan/fund sheet | `layout.drawer.pitch.width` |
+| success | `data-variant="success"` | `--ds-success` fill |
+| info | `data-variant="info"` | `--ds-info` fill, black ink override |
+| warning | `data-variant="warning"` | `--ds-warning` fill, per-theme ink |
+| danger | `data-variant="danger"` | `--ds-danger` fill |
+| neutral | `data-variant="neutral"` | `--ds-muted` fill |
+| outline | `data-variant="outline"` | transparent, `--ds-rule` border |
 
-**States**
-Closed (translated off) | Open | Body scroll-locked while open.
+**States** — static. A badge has no hover, focus, or pressed state; anything stateful is a chip.
 
-**Token Usage**
+**Token map**
 
 | Property | Token |
 |---|---|
-| Surface / border | color.engine.surface.1 / color.engine.divider.strong |
-| Scrim | color.pitch.scrim.mid |
-| Motion | motion.duration.base + motion.easing.drawer |
-| Close target | touch.min circle |
+| Fill / ink | `--ds-success`, `--ds-warning`, `--ds-danger`, `--ds-info`, `--ds-muted`, `--ds-on-accent`, `--_badge-ink` |
+| Geometry | `radius.pill`, `spacing.2`, `spacing.xs` |
+| Type | `typography.size.eyebrow`, `tracking.eyebrow`, `typography.family.mono`, `weight.bold` |
 
-**Dos and Don'ts**
-- DO close on scrim click + Escape.
-- DO NOT trap transforms on ancestors of fixed drawers.
+**Dos and don'ts** — DO keep one word; DO let the tone carry meaning the text already states. DON'T put a badge on a button or use it as a control.
 
-**Accessibility**
-`role=dialog`, focus-trapped, returns focus on close.
+**Accessibility** — the text is the label (no `aria-label` needed, no icon-only badge); contrast is token-owned — `warning` carries a per-theme `--_badge-ink` because one ink cannot pass AA on all four surfaces; the `info` tone uses black ink for the same reason.
 
-## Toast + Confirm Row
+**Gallery** — [Badge frame](index.html#spec-badge) · `#spec-badge`
 
-**Purpose**
-Transient action feedback with optional undo/confirm.
+---
 
-**Anatomy**
-Floating bar; message; action button; optional danger arm.
+### Card & surface {#ds-card}
+
+**Purpose** — card groups one idea; surface is the bare panel behind a group of controls.
+
+**Anatomy** — `.ds-card` = hairline + `radius.sm` + `spacing.md`/`spacing.lg` padding, with `.ds-card__head`, `.ds-card__eyebrow`, `.ds-card__meta`. `.ds-surface` = the same skin at `radius.md`, no internal structure.
 
 **Variants**
 
-| Variant | Description | Key differences |
+| Variant | Attribute | What changes |
 |---|---|---|
-| Toast | Action feedback | Panel surface, popover shadow |
-| Danger arm | Delete confirm | Two-tap arm → filled danger |
+| Card | `.ds-card` | `radius.sm`, hairline `--ds-rule`, `--ds-surface` |
+| Accent card | `data-variant="accent"` | `border-inline-start: border-width.accent` in `--ds-accent` |
+| Raised surface | `.ds-surface[data-variant="raised"]` | `elevation.1` shadow |
+| Inset surface | `.ds-surface[data-variant="inset"]` | `--ds-bg` fill — a well inside a panel |
 
-**States**
-Hidden | Visible (auto-dismiss) | Armed (danger).
+**States** — static; a card is linked only by wrapping its title in an `<a>`, and then the focus ring is the only state.
 
-**Token Usage**
+**Token map**
 
 | Property | Token |
 |---|---|
-| Surface / border | color.engine.surface.1 / color.engine.divider.strong |
-| Action fill | color.engine.accent |
-| Danger | color.status.danger |
-| Shadow | elevation.sheet |
-| Radius | radius.md |
+| Surface / border | `--ds-surface`, `--ds-bg`, `--ds-rule`, `border-width.hairline`, `border-width.accent` |
+| Ink | `--ds-ink`, `--ds-muted`, `--ds-accent` |
+| Geometry | `radius.sm`, `radius.md`, `spacing.md`, `spacing.lg`, `elevation.1` |
+| Type | `typography.size.eyebrow` + `tracking.eyebrow` (eyebrow), `typography.size.meta` (meta) |
 
-**Dos and Don'ts**
-- DO auto-dismiss; never block canvas.
-- DO NOT use toasts for errors needing decisions — use dialogs.
+**Dos and don'ts** — DO put one idea per card and keep nesting to one level. DON'T reach for a shadow to separate cards on a dark surface — the hairline plus the surface step does it.
 
-**Accessibility**
-`role=status`; action button keyboard-reachable.
+**Accessibility** — titles are real headings (`h3`/`h4`) in document order; if the whole card is a link, it is one `<a>` wrapper with a name, not a div with a click handler.
 
-## Track Headers + Asset List Rows
+**Gallery** — [Card frame](index.html#spec-card) · `#spec-card` · [Surface frame](index.html#spec-surface) · `#spec-surface`
 
-**Purpose**
-Per-lane controls (lock/mute/visibility) and media-bin rows.
+---
 
-**Anatomy**
-Icon column per track; row = thumb + label + meta + badge.
+### Table & scroll region {#ds-table}
+
+**Purpose** — dense tabular data (token maps, plans, shot lists), with a mobile reading mode. Scroll region is the keyboard contract for any overflow container.
+
+**Anatomy** — `.ds-table-wrap` (the scroll region) > `table.ds-table` > `thead th[scope="col"]` + `tbody td[data-label="…"]`. Below the container query the header row hides and each row becomes a stacked card whose cells prefix themselves from `data-label`.
 
 **Variants**
 
-| Variant | Description | Key differences |
+| Variant | Attribute | What changes |
 |---|---|---|
-| Track header | Lane controls | Small icon stack |
-| Asset row | Bin entry | Thumb, label, duration/meta |
+| Compact table | `.ds-table` | `spacing.sm` × `spacing.14` cells, hairline row rules |
+| Stacked (automatic) | `@container (width < 40rem)` | rows become cards, `td::before` prints `data-label` |
+| Horizontal scroll | `.ds-scroll-x` (+ `tabindex="0" role="region" aria-label`) | `overflow-x:auto`, `overscroll-behavior-x:contain` |
+| Vertical scroll | `.ds-scroll-y` (+ same attributes when it scrolls) | `overflow-y:auto`, `overscroll-behavior-y:contain` |
 
-**States**
-Default | Hover | Locked/muted (dimmed + icon swap) | Missing media (placeholder).
+**States** — static rows; a row action is a `.ds-btn[data-size="xs"]` or a `.ds-menu__item` inside the row.
 
-**Token Usage**
+**Token map**
 
 | Property | Token |
 |---|---|
-| Icons | color.engine.text.secondary → color.engine.text.primary on hover |
-| Row surface | color.engine.surface.1 |
-| Meta text | typography.size.meta + muted tokens |
-| Badge fills | color.status.* |
+| Surface / rule | `--ds-surface`, `--ds-surface-alt` (hover), `--ds-rule`, `border-width.hairline` |
+| Ink | `--ds-ink`, `--ds-muted` |
+| Geometry | `spacing.sm`, `spacing.14`, `radius.xs` (stacked rows) |
+| Type | `typography.size.small`, `typography.size.eyebrow`, `tracking.eyebrow`, `weight.medium` |
 
-**Dos and Don'ts**
-- DO show a placeholder for missing media, never a broken thumb.
-- DO NOT overload rows with more than two actions.
+**Dos and don'ts** — DO add `scope="col"` to every `<th>` and `data-label` to every `<td>`; DO give the wrapper `tabindex="0" role="region"` and a name when it scrolls. DON'T ship a 97-row table without `scope`/`data-label` (the wiki's map table is the measured counter-example: 4 `th`, 0 `scope`, 0 `caption`).
 
-**Accessibility**
-State toggles are real buttons with `aria-pressed`.
+**Accessibility** — `<th scope>` is the row/column contract; `data-label` is what makes the stacked mode readable, not decorative; a scrollable region must be reachable and named (that is exactly the "unreachable-only" rule the Phase 3 gate uses instead of a raw off-viewport count). The one non-token value in `components.css` lives here: the `40rem` container threshold, because `var()` is invalid in a prelude (C1 lists it).
+
+**Gallery** — [Table frame](index.html#spec-table) · `#spec-table` · the same frame's wrapper is the scroll-region specimen.
+
+---
+
+### Drawer {#ds-drawer}
+
+**Purpose** — a side surface that keeps the page context visible: engine's card editor, pitch's plan sheet.
+
+**Anatomy** — `<aside class="ds-drawer" hidden>` fixed to the inline end, `100dvh`, full-height scroll body, hairline leading edge. Opened and closed by `DS.overlay`, never by a class flip.
+
+**Variants**
+
+| Variant | Attribute | What changes |
+|---|---|---|
+| Engine width | — | `layout.drawer.engine.width` |
+| Wide (pitch) | `data-variant="wide"` | `layout.drawer.pitch.width` |
+| Open | `data-open` (painted state) | `transform:none` — only ever set **with** `hidden` removed |
+
+**States** — closed (`hidden` + `inert`, **not** transform-only) · open (`[data-open]`) · focus inside the trap · returning focus to the invoker on close.
+
+**Token map**
+
+| Property | Token |
+|---|---|
+| Surface / rule | `--ds-surface`, `--ds-rule`, `--ds-ink`, `border-width.hairline` |
+| Width | `layout.drawer.engine.width`, `layout.drawer.pitch.width` |
+| Stacking | `z.drawer` via `--_z` |
+| Motion | `motion.duration.slow`, `motion.easing.drawer` |
+| Padding | `spacing.lg` |
+
+**Dos and don'ts** — DO close on Escape, on scrim click and on the close button, and return focus to the invoker. DON'T close with `transform:translateX(105%)` alone — the closed drawer keeps 5 tab stops in the engine today; DON'T put a transform on an ancestor of a fixed drawer. There is **no bottom-sheet variant at ≤639px** — pitch's 92dvh phone sheet stays page-local until a variant ships.
+
+**Accessibility** — `role="dialog"` + `aria-modal="true"` + `aria-label` (or `aria-labelledby`); background `inert`; focus trapped and returned; the close control is an `.ds-icon-btn[data-variant="circle"]`.
+
+**Gallery** — [Drawer frame](index.html#spec-drawer) · `#spec-drawer`
+
+---
+
+### Dialog (incl. project modal · asset modal) {#ds-dialog}
+
+**Purpose** — a modal that must be answered before the page continues. Two shipped shapes: a centred box (asset modal) and a full-height inline-end sheet (project modal).
+
+**Anatomy** — `.ds-dialog` (fixed grid, `--_z` stacking) > `.ds-dialog__scrim` + `.ds-dialog__box` (heading, body, action row). `DS.overlay` supplies role, `aria-modal`, label, trap, `inert` and focus return.
+
+**Variants**
+
+| Variant | Attribute | Geometry |
+|---|---|---|
+| Centred box | `.ds-dialog` | `--_box-w: min(560px, 94vw)`, `max-block-size: 88vh` |
+| Sheet | `data-variant="sheet"` | pinned to the inline end, full height, `min(92vw, layout.max.wiki)` cap |
+| Project modal (engine) | sheet + page geometry override | keep `.proj-box` width/padding on the `__box` or the 880px sheet collapses to 560 |
+| Asset modal (engine) | centred box | 560px, no override needed |
+
+**States** — closed (`hidden`) · open (trap live) · scrim hover (no change — the scrim is a close target, not a button).
+
+**Token map**
+
+| Property | Token |
+|---|---|
+| Surface / scrim | `--ds-surface`, `--ds-rule`, `--ds-rule-strong`, `--_scrim` (default `rgb(0 0 0 / .6)`, overridable per surface) |
+| Box | `--_box-w` (`560px` / `94vw` — C1-listed), `88vh`, `92vw` |
+| Geometry | `radius.sm` (box), `radius.none` (sheet), `spacing.md`, `spacing.20`, `spacing.lg` |
+| Stacking | `z.overlay` default; engine sets `--_z: z.canvas` so a modal clears its own canvas |
+
+**Dos and don'ts** — DO open with `DS.overlay(el)` and let it label, trap and restore; DO keep the sheet's page geometry as a `__box` override rather than a new selector. DON'T ship a second scrim element of your own — engine's `.backdrop` goes away; DON'T nest a dialog in a dialog.
+
+**Accessibility** — `role="dialog"` + `aria-modal="true"` + `aria-label` **or** `aria-labelledby` (both accepted; C3 enforces that pair); background `inert`; Escape closes; focus returns to the invoker; the heading inside the box is the natural label source (`Overlay.label()` synthesises `aria-labelledby` from the first heading when no label exists).
+
+**Gallery** — [Dialog frame](index.html#spec-dialog) · `#spec-dialog` (both shapes are in every theme cell)
+
+---
+
+### Menu & context menu {#ds-menu}
+
+**Purpose** — a short list of actions attached to a trigger: the engine's `#dots` overflow and every row's context menu.
+
+**Anatomy** — `[data-ds-menu-trigger][aria-expanded]` + a `.ds-menu[role="menu"]` containing `.ds-menu__item[role="menuitem"]` buttons. `DS.menu(trigger, panel)` owns `aria-haspopup/expanded/controls`, roving items, Escape, outside click and focus return.
+
+**Variants**
+
+| Variant | Attribute | What changes |
+|---|---|---|
+| Default item | `.ds-menu__item` | `--ds-ink`, `--ds-surface-alt` on hover |
+| Danger item | `data-variant="danger"` | `--ds-danger` ink |
+| Armed | `data-armed` | filled danger — the second tap of a destroy |
+| Shortcut hint | `<kbd>` inside the item | mono, `--ds-muted` |
+
+**States** — closed (`hidden`) · open (`aria-expanded="true"`) · item hover/focus (`--ds-surface-alt`) · armed · disabled item (`aria-disabled`).
+
+**Token map**
+
+| Property | Token |
+|---|---|
+| Surface / rule | `--ds-surface`, `--ds-surface-alt`, `--ds-rule-strong` |
+| Ink | `--ds-ink`, `--ds-danger` |
+| Geometry | `radius.sm` panel, `radius.xs` item, `spacing.6`, `spacing.10` |
+| Elevation / z | `elevation.popover`, `z.menu` |
+| Type | `typography.size.small`, `typography.family.sans` |
+
+**Dos and don'ts** — DO put `role="menuitem"` on every child (the engine ships 6 popovers with **0** menuitems today); DO close on selection. DON'T use a menu for a form (`#arrowpick` is a form popover, `#delConfirm` an armed pair — both stay page-local); DON'T nest submenus.
+
+**Accessibility** — `role="menu"` with a name, `role="menuitem"` children, roving tabindex, Escape closes and returns focus, outside click closes. Items are real `<button>`s so Enter/Space work without listeners.
+
+**Gallery** — [Menu frame](index.html#spec-menu) · `#spec-menu`
+
+---
+
+### Toast {#ds-toast}
+
+**Purpose** — one line of feedback for an action that already succeeded, with at most one action (Undo).
+
+**Anatomy** — `.ds-toast` fixed at the bottom centre, `role="status"`, message + optional action `.ds-btn`. `DS.toast` / `DS.announce` own the live region, the auto-dismiss timer and the pause on hover/focus.
+
+**Variants**
+
+| Variant | Attribute | What changes |
+|---|---|---|
+| Informational | `role="status"` (default) | polite, `aria-atomic="true"` |
+| Error | `role="alert"` | assertive — for a failure the user must notice |
+| With action | `.ds-btn` child | one action maximum |
+
+**States** — hidden (idle, `[hidden]`) · visible · paused (hover or focus inside) · dismissed (10s minimum).
+
+**Token map**
+
+| Property | Token |
+|---|---|
+| Surface / rule | `--ds-surface`, `--ds-rule-strong`, `--ds-ink` |
+| Geometry | `radius.sm`, `spacing.md`, `spacing.xs`, `spacing.2xl`, `layout.max.wiki` |
+| Elevation / z | `elevation.popover`, `z.toast` |
+| Type | `typography.size.small` |
+
+**Dos and don'ts** — DO announce once per action; DO let it auto-dismiss. DON'T ask a question in a toast (use a dialog); DON'T stack toasts — the last message wins.
+
+**Accessibility** — one node, one live region: `role=status aria-live=polite aria-atomic` for information, `role=alert` + assertive for errors; the timer pauses on hover/focus so it can be read; the action button is keyboard reachable inside the region. The engine's `#toast` today has no role and no live region — Task 23.
+
+**Gallery** — [Toast frame](index.html#spec-toast) · `#spec-toast`
+
+---
+
+### Empty state {#ds-empty}
+
+**Purpose** — say what is missing and what to do next, in the space where content would be.
+
+**Anatomy** — `.ds-empty` block + `.ds-empty__title` + one line of guidance, optionally an action.
+
+**Variants**
+
+| Variant | Attribute | What changes |
+|---|---|---|
+| Block | `.ds-empty` | centred, `spacing.md` block padding |
+| Inline | `data-variant="inline"` | single line, no block padding — for a list row |
+
+**States** — static.
+
+**Token map**
+
+| Property | Token |
+|---|---|
+| Ink | `--ds-ink-2` (title), `--ds-muted` (body) |
+| Geometry | `spacing.2xs`, `spacing.md` |
+| Type | `typography.size.small`, `typography.size.meta`, `weight.medium` |
+
+**Dos and don'ts** — DO name the reason ("No shots match this filter") and the next action; DO keep it to one sentence plus one action. DON'T use an empty state for an error — errors carry `role="alert"` and a retry.
+
+**Accessibility** — plain text in document order; if it is the result of a filter, announce the count through `DS.announce` rather than relying on the region being seen.
+
+**Gallery** — [Empty state frame](index.html#spec-empty) · `#spec-empty`
+
+---
+
+### Progress {#ds-progress}
+
+**Purpose** — determinate progress for an operation with a known end (render, import, upload).
+
+**Anatomy** — `.ds-progress` track + `.ds-progress__bar` whose `inline-size` is the percentage; `role="progressbar"` with `aria-valuenow` / `aria-valuemin` / `aria-valuemax` on the track.
+
+**Variants**
+
+| Variant | Attribute | What changes |
+|---|---|---|
+| Default | `.ds-progress` | `spacing.xs` track, accent bar |
+| Thick | `data-variant="thick"` | `spacing.10` track |
+| Ghost | `data-variant="ghost"` | dashed accent outline bar — for an indeterminate-feeling estimate |
+
+**States** — idle (0) · in progress (`aria-valuenow` changes) · complete (100).
+
+**Token map**
+
+| Property | Token |
+|---|---|
+| Track / bar | `--ds-surface-alt`, `--ds-accent`, `--ds-rule` |
+| Geometry | `spacing.xs` / `spacing.10` height, `radius.pill` |
+| Motion | `motion.duration.base`, `motion.easing.standard` |
+
+**Dos and don'ts** — DO update `aria-valuenow` with the width; DO use the ghost variant only when the end is genuinely unknown. DON'T animate a determinate bar with a looping shimmer.
+
+**Accessibility** — `role="progressbar"` + `aria-valuenow/min/max` on the track (not the bar); the bar is decorative; with `prefers-reduced-motion` the width transition collapses to 0s via `base.css` §7.
+
+**Gallery** — [Progress frame](index.html#spec-progress) · `#spec-progress`
+
+---
+
+### Tooltip {#ds-tooltip}
+
+**Purpose** — name an unlabelled control or explain an abbreviation on hover **and** on focus.
+
+**Anatomy** — `.ds-tooltip[hidden]` positioned by the page (a chart tooltip is placed per rect), referenced by the trigger's `aria-describedby`.
+
+**Variants**
+
+| Variant | Attribute | What changes |
+|---|---|---|
+| Default | `.ds-tooltip` | `--ds-surface-alt` fill, hairline, `radius.sm`, `z.tooltip` |
+
+**States** — hidden (default) · visible on hover · visible on focus (the one that matters for keyboards).
+
+**Token map**
+
+| Property | Token |
+|---|---|
+| Surface / rule | `--ds-surface-alt`, `--ds-rule-strong`, `--ds-ink` |
+| Geometry | `radius.sm`, `spacing.xs`, `spacing.10` |
+| Stacking / type | `z.tooltip`, `typography.size.eyebrow` |
+
+**Dos and don'ts** — DO show on focus as well as hover; DO keep it to a name or a number. DON'T hide required information in a tooltip; DON'T position it with JS inside the component — the owner places it.
+
+**Accessibility** — `aria-describedby` from trigger to tooltip; the tooltip is never the only label (that is `aria-label`'s job); it must not capture pointer events.
+
+**Gallery** — [Tooltip frame](index.html#spec-tooltip) · `#spec-tooltip`
+
+---
+
+### Pager, nav item & theme toggle {#ds-nav}
+
+**Purpose** — three small navigational primitives: the pager under a list, the nav item in a rail or a TOC, and the light/dark switch.
+
+**Anatomy** — `.ds-pager` (Prev · "Page n" · Next, buttons at `data-size="xs"`); `.ds-nav-item` (an `<a>` with `aria-current="page"` when active, optional `::before` dot); `.ds-theme-toggle` (`role="group"` + `aria-label`, two `.ds-btn[data-variant="ghost"][aria-pressed]`).
+
+**Variants**
+
+| Variant | Attribute | What changes |
+|---|---|---|
+| Rail item | `.ds-nav-item[data-variant="rail"]` | full-width row, `--ds-surface` on current |
+| Dot item | `.ds-nav-item[data-variant="dot"]` | `::before` `dot.size` marker, 2px inset rail |
+| Pager | `.ds-pager` | flex row, `spacing.md` gap |
+| Theme toggle | `.ds-theme-toggle` | `role="group"`, two pressed buttons |
+
+**States** — default · hover (`--ds-rule-strong`) · current (`aria-current="page"`, `--ds-accent`) · focus-visible · theme button pressed (`aria-pressed="true"` → accent fill).
+
+**Token map**
+
+| Property | Token |
+|---|---|
+| Ink / surface | `--ds-ink`, `--ds-muted`, `--ds-accent`, `--ds-surface`, `--ds-surface-alt`, `--ds-bg` |
+| Rule / marker | `--ds-rule`, `--ds-rule-strong`, `border-width.strong`, `dot.size` |
+| Geometry | `spacing.2`, `spacing.sm`, `spacing.md`, `spacing.10`, `radius.xs` |
+| Target | `touch.min` |
+
+**Dos and don'ts** — DO mark the current item with `aria-current`, not a class; DO keep the theme toggle to two states and write `data-ds-theme` and `data-theme` in **one** function (two writers half-apply dark mode). DON'T add a dot to the underline tab style — pick one indicator.
+
+**Accessibility** — nav items are links with `aria-current="page"`; the pager's two buttons have text, not glyphs alone; the theme toggle is a labelled group of toggle buttons (`aria-pressed`), so the state is announced without a live region.
+
+**Gallery** — [Pager · nav item · theme toggle frame](index.html#spec-nav) · `#spec-nav`
+
+---
+
+### Copy field {#ds-copy}
+
+**Purpose** — show a value (a token name, a prompt) with a one-tap copy.
+
+**Anatomy** — `.ds-copy` > `code.ds-copy__code` + `.ds-btn[data-size="xs"]` carrying `data-ds-copy`. `DS.copy` writes the clipboard, falls back when `navigator.clipboard` is unavailable, and announces the result.
+
+**Variants**
+
+| Variant | Attribute | What changes |
+|---|---|---|
+| Default | `.ds-copy` | inline row, `--ds-bg` well, `radius.sm` |
+
+**States** — default · hover (button surface) · focus-visible · copied (announce only — no label swap).
+
+**Token map**
+
+| Property | Token |
+|---|---|
+| Surface / rule | `--ds-bg`, `--ds-rule`, `--ds-ink` |
+| Geometry | `radius.sm`, `spacing.2xs`, `spacing.xs`, `spacing.sm`, `spacing.10` |
+| Type | `typography.family.mono`, `typography.size.timecode`, `typography.size.meta` |
+
+**Dos and don'ts** — DO keep the copied value selectable (it is a `<code>`, not an image); DO announce with `DS.announce`. DON'T swap the button text to "Copied" and leave it — it is a transient state with no announcement and no reset.
+
+**Accessibility** — the `<code>` is the readable value; the button has a name ("Copy") and, ideally, `aria-describedby` pointing at the value; the confirmation is a live-region announcement, not a colour change.
+
+**Gallery** — [Copy field frame](index.html#spec-copy) · `#spec-copy`
+
+---
+
+## Proposed — not built {#proposed}
+
+> **Nothing in this appendix ships.** No `.ds-*` block exists for any of these, no page renders one, and the gallery has no frame for them. They are kept because the shape is worth agreeing on *before* someone builds it — not as evidence of current UI.
+
+### Timeline Chips (pro track segments) {#proposed-timeline-chips}
+
+**Status: not built.** No component, no markup, no page usage. The engine's timeline is not in `components.css` and `components.js` explicitly leaves the canvas rig out of scope.
+
+**Purpose (when built)** — colour-coded selectable segments on track lanes: FX, title/graphics, audio.
+
+**Shape to agree on** — rounded bar (`radius.sm`), leading glyph, short label, handles on the active chip; one hue per track type (`color.engine.track.fx` / `.title` / `.audio`), selection edge from `color.engine.selection`; selected state must add handles, not just colour. **Blocked on:** a canvas-side selection model that can express a segment as a focusable element (the open question in the Phase 3 recon, risk 8: 18 focusable chart rects and no role).
+
+### Inspector Pills (floating status overlays) {#proposed-inspector-pills}
+
+**Status: not built.** No page renders an inspector overlay; `patterns.md` marks it proposed too.
+
+**Purpose (when built)** — transient floating status over the canvas (selection length, applied effect + drill-in).
+
+**Shape to agree on** — dark translucent pill on `color.engine.overlay.panel`, optional split with a white active segment + dark drill-in segment, `elevation.popover`, `radius.pill`; overlay-only, never pushing layout; two pills maximum; `role="status"` so it is announced, never the sole carrier of critical state.
+
+### Transport Bar (engine / pro feel) {#proposed-transport-bar}
+
+**Status: not built.** The engine's tool row is a plain `.tools` cluster of buttons (Task 23's `.ds-btn[data-size="xs"]` / `.ds-icon-btn` swap); there is no transport component and no frame-rate readout component.
+
+**Purpose (when built)** — playback and edit-action cluster for canvas and timeline control.
+
+**Shape to agree on** — containerless icon cluster (`color.engine.tool` surface, `color.engine.divider` hover, `color.engine.accent` active edge), frame counter in `typography.size.timecode` with tabular figures, targets never below `touch.min`, every icon button labelled.
+
+---
+
+## Page patterns — spec'd, not shipped {#page-patterns}
+
+> Page-local patterns with **no shipped equivalent**. They stay in the page's own `<style>` until a component exists; the spec here is the contract the page adopts, not a claim that a `.ds-*` class does it.
+
+### Step rail {#pattern-step-rail}
+
+**Status: not built** — there is no `ds-step`, `ds-stepper` or `ds-rail` in `components.css`, and the wiki's 7 `.step` buttons are page-local (16.8px/700 today; `typography.size.body`/`weight.semibold` is the target). Adopting `.ds-nav-item[data-variant="dot"]` for the visual and keeping the click handler local is the cheap path; a real component needs a progress model the wiki does not have yet. **Contract either way:** `aria-current="step"` on the active step, `touch.min` targets, and no colour-only active state. Task 21 owns the page change.
+
+### Footer {#pattern-footer}
+
+**Status: not built** — the engine has no `<footer>` (0 today), the wiki has one, pitch and the gallery have their own. **Contract:** one `<footer>` per page, hairline `border-block-start` in `--ds-rule`, one `typography.size.meta` line in `--ds-muted`, no navigation invented that the page does not have. Task 23 adds the engine's; no component is warranted for a three-line block.
+
+### File picker {#pattern-file-picker}
+
+**Status: not built as a widget** — the pattern is a visually hidden `<input type="file">` plus a visible `.ds-btn` trigger. **Contract:** the input keeps its native semantics (never `display:none` from the a11y tree in a way that breaks label association), and when it is hidden at `x=-9999` it must carry `tabindex="-1"` + `aria-hidden="true"` so it is not a 40px-tall off-screen tab stop (the engine's two inputs are exactly that today — the measured `label` criticals). The trigger is a real button with a name; the chosen filename is announced. Task 23 owns both engine inputs.
+
+---
+
+## Cross-references
+
+- Values and scales: [foundations.md](foundations.md) — generated, never hand-edited.
+- Composition patterns (shells, reading layouts, rails): [patterns.md](patterns.md).
+- Gate classes and their budgets (V/T for pages and tokens, C1–C6 for this layer): [audit-report.md](audit-report.md) — generated by `node scripts/lint-tokens.mjs`.
+- Enforcement: `node scripts/lint-tokens.mjs --check` must pass before a component change lands; C1–C6 are the classes that keep this file from drifting away from `components.css`.
