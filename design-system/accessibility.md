@@ -1,9 +1,12 @@
 # Accessibility — what the gate enforces, and what it does not
 
-Status: **partially compliant, with named debt.** Two WCAG 1.4.3 nodes on the
-wiki and eight theme×pair token results are still below threshold; they are
-enumerated below as **Task 27 debt** and are ratcheted (they fail if they get
-worse). Nothing in this file claims a clean pass.
+Status: **compliant on text contrast, with four declared non-text debts.** All
+67 theme×pair token results in §1 clear their threshold except five annotated
+rows: `pitch warning/surface` (latent — no node paints it) and the four
+`rule/surface` hairlines (WCAG 1.4.11, owned by Phase 5). Text debt is **0**:
+the eight rows that used to sit in this file were closed by the status-ink
+tokens (Phase 4 Task 27). axe measures **0 serious/critical nodes on all nine
+surface runs**.
 
 The gate added in Phase 4 Task 29 runs in `.github/workflows/ds-gate.yml`:
 
@@ -26,10 +29,19 @@ ships 12.8–13.6px text in these slots, so the 3:1 large-text allowance is not
 available; a pair that only passes at 3:1 fails. Translucent colours are
 composited over the background before measuring.
 
-Measured on `a7c086d` (regenerate with `node scripts/check-contrast.mjs`):
+**Danger text is an ink, never the fill.** `color.status.danger` (`#E5484D`) stays
+the tone for the 3:1 UI boundary and the badge fill. As text it is replaced by
+`color.status.danger.ink.light` `#C93F43` (light maps) and
+`color.status.danger.ink.dark` `#EA6C70` (dark maps), consumed through the
+component-local `--_danger-ink` in `components.css` and `engine.html`. Armed and
+hover labels on the fill take primitive black — **white on `#E5484D` is 3.91:1
+and that idiom is retired, not fixed**: only black clears 5.37, and darkening the
+fill instead would drop the dark badge inks to ~4.1.
+
+Measured on `bb88390` (regenerate with `node scripts/check-contrast.mjs`):
 
 | theme | pair | foreground → background | ratio | min | state |
-|---|---|---|---|---|---|
+|---|---|---|---:|---:|---|
 | pitch | `ink/bg` | `--ds-ink` → `--ds-bg` | 17.38 | 4.50 | PASS |
 | pitch | `ink/surface` | `--ds-ink` → `--ds-surface` | 16.15 | 4.50 | PASS |
 | pitch | `ink-2/surface` | `--ds-ink-2` → `--ds-surface` | 12.79 | 4.50 | PASS |
@@ -41,7 +53,9 @@ Measured on `a7c086d` (regenerate with `node scripts/check-contrast.mjs`):
 | pitch | `accent/surface` | `--ds-accent` → `--ds-surface` | 8.93 | 4.50 | PASS |
 | pitch | `success/surface` | `--ds-success` → `--ds-surface` | 7.25 | 4.50 | PASS |
 | pitch | `warning/surface` | `--ds-warning` → `--ds-surface` | 4.47 | 4.50 | DEBT |
-| pitch | `danger/surface` | `--ds-danger` → `--ds-surface` | 4.70 | 4.50 | PASS |
+| pitch | `armed-ink/danger-fill` | `--color-primitive-black` → `--ds-danger` | 5.37 | 4.50 | PASS |
+| pitch | `badge-danger-ink` | `--ds-on-accent` → `--ds-danger` | 4.75 | 4.50 | PASS |
+| pitch | `rule/surface` | `--ds-rule` → `--ds-surface` | 1.22 | 3.00 | DEBT |
 | wiki-light | `ink/bg` | `--ds-ink` → `--ds-bg` | 16.68 | 4.50 | PASS |
 | wiki-light | `ink/surface` | `--ds-ink` → `--ds-surface` | 17.76 | 4.50 | PASS |
 | wiki-light | `ink-2/surface` | `--ds-ink-2` → `--ds-surface` | 6.13 | 4.50 | PASS |
@@ -52,10 +66,14 @@ Measured on `a7c086d` (regenerate with `node scripts/check-contrast.mjs`):
 | wiki-light | `accent/bg` | `--ds-accent` → `--ds-bg` | 7.12 | 4.50 | PASS |
 | wiki-light | `accent/surface` | `--ds-accent` → `--ds-surface` | 7.58 | 4.50 | PASS |
 | wiki-light | `success/surface` | `--ds-success` → `--ds-surface` | 5.07 | 4.50 | PASS |
-| wiki-light | `warning/surface` | `--ds-warning` → `--ds-surface` | 4.12 | 4.50 | DEBT |
-| wiki-light | `danger/surface` | `--ds-danger` → `--ds-surface` | 3.91 | 4.50 | DEBT |
-| wiki-light | `white/status-info` | `--color-primitive-white` → `--color-status-info` | 4.25 | 4.50 | DEBT |
-| wiki-light | `danger/wikil-bg` | `--color-status-danger` → `--color-wiki-light-bg` | 3.68 | 4.50 | DEBT |
+| wiki-light | `danger-ink/surface` | `--color-status-danger-ink-light` → `--ds-surface` | 4.91 | 4.50 | PASS |
+| wiki-light | `danger-ink/bg` | `--color-status-danger-ink-light` → `--ds-bg` | 4.61 | 4.50 | PASS |
+| wiki-light | `armed-ink/danger-fill` | `--color-primitive-black` → `--ds-danger` | 5.37 | 4.50 | PASS |
+| wiki-light | `badge-danger-ink` | `--color-primitive-black` → `--ds-danger` | 5.37 | 4.50 | PASS |
+| wiki-light | `wikil-amber-text/card` | `--color-wiki-light-amber` → `--ds-surface` | 4.87 | 4.50 | PASS |
+| wiki-light | `wikil-amber-text/bg` | `--color-wiki-light-amber` → `--ds-bg` | 4.57 | 4.50 | PASS |
+| wiki-light | `white-on-wikil-amber` | `--color-primitive-white` → `--color-wiki-light-amber` | 4.87 | 4.50 | PASS |
+| wiki-light | `rule/surface` | `--ds-rule` → `--ds-surface` | 1.46 | 3.00 | DEBT |
 | wiki-dark | `ink/bg` | `--ds-ink` → `--ds-bg` | 16.53 | 4.50 | PASS |
 | wiki-dark | `ink/surface` | `--ds-ink` → `--ds-surface` | 15.28 | 4.50 | PASS |
 | wiki-dark | `ink-2/surface` | `--ds-ink-2` → `--ds-surface` | 7.28 | 4.50 | PASS |
@@ -67,8 +85,13 @@ Measured on `a7c086d` (regenerate with `node scripts/check-contrast.mjs`):
 | wiki-dark | `accent/surface` | `--ds-accent` → `--ds-surface` | 8.51 | 4.50 | PASS |
 | wiki-dark | `success/surface` | `--ds-success` → `--ds-surface` | 6.87 | 4.50 | PASS |
 | wiki-dark | `warning/surface` | `--ds-warning` → `--ds-surface` | 8.51 | 4.50 | PASS |
-| wiki-dark | `danger/surface` | `--ds-danger` → `--ds-surface` | 4.45 | 4.50 | DEBT |
-| wiki-dark | `white/wikidark-accent` | `--color-primitive-white` → `--ds-accent` | 2.05 | 4.50 | DEBT |
+| wiki-dark | `danger-ink-dark/surface` | `--color-status-danger-ink-dark` → `--ds-surface` | 5.71 | 4.50 | PASS |
+| wiki-dark | `danger-ink/alt` | `--color-status-danger-ink-dark` → `--ds-surface-alt` | 5.71 | 4.50 | PASS |
+| wiki-dark | `armed-ink/danger-fill` | `--color-primitive-black` → `--ds-danger` | 5.37 | 4.50 | PASS |
+| wiki-dark | `badge-danger-ink` | `--ds-on-accent` → `--ds-danger` | 4.81 | 4.50 | PASS |
+| wiki-dark | `wikidark-fill-ink/accent` | `--color-wiki-dark-accent-ink` → `--ds-accent` | 9.21 | 4.50 | PASS |
+| wiki-dark | `wikidark-fill-ink/amber` | `--color-wiki-dark-accent-ink` → `--color-wiki-dark-amber` | 9.20 | 4.50 | PASS |
+| wiki-dark | `rule/surface` | `--ds-rule` → `--ds-surface` | 1.28 | 3.00 | DEBT |
 | engine | `ink/bg` | `--ds-ink` → `--ds-bg` | 18.06 | 4.50 | PASS |
 | engine | `ink/surface` | `--ds-ink` → `--ds-surface` | 15.26 | 4.50 | PASS |
 | engine | `ink-2/surface` | `--ds-ink-2` → `--ds-surface` | 5.94 | 4.50 | PASS |
@@ -80,40 +103,55 @@ Measured on `a7c086d` (regenerate with `node scripts/check-contrast.mjs`):
 | engine | `accent/surface` | `--ds-accent` → `--ds-surface` | 6.08 | 4.50 | PASS |
 | engine | `success/surface` | `--ds-success` → `--ds-surface` | 6.55 | 4.50 | PASS |
 | engine | `warning/surface` | `--ds-warning` → `--ds-surface` | 8.11 | 4.50 | PASS |
-| engine | `danger/surface` | `--ds-danger` → `--ds-surface` | 4.24 | 4.50 | DEBT |
+| engine | `danger-ink-dark/surface` | `--color-status-danger-ink-dark` → `--ds-surface` | 5.44 | 4.50 | PASS |
+| engine | `danger-ink/alt` | `--color-status-danger-ink-dark` → `--ds-surface-alt` | 4.68 | 4.50 | PASS |
+| engine | `danger-ink/control` | `--color-status-danger-ink-dark` → `--ds-control` | 5.57 | 4.50 | PASS |
+| engine | `armed-ink/danger-fill` | `--color-primitive-black` → `--ds-danger` | 5.37 | 4.50 | PASS |
+| engine | `badge-danger-ink` | `--ds-on-accent` → `--ds-danger` | 4.82 | 4.50 | PASS |
+| engine | `rule/surface` | `--ds-rule` → `--ds-surface` | 1.19 | 3.00 | DEBT |
 
-### Known debt (owner: Task 27 — contrast tokens)
+### 1.1 Debt register — five annotated rows, none of them text
 
-A `DEBT` row is a **known failure**, not a pass. It exits 0 only because the
-pair is annotated with its measured ratio; a drop of more than 0.02 fails, and a
-pair that clears 4.5:1 prints `FIXED` so the annotation is removed.
+A `DEBT` row is a **known result below its own threshold**, not a pass. It exits 0
+only because the pair is annotated with its measured ratio; a drop of more than
+0.02 fails, and a pair that clears its floor prints `FIXED` so the annotation is
+removed.
 
-| theme | pair | ratio | node it produces |
-|---|---|---|---|
-| pitch | warning/surface | 4.47 | pitch amber note text |
-| wiki-light | warning/surface | 4.12 | wiki `h2 small` (`#B86A00` on white) |
-| wiki-light | danger/surface | 3.91 | gallery `span.badge-dev` family |
-| wiki-light | `danger/wikil-bg` | 3.68 | gallery `span.badge-dev` ×8 (`#E5484D` on `#F8F8F4`) |
-| wiki-light | `white/status-info` | 4.25 | gallery `span.badge--paid` (white on `#8A5CF6`) |
-| wiki-dark | danger/surface | 4.45 | wiki dark danger note |
-| wiki-dark | `white/wikidark-accent` | 2.05 | wiki dark `a.eng` (white on `#5CC4D0`) |
-| engine | danger/surface | 4.24 | engine danger note |
+| theme | pair | ratio | min | what it means | owner / retirement |
+|---|---|---:|---:|---|---|
+| pitch | `warning/surface` | 4.47 | 4.5 | latent: pitch `--ds-warning` is a badge **fill** whose ink is `--ds-bg` (4.80). Pitch measures 0 of 105 failing nodes — nothing paints this role as text | Task 22, if the role ever gets a text use |
+| pitch | `rule/surface` | 1.22 | 3.0 | 1.4.11: the hairline is the only affordance for an outlined control | Phase 5 (`line.strong` per theme) |
+| wiki-light | `rule/surface` | 1.46 | 3.0 | same | Phase 5 |
+| wiki-dark | `rule/surface` | 1.28 | 3.0 | same | Phase 5 |
+| engine | `rule/surface` | 1.19 | 3.0 | same | Phase 5 |
 
-These are the four measured page pairs from
-`design-system/audit/2026-11-24/accessibility.md` (D-17, D-18) expressed as
-token pairs, plus the four themes' status-ink siblings of the same values. Task
-27 owns the token values; this gate does not hide them.
+**The four hairline rows are explicitly out of Task 27.** Reaching 3.0 means
+changing the `--ds-rule` value itself, which repaints every divider and every
+outlined control on four pages — a Phase 5 palette decision (`line.strong` per
+theme), not a contrast-token value. Under 1.4.11 the binding case is narrow: it
+applies only where the line is the *only* affordance (`.pitch`,
+`.ds-btn[data-variant="secondary"]`, `.ds-input`), and each of those controls
+also carries a text label. They are gated at 3.0 so they cannot silently worsen
+while the decision is open.
 
-### Exemptions and why there are none in this check
+### 1.2 Do-not-pair list
+
+These combinations are **below 4.5:1 today** and pass only because no shipped
+node combines them. A new component that reaches for one of them fails:
+
+| pair | ratio | why it is not already a failure |
+|---|---:|---|
+| `color.status.success` `#2E7D46` × wiki-dark on-accent ink | 3.71 | wiki-dark maps `success` to `color.pitch.positive` (7.43) instead — correct by accident |
+| `color.status.info` × wiki-dark on-accent ink | 4.43 | the only info fill ships with primitive black (4.94) |
+| `color.status.warning` × pitch on-accent ink | 4.51 | 0.01 of headroom; pitch maps badge warning to `--ds-bg` (4.81) |
+| primitive white × `--ds-danger` | 3.91 | retired: armed/hover take primitive black (5.37) |
+
+### 1.3 Exemptions and why there are none in this check
 
 - No 3:1 large-text allowance (see above).
 - No "decorative text" exemption. A pair is either a slot the CSS combines or it
   is not in the table.
-- Hairlines (`--ds-rule` on `--ds-surface`, 1.19–1.46:1) are **not** a pair
-  here: WCAG 1.4.11 applies to boundaries needed to identify a control, and the
-  shipped hairlines are decorative separators. The audit records the band; the
-  gate does not gate it. If a control ever depends on its border to be
-  perceivable, that control's pair must be added.
+- Hairlines are gated at **3.0** (1.4.11), not 4.5 — see §1.1.
 
 ## 2 · Target sizes
 
@@ -168,17 +206,40 @@ soft floor; the 40px token floor remains a design contract, measured statically.
   axe then measures an interim colour — the same page read 34 contrast nodes
   mid-transition and 0 after it settled.
 
-Current baseline (HEAD `a7c086d`): **2 nodes**, both Task 27 debt —
-`wiki:light:1440` and `wiki:dark:1440` each allow one `color-contrast`
-(`h2 small` 4.11:1, `a.eng` 2.04:1); `wiki:light:390` allows the same light
-node. Every other surface and rule is 0. This is a known WCAG failure, not a
-pass.
+Current baseline (`bb88390` + Task 27): **0 nodes on all nine surfaces**. The
+three `color-contrast` entries that used to sit in the baseline (`wiki:light:1440`
+`h2 small`, `wiki:dark:1440` `a.eng`, `wiki:light:390` `h2 small`) now measure
+**4.87** and **9.21** and were deleted from `scripts/a11y/baseline.json` in the
+same commit. Every surface is listed with an empty rule map, so a new violation
+fails loudly instead of sliding into an absent entry.
 
 Page JS errors fail the job. Network failures are classified separately and
 reported as `offline`: the harness answers every non-local request offline, so
 the engine's Supabase fetch and the wiki's YouTube thumbnails fail by design.
 
-## 4 · Keyboard smoke
+### State coverage the nine surfaces do not reach
+
+The engine's delete confirmation is 0×0 until the page's own JS opens the card
+drawer, so the axe run never sees it. It is measured by a DOM probe instead
+(`getComputedStyle` + nearest opaque ancestor background, transitions frozen):
+
+| state | pair | before | after |
+|---|---|---:|---:|
+| drawer open, `#drawerDel` | `#C93F43`/`#EA6C70` text — here `--_danger-ink` on `--panel` `#1E1E22` | 4.24 | **5.44** |
+| drawer open, `#drawerDel:hover` / `.armed` | primitive black on `--ds-danger` `#E5484D` | 3.91 | **5.37** |
+| `#drawerMenu #menuDel.armed` | primitive black on `--ds-danger` | 3.91 | **5.37** |
+| `#assetEditList .aeactions button.danger` | `--_danger-ink` on the row `--tool` | 5.00 | 5.57 |
+
+## 4 · Focus + target contract
+
+| token | value | where |
+|---|---|---|
+| `--focus-width` | `2px` | one ring, `base.css`; no component declares its own |
+| `--focus-offset` | `2px` | inside components (`-1 ×` on menu items) |
+| `--focus-color` | `var(--ds-accent)` | per theme: pitch 9.60, wiki-light 7.12, wiki-dark 9.21, engine 7.19 against `--ds-bg`; the worst on-surface value is 6.08 (engine `accent/surface`). All clear the 3.0 non-text floor |
+| `--touch-min` | `40px` | control floor, §2 |
+
+## 5 · Keyboard smoke
 
 `scripts/check-keyboard.mjs` loads `design-system/index.html` and instantiates
 the **shipped** behaviours on the specimen markup (`components.js` is loaded with
@@ -194,6 +255,8 @@ real key events through CDP:
 3. **Menu** — ArrowDown opens onto the first item, ArrowDown roves, Escape
    closes and returns focus to the trigger.
 
+Current result: **19 assertions, 0 failing.**
+
 The test scaffolding is created in the browser at run time (a trigger button is
 inserted next to the specimen). No page file is edited. This proves the
 component contract; it does not prove that a page wired the component — that is
@@ -203,7 +266,7 @@ Negative seams (`--break=tab-arrows|dialog-trap|menu-escape`) sabotage one
 behaviour in the page so the assertion has to fail; they exist to prove the
 check can fail and are never used in CI.
 
-## 5 · Commands
+## 6 · Commands
 
 ```sh
 # static, no install
@@ -240,23 +303,25 @@ node scripts/check-keyboard.mjs --break=menu-escape               # -> 1  (menu 
 node scripts/check-axe.mjs --require-rule not-a-real-rule         # -> 1  (rule missing)
 ```
 
-## 6 · Limits (honest list)
+## 7 · Limits (honest list)
 
 - **Canvas text is unmeasurable.** Engine board labels are painted with
-  `ctx.fillText`; neither the contrast check nor axe sees them.
+  `ctx.fillText`; neither the contrast check nor axe sees them. A pixel sample of
+  one card per view is still owed.
 - **Non-opaque pairs are skipped, not guessed.** `rgba()` scrims and overlays
   resolve to `SKIP` with a reason (currently none in the table).
 - **Target sizes are static.** Rendered padding-derived heights, clipping and
   overlap are not measured; axe `target-size` covers the 24px soft floor only.
 - **axe reports 1–4 `incomplete` colour-contrast nodes per page** (gradients,
   overlapping layers). They are printed, not failed — a human still has to look.
+- **The hairline band (1.19–1.46) is gated at 3.0 as declared debt**, not fixed;
+  the value decision is Phase 5 (§1.1).
 - **No screen reader, no cross-browser, no 200%/320% reading order, no 2.4.11
   (focus obscured) check.** Those stay manual, as listed in the audit's
   verification plan.
-- **Other Phase 4 lanes share the working tree** at the time this gate was added
-  (pitch, and the canvas/focus layers in engine + wiki). Every number above is
-  measured on commit `a7c086d` with `--root` on a clean worktree of it; a lane
-  that darkens text below 4.5:1 fails this gate, which is the intended
-  behaviour.
+- **Other Phase 4 lanes share the working tree** at the time these numbers were
+  taken (pitch, and the canvas prompt-generation control in engine). Every number
+  above is measured on `bb88390` plus this lane's diff; a lane that darkens text
+  below 4.5:1 fails this gate, which is the intended behaviour.
 - **CI installs Chrome from the puppeteer lockfile.** If that download is
   blocked by a runner policy, `a11y-browser` fails loudly — it never skips.

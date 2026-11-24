@@ -6,7 +6,7 @@ Three product surfaces — the wiki in `index.html`, the investor deck in `pitch
 
 | Path | What it is | Generated |
 |---|---|---|
-| `design-system/tokens.json` | Token source: **186 keys, 20 groups**, 4 theme maps | no — the only hand-edited value source |
+| `design-system/tokens.json` | Token source: **189 keys, 20 groups**, 4 theme maps | no — the only hand-edited value source |
 | `design-system/tokens.css` | Generated `:root` properties + `[data-ds-theme]` role blocks | yes |
 | `design-system/base.css` | Base layer: reset, the one focus ring, skip link, scroll regions, target floor, reduced motion | no |
 | `design-system/components.css` | Component layer: 19 blocks, `var()` only, four densities via `data-ds-density` | no |

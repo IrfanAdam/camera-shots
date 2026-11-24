@@ -4,7 +4,7 @@
 
 Consumer counts are pinned to the committed `HEAD` blobs of the consumer files — the three product pages, the gallery, and `components.css` for the T8 view — never the dirty worktree, so a page mid-edit cannot drift this file. **Commit page changes before regenerating.** Token values still come from the worktree files, so a `tokens.json` edit regenerates here before it is committed.
 
-The token set as shipped: **186 keys · 20 groups**, rendered into `design-system/tokens.css` with **4 theme maps** behind the `data-ds-theme` attribute, **14 role slots** expanding to **17 role vars**.
+The token set as shipped: **189 keys · 20 groups**, rendered into `design-system/tokens.css` with **4 theme maps** behind the `data-ds-theme` attribute, **14 role slots** expanding to **17 role vars**.
 
 Read order: [README](README.md) → this file → [components](components.md) → [patterns](patterns.md). Values are read from `design-system/tokens.json`; the theme and type sections are asserted against `design-system/tokens.css` before this file is written, so a stale sheet fails the generator instead of being documented.
 
@@ -28,7 +28,7 @@ Read order: [README](README.md) → this file → [components](components.md) �
 
 It is a **count of occurrences**, not the gate's T8 presence test: T8 asks only whether a product page, a theme cell or `components.css` names a token at all, and excludes the gallery. So a key can be T8-unconsumed and still show a non-zero count here — read the breakdown the gate prints, not this column, when judging orphans.
 
-Totals at committed HEAD: **1492 consumer references** across 186 keys, **16** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `elevation.inset`, `elevation.ring`, `focus.color`, `icon.size.lg`, `icon.size.md`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `spacing.section`, `tracking.label`).
+Totals at committed HEAD: **1495 consumer references** across 189 keys, **17** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `color.status.danger.ink.light`, `elevation.inset`, `elevation.ring`, `focus.color`, `icon.size.lg`, `icon.size.md`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `spacing.section`, `tracking.label`).
 
 Under the gate's narrower **T8** scope — `var()` in the three product pages plus theme-map cells plus `components.css`, gallery excluded, aliases and `breakpoint.*` exempt — **10** key(s) are unconsumed: `color.engine.track.audio`, `color.engine.track.fx`, `color.engine.track.title`, `elevation.inset`, `elevation.ring`, `icon.size.lg`, `icon.size.md`, `radius.lg`, `spacing.section`, `tracking.label`. Keys that differ between the two views are canvas-only (`CT()`/`WA()` strings the gate cannot see) or gallery-only consumers; `scripts/lint-tokens.mjs` prints the authoritative list and its budget note.
 
@@ -113,7 +113,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 |---|---|---|---|
 | `border` | 3 | 3 | 0 |
 | `breakpoint` | 5 | 0 | 5 |
-| `color` | 67 | 67 | 0 |
+| `color` | 70 | 69 | 1 |
 | `control` | 4 | 4 | 0 |
 | `dot` | 1 | 1 | 0 |
 | `elevation` | 6 | 4 | 2 |
@@ -131,7 +131,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `typography` | 13 | 13 | 0 |
 | `weight` | 5 | 5 | 0 |
 | `z` | 17 | 17 | 0 |
-| **total** | **186** | **170** | **16** |
+| **total** | **189** | **172** | **17** |
 
 ### border
 
@@ -157,7 +157,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 ### color
 
-67 keys.
+70 keys.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
@@ -200,8 +200,8 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `color.pitch.surface.1` | `#141416` | color | bg.surface | 3 (1/1/1) |
 | `color.pitch.surface.2` | `#1B1B1E` | color | bg.surface.alt | 3 (1/1/1) |
 | `color.pitch.switch.bg` | `#101012` | color | bg.control | 3 (1/1/1) |
-| `color.primitive.black` | `#000000` | color | — | 3 (2/0/1) |
-| `color.primitive.white` | `#FFFFFF` | color | fg.on.accent | 32 (30/1/1) |
+| `color.primitive.black` | `#000000` | color | — | 8 (7/0/1) |
+| `color.primitive.white` | `#FFFFFF` | color | fg.on.accent | 27 (25/1/1) |
 | `color.print.accent` | `#8A6D2B` | color | — | 2 (1/0/1) |
 | `color.print.body` | `#333333` | color | — | 2 (1/0/1) |
 | `color.print.fine` | `#222222` | color | — | 2 (1/0/1) |
@@ -209,10 +209,13 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `color.print.rule` | `#DDDDDD` | color | — | 2 (1/0/1) |
 | `color.pro.tool.hover` | `var(--color-engine-divider)` | color | — · alias → --color-engine-divider | 1 (1/0/0) |
 | `color.status.danger` | `#E5484D` | color | status.danger | 6 (1/4/1) |
+| `color.status.danger.ink.dark` | `#EA6C70` | color | — | 1 (1/0/0) |
+| `color.status.danger.ink.light` | `#C93F43` | color | — | 0 (0/0/0) |
 | `color.status.info` | `#8A5CF6` | color | status.info | 6 (1/4/1) |
 | `color.status.success` | `#2E7D46` | color | status.success | 3 (1/1/1) |
 | `color.status.warning` | `#B86A00` | color | status.warning | 3 (0/2/1) |
 | `color.wiki.dark.accent` | `#5CC4D0` | color | accent | 7 (5/1/1) |
+| `color.wiki.dark.accent.ink` | `var(--color-wiki-dark-bg)` | color | — · alias → --color-wiki-dark-bg | 2 (2/0/0) |
 | `color.wiki.dark.accent.wash` | `#12383D` | color | bg.accent.soft | 4 (2/1/1) |
 | `color.wiki.dark.amber` | `#F0A648` | color | status.warning | 11 (8/2/1) |
 | `color.wiki.dark.bg` | `#0E1213` | color | bg.page, fg.on.accent | 5 (2/2/1) |
@@ -222,7 +225,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `color.wiki.dark.rule` | `#243032` | color | line.default | 4 (2/1/1) |
 | `color.wiki.light.accent` | `#0B5D66` | color | accent | 3 (1/1/1) |
 | `color.wiki.light.accent.wash` | `#DDEFF1` | color | bg.accent.soft | 3 (1/1/1) |
-| `color.wiki.light.amber` | `var(--color-status-warning)` | color | — · alias → --color-status-warning | 2 (1/0/1) |
+| `color.wiki.light.amber` | `#A76000` | color | — | 2 (1/0/1) |
 | `color.wiki.light.bg` | `#F8F8F4` | color | bg.page | 3 (1/1/1) |
 | `color.wiki.light.card` | `var(--color-primitive-white)` | color | bg.surface · alias → --color-primitive-white | 3 (1/1/1) |
 | `color.wiki.light.ink` | `#16181D` | color | fg.primary | 3 (1/1/1) |
