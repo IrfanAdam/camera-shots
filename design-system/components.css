@@ -15,7 +15,7 @@
      .ds-switch  __input  __track  __label      (real <input type=checkbox>)
      .ds-tabs   .ds-tab  .ds-tabpanel           [data-variant=underline|rail]
      .ds-chip                   [data-variant=pill] .ds-chip__count
-     .ds-badge                  [data-variant=success|info|warning|neutral|outline]
+     .ds-badge                  [data-variant=success|info|warning|danger|neutral|outline]
      .ds-card   .ds-card__head  .ds-card__meta  .ds-card__eyebrow
                                 [data-variant=accent]
      .ds-surface                [data-variant=raised|inset]
@@ -44,8 +44,10 @@
      --ds-rule --ds-rule-strong --ds-accent --ds-success --ds-warning
      --ds-danger --ds-info   (all 17 shipped slots; see tokens.css:380-470)
    Private vars: --_ctl-h (control height), --_z (overlay stacking),
-     --_scrim (dialog scrim) — component-local, never tokens, overridable per
-     surface (engine may set --_z to its canvas z and --_scrim to its scrim).
+     --_scrim (dialog scrim), --_badge-ink (badge ink per tone/theme),
+     --_alert-ink (invalid field label/note ink) — component-local, never
+     tokens, overridable per surface (engine may set --_z to its canvas z and
+     --_scrim to its scrim).
 
    Naming note: this file uses the SHIPPED role names. The plan's
    `--ds-accent-ink` is `--ds-on-accent`; `--ds-surface-1/2` are
@@ -187,7 +189,7 @@
 }
 
 /* 3 · field / input / select / textarea ----------------------------------- */
-.ds-field{display:flex;flex-direction:column;gap:var(--spacing-2xs)}
+.ds-field{--_alert-ink:var(--ds-danger);display:flex;flex-direction:column;gap:var(--spacing-2xs)}
 .ds-label{
   font-size:var(--typography-size-eyebrow);
   font-weight:var(--weight-medium);
@@ -223,7 +225,7 @@
 }
 .ds-input[aria-invalid="true"],.ds-select[aria-invalid="true"],
 .ds-textarea[aria-invalid="true"]{border-color:var(--ds-danger)}
-.ds-field[data-invalid="true"] .ds-label{color:var(--ds-danger)}
+.ds-field[data-invalid="true"] .ds-label{color:var(--_alert-ink)}
 .ds-input:is(:disabled,[data-state~="disabled"]),
 .ds-select:is(:disabled,[data-state~="disabled"]),
 .ds-textarea:is(:disabled,[data-state~="disabled"]){
@@ -231,7 +233,13 @@
   cursor:not-allowed;
 }
 .ds-note{font-size:var(--typography-size-meta);color:var(--ds-muted)}
-.ds-field[data-invalid="true"] .ds-note{color:var(--ds-danger)}
+/* Invalid state ink is a local var too. wiki-light re-points it because
+   --ds-danger is a fill tone, not a text tone there: 3.68 on --ds-bg and
+   3.91 on the card. Role ink clears both (16.3 / 16.9) and the red input
+   border still carries the tone. GAP: no dark danger ink token exists, so a
+   light theme has no red that passes — see the report. */
+[data-ds-theme="wiki-light"] .ds-field{--_alert-ink:var(--ds-ink)}
+.ds-field[data-invalid="true"] .ds-note{color:var(--_alert-ink)}
 
 /* 4 · switch — real checkbox, styled track, form-submittable -------------- */
 .ds-switch{
@@ -417,22 +425,40 @@
 }
 
 /* 7 · badge -------------------------------------------------------------- */
+/* Ink is a component-local var: each theme picks the ink its status *fill*
+   needs. Ratios in the comments are measured against the fill itself, AA
+   4.5:1 at 11.5px/700 (the badge's shipped size). */
 .ds-badge{
+  --_badge-ink:var(--ds-on-accent);
   display:inline-flex;
   align-items:center;
   padding:var(--spacing-2) var(--spacing-xs);
   border-radius:var(--radius-pill);
   background:var(--ds-muted);
-  color:var(--ds-on-accent);
+  color:var(--_badge-ink);
   font-size:var(--typography-size-eyebrow);
   font-weight:var(--weight-bold);
   letter-spacing:var(--tracking-eyebrow);
   text-transform:uppercase;
 }
 .ds-badge[data-variant="success"]{background:var(--ds-success)}
-.ds-badge[data-variant="info"]{background:var(--ds-info)}
+/* Violet fill is the one tone no on-accent ink clears: 4.37 pitch / 4.25
+   wiki-light / 4.43 wiki-dark / 4.44 engine. Primitive black is the only
+   existing ink that reaches AA on it (4.94 in all four maps). */
+.ds-badge[data-variant="info"]{background:var(--ds-info);--_badge-ink:var(--color-primitive-black)}
 .ds-badge[data-variant="warning"]{background:var(--ds-warning)}
+.ds-badge[data-variant="danger"]{background:var(--ds-danger)}
 .ds-badge[data-variant="neutral"]{background:var(--ds-muted)}
+/* pitch: on-accent ink on the amber fill is 4.51 — 0.01 of headroom. The
+   page-bg role is the same near-black one step darker (4.81). */
+[data-ds-theme="pitch"] .ds-badge[data-variant="warning"]{--_badge-ink:var(--ds-bg)}
+/* wiki-light: the amber and red fills are the light-toned pair, and role ink
+   only reaches 4.31 on amber (4.54 on red). Both take primitive black
+   (5.10 / 5.37); success stays white on its 5.07. */
+[data-ds-theme="wiki-light"] .ds-badge[data-variant="warning"],
+[data-ds-theme="wiki-light"] .ds-badge[data-variant="danger"]{
+  --_badge-ink:var(--color-primitive-black);
+}
 .ds-badge[data-variant="outline"]{
   background:transparent;
   border:var(--border-width-hairline) dashed var(--ds-rule);
