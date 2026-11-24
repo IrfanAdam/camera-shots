@@ -50,6 +50,10 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 .tools button.hist{padding:var(--spacing-6) var(--spacing-xs);display:inline-flex;align-items:center;justify-content:flex-start}
 .tools button.hist svg{display:block}
 #cv{flex:1;width:auto;display:block;margin:var(--spacing-xs);background:var(--color-engine-canvas);border:var(--border-width-hairline) solid var(--border-strong);cursor:grab;touch-action:none}
+/* the canvas is a focusable application region (keyboard layer, Task 25): its
+   ring is drawn inside the frame so a full-bleed stage can never clip it, and it
+   is neutral ink — the selection accent stays reserved for the selected card */
+#cv:focus-visible{outline-style:solid;outline-width:var(--focus-width);outline-color:var(--color-engine-text-primary);outline-offset:calc(-1 * var(--focus-offset))}
 .hint{position:fixed;left:1rem;bottom:.8rem;color:var(--color-engine-text-primary);font-size:var(--typography-size-meta);pointer-events:none;max-width:90vw}
 #arrowpick{position:fixed;z-index:var(--z-bar);background:var(--panel);color:var(--ink);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-sm);box-shadow:var(--elevation-popover);padding:var(--spacing-xs) var(--spacing-10);font:var(--typography-size-timecode)/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column;gap:var(--spacing-6);user-select:none}
 #arrowpick[hidden]{display:none}
@@ -467,7 +471,7 @@ input.tin.tin-pilled{color:transparent !important}
 <button data-view="locations" class="ds-nav-item" data-variant="rail">Locations</button>
 <button data-view="props" class="ds-nav-item" data-variant="rail">Props</button>
 <button data-view="cast" class="ds-nav-item" data-variant="rail">Cast</button>
-</nav><div id="stage"><div id="chapterbar" hidden><span>Chapter</span><select id="chapterSel" aria-label="Chapter"></select><button id="addChapter" class="ds-btn">+ chapter</button><span class="sp"></span><button id="addLane" class="ds-btn">+ lane</button><button id="addScene" class="ds-btn">+ scene</button></div><canvas id="cv"></canvas><button id="assetBtn" title="List assets in this tab" aria-haspopup="menu" aria-controls="assetPanel" aria-expanded="false" data-ds-menu-trigger>☰</button><div id="assetPanel" class="ds-menu" role="menu" aria-label="Assets in this tab" hidden></div><button id="cardMenuBtn" title="Image and link options" aria-label="Card image and link options" aria-haspopup="menu" aria-controls="cardMenu" aria-expanded="false" data-ds-menu-trigger hidden>⋯</button><div id="cardMenu" class="ds-menu" role="menu" aria-label="Card options" hidden></div></div></main>
+</nav><div id="stage"><div id="chapterbar" hidden><span>Chapter</span><select id="chapterSel" aria-label="Chapter"></select><button id="addChapter" class="ds-btn">+ chapter</button><span class="sp"></span><button id="addLane" class="ds-btn">+ lane</button><button id="addScene" class="ds-btn">+ scene</button></div><canvas id="cv" tabindex="0" role="application" aria-label="Storyboard canvas" aria-describedby="cvHelp"></canvas><p id="cvHelp" class="ds-sr-only">Canvas keyboard: arrow keys move the selection between cards; Enter opens the selected card; N adds a card; Delete removes it after a second press; C starts a link, then arrow keys choose the target and Enter links it; Escape cancels. Every card is also in the assets list for this tab, which opens it.</p><button id="assetBtn" title="List assets in this tab" aria-haspopup="menu" aria-controls="assetPanel" aria-expanded="false" data-ds-menu-trigger>☰</button><div id="assetPanel" class="ds-menu" role="menu" aria-label="Assets in this tab" hidden></div><button id="cardMenuBtn" title="Image and link options" aria-label="Card image and link options" aria-haspopup="menu" aria-controls="cardMenu" aria-expanded="false" data-ds-menu-trigger hidden>⋯</button><div id="cardMenu" class="ds-menu" role="menu" aria-label="Card options" hidden></div></div></main>
 <input type="file" id="filePick" accept="image/*" class="filehide" tabindex="-1" aria-hidden="true">
 <input type="file" id="assetImportPick" accept=".json,application/json,image/*" class="filehide" tabindex="-1" aria-hidden="true">
 <div id="arrowpick" role="group" aria-label="Connector ends" hidden>
@@ -946,6 +950,112 @@ cv.addEventListener('dblclick',e=>{clearTimeout(clickT);const[mx,my]=pos(e);if(v
 addEventListener('keydown',e=>{if(e.key==='Escape'){closeCardMenu();try{if(typeof drawerMenuAPI!=='undefined')drawerMenuAPI.close('escape',false)}catch(_e){}closeDrawer();closeShotPicker();hidePicker();closeProjectModal();closePromptModal();try{closeAssetEditor()}catch(_e){}selConn=null;pending=null;panDrag=null;draw()}
  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();if(e.shiftKey)redo();else undo();return}
  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='y'){e.preventDefault();redo();return}});
+/* ---- canvas keyboard layer (Phase 4 Task 25) ----
+   #cv is one focusable application region and the keyboard cursor *is* the
+   normal selection (selected / selStrip), so a keyboard pick paints exactly like
+   a pointer pick. Keys are bound to the canvas only: a focused input, select or
+   contenteditable never reaches this handler and pointer pan/zoom is untouched.
+   Delete uses the same two-step arm/confirm the drawer delete ships (first press
+   asks, second confirms, Escape or 5s cancels), then calls the existing
+   delSelected(); link mode is C -> arrows -> Enter. The ☰ assets list stays the
+   DOM path to every card, so no operation is canvas-keyboard-only. */
+let kbArmId=null,kbArmT=null,kbLinkFrom=null;
+const KB_DIR={ArrowRight:'right',ArrowLeft:'left',ArrowUp:'up',ArrowDown:'down'};
+function kbTyping(el){return !!(el&&(el.isContentEditable||/^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName)))}
+function kbItems(){if(view==='scenes'){const c=activeChapter();return(c&&c.scenes)||[]}return nodes}
+function kbCurrent(){return view==='scenes'?selStrip:selected}
+function kbBox(it){if(view==='scenes'){const r=sceneRect(it);return{x:r.x,y:r.y,w:r.w,h:r.h}}
+ return{x:it.x,y:it.y,w:it.w,h:it.h}}
+function kbName(it){return String((it&&(it.title!=null?it.title:it.label))||'card')}
+function kbKey(it){return(view==='scenes'?'s':'n')+it.id}
+function kbSay(msg){try{if(msg!=null)DS.announce(msg)}catch(e){}}
+function kbLabel(){const names={scenes:'Scenes',locations:'Locations',props:'Props',cast:'Cast',shots:'Shots'};
+ cv.setAttribute('aria-label',(names[view]||'Board')+' canvas')}
+/* pan the camera just enough to keep the cursor on screen (never recentres a
+   visible card, so arrow moves stay spatial and the view is not yanked) */
+function kbVisible(it){const r=kbBox(it),vw=W/cam.z,vh=H/cam.z,pad=(narrowBoard()?20:12)/cam.z;
+ const left=cam.x+pad,top=cam.y+pad,right=cam.x+vw-pad,bottom=cam.y+vh-pad;
+ let dx=0,dy=0;
+ if(r.x<left)dx=r.x-left;else if(r.x+r.w>right)dx=(r.x+r.w)-right;
+ if(r.y<top)dy=r.y-top;else if(r.y+r.h>bottom)dy=(r.y+r.h)-bottom;
+ if(dx||dy){cam.x+=dx;cam.y+=dy;FIT_TOUCHED=true}}
+function kbSelect(it,say){
+ if(!it)return null;
+ if(view==='scenes'){selStrip=it;selected=null}else{selected=it;selStrip=null}
+ kbVisible(it);draw();
+ if(say!==false){const items=kbItems(),ix=items.indexOf(it)+1;
+  kbSay((kbLinkFrom?'Link mode, source '+kbName(kbLinkFrom)+'. ':'')+kbName(it)+', '+ix+' of '+items.length)}
+ return it}
+function kbStart(){const items=kbItems();if(!items.length)return null;
+ const cur=kbCurrent();return items.indexOf(cur)>=0?cur:items[0]}
+function kbMove(key){const items=kbItems();
+ if(!items.length){kbSay('No cards on this canvas');return}
+ const cur=kbStart();
+ if(!cur){kbSay('Select a card first');return}
+ if(kbCurrent()!==cur){kbSelect(cur);return}
+ const a=kbBox(cur),ac={x:a.x+a.w/2,y:a.y+a.h/2},horiz=(key==='ArrowLeft'||key==='ArrowRight');
+ let best=null,bestScore=Infinity;
+ for(const it of items){if(it===cur)continue;const b=kbBox(it);
+  const dx=(b.x+b.w/2)-ac.x,dy=(b.y+b.h/2)-ac.y;
+  const along=key==='ArrowRight'?dx:key==='ArrowLeft'?-dx:key==='ArrowDown'?dy:-dy;
+  if(along<=1)continue;
+  const perp=horiz?Math.abs(dy):Math.abs(dx);
+  const score=along+perp*2;
+  if(score<bestScore){bestScore=score;best=it}}
+ if(best)kbSelect(best);
+ else kbSay('No card to the '+KB_DIR[key]+' of '+kbName(cur))}
+function kbOpen(){const it=kbStart();if(!it){kbSay('Nothing to open');return}
+ kbSelect(it,false);openDrawer(it);kbSay('Opened '+kbName(it))}
+function kbAdd(){if(view==='scenes'){const s=addScene();
+  if(s){kbSelect(s,false);kbSay('Added '+kbName(s)+'. '+kbItems().length+' scenes')}
+  return}
+ addNode();const n=selected&&nodeById(selected.id)?selected:null;
+ if(n){kbSelect(n,false);kbSay('Added '+kbName(n)+', '+nodes.length+' cards')}}
+function kbArmClear(){kbArmId=null;clearTimeout(kbArmT);kbArmT=null}
+function kbDelete(){const it=kbStart();if(!it){kbSay('Nothing to delete');return}
+ const id=kbKey(it);
+ if(kbArmId!==id){kbArmClear();kbArmId=id;kbArmT=setTimeout(kbArmClear,5000);
+  flashHint('press Delete again to remove '+kbName(it));
+  kbSay('Delete '+kbName(it)+'? Press Delete again to confirm.');return}
+ kbArmClear();
+ const items=kbItems(),ix=items.indexOf(it);
+ if(view==='scenes')selStrip=it;else selected=it;
+ const done=delSelected();
+ if(done){const rest=kbItems(),next=rest[Math.min(ix,rest.length-1)]||null;
+  if(next)kbSelect(next,false);
+  /* the toast's own status region speaks the removal; clear the arm question so
+     it cannot linger as a stale prompt */
+  kbSay('')}}
+/* the delete confirmation is the toast's own live region: announcing again here
+   would double-speak the same removal */
+function kbLink(){const it=kbStart();if(!it){kbSay('Select a card before linking');return}
+ kbLinkFrom=it;kbSelect(it,false);
+ flashHint('link from '+kbName(it)+' — arrow keys pick the target, Enter links, Escape cancels');
+ kbSay('Link mode. Source '+kbName(it)+'. Arrow keys choose the target, Enter links, Escape cancels.')}
+function kbLinkTo(){const to=kbCurrent(),from=kbLinkFrom;
+ if(!from){return}
+ if(!to||to===from){kbSay('Choose a different card as the target');return}
+ const c=addConn(from,'r',to,'l');
+ if(!c){kbSay('Could not link these cards');return}
+ kbLinkFrom=null;selConn=c;persist();draw();
+ kbSay('Linked '+kbName(from)+' to '+kbName(to))}
+function kbCancel(){if(kbLinkFrom){kbLinkFrom=null;draw();kbSay('Link cancelled');return true}
+ if(kbArmId){kbArmClear();flashHint('delete cancelled');kbSay('Delete cancelled');return true}
+ return false}
+cv.addEventListener('keydown',e=>{
+ if(e.defaultPrevented||e.ctrlKey||e.metaKey||e.altKey||kbTyping(e.target))return;
+ const k=e.key;
+ if(k==='Escape'){if(kbCancel()){e.preventDefault();e.stopPropagation()}return}
+ if(!(KB_DIR[k]||k==='Enter'||k==='Delete'||k==='Backspace'||k==='n'||k==='N'||k==='c'||k==='C'))return;
+ e.preventDefault();e.stopPropagation();
+ if(KB_DIR[k]){kbMove(k);return}
+ if(k==='Enter'){if(kbLinkFrom)kbLinkTo();else kbOpen();return}
+ if(k==='Delete'||k==='Backspace'){kbDelete();return}
+ if(k==='n'||k==='N'){kbAdd();return}
+ kbLink()});
+cv.addEventListener('focus',()=>{kbLabel();kbArmClear()});
+cv.addEventListener('blur',()=>{kbArmClear();if(kbLinkFrom){kbLinkFrom=null;draw()}});
+kbLabel();
 /* ---- per-card image/URL menu (replaces the old global buttons) ---- */
 const filePick=document.getElementById('filePick');let pickTarget=null;
 const cardMenuBtn=document.getElementById('cardMenuBtn'),cardMenu=document.getElementById('cardMenu');
@@ -1432,6 +1542,7 @@ function syncUI(){
  if(view==='scenes')an.style.display='none';
  else{an.style.display='';an.textContent='+ '+(VIEW_META[view]?VIEW_META[view].one:'node').toLowerCase()}
  if(view==='scenes')rebuildChapters();
+ try{kbLabel()}catch(e){}
  hintEl.textContent=view==='scenes'?'wheel zooms · drag background pans · drag scene · resize corner · + fills lane slot · hover for dots · drag dot-to-dot to link · click still opens Shots':HINT_DEFAULT}
 function setView(v){if(v!==view){if(view==='scenes'){const oc=activeChapter();if(oc)oc.conns=conns}saveView();view=v;selStrip=null;selConn=null;pending=null;selected=null;hidePicker();closeShotPicker();closeCardMenu();
  if(v==='scenes'){const nc=activeChapter();conns=(nc&&nc.conns)||[]}else if(VIEW_META[v])loadView(v)}syncUI();persist();draw()}
