@@ -176,8 +176,18 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 #delConfirm{display:flex;gap:var(--spacing-xs);margin:var(--spacing-6) 0}
 #delConfirm[hidden]{display:none}
 #delConfirm #drawerDel,#delConfirm #drawerDelCancel{margin-top:0}
-#promptBtnRow{position:absolute;top:.45rem;right:.55rem;display:flex;gap:var(--spacing-6);margin:0}
-#promptBtnRow #copyStub{margin:0}
+#promptBtnRow{position:absolute;top:.45rem;right:.55rem;display:flex;gap:var(--spacing-6);margin:0;align-items:center}
+#promptBtnRow #copyStub,#promptBtnRow #genGenBtn{margin:0}
+#promptBtnRow #genModelSel{margin:0;max-width:11rem;text-overflow:ellipsis}
+#genKeyRow{display:flex;gap:var(--spacing-6);align-items:center;flex-wrap:wrap}
+#genKeyRow #genKeyInput{flex:1;min-width:12rem;min-height:var(--touch-min);background:transparent;border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);color:var(--ink);padding:var(--spacing-6) var(--spacing-10);font-size:var(--typography-size-small)}
+#genKeyRow #genKeySave,#genKeyRow #genKeyClear{margin:0}
+#genStatus{font-size:var(--typography-size-meta);color:var(--mut)}
+#genListRow{display:flex;gap:var(--spacing-6);margin-top:var(--spacing-xs)}
+#genListRow #genAll,#genListRow #genNone{margin:0}
+#genModels{display:flex;flex-direction:column;gap:var(--spacing-2xs);margin-top:var(--spacing-xs);max-height:11rem;overflow:auto}
+#genModels .gen-empty{color:var(--mut);font-size:var(--typography-size-meta)}
+#genModelSel:disabled{opacity:.55}
 .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:var(--z-canvas)}
 .modal[hidden]{display:none}
 .modal h2{font-size:var(--typography-size-ui);margin-bottom:var(--spacing-2xs)}
@@ -497,7 +507,7 @@ input.tin.tin-pilled{color:transparent !important}
 <div id="shotProps" hidden><label>chapter <select id="shotCh" data-ds-compact></select></label><label>scene <select id="shotSc" data-ds-compact></select></label><span>lane <b id="shotLane">—</b></span></div>
 <div id="slotBtns" hidden><button id="goShot" class="ds-btn">go to shot</button><button id="removeSlot" class="ds-btn">remove</button></div>
 <div id="promptWrap"><div id="promptPrev" title="Live prompt preview"></div>
-<div id="promptBtnRow"><button id="copyStub" class="ds-btn">copy</button></div></div>
+<div id="promptBtnRow"><select id="genModelSel" class="ds-btn" title="image model"></select><button id="genGenBtn" class="ds-btn" type="button" title="generate image">generate</button><button id="copyStub" class="ds-btn">copy</button></div></div>
 </div>
 </aside>
 <aside id="editPanel" aria-label="prompt editor"><div id="drawerEdit"><div class="edithead"><button id="pmBack" class="ds-btn" title="dismiss">close</button><div class="pmtitle">prompt</div></div><div class="editbody"><nav class="pm-nav" aria-label="Prompt sections"><div id="pmNav"></div></nav><div id="pmMid" class="pm-mid"><div id="pmFields"></div></div></div></div></aside>
@@ -1244,7 +1254,201 @@ document.addEventListener('pointerdown',e=>{if(drawerDelArmed&&!(e.target&&e.tar
 /* ---- project + prompt wiring ---- */
 document.getElementById('projBtn').onclick=()=>openProjectModal();
 document.getElementById('projClose').onclick=()=>closeProjectModal();
-document.getElementById('copyStub').onclick=()=>{if(drawerSub)copyText(stubFor(drawerSub),'stub copied — anchor first');else flashHint('open a card or scene first')};
+document.getElementById('copyStub').onclick=()=>{if(!drawerSub){flashHint('open a card first');return}const p=buildPrompt(drawerSub);if(buildPromptJSON(drawerSub)==null){flashHint(p);return}copyText(p,'prompt copied')};
+/* ---- Image generation: Google direct, or OpenCode via local relay ----
+   Key lives in this browser's localStorage only and never enters the board
+   payload. genDetectAndVerify tries Google first, then OpenCode on 400/401/403.
+   Google generation posts from this page with x-goog-api-key (ACAO:*).
+   OpenCode generation POSTs same-origin to /api/oc-image on the local relay
+   (127.0.0.1:8787), which forwards server-side with the key from the body.
+   Without the relay (file://, :5173) the fetch fails and generate shows
+   the start.command hint instead. */
+const GEN_KEY_LS='cse-gemini-key',GEN_PROV_LS='cse-img-provider',GEN_MODEL_LS='cse-img-model',GEN_ENABLED_LS='cse-img-enabled',GEN_MODELS_LS='cse-img-models';
+/* Image-model cache = the image models the saved key can use, as {provider,id,label}. Written only by a successful genDetectAndVerify; the key is never in the cache. No cache = no models offered. Enabled list = user-chosen subset of the cache (never chosen = all on). */
+function genGetKey(){try{return(localStorage.getItem(GEN_KEY_LS)||'').trim()}catch(e){return''}}
+function genGetProvider(){try{return localStorage.getItem(GEN_PROV_LS)==='opencode'?'opencode':'google'}catch(e){return'google'}}
+function genProvName(p){return p==='opencode'?'OpenCode':'Google'}
+function genNormModel(o){return{provider:o.provider==='opencode'?'opencode':'google',id:String(o.id),label:String(o.label||o.id)}}
+function genGetCache(){try{const j=JSON.parse(localStorage.getItem(GEN_MODELS_LS));if(!Array.isArray(j))return null;return j.filter(o=>o&&o.id).map(genNormModel)}catch(e){return null}}
+function genSetCache(list){try{localStorage.setItem(GEN_MODELS_LS,JSON.stringify((list||[]).map(genNormModel)))}catch(e){}}
+function genClearKey(){try{localStorage.removeItem(GEN_KEY_LS);localStorage.removeItem(GEN_PROV_LS);localStorage.removeItem(GEN_MODELS_LS);localStorage.removeItem('cse-gemini-models')}catch(e){}}
+function genGetEnabled(){try{const j=JSON.parse(localStorage.getItem(GEN_ENABLED_LS));if(Array.isArray(j))return j.map(x=>String(x))}catch(e){}return null}
+function genSetEnabled(ids){try{localStorage.setItem(GEN_ENABLED_LS,JSON.stringify((ids||[]).map(x=>String(x))))}catch(e){}}
+function genAllModels(){return genGetCache()||[]}
+/* Drawer shows enabled models only: never chosen = all on; chosen-empty = none. */
+function genVisModels(){const all=genAllModels();const en=genGetEnabled();if(!en)return all;const s=new Set(en);return all.filter(o=>s.has(o.id))}
+function genRefreshDrawer(){const sel=document.getElementById('genModelSel');const cur=sel?sel.value:'';genFillModels(cur||(()=>{try{return localStorage.getItem(GEN_MODEL_LS)||''}catch(e){return''}})())}
+function genFillModels(saved){const sel=document.getElementById('genModelSel');if(!sel)return[];
+ const cache=genGetCache();const vis=genVisModels();sel.innerHTML='';
+ let msg='';
+ if(!genGetKey()||!cache)msg='save & verify a key first (Project > Generate)';
+ else if(!cache.length)msg='this key has no image models';
+ else if(!vis.length)msg='all models disabled — enable one in Project → Generate';
+ if(msg){sel.disabled=true;const o=document.createElement('option');o.value='';o.disabled=true;o.textContent=msg;sel.appendChild(o);try{sel.value=''}catch(e){}sel.title=msg;return vis}
+ sel.disabled=false;sel.title='image model ('+genProvName(genGetProvider())+')';
+ for(const o of vis){const el=document.createElement('option');el.value=o.id;el.textContent=o.label;sel.appendChild(el)}
+ const want=String(saved||'').trim();
+ try{sel.value=(want&&vis.some(o=>o.id===want))?want:vis[0].id}catch(e){}
+ return vis}
+function genExtractImage(j){
+ try{
+  const cands=(j&&(j.candidates||j.data))||[];
+  const list=Array.isArray(cands)?cands:[];
+  for(const c of list){
+   const parts=((c&&(c.content&&c.content.parts))||c.parts)||[];
+   for(const p of parts){
+    if(!p)continue;
+    const inl=p.inlineData||p.inline_data||null;
+    if(inl&&inl.data){const mime=inl.mimeType||inl.mime_type||'image/png';return'data:'+mime+';base64,'+String(inl.data).replace(/\s+/g,'')}
+    if(typeof p.data==='string'&&p.data.length>100)return p.data;
+   }
+   for(const k of['image','imageUrl','url'])if(c&&typeof c[k]==='string'&&c[k])return c[k];
+  }
+  if(j&&Array.isArray(j.images)&&j.images[0]){const im=j.images[0];if(typeof im==='string'&&im)return im;if(im&&(im.url||im.data))return im.url||im.data}
+  if(Array.isArray(j&&j.data)&&typeof j.data[0]==='string'&&j.data[0])return j.data[0];
+  if(j&&typeof j.src==='string'&&j.src)return j.src;
+ }catch(e){}
+ return ''}
+/* OpenCode image generation via the local relay (same-origin POST /api/oc-image;
+   the relay forwards server-side with the key from the request body). */
+async function genOpenCodeImage(model,prompt,key){
+ const hint='start the relay: double-click start.command, then open the page it opens (http://127.0.0.1:8787/engine.html)';
+ let r;
+ try{r=await fetch('/api/oc-image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:String(model),prompt:prompt,key:key})})}
+ catch(_e){throw new Error(hint)}
+ let j=null;try{j=await r.json()}catch(_e){throw new Error(hint)}
+ if(r.ok&&j&&j.src)return j.src;
+ throw new Error(String((j&&j.error)||('HTTP '+r.status)).slice(0,300))}
+async function genRequestImage(model,prompt,key){
+ if(genGetProvider()==='opencode')return genOpenCodeImage(model,prompt,key);
+ const url='https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent';
+ const gc={responseModalities:['TEXT','IMAGE']};
+ if(String(model).indexOf('gemini-3')>=0)gc.imageConfig={imageSize:'1K'};
+ const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:gc})});
+ let body='';try{body=await r.text()}catch(_e){}
+ if(!r.ok)throw new Error('HTTP '+r.status+' — '+body.slice(0,300));
+ let j=null;try{j=JSON.parse(body)}catch(_e){throw new Error('bad JSON response — '+body.slice(0,200))}
+ let found=genExtractImage(j);
+ if(!found)throw new Error('no image in response — '+(body||'{}').slice(0,200));
+ if(found.length>200&&found.indexOf('data:')!==0&&found.indexOf('http')!==0)found='data:image/png;base64,'+found.replace(/\s+/g,'');
+ return found}
+async function genGenerate(){const btn=document.getElementById('genGenBtn');const n=drawerLive()||drawerSub;
+ if(!n){flashHint('open a card first');return}
+ if(buildPromptJSON(n)==null){flashHint(buildPrompt(n));return}
+ const key=genGetKey();
+ if(!key){flashHint('add key in Project → Generate');return}
+ const sel=document.getElementById('genModelSel');const model=sel&&sel.value?String(sel.value):(genVisModels()[0]||{}).id||'';
+ if(!model){flashHint('enable a model in Project → Generate');return}
+ try{localStorage.setItem(GEN_MODEL_LS,model)}catch(e){}
+ const prompt=buildPrompt(n);
+ btn.disabled=true;const old=btn.textContent;btn.textContent='generating…';
+ try{
+  const src=await genRequestImage(model,prompt,key);
+  snap();n.imgUrl=src;loadImage(n);refreshDrawerAfterImg();refreshDrawerMenu();draw();flashHint('image generated with '+model);
+ }catch(e){const msg=String((e&&e.message)||e);console.error('gemini generate failed',{model:model,error:msg.slice(0,500)});flashHint(model+' failed: '+msg.slice(0,140)+' — try another model')}
+ btn.disabled=false;btn.textContent=old}
+function genStatusText(){const k=genGetKey();if(!k)return'no key yet — paste a Google or OpenCode API key above';const cache=genGetCache();if(!cache)return'key saved — save & verify to load your image models';if(!cache.length)return'key saved — no image models on this key';const p=genGetProvider();const vis=genVisModels();return'key saved — '+genProvName(p)+', '+vis.length+' of '+cache.length+' image models on'+(p==='opencode'?' · open via the relay to generate':' · first generate is the live test')}
+function genErrText(body){let m='';try{const j=JSON.parse(body);m=(j&&j.error&&j.error.message)?String(j.error.message):''}catch(_e){}if(!m)m=String(body||'');return m.replace(/\s+/g,' ').trim()}
+/* Google list (pages of 1000, max 5). Returns {ok:true,total,models} or {ok:false,status,body}. Throws only on network failure. */
+async function genFetchGoogleModels(key){
+ const found=new Map();let token='';let total=0;
+ for(let page=0;page<5;page++){
+  const url='https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000'+(token?'&pageToken='+encodeURIComponent(token):'');
+  const r=await fetch(url,{method:'GET',headers:{'x-goog-api-key':key}});
+  let body='';try{body=await r.text()}catch(_e){}
+  if(!r.ok)return{ok:false,status:r.status,body:body};
+  let j=null;try{j=JSON.parse(body)}catch(_e){j=null}
+  const list=(j&&Array.isArray(j.models))?j.models:[];
+  total+=list.length;
+  for(const m of list){
+   const id=String((m&&m.name)||'').replace(/^models\//,'');
+   const methods=(m&&Array.isArray(m.supportedGenerationMethods))?m.supportedGenerationMethods:[];
+   if(!id||id.indexOf('image')<0||methods.indexOf('generateContent')<0)continue;
+   if(!found.has(id))found.set(id,{id:id,label:String((m&&m.displayName)||id)});
+  }
+  token=(j&&typeof j.nextPageToken==='string')?j.nextPageToken:'';
+  if(!token)break;
+ }
+ return{ok:true,total:total,models:Array.from(found.values()).map(o=>({provider:'google',id:o.id,label:o.label}))}}
+/* OpenCode list (Bearer). Accepts data[], providers->models and bare-array shapes; keeps type==='image'. Returns {ok:true,total,models} or {ok:false,status,body}. Throws only on network failure. */
+async function genFetchOpenCodeModels(key){
+ const r=await fetch('https://opencode.ai/inference/v1/models',{method:'GET',headers:{'Authorization':'Bearer '+key}});
+ let body='';try{body=await r.text()}catch(_e){}
+ if(!r.ok)return{ok:false,status:r.status,body:body};
+ let j=null;try{j=JSON.parse(body)}catch(_e){j=null}
+ const seen=new Map();
+ const add=(m,fb)=>{if(!m||typeof m!=='object')return;const id=String(m.id||m.name||m.model||fb||'').trim();if(!id||seen.has(id))return;seen.set(id,{id:id,type:String(m.type||'').toLowerCase(),label:String(m.name||m.displayName||m.display_name||id)})};
+ const addAll=c=>{if(Array.isArray(c))c.forEach(m=>add(m));else if(c&&typeof c==='object')Object.keys(c).forEach(k=>add(Object.assign({},c[k]),k))};
+ if(Array.isArray(j))addAll(j);
+ else if(j&&typeof j==='object'){
+  addAll(j.data);
+  const P=j.providers;
+  if(Array.isArray(P))P.forEach(p=>addAll(p&&p.models));
+  else if(P&&typeof P==='object')Object.keys(P).forEach(k=>addAll(P[k]&&P[k].models));
+ }
+ const all=Array.from(seen.values());
+ return{ok:true,total:all.length,models:all.filter(o=>o.type==='image').map(o=>({provider:'opencode',id:o.id,label:o.label}))}}
+/* Detect provider from the key: Google first; OpenCode only if Google answers 400/401/403. First 200 wins. Stores nothing. */
+async function genDetectAndVerify(key){
+ let g=null;
+ try{g=await genFetchGoogleModels(key)}catch(e){return{ok:false,gNet:true}}
+ if(g.ok)return{ok:true,provider:'google',total:g.total,models:g.models};
+ if([400,401,403].indexOf(g.status)<0)return{ok:false,google:g};
+ let o=null;
+ try{o=await genFetchOpenCodeModels(key)}catch(e){return{ok:false,google:g,oNet:true}}
+ if(o.ok)return{ok:true,provider:'opencode',total:o.total,models:o.models};
+ return{ok:false,google:g,opencode:o}}
+function genFailText(v,res){
+ if(res.gNet)return'verify failed: network - check connection and retry';
+ const gs=res.google?res.google.status:0;
+ if(res.google&&[400,401,403].indexOf(gs)<0)return'verify failed: Google HTTP '+gs+' - '+genErrText(res.google.body).slice(0,140);
+ const os=res.oNet?'network error':'HTTP '+res.opencode.status;
+ let line='key not accepted by Google or OpenCode (Google HTTP '+gs+', OpenCode '+os+')';
+ if(gs===400&&/API key not valid/i.test(genErrText(res.google.body))&&v.indexOf('AIza')!==0)line+=' · Google keys start with AIza';
+ return line}
+function genBindProj(){const k=document.getElementById('genKeyInput');const st=document.getElementById('genStatus');
+ const setSt=t=>{if(st)st.textContent=t};
+ const sv=document.getElementById('genKeySave');if(sv)sv.onclick=async()=>{const v=k?k.value.trim():'';
+  if(!v){genClearKey();setSt(genStatusText());genFillModels();genRenderProjModels();try{genRefreshDrawer()}catch(e){}flashHint('key cleared');return}
+  sv.disabled=true;setSt('verifying…');
+  let res=null;
+  try{res=await genDetectAndVerify(v)}catch(e){res={ok:false,gNet:true}}
+  try{
+   if(!res.ok){setSt(genFailText(v,res));flashHint(res.gNet?'verify failed: network — check connection and retry':'key not accepted by Google or OpenCode — stored key unchanged')}
+   else{
+    const prov=res.provider;const n=res.models.length;
+    try{localStorage.setItem(GEN_KEY_LS,v);localStorage.setItem(GEN_PROV_LS,prov)}catch(e){}
+    const prevIds=new Set((genGetCache()||[]).map(o=>o.id));
+    genSetCache(res.models);
+    const en=genGetEnabled();
+    if(en){const s=new Set(en);for(const o of res.models)if(!prevIds.has(o.id))s.add(o.id);genSetEnabled(Array.from(s))}
+    setSt(n?'verified - '+genProvName(prov)+', '+n+' image models':'verified - '+res.total+' models but no image models on this key');
+    genFillModels();genRenderProjModels();try{genRefreshDrawer()}catch(e){}
+    flashHint(prov==='opencode'&&n?'OpenCode key verified — open via the relay to generate':'key verified (this browser only)');
+   }
+  }finally{sv.disabled=false}
+ };
+ const cl=document.getElementById('genKeyClear');if(cl)cl.onclick=()=>{genClearKey();if(k)k.value='';setSt(genStatusText());genFillModels();genRenderProjModels();try{genRefreshDrawer()}catch(e){}flashHint('key cleared')};
+ const al=document.getElementById('genAll');if(al)al.onclick=()=>{genSetEnabled(genAllModels().map(m=>m.id));genRenderProjModels();genRefreshDrawer()};
+ const nl=document.getElementById('genNone');if(nl)nl.onclick=()=>{genSetEnabled([]);genRenderProjModels();genRefreshDrawer();flashHint('all models disabled — drawer has none until you enable one')}}
+function genRenderProjModels(){const host=document.getElementById('genModels');if(!host)return;
+ const base=genGetCache();host.innerHTML='';
+ if(!base||!base.length){const e=document.createElement('div');e.className='proj-empty';e.textContent=base?'this key has no image models':'save & verify to load your image models';host.appendChild(e);return}
+ const en=genGetEnabled();const onSet=new Set(en||base.map(m=>String(m.id)));
+ for(const m of base){const id=String(m.id);
+  const row=document.createElement('div');row.className='proj-val'+(onSet.has(id)?'':' off');
+  const lab=document.createElement('label');lab.className='sw ds-switch';lab.title=id;
+  const cb=document.createElement('input');cb.type='checkbox';cb.className='ds-switch__input';cb.setAttribute('data-ds-compact','');cb.checked=onSet.has(id);cb.title=id;
+  cb.onchange=()=>{let cur=genGetEnabled();if(!cur)cur=base.map(x=>String(x.id));const s=new Set(cur);if(cb.checked)s.add(id);else s.delete(id);genSetEnabled(Array.from(s));row.classList.toggle('off',!cb.checked);genRefreshDrawer();const st=document.getElementById('genStatus');if(st)st.textContent=genStatusText()};
+  const tr=document.createElement('span');tr.className='sl ds-switch__track';lab.appendChild(cb);lab.appendChild(tr);row.appendChild(lab);
+  const sp=document.createElement('span');sp.textContent=String(m.label||id)+(m.provider==='opencode'?' (OpenCode)':'');sp.title=id;row.appendChild(sp);
+  host.appendChild(row)}}
+(function genInit(){try{
+ const saved=(()=>{try{return localStorage.getItem(GEN_MODEL_LS)||''}catch(e){return''}})();
+ genFillModels(saved);genBindProj();genRenderProjModels();
+ const sel=document.getElementById('genModelSel');if(sel)sel.onchange=()=>{try{localStorage.setItem(GEN_MODEL_LS,sel.value)}catch(e){}};
+ const g=document.getElementById('genGenBtn');if(g)g.onclick=()=>genGenerate();
+}catch(e){}})();
 {const _b=document.getElementById('pmBack');if(_b)_b.onclick=()=>closePromptModal()}
 {const _a=document.getElementById('pmAction');if(_a)_a.addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.action=e.target.value.slice(0,140);persist();renderPmOut()})}
 {const _m=document.getElementById('pmMood');if(_m)_m.addEventListener('input',e=>{if(!pmTarget)return;pmTarget.promptState.mood=e.target.value.slice(0,140);persist();renderPmOut()})}
@@ -1672,9 +1876,12 @@ let projTab='camera';
 function swEl(on,fn,title,disabled){const l=document.createElement('label');l.className='sw ds-switch';if(title)l.title=title;const cb=document.createElement('input');cb.type='checkbox';cb.className='ds-switch__input';cb.setAttribute('data-ds-compact','');cb.checked=!!on;cb.disabled=!!disabled;cb.onchange=()=>{snap();fn(cb.checked);persist();renderProjectModal();if(drawerSub)renderPromptPreview(drawerSub)};const s=document.createElement('span');s.className='sl ds-switch__track';l.appendChild(cb);l.appendChild(s);return l}
 function projCounts(){let d=0,dt=0,t=0,tt=0,v=0,vt=0;for(const dom of DOMAIN_ORDER){const D=PROJECT&&PROJECT.domains[dom];if(!D)continue;dt++;if(D.enabled)d++;for(const tid of Object.keys(D.tokens||{})){tt++;if(isTokOn(tid))t++;const T=D.tokens[tid];(T.values||[]).forEach((_,i)=>{vt++;if(isValOn(tid,i))v++})}}return{d:d,dt:dt,t:t,tt:tt,v:v,vt:vt}}
 function projCodeRow(tid,i){const T=tokVal(tid).tok;const cr=document.createElement('div');cr.className='code-row';const lb=document.createElement('span');lb.className='code-lab';lb.textContent=T.values[i];lb.title=T.values[i];cr.appendChild(lb);const ci=document.createElement('input');ci.setAttribute('data-ds-compact','');ci.value=(T.codes&&T.codes[i]!=null)?T.codes[i]:'';ci.placeholder='CODE';ci.maxLength=12;ci.setAttribute('spellcheck','false');ci.setAttribute('autocomplete','off');ci.onchange=()=>{const em=codeError(ci.value);if(em){flashHint(em);const ff=tokVal(tid);ci.value=(ff.tok.codes&&ff.tok.codes[i])||'';return}snap();ci.value=setCode(tid,i,ci.value);persist();renderProjectModal();if(drawerSub)renderPromptPreview(drawerSub)};cr.appendChild(ci);return cr}
-function renderProjectModal(){if(!PROJECT||!PROJECT.domains)return;if(!PROJECT.domains[projTab])projTab=DOMAIN_ORDER[0];
+const PROJ_EXTRA_TABS=[['gen','Generate']];
+function renderProjectModal(){if(!PROJECT||!PROJECT.domains)return;if(projTab!=='gen'&&!PROJECT.domains[projTab])projTab=DOMAIN_ORDER[0];
  const nav=document.getElementById('projNav'),mid=document.getElementById('projToks'),codeHost=document.getElementById('projCodes');nav.innerHTML='';mid.innerHTML='';codeHost.innerHTML='';
  DOMAIN_ORDER.forEach((d,i)=>{const D=PROJECT.domains[d];if(!D)return;const b=document.createElement('button');b.className='ds-nav-item';b.textContent=D.label;b.style.setProperty('--i',i);if(d===projTab){b.classList.add('on');b.setAttribute('aria-current','true')}if(!D.enabled)b.classList.add('off');b.title=D.enabled?D.label+' — enabled':D.label+' — disabled';b.onclick=()=>{projTab=d;renderProjectModal()};nav.appendChild(b)});
+ PROJ_EXTRA_TABS.forEach(([id,label],k)=>{const b=document.createElement('button');b.className='ds-nav-item';b.textContent=label;b.style.setProperty('--i',DOMAIN_ORDER.length+k);if(id===projTab){b.classList.add('on');b.setAttribute('aria-current','true')}b.title=label;b.onclick=()=>{projTab=id;renderProjectModal()};nav.appendChild(b)});
+ if(projTab==='gen'){genRenderProjTab(mid,codeHost);const _c=projCounts();document.getElementById('projNote').textContent=_c.d+' of '+_c.dt+' domains · '+_c.t+' of '+_c.tt+' tokens · '+_c.v+' of '+_c.vt+' values enabled';return}
  const D=PROJECT.domains[projTab];
  const dh=document.createElement('div');dh.className='proj-dom-h';const dt=document.createElement('span');dt.textContent=D.label;dt.style.flex='1';dh.appendChild(dt);dh.appendChild(swEl(!!D.enabled,v=>{D.enabled=v},D.label+' domain'));mid.appendChild(dh);
  const dd=document.createElement('div');dd.className='proj-ddesc';dd.textContent=D.desc+' '+(D.enabled?'Included in every prompt.':'Disabled \u2014 contributes zero words.');mid.appendChild(dd);
@@ -1692,8 +1899,23 @@ function renderProjectModal(){if(!PROJECT||!PROJECT.domains)return;if(!PROJECT.d
  for(const tid of Object.keys(D.tokens||{})){if(!isTokOn(tid))continue;const idxs=allowedValues(tid);if(!idxs.length)continue;const th=document.createElement('div');th.className='proj-code-tok';th.textContent=D.tokens[tid].label;codeHost.appendChild(th);idxs.forEach(i=>{codeHost.appendChild(projCodeRow(tid,i));nCodes++})}
  if(!nCodes){const e=document.createElement('div');e.className='proj-empty';e.textContent='No enabled values \u2014 flip a toggle to add codes.';codeHost.appendChild(e)}
  const c=projCounts();document.getElementById('projNote').textContent=c.d+' of '+c.dt+' domains \u00b7 '+c.t+' of '+c.tt+' tokens \u00b7 '+c.v+' of '+c.vt+' values enabled'}
+function genRenderProjTab(mid,codeHost){const h=document.createElement('div');h.className='proj-dom-h';const t=document.createElement('span');t.textContent='Image generation — Google or OpenCode key';t.style.flex='1';h.appendChild(t);mid.appendChild(h);
+ const sub=document.createElement('div');sub.className='proj-ddesc';sub.textContent='Paste a Google (AIza…) or OpenCode key. The app detects the provider and lists that key image models; enable the ones you use. Key stays in this browser only and never enters the board payload. Google generation posts straight from this page. OpenCode generation goes through the local relay: double-click start.command and open the page it opens (http://127.0.0.1:8787/engine.html). Nothing is spent until you press generate.';mid.appendChild(sub);
+ const kr=document.createElement('div');kr.id='genKeyRow';
+ const ki=document.createElement('input');ki.id='genKeyInput';ki.type='password';ki.setAttribute('autocomplete','off');ki.setAttribute('spellcheck','false');ki.placeholder='API key (Google AIza… or OpenCode)';ki.title='API key (stored in this browser only)';try{ki.value=genGetKey()}catch(e){}kr.appendChild(ki);
+ const sv=document.createElement('button');sv.id='genKeySave';sv.className='ds-btn';sv.type='button';sv.textContent='save & verify';kr.appendChild(sv);
+ const cl=document.createElement('button');cl.id='genKeyClear';cl.className='ds-btn';cl.type='button';cl.textContent='clear';kr.appendChild(cl);
+ const st=document.createElement('span');st.id='genStatus';st.setAttribute('role','status');try{st.textContent=genStatusText()}catch(e){}kr.appendChild(st);mid.appendChild(kr);
+ const lr=document.createElement('div');lr.id='genListRow';
+ const al=document.createElement('button');al.id='genAll';al.className='ds-btn';al.type='button';al.textContent='enable all';lr.appendChild(al);
+ const nl=document.createElement('button');nl.id='genNone';nl.className='ds-btn';nl.type='button';nl.textContent='disable all';lr.appendChild(nl);mid.appendChild(lr);
+ const ml=document.createElement('div');ml.id='genModels';mid.appendChild(ml);
+ genBindProj();genRenderProjModels();
+ const ch=document.createElement('div');ch.className='proj-codes-h';ch.textContent='image models';codeHost.appendChild(ch);
+ let nMods=0,nOn=0;try{nMods=genAllModels().length;const _e=genGetEnabled();nOn=_e?_e.length:nMods}catch(e){}
+ const e=document.createElement('div');e.className='proj-empty';e.textContent=nOn+' of '+nMods+' models offered in the card drawer.';codeHost.appendChild(e)}
 let projCloseT=null;
-function openProjectModal(){if(PROJECT&&PROJECT.domains&&!PROJECT.domains[projTab])projTab=DOMAIN_ORDER[0];renderProjectModal();const m=document.getElementById('projModal');clearTimeout(projCloseT);m.classList.remove('closing');projOverlay.open({invoker:document.getElementById('projBtn')})}
+function openProjectModal(){if(PROJECT&&PROJECT.domains&&projTab!=='gen'&&!PROJECT.domains[projTab])projTab=DOMAIN_ORDER[0];renderProjectModal();const m=document.getElementById('projModal');clearTimeout(projCloseT);m.classList.remove('closing');projOverlay.open({invoker:document.getElementById('projBtn')})}
 /* the sheet animates out (projFadeOut/projOut): arm the class, then close the
    overlay when the animation has played (0ms under reduced motion). */
 function closeProjectModal(){const m=document.getElementById('projModal');
