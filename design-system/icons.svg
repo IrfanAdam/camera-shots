@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  icons.svg — the ds icon sprite. 24 symbols, one dialect.
+
+  Contract
+    every symbol is 24×24 (viewBox 0 0 24 24), line art, fill none,
+    stroke currentColor, stroke-width 1.75, round caps and joins
+    stroke width is uniform: one constant, no per-size overrides. Sizes come
+    from the icon scale (icon.size.sm 16 / icon.size.md 20 / icon.size.lg 24);
+    the stroke scales with the artwork, which is why the 16px rendering is the
+    legibility floor
+    colour is inherited — never set a stroke colour inside a symbol
+    each symbol carries a title element: that is the name slot. A decorative
+    icon hides it with aria-hidden="true"; a meaningful icon drops aria-hidden
+    and references the title (or supplies its own aria-label)
+
+  Usage
+    decorative (the label is adjacent text):
+      <svg class="ds-icon" aria-hidden="true" focusable="false">
+        <use href="icons.svg#ds-icon-close"></use>
+      </svg>
+
+    meaningful (icon is the only label):
+      <svg class="ds-icon" role="img" aria-label="Close" focusable="false">
+        <use href="icons.svg#ds-icon-close"></use>
+      </svg>
+
+  Glyph migration (the 7 shipped line icons + the unicode affordances)
+    × ✕                     -> ds-icon-close
+    ⋯ (3 consumers)         -> ds-icon-more-h
+    ☰                       -> ds-icon-menu
+    ⚙                       -> ds-icon-gear
+    ☾                       -> ds-icon-moon        (sun for the light state)
+    ▶                       -> ds-icon-play
+    ✓                       -> ds-icon-check       (copy feedback stays a
+                               string: "Copied" + announce, not an icon swap)
+    → ←                     -> ds-icon-arrow-right / -left  (prose arrows stay
+                               text: the symbol is for controls only)
+    chevron affordance      -> ds-icon-chevron-down
+    download / copy / print -> ds-icon-download / -copy / -print
+    undo / redo             -> ds-icon-undo / -redo
+    +  −                    -> ds-icon-plus / -minus
+    search                  -> ds-icon-search
+    delete affordance       -> ds-icon-trash
+    ↗ external link         -> not a symbol; a text-link decoration on one page
+    ◉ 📄 🎓 resource kinds  -> not symbols; ds-badge neutral strings (no emoji)
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true" focusable="false">
+
+  <symbol id="ds-icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Close</title>
+    <path d="M6 6l12 12M18 6 6 18"/>
+  </symbol>
+
+  <symbol id="ds-icon-more-h" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>More</title>
+    <path d="M6 12h.01M12 12h.01M18 12h.01"/>
+  </symbol>
+
+  <symbol id="ds-icon-more-v" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>More options</title>
+    <path d="M12 6v.01M12 12v.01M12 18v.01"/>
+  </symbol>
+
+  <symbol id="ds-icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Menu</title>
+    <path d="M4 7h16M4 12h16M4 17h16"/>
+  </symbol>
+
+  <symbol id="ds-icon-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Settings</title>
+    <circle cx="12" cy="12" r="3.1"/>
+    <circle cx="12" cy="12" r="7"/>
+    <path d="M12 2.6v2.4M12 19v2.4M2.6 12h2.4M19 12h2.4M5.4 5.4l1.7 1.7M16.9 16.9l1.7 1.7M18.6 5.4l-1.7 1.7M7.1 16.9l-1.7 1.7"/>
+  </symbol>
+
+  <symbol id="ds-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Dark theme</title>
+    <path d="M20.5 13.2A8.5 8.5 0 1 1 10.8 3.5a6.6 6.6 0 0 0 9.7 9.7z"/>
+  </symbol>
+
+  <symbol id="ds-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Light theme</title>
+    <circle cx="12" cy="12" r="4"/>
+    <path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/>
+  </symbol>
+
+  <symbol id="ds-icon-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Play</title>
+    <path d="M8.6 5.4 18.8 12 8.6 18.6Z"/>
+  </symbol>
+
+  <symbol id="ds-icon-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Pause</title>
+    <path d="M9.4 5v14M14.6 5v14"/>
+  </symbol>
+
+  <symbol id="ds-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Done</title>
+    <path d="M4.8 12.6 9.6 17.4 19.2 6.6"/>
+  </symbol>
+
+  <symbol id="ds-icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Add</title>
+    <path d="M12 5v14M5 12h14"/>
+  </symbol>
+
+  <symbol id="ds-icon-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Remove</title>
+    <path d="M5 12h14"/>
+  </symbol>
+
+  <symbol id="ds-icon-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Previous</title>
+    <path d="M19.4 12H4.6M11 5.6 4.6 12l6.4 6.4"/>
+  </symbol>
+
+  <symbol id="ds-icon-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Next</title>
+    <path d="M4.6 12h14.8M13 5.6 19.4 12 13 18.4"/>
+  </symbol>
+
+  <symbol id="ds-icon-arrow-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Up</title>
+    <path d="M12 19.4V4.6M5.6 11 12 4.6 18.4 11"/>
+  </symbol>
+
+  <symbol id="ds-icon-arrow-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Down</title>
+    <path d="M12 4.6v14.8M18.4 13 12 19.4 5.6 13"/>
+  </symbol>
+
+  <symbol id="ds-icon-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Expand</title>
+    <path d="M6 9.4 12 15.4 18 9.4"/>
+  </symbol>
+
+  <symbol id="ds-icon-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Download</title>
+    <path d="M12 3.6v11.2M7.6 10.4 12 14.8l4.4-4.4M4 15.5v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>
+  </symbol>
+
+  <symbol id="ds-icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Copy</title>
+    <rect x="9" y="9" width="11" height="11" rx="2.2"/>
+    <path d="M15 9V6.2A2.2 2.2 0 0 0 12.8 4H6.2A2.2 2.2 0 0 0 4 6.2v6.6A2.2 2.2 0 0 0 6.2 15H9"/>
+  </symbol>
+
+  <symbol id="ds-icon-print" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Print</title>
+    <path d="M7 9V3.6h10V9M7 17.4H5.1a1.6 1.6 0 0 1-1.6-1.6v-5.2a1.6 1.6 0 0 1 1.6-1.6h13.8a1.6 1.6 0 0 1 1.6 1.6v5.2a1.6 1.6 0 0 1-1.6 1.6H17"/>
+    <rect x="7" y="14" width="10" height="6.4" rx="1"/>
+  </symbol>
+
+  <symbol id="ds-icon-undo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Undo</title>
+    <path d="M9.4 6.6 4.4 11.6l5 5"/>
+    <path d="M4.4 11.6h9.1a6 6 0 0 1 6 6v1.6"/>
+  </symbol>
+
+  <symbol id="ds-icon-redo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Redo</title>
+    <path d="M14.6 6.6l5 5-5 5"/>
+    <path d="M19.6 11.6h-9.1a6 6 0 0 0-6 6v1.6"/>
+  </symbol>
+
+  <symbol id="ds-icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Search</title>
+    <circle cx="10.6" cy="10.6" r="6.4"/>
+    <path d="M15.4 15.4 20.4 20.4"/>
+  </symbol>
+
+  <symbol id="ds-icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <title>Delete</title>
+    <path d="M4 7.2h16"/>
+    <path d="M9.6 4.4h4.8"/>
+    <path d="M6.6 7.2 7.5 19a1.9 1.9 0 0 0 1.9 1.8h5.2a1.9 1.9 0 0 0 1.9-1.8l.9-11.8"/>
+    <path d="M10.4 10.8v6.2M13.6 10.8v6.2"/>
+  </symbol>
+
+</svg>
