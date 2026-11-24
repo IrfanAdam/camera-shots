@@ -28,7 +28,7 @@ Read order: [README](README.md) → this file → [components](components.md) �
 
 It is a **count of occurrences**, not the gate's T8 presence test: T8 asks only whether a product page, a theme cell or `components.css` names a token at all, and excludes the gallery. So a key can be T8-unconsumed and still show a non-zero count here — read the breakdown the gate prints, not this column, when judging orphans.
 
-Totals at committed HEAD: **1490 consumer references** across 186 keys, **16** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `elevation.inset`, `elevation.ring`, `focus.color`, `icon.size.lg`, `icon.size.md`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `spacing.section`, `tracking.label`).
+Totals at committed HEAD: **1493 consumer references** across 186 keys, **16** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `elevation.inset`, `elevation.ring`, `focus.color`, `icon.size.lg`, `icon.size.md`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `spacing.section`, `tracking.label`).
 
 Under the gate's narrower **T8** scope — `var()` in the three product pages plus theme-map cells plus `components.css`, gallery excluded, aliases and `breakpoint.*` exempt — **10** key(s) are unconsumed: `color.engine.track.audio`, `color.engine.track.fx`, `color.engine.track.title`, `elevation.inset`, `elevation.ring`, `icon.size.lg`, `icon.size.md`, `radius.lg`, `spacing.section`, `tracking.label`. Keys that differ between the two views are canvas-only (`CT()`/`WA()` strings the gate cannot see) or gallery-only consumers; `scripts/lint-tokens.mjs` prints the authoritative list and its budget note.
 
@@ -177,7 +177,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `color.engine.surface.1` | `#1E1E22` | color | bg.surface | 8 (6/1/1) |
 | `color.engine.surface.2` | `#2A2A2E` | color | bg.surface.alt | 14 (12/1/1) |
 | `color.engine.surface.deep` | `#0C0C0C` | color | — | 2 (2/0/0) |
-| `color.engine.text.primary` | `#F5F5F7` | color | fg.primary | 21 (19/1/1) |
+| `color.engine.text.primary` | `#F5F5F7` | color | fg.primary | 22 (20/1/1) |
 | `color.engine.text.secondary` | `#9A9AA0` | color | fg.muted | 37 (35/1/1) |
 | `color.engine.tool` | `#1C1C1E` | color | bg.control | 7 (5/1/1) |
 | `color.engine.track.audio` | `#32ADE6` | color | — | 1 (0/0/1) |
@@ -268,8 +268,8 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
 | `focus.color` | `var(--ds-accent)` | color | — · alias → --ds-accent | 0 (0/0/0) |
-| `focus.offset` | `2px` | dimension | — | 4 (4/0/0) |
-| `focus.width` | `2px` | dimension | — | 4 (4/0/0) |
+| `focus.offset` | `2px` | dimension | — | 5 (5/0/0) |
+| `focus.width` | `2px` | dimension | — | 5 (5/0/0) |
 
 ### hover
 
