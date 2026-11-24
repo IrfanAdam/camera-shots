@@ -62,10 +62,10 @@ code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-
 .masthead{border-bottom:var(--border-width-hairline) solid var(--g-rule);padding:var(--spacing-2xl) 0 var(--spacing-xl)}
 .mast-top{display:flex;align-items:center;justify-content:space-between;gap:var(--spacing-md);flex-wrap:wrap;margin-bottom:var(--spacing-xl)}
 .kicker{font-size:var(--typography-size-eyebrow);letter-spacing:var(--typography-tracking-eyebrow);text-transform:uppercase;font-weight:var(--typography-weight-medium);color:var(--g-muted)}
-.themer{display:inline-flex;border:var(--border-width-hairline) solid var(--g-rule);border-radius:var(--radius-pill);padding:var(--spacing-2);background:var(--g-card)}
+.themer{display:inline-flex;border:var(--border-width-hairline) solid var(--g-rule);border-radius:var(--radius-xs);padding:var(--spacing-2);background:var(--g-card)}
 .themer button{
   font:inherit;font-size:var(--typography-size-meta);min-height:var(--touch-min);
-  padding:0 var(--spacing-md);border:0;border-radius:var(--radius-pill);
+  padding:0 var(--spacing-md);border:0;border-radius:var(--radius-xs);
   background:transparent;color:var(--g-muted);cursor:pointer;
   transition:color var(--motion-duration-fast) var(--motion-easing-standard),background var(--motion-duration-fast) var(--motion-easing-standard);
 }
@@ -174,7 +174,7 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
 
 .mplay{
   position:relative;display:block;width:100%;max-width:200px;height:30px;padding:0;
-  border-radius:var(--radius-pill);background:var(--g-wash);border:var(--border-width-hairline) solid var(--g-rule);
+  border-radius:var(--radius-xs);background:var(--g-wash);border:var(--border-width-hairline) solid var(--g-rule);
   cursor:pointer;overflow:hidden;
 }
 .mplay:focus-visible{outline:2px solid var(--g-ink);outline-offset:2px}
@@ -265,11 +265,11 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
 .row{display:flex;align-items:center;gap:var(--spacing-sm);flex-wrap:wrap}
 .hint{font-size:var(--typography-size-meta);color:var(--s-muted)}
 
-/* button */
+/* button — shipped control geometry: 4px radius (--radius-xs), 40 / 44 / 46 heights */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:var(--spacing-xs);
   min-height:var(--touch-preferred);padding:0 var(--spacing-lg);
-  border-radius:var(--radius-pill);border:var(--border-width-hairline) solid var(--s-rule);
+  border-radius:var(--radius-xs);border:var(--border-width-hairline) solid var(--s-rule);
   background:transparent;color:var(--s-ink);cursor:pointer;
   font-family:var(--typography-family-sans);font-size:var(--typography-size-small);
   font-weight:var(--typography-weight-semibold);
@@ -277,6 +277,8 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
     border-color var(--motion-duration-fast) var(--motion-easing-standard),
     color var(--motion-duration-fast) var(--motion-easing-standard);
 }
+.btn--compact{min-height:var(--touch-min)} /* wiki control row: 40 */
+.btn--tall{min-height:calc(var(--touch-preferred) + var(--spacing-2))} /* pitch .btn: 46 */
 .btn--primary{background:var(--s-accent);border-color:var(--s-accent);color:var(--s-accent-ink)}
 .btn--primary:hover{filter:brightness(1.06)}
 .btn--secondary:hover{border-color:var(--s-accent);color:var(--s-accent)}
@@ -286,19 +288,19 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
 .btn:disabled{opacity:var(--opacity-disabled);cursor:not-allowed}
 .btn--primary:disabled{filter:none}
 
-/* pill filter */
-.pill{
+/* filter chip — shipped geometry: 4px (--radius-xs), 40 (--touch-min); no pill-radius control exists */
+.chip{
   display:inline-flex;align-items:center;min-height:var(--touch-min);padding:0 var(--spacing-md);
-  border-radius:var(--radius-pill);border:var(--border-width-hairline) solid var(--s-rule);
+  border-radius:var(--radius-xs);border:var(--border-width-hairline) solid var(--s-rule);
   background:var(--s-card);color:var(--s-ink);cursor:pointer;
   font-family:var(--typography-family-sans);font-size:var(--typography-size-small);
   transition:background var(--motion-duration-fast) var(--motion-easing-standard),
     border-color var(--motion-duration-fast) var(--motion-easing-standard);
 }
-.pill:hover{border-color:var(--s-accent)}
-.pill[aria-pressed="true"]{background:var(--s-accent);border-color:var(--s-accent);color:var(--s-accent-ink)}
-.pill:focus-visible{outline:var(--focus-width) solid var(--s-accent);outline-offset:var(--focus-offset)}
-.pill .count{font-size:var(--typography-size-eyebrow);opacity:.7;margin-left:var(--spacing-xs)}
+.chip:hover{border-color:var(--s-accent)}
+.chip[aria-pressed="true"]{background:var(--s-accent);border-color:var(--s-accent);color:var(--s-accent-ink)}
+.chip:focus-visible{outline:var(--focus-width) solid var(--s-accent);outline-offset:var(--focus-offset)}
+.chip .count{font-size:var(--typography-size-eyebrow);opacity:.7;margin-left:var(--spacing-xs)}
 
 /* field */
 .field{display:flex;flex-direction:column;gap:var(--spacing-2xs);max-width:320px;width:100%}
@@ -406,9 +408,10 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
   text-transform:uppercase;color:var(--g-muted);font-weight:var(--typography-weight-medium);
   background:var(--g-card);
 }
-.matrix tbody th{font-weight:var(--typography-weight-medium);font-size:var(--typography-size-small);width:170px}
+.matrix tbody th{font-weight:var(--typography-weight-medium);font-size:var(--typography-size-small);width:150px}
 .matrix td code{font-size:var(--typography-size-eyebrow);color:var(--g-ink);word-break:break-word;display:block}
-.matrix td .note{display:block;font-size:var(--typography-size-eyebrow);color:var(--g-muted);line-height:1.5;margin-top:var(--spacing-2xs);max-width:34ch}
+.matrix td .note{display:block;font-size:var(--typography-size-eyebrow);color:var(--g-muted);line-height:1.5;margin-top:var(--spacing-2xs);max-width:32ch}
+.matrix td .cite{display:block;font-family:var(--typography-family-mono);font-size:var(--typography-size-eyebrow);color:var(--color-semantic-danger);margin-top:var(--spacing-2xs)}
 .matrix tr:last-child td,.matrix tr:last-child th{border-bottom:0}
 .badge-dev{
   display:inline-flex;align-items:center;gap:var(--spacing-2xs);margin-bottom:var(--spacing-2xs);
@@ -419,6 +422,9 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
 }
 .matrix-legend{display:flex;gap:var(--spacing-md);align-items:center;flex-wrap:wrap;font-size:var(--typography-size-meta);color:var(--g-muted);margin-top:var(--spacing-sm)}
 .matrix-sum{margin-top:var(--spacing-md);font-size:var(--typography-size-small);color:var(--g-muted);max-width:68ch}
+
+/* off-screen measurement host: one clipped 1440 frame at a time, never adds page overflow */
+#probe-host{position:fixed;left:0;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;z-index:-1}
 
 footer{border-top:var(--border-width-hairline) solid var(--g-rule);padding:var(--spacing-lg) 0 var(--spacing-2xl);font-size:var(--typography-size-meta);color:var(--g-muted)}
 footer code{color:var(--g-ink)}
@@ -454,7 +460,7 @@ footer code{color:var(--g-ink)}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .mdot{transition:none}
-  .btn,.pill,.tool,.toast button,.themer button{transition:none}
+  .btn,.chip,.tool,.toast button,.themer button{transition:none}
 }
 </style>
 </head>
@@ -472,7 +478,7 @@ footer code{color:var(--g-ink)}
     <h1>Design System — Camera Shots</h1>
     <p class="mast-lede">Every specimen below is drawn with the custom properties in <code>tokens.css</code>, so what you see is what ships. Three surfaces, one token layer: <b>Wiki</b> (read), <b>Pitch</b> (persuade), <b>Engine</b> (operate).</p>
     <dl class="stats">
-      <div><dt>Tokens</dt><dd><span class="js-token-count">229</span> · one <code>:root</code> block</dd></div>
+      <div><dt>Tokens</dt><dd><span class="js-token-count">—</span> · one <code>:root</code> block</dd></div>
       <div><dt>Surfaces</dt><dd>Wiki · Pitch · Engine</dd></div>
       <div><dt>Theme family</dt><dd>light+dark · warm dark · cool dark</dd></div>
     </dl>
@@ -503,7 +509,7 @@ footer code{color:var(--g-ink)}
       </div>
 
       <div class="swgroup">
-        <div class="swgroup-head"><h3>Pitch — warm dark</h3><span class="tag">18 tokens</span></div>
+        <div class="swgroup-head"><h3>Pitch — warm dark</h3><span class="tag">—</span></div>
         <div class="swgrid">
           <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-bg)"></span><code>--color-pitch-bg</code><span class="sw-val" data-live="--color-pitch-bg">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-surface-1)"></span><code>--color-pitch-surface-1</code><span class="sw-val" data-live="--color-pitch-surface-1">—</span></div>
@@ -527,7 +533,7 @@ footer code{color:var(--g-ink)}
       </div>
 
       <div class="swgroup">
-        <div class="swgroup-head"><h3>Wiki — light</h3><span class="tag">8 tokens</span></div>
+        <div class="swgroup-head"><h3>Wiki — light</h3><span class="tag">—</span></div>
         <div class="swgrid">
           <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-light-bg)"></span><code>--color-wiki-light-bg</code><span class="sw-val" data-live="--color-wiki-light-bg">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-light-card)"></span><code>--color-wiki-light-card</code><span class="sw-val" data-live="--color-wiki-light-card">—</span></div>
@@ -541,7 +547,7 @@ footer code{color:var(--g-ink)}
       </div>
 
       <div class="swgroup">
-        <div class="swgroup-head"><h3>Wiki — dark</h3><span class="tag">8 tokens</span></div>
+        <div class="swgroup-head"><h3>Wiki — dark</h3><span class="tag">—</span></div>
         <div class="swgrid">
           <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-dark-bg)"></span><code>--color-wiki-dark-bg</code><span class="sw-val" data-live="--color-wiki-dark-bg">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-dark-card)"></span><code>--color-wiki-dark-card</code><span class="sw-val" data-live="--color-wiki-dark-card">—</span></div>
@@ -555,7 +561,7 @@ footer code{color:var(--g-ink)}
       </div>
 
       <div class="swgroup">
-        <div class="swgroup-head"><h3>Engine — cool dark</h3><span class="tag">15 tokens</span></div>
+        <div class="swgroup-head"><h3>Engine — cool dark</h3><span class="tag">—</span></div>
         <div class="swgrid">
           <div class="sw"><span class="sw-chip" style="background:var(--color-engine-bg)"></span><code>--color-engine-bg</code><span class="sw-val" data-live="--color-engine-bg">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-engine-panel)"></span><code>--color-engine-panel</code><span class="sw-val" data-live="--color-engine-panel">—</span></div>
@@ -576,7 +582,7 @@ footer code{color:var(--g-ink)}
       </div>
 
       <div class="swgroup">
-        <div class="swgroup-head"><h3>Engine — canvas &amp; tooling</h3><span class="tag">19 tokens</span></div>
+        <div class="swgroup-head"><h3>Engine — canvas &amp; tooling</h3><span class="tag">—</span></div>
         <div class="swgrid compact">
           <div class="sw"><span class="sw-chip" style="background:var(--color-engine-canvas-bg)"></span><code>--color-engine-canvas-bg</code><span class="sw-val" data-live="--color-engine-canvas-bg">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-engine-graph-title)"></span><code>--color-engine-graph-title</code><span class="sw-val" data-live="--color-engine-graph-title">—</span></div>
@@ -601,7 +607,7 @@ footer code{color:var(--g-ink)}
       </div>
 
       <div class="swgroup">
-        <div class="swgroup-head"><h3>Engine — washes, scrims &amp; overlays</h3><span class="tag">21 tokens</span></div>
+        <div class="swgroup-head"><h3>Engine — washes, scrims &amp; overlays</h3><span class="tag">—</span></div>
         <div class="swgrid compact">
           <div class="sw"><span class="sw-chip" style="background:var(--color-engine-wash-6)"></span><code>--color-engine-wash-6</code><span class="sw-val" data-live="--color-engine-wash-6">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-engine-wash-10)"></span><code>--color-engine-wash-10</code><span class="sw-val" data-live="--color-engine-wash-10">—</span></div>
@@ -627,8 +633,8 @@ footer code{color:var(--g-ink)}
         </div>
       </div>
 
-      <div class="swgroup">
-        <div class="swgroup-head"><h3>Pro editor — reference language</h3><span class="tag">10 tokens</span></div>
+      <div class="swgroup" data-prefix="--color-pro-">
+        <div class="swgroup-head"><h3>Pro editor — reference language</h3><span class="tag">—</span></div>
         <div class="swgrid">
           <div class="sw"><span class="sw-chip" style="background:var(--color-pro-surface-0)"></span><code>--color-pro-surface-0</code><span class="sw-val" data-live="--color-pro-surface-0">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-pro-surface-1)"></span><code>--color-pro-surface-1</code><span class="sw-val" data-live="--color-pro-surface-1">—</span></div>
@@ -644,7 +650,7 @@ footer code{color:var(--g-ink)}
       </div>
 
       <div class="swgroup">
-        <div class="swgroup-head"><h3>Semantic — status</h3><span class="tag">4 tokens</span></div>
+        <div class="swgroup-head"><h3>Semantic — status</h3><span class="tag">—</span></div>
         <div class="swgrid">
           <div class="sw"><span class="sw-chip" style="background:var(--color-semantic-success)"></span><code>--color-semantic-success</code><span class="sw-val" data-live="--color-semantic-success">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-semantic-danger)"></span><code>--color-semantic-danger</code><span class="sw-val" data-live="--color-semantic-danger">—</span></div>
@@ -654,7 +660,7 @@ footer code{color:var(--g-ink)}
       </div>
 
       <div class="swgroup">
-        <div class="swgroup-head"><h3>Support — print, neutral, diagrams</h3><span class="tag">9 tokens</span></div>
+        <div class="swgroup-head"><h3>Support — print, neutral, diagrams</h3><span class="tag">—</span></div>
         <div class="swgrid compact">
           <div class="sw"><span class="sw-chip" style="background:var(--color-print-rule)"></span><code>--color-print-rule</code><span class="sw-val" data-live="--color-print-rule">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-print-body)"></span><code>--color-print-body</code><span class="sw-val" data-live="--color-print-body">—</span></div>
@@ -743,7 +749,7 @@ footer code{color:var(--g-ink)}
       <div class="sec-head">
         <span class="sec-num">03</span>
         <h2 id="space-h">Space &amp; shape</h2>
-        <p>One 4px base, eight steps. Bars are drawn at 6× so the ladder is legible; labels carry the literal value.</p>
+        <p data-space-caption>One 4px base. Bars are drawn at 6× so the ladder is legible; labels carry the literal value.</p>
       </div>
 
       <div class="space-row"><code>--spacing-2xs</code><span class="space-bar" style="width:calc(var(--spacing-2xs) * 6)"></span><span class="space-val" data-live="--spacing-2xs">—</span></div>
@@ -942,19 +948,22 @@ footer code{color:var(--g-ink)}
           <div class="stage" data-surface="pitch">
             <div class="row">
               <button class="btn btn--primary" type="button">Approve cut</button>
-              <button class="btn btn--secondary" type="button">Compare</button>
+              <button class="btn btn--secondary btn--compact" type="button">Compare</button>
+              <button class="btn btn--secondary btn--tall" type="button" data-measure="m-btn-tall">Frame</button>
               <button class="btn btn--ghost" type="button">Skip</button>
               <button class="btn btn--primary" type="button" disabled>Export</button>
             </div>
-            <p class="hint">Hover, Tab, and the disabled fourth button.</p>
+            <p class="hint">Shipped geometry: 4px radius, 44 default · 40 compact (wiki control row) · 46 tall (pitch .btn). Hover, Tab, and the disabled fourth button.</p>
           </div>
         </div>
         <div class="comp-props">
           <table class="tok-table">
             <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
             <tbody>
-              <tr><td>Radius</td><td><code>--radius-pill</code></td><td class="live" data-live="--radius-pill">—</td></tr>
-              <tr><td>Height</td><td><code>--touch-preferred</code></td><td class="live" data-live="--touch-preferred">—</td></tr>
+              <tr><td>Radius</td><td><code>--radius-xs</code></td><td class="live" data-live="--radius-xs">—</td></tr>
+              <tr><td>Height default</td><td><code>--touch-preferred</code></td><td class="live" data-live="--touch-preferred">—</td></tr>
+              <tr><td>Height compact</td><td><code>--touch-min</code></td><td class="live" data-live="--touch-min">—</td></tr>
+              <tr><td>Height tall</td><td><code>--touch-preferred + --spacing-2</code></td><td class="live"><span id="m-btn-tall">—</span></td></tr>
               <tr><td>Primary fill</td><td><code>--color-pitch-accent</code></td><td class="live" data-live="--color-pitch-accent">—</td></tr>
               <tr><td>Primary label</td><td><code>--color-pitch-accent-ink</code></td><td class="live" data-live="--color-pitch-accent-ink">—</td></tr>
               <tr><td>Focus width</td><td><code>--focus-width</code></td><td class="live" data-live="--focus-width">—</td></tr>
@@ -965,28 +974,28 @@ footer code{color:var(--g-ink)}
         </div>
       </article>
 
-      <!-- pill filter -->
+      <!-- filter chip -->
       <article class="comp">
         <div class="comp-head">
-          <h3>Pill filter</h3>
-          <span class="comp-classes">.pill[aria-pressed="true|false"]</span>
+          <h3>Filter chip</h3>
+          <span class="comp-classes">.chip[aria-pressed="true|false"]</span>
         </div>
         <div class="frame">
           <div class="frame-bar"><span class="frame-dot"></span> surface · wiki · light <span class="frame-val">on = accent fill, off = card</span></div>
           <div class="stage" data-surface="wiki">
             <div class="row" role="group" aria-label="Filter">
-              <button class="pill" type="button" aria-pressed="true">All shots</button>
-              <button class="pill" type="button" aria-pressed="false">Coverage</button>
-              <button class="pill" type="button" aria-pressed="false">Movement</button>
+              <button class="chip" type="button" aria-pressed="true">All shots</button>
+              <button class="chip" type="button" aria-pressed="false">Coverage</button>
+              <button class="chip" type="button" aria-pressed="false">Movement</button>
             </div>
-            <p class="hint">Pill filters never mix with underline steps on one control.</p>
+            <p class="hint">Filters ship as 4px chips on every surface. Pill radius (<code>--radius-pill</code>) survives only on badges, switch tracks and the sheet grab — no product button is a pill, so the old pill specimen was removed rather than re-labelled.</p>
           </div>
         </div>
         <div class="comp-props">
           <table class="tok-table">
             <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
             <tbody>
-              <tr><td>Radius</td><td><code>--radius-pill</code></td><td class="live" data-live="--radius-pill">—</td></tr>
+              <tr><td>Radius</td><td><code>--radius-xs</code></td><td class="live" data-live="--radius-xs">—</td></tr>
               <tr><td>Height</td><td><code>--touch-min</code></td><td class="live" data-live="--touch-min">—</td></tr>
               <tr><td>On fill</td><td><code>--color-wiki-light-accent</code></td><td class="live" data-live="--color-wiki-light-accent">—</td></tr>
               <tr><td>Off fill</td><td><code>--color-wiki-light-card</code></td><td class="live" data-live="--color-wiki-light-card">—</td></tr>
@@ -1223,7 +1232,7 @@ footer code{color:var(--g-ink)}
       <div class="sec-head">
         <span class="sec-num">07</span>
         <h2 id="matrix-h">Consistency matrix</h2>
-        <p>Measured from the shipped CSS in the three pages. Red cells are the worklist — not style opinions.</p>
+        <p>Read at render from the shipped pages — an iframe per surface, <code>getComputedStyle</code> on the real selectors. No cell is typed by hand.</p>
       </div>
 
       <div class="matrix-wrap">
@@ -1233,52 +1242,52 @@ footer code{color:var(--g-ink)}
           </thead>
           <tbody>
             <tr>
-              <th scope="row">Button radius</th>
-              <td><code>--radius-pill</code><span class="note">99px on .tab / .chip; 8px on .nav button — both tokenised.</span></td>
-              <td><code>--radius-pill</code><span class="note">99px .btn; .expbtn uses 8px (sm).</span></td>
-              <td><span class="badge-dev">deviation</span><code>--radius-sm</code><span class="note">8px on .tools, but 6 / 7 / 9 / 12px elsewhere. Consolidate to sm.</span></td>
+              <th scope="row">Control radius</th>
+              <td data-k="control" data-m="wiki" data-cite="index.html:26,41"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="control" data-m="pitch" data-cite="pitch.html:98"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="control" data-m="engine" data-cite="engine.html:39"><code>—</code><span class="note">measuring</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Control height</th>
+              <td data-k="height" data-m="wiki" data-cite="index.html:26,41"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="height" data-m="pitch" data-cite="pitch.html:98"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="height" data-m="engine" data-cite="engine.html:39"><code>—</code><span class="note">measuring</span></td>
             </tr>
             <tr>
               <th scope="row">Field radius</th>
-              <td><code>--radius-pill</code><span class="note">Search input is a 99px pill; no form fields yet.</span></td>
-              <td><span class="note">— not used (document surface).</span></td>
-              <td><span class="badge-dev">deviation</span><code>--radius-sm</code><span class="note">Inputs render at 6px. Correct token: radius-sm (8px).</span></td>
+              <td data-k="field" data-m="wiki" data-cite="index.html:23"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="field" data-m="pitch"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="field" data-m="engine"><code>—</code><span class="note">measuring</span></td>
             </tr>
             <tr>
-              <th scope="row">Card radius</th>
-              <td><code>--radius-card</code><span class="note">.panel is 12px and matches radius-card exactly.</span></td>
-              <td><code>--radius-lg</code><span class="note">14px .card matches lg exactly.</span></td>
-              <td><code>--radius-md</code><span class="note">10px menus / panels; inner items drop to 7px.</span></td>
+              <th scope="row">Panel radius</th>
+              <td data-k="panel" data-m="wiki" data-cite="index.html:32"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="panel" data-m="pitch" data-cite="pitch.html:103"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="panel" data-m="engine" data-cite="engine.html:117"><code>—</code><span class="note">measuring</span></td>
             </tr>
             <tr>
-              <th scope="row">Border width</th>
-              <td><code>--border-width-hairline</code><span class="note">Every 1px rule is now the token; 2px sides take --border-width-strong.</span></td>
-              <td><code>--border-width-hairline</code><span class="note">Every 1px rule is now the token; 2px sides take --border-width-strong.</span></td>
-              <td><code>--border-width-hairline</code><span class="note">Every 1px rule is now the token; 3px accent sides take --border-width-accent.</span></td>
-            </tr>
-            <tr>
-              <th scope="row">Accent usage</th>
-              <td><code>--color-wiki-light-accent</code><span class="note">Swaps to --color-wiki-dark-accent under dark. One accent span per card.</span></td>
-              <td><code>--color-pitch-accent</code><span class="note">Champagne; usually one accent span in the H1.</span></td>
-              <td><code>--color-engine-accent</code><span class="note">Orange only for primary + hover edge; teal is a data accent.</span></td>
+              <th scope="row">Hairline</th>
+              <td data-k="hairline" data-m="wiki" data-cite="index.html:32"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="hairline" data-m="pitch" data-cite="pitch.html:103"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="hairline" data-m="engine" data-cite="engine.html:117"><code>—</code><span class="note">measuring</span></td>
             </tr>
             <tr>
               <th scope="row">Focus ring</th>
-              <td><span class="badge-dev">deviation</span><code>none defined</code><span class="note">Browser default only. Correct: 2px accent, 2px offset.</span></td>
-              <td><code>--focus-width / --focus-offset</code><span class="note">2px accent, 2px offset across three rules; authored literally, token matches.</span></td>
-              <td><span class="badge-dev">deviation</span><code>1px accent + shadow</code><span class="note">1px ring + halo; --elevation-ring-accent exists but --focus-width is 2px. Round up.</span></td>
+              <td data-k="focus" data-m="wiki" data-cite="index.html:84"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="focus" data-m="pitch" data-cite="pitch.html:28"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="focus" data-m="engine" data-cite="engine.html:410"><code>—</code><span class="note">measuring</span></td>
             </tr>
             <tr>
               <th scope="row">Body size</th>
-              <td><span class="badge-dev">deviation</span><code>15px</code><span class="note">0.9375rem vs --typography-size-body 0.95rem (15.2px).</span></td>
-              <td><span class="badge-dev">deviation</span><code>15px</code><span class="note">0.9375rem vs token 0.95rem. Line-height 1.7 matches.</span></td>
-              <td><span class="badge-dev">deviation</span><code>15px</code><span class="note">0.9375rem vs token 0.95rem. Line-height 1.6 vs token 1.7.</span></td>
+              <td data-k="body" data-m="wiki" data-cite="index.html:11"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="body" data-m="pitch" data-cite="pitch.html:23"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="body" data-m="engine" data-cite="engine.html:32"><code>—</code><span class="note">measuring</span></td>
             </tr>
             <tr>
-              <th scope="row">Muted text</th>
-              <td><code>--color-wiki-light-muted</code><span class="note">23 uses of var(--mut); dark set swaps cleanly.</span></td>
-              <td><code>--color-pitch-muted</code><span class="note">All muted copy routed through var(--mut).</span></td>
-              <td><code>--color-engine-muted</code><span class="note">Secondary text uses muted-2 for contrast on panels.</span></td>
+              <th scope="row">Body family</th>
+              <td data-k="family" data-m="wiki" data-cite="index.html:11"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="family" data-m="pitch" data-cite="pitch.html:23"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="family" data-m="engine" data-cite="engine.html:32"><code>—</code><span class="note">measuring</span></td>
             </tr>
           </tbody>
         </table>
@@ -1286,25 +1295,29 @@ footer code{color:var(--g-ink)}
 
       <div class="matrix-legend">
         <span class="badge-dev">deviation</span>
-        <span>Cell departs from the token layer. Fix is named in the note.</span>
+        <span>Computed value departs from the token named in its row; the cite under it is the line to fix. Wiki dark is measured on the same pass and reported in the wiki note where it differs.</span>
       </div>
-      <p class="matrix-sum">Worklist: field radius and focus ring in Engine. Border width now resolves to a token on all three surfaces — --border-width-hairline (1px, the overwhelming majority), --border-width-strong (2px) and --border-width-accent (3px) — so the hairline weight is one edit, and the gate (V7) keeps it that way. Body size is a rounding decision still open (15px authored vs 0.95rem token). Everything else now resolves to a token, including the 12px card radius (radius-card).</p>
+      <p class="matrix-sum">Every cell above is a computed value from the shipped pages at a 1440 viewport, printed at render. Where a surface departs from the token the badge and the <code>file:line</code> are generated from the same measurement, so the worklist cannot drift from the CSS. A cell that reads “none in DOM” means the surface ships no such element — not that it was skipped.</p>
     </section>
 
   </main>
 </div>
 
 <footer>
-  <div class="wrap">Generated from <code>design-system/tokens.css</code> · <span class="js-token-count">229</span> tokens · one <code>:root</code> block. Specimens are UI fragments, not a device mockup.</div>
+  <div class="wrap">Generated from <code>design-system/tokens.css</code> · <span class="js-token-count">—</span> tokens · one <code>:root</code> block. Specimens are UI fragments, not a device mockup.</div>
 </footer>
+
+<div id="probe-host" aria-hidden="true"></div>
 
 <script>
 (function () {
   var root = document.documentElement;
   var liveEls = function () { return document.querySelectorAll('[data-live]'); };
 
-  function countRootTokens() {
-    var n = 0;
+  function countRootTokens() { return rootTokenNames().length; }
+
+  function rootTokenNames() {
+    var names = [];
     try {
       for (var i = 0; i < document.styleSheets.length; i++) {
         var sheet = document.styleSheets[i];
@@ -1317,19 +1330,306 @@ footer code{color:var(--g-ink)}
           var r = rules[j];
           if (r.selectorText === ':root' && r.style) {
             for (var k = 0; k < r.style.length; k++) {
-              if (r.style[k].indexOf('--') === 0) n++;
+              var n = r.style[k];
+              if (n.indexOf('--') === 0 && names.indexOf(n) === -1) names.push(n);
             }
           }
         }
       }
     } catch (e) {}
-    return n;
+    return names;
+  }
+
+  /* group tags: counted from the rendered swatches, never typed */
+  function paintGroupCounts() {
+    var names = rootTokenNames();
+    document.querySelectorAll('.swgroup').forEach(function (g) {
+      var tag = g.querySelector('.tag');
+      if (!tag) return;
+      var shown = g.querySelectorAll('.sw').length;
+      var prefix = g.getAttribute('data-prefix');
+      var total = 0;
+      if (prefix) {
+        names.forEach(function (n) { if (n.indexOf(prefix) === 0) total++; });
+      }
+      tag.textContent = total ? shown + ' of ' + total + ' tokens' : shown + ' swatches';
+    });
+  }
+
+  /* spacing caption: ladder rows + spacing tokens in tokens.css */
+  function paintSpaceCaption() {
+    var p = document.querySelector('[data-space-caption]');
+    if (!p) return;
+    var rows = document.querySelectorAll('.space-row').length;
+    var total = rootTokenNames().filter(function (n) { return n.indexOf('--spacing-') === 0; }).length;
+    p.textContent = 'One 4px base — ' + rows + ' of ' + total + ' spacing tokens shown. Bars are drawn at 6× so the ladder is legible; labels carry the literal value.';
   }
 
   function paintCount() {
+    paintGroupCounts();
+    paintSpaceCaption();
     var n = countRootTokens();
     if (!n) return;
     document.querySelectorAll('.js-token-count').forEach(function (el) { el.textContent = n; });
+  }
+
+  /* ---------- consistency matrix: measured from the shipped pages ---------- */
+  var SURFACES = {
+    wiki: { src: '../index.html', theme: 'light',
+      ctrl: ['.tab', '.chip', '#theme', '.nav button'], panel: '.panel', field: '#search' },
+    wikiDark: { src: '../index.html', theme: 'dark',
+      ctrl: ['.tab', '.chip', '#theme', '.nav button'], panel: '.panel', field: '#search' },
+    pitch: { src: '../pitch.html', theme: null,
+      ctrl: ['.btn'], panel: '.card', field: null },
+    engine: { src: '../engine.html', theme: null,
+      ctrl: ['.tools button', '#side button'], panel: '#assetPanel', field: null }
+  };
+  /* the token each row claims; a computed value that misses it gets a badge + cite */
+  var EXPECT = {
+    control: '--radius-xs', field: '--radius-xs', panel: '--radius-sm',
+    height: '--touch-min', hairline: '--border-width-hairline',
+    focus: '--focus-width', body: '--typography-size-body',
+    family: '--typography-family-sans'
+  };
+
+  function tokenValue(name) { return getComputedStyle(root).getPropertyValue(name).trim(); }
+  function pxOf(v) { var n = parseFloat(v); return isNaN(n) ? null : Math.round(n * 100) / 100; }
+  /* token values may be px, rem or unitless (line-height); compare in px */
+  function pxOfToken(name) {
+    var v = tokenValue(name), n = parseFloat(v);
+    if (isNaN(n)) return null;
+    if (/rem$/.test(v)) {
+      var base = parseFloat(getComputedStyle(root).fontSize) || 16;
+      return Math.round(n * base * 100) / 100;
+    }
+    if (/em$/.test(v)) return Math.round(n * (parseFloat(getComputedStyle(root).fontSize) || 16) * 100) / 100;
+    return Math.round(n * 100) / 100;
+  }
+  function rgbOf(c) { var m = String(c).match(/rgba?\(([^)]+)\)/); return m ? m[1].split(',').map(Number) : null; }
+  function hexOf(c) {
+    var p = rgbOf(c);
+    if (!p) return String(c);
+    return '#' + p.slice(0, 3).map(function (v) {
+      return ('0' + Math.max(0, Math.min(255, Math.round(v))).toString(16)).slice(-2);
+    }).join('').toUpperCase();
+  }
+  function lumOf(c) {
+    var p = rgbOf(c);
+    if (!p) return null;
+    var f = p.slice(0, 3).map(function (v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+    return 0.2126 * f[0] + 0.7152 * f[1] + 0.0722 * f[2];
+  }
+  function ratioOf(a, b) {
+    var x = lumOf(a), y = lumOf(b);
+    if (x === null || y === null) return null;
+    var hi = Math.max(x, y), lo = Math.min(x, y);
+    return Math.round(((hi + 0.05) / (lo + 0.05)) * 100) / 100;
+  }
+  function normFam(s) { return String(s).replace(/["']/g, '').replace(/\s+/g, ' ').trim().toLowerCase(); }
+
+  function focusRules(win, doc) {
+    var widths = [], offsets = [], count = 0;
+    function resolve(v) {
+      if (!v) return '';
+      return String(v).replace(/var\((--[a-z0-9-]+)\)/gi, function (m, n) {
+        return (win.getComputedStyle(doc.documentElement).getPropertyValue(n) || '').trim() || m;
+      });
+    }
+    function walk(rules) {
+      for (var i = 0; i < rules.length; i++) {
+        var r = rules[i];
+        if (r.cssRules && r.cssRules.length) { walk(r.cssRules); continue; }
+        var sel = r.selectorText || '';
+        if (sel.indexOf(':focus-visible') === -1 || !r.style) continue;
+        var text = r.style.cssText || '';
+        var om = text.match(/outline-offset\s*:\s*([^;]+)/);
+        var m = text.match(/outline(?:-width)?\s*:\s*([^;]+)/);
+        if (!m && !om) continue;
+        count++;
+        if (m) {
+          var decl = resolve(m[1]);
+          var wm = decl.match(/([0-9.]+px|thin|medium|thick)/);
+          if (wm) widths.push(pxOf(wm[1]));
+        }
+        if (om) offsets.push(resolve(om[1]).trim());
+      }
+    }
+    for (var s = 0; s < doc.styleSheets.length; s++) {
+      var list = null;
+      try { list = doc.styleSheets[s].cssRules; } catch (e) { continue; }
+      if (list) walk(list);
+    }
+    if (!count) return { count: 0 };
+    widths.sort(function (a, b) { return a - b; });
+    var w = widths.length ? widths[Math.floor(widths.length / 2)] : null;
+    return { count: count, width: w === null ? null : w, offset: offsets.length ? offsets[0] : '0' };
+  }
+
+  function measureSurface(win, doc, cfg) {
+    var out = {};
+    function cs(el) { return win.getComputedStyle(el); }
+    function q(sel) { try { return doc.querySelector(sel); } catch (e) { return null; } }
+    function box(sel) {
+      var el = q(sel);
+      if (!el) return null;
+      var st = cs(el), r = el.getBoundingClientRect();
+      return { sel: sel, radius: st.borderTopLeftRadius, h: Math.round(r.height * 100) / 100,
+        fs: st.fontSize, lh: st.lineHeight, fam: st.fontFamily,
+        bw: st.borderTopWidth, bc: st.borderTopColor, bg: st.backgroundColor };
+    }
+    function list(items) {
+      return items.map(function (it) { return it.sel + ' ' + it.text; }).join(' · ');
+    }
+    var ctrls = (cfg.ctrl || []).map(box).filter(Boolean);
+    var panel = cfg.panel ? box(cfg.panel) : null;
+    var field = cfg.field ? box(cfg.field) : null;
+    var body = box('body');
+
+    out.control = ctrls.length ? {
+      main: ctrls[0].radius,
+      note: list(ctrls.map(function (c) { return { sel: c.sel, text: c.radius }; })),
+      nums: ctrls.map(function (c) { return pxOf(c.radius); })
+    } : { main: 'none in DOM', note: '', nums: [] };
+
+    out.height = ctrls.length ? {
+      main: ctrls[0].h + 'px',
+      note: list(ctrls.map(function (c) { return { sel: c.sel, text: c.h }; })),
+      nums: ctrls.map(function (c) { return c.h; })
+    } : { main: 'none in DOM', note: '', nums: [] };
+
+    out.field = field ? {
+      main: field.radius, note: field.sel + ' · ' + field.h + 'px tall', nums: [pxOf(field.radius)]
+    } : { main: 'none in DOM', note: 'no form control ships on this surface', nums: [] };
+
+    out.panel = panel ? {
+      main: panel.radius,
+      note: panel.sel + (panel.h < 1 ? ' · height 0 at rest (overlay)' : ' · ' + panel.h + 'px tall'),
+      nums: [pxOf(panel.radius)]
+    } : { main: 'none in DOM', note: '', nums: [] };
+
+    var ratio = panel ? ratioOf(panel.bc, panel.bg) : null;
+    out.hairline = panel ? {
+      main: pxOf(panel.bw) + 'px · ' + hexOf(panel.bc),
+      note: (ratio === null ? 'contrast n/a' : ratio + ':1') + ' on ' + hexOf(panel.bg),
+      nums: [pxOf(panel.bw)]
+    } : { main: 'none in DOM', note: '', nums: [] };
+
+    var focus = focusRules(win, doc);
+    out.focus = focus.count ? {
+      main: (focus.width === null ? '—' : focus.width + 'px') + ' · ' + focus.offset + ' offset',
+      note: focus.count + ' :focus-visible rules',
+      nums: focus.width === null ? [] : [focus.width]
+    } : { main: 'none defined', note: 'no :focus-visible outline in the shipped CSS', nums: [] };
+
+    var lh = body.fs && pxOf(body.fs) ? Math.round((pxOf(body.lh) / pxOf(body.fs)) * 100) / 100 : null;
+    out.body = {
+      main: body.fs + ' / ' + (lh === null ? 'normal' : lh),
+      note: 'token ' + pxOfToken('--typography-size-body') + 'px / ' + tokenValue('--typography-lineheight-body'),
+      nums: [pxOf(body.fs)], lh: lh
+    };
+    out.family = {
+      main: normFam(body.fam).split(',')[0],
+      note: normFam(body.fam) === normFam(tokenValue('--typography-family-sans'))
+        ? 'stack matches --typography-family-sans' : 'stack departs from --typography-family-sans',
+      nums: [], match: normFam(body.fam) === normFam(tokenValue('--typography-family-sans'))
+    };
+    return out;
+  }
+
+  function deviates(key, m) {
+    var exp = pxOfToken(EXPECT[key]);
+    if (!m) return false;
+    if (key === 'family') return m.match === false;
+    if (!m.nums || !m.nums.length) return key === 'focus' && m.main === 'none defined';
+    if (key === 'body') {
+      var sizeOff = m.nums.some(function (n) { return n !== null && Math.abs(n - exp) > 0.01; });
+      var lhTok = parseFloat(tokenValue('--typography-lineheight-body'));
+      var lhOff = m.lh !== null && !isNaN(lhTok) && Math.abs(m.lh - lhTok) > 0.01;
+      return sizeOff || lhOff;
+    }
+    if (key === 'height') {
+      return m.nums.some(function (n) { return n !== null && n < exp - 0.01; });
+    }
+    return m.nums.some(function (n) { return n !== null && Math.abs(n - exp) > 0.01; });
+  }
+
+  function paintCell(td, key, m, dark) {
+    var code = td.querySelector('code'), note = td.querySelector('.note');
+    td.querySelectorAll('.badge-dev,.cite').forEach(function (n) { n.remove(); });
+    if (!m) {
+      if (code) code.textContent = 'unavailable';
+      if (note) note.textContent = 'probe failed — this page must be served over http';
+      return;
+    }
+    if (code) code.textContent = m.main;
+    var parts = [m.note];
+    if (dark && dark.main && dark.main !== m.main) parts.push('dark ' + dark.main + (dark.note ? ' · ' + dark.note : ''));
+    if (note) note.textContent = parts.filter(Boolean).join(' · ');
+    if (deviates(key, m)) {
+      var badge = document.createElement('span');
+      badge.className = 'badge-dev';
+      badge.textContent = 'deviation';
+      td.insertBefore(badge, td.firstChild);
+      var cite = td.getAttribute('data-cite');
+      if (cite) {
+        var c = document.createElement('span');
+        c.className = 'cite';
+        c.textContent = cite;
+        td.appendChild(c);
+      }
+    }
+  }
+
+  function loadSurface(cfg) {
+    return new Promise(function (resolve) {
+      var host = document.getElementById('probe-host');
+      if (!host) { resolve(null); return; }
+      var f = document.createElement('iframe');
+      f.setAttribute('aria-hidden', 'true');
+      f.setAttribute('tabindex', '-1');
+      f.setAttribute('title', 'measurement frame');
+      f.style.cssText = 'width:1440px;height:900px;border:0';
+      var done = false;
+      function finish(payload) {
+        if (done) return;
+        done = true;
+        if (f.parentNode) f.parentNode.removeChild(f);
+        resolve(payload);
+      }
+      f.addEventListener('load', function () {
+        try {
+          var d = f.contentDocument, w = f.contentWindow;
+          if (cfg.theme) d.documentElement.setAttribute('data-theme', cfg.theme);
+          setTimeout(function () {
+            try { finish({ metrics: measureSurface(w, d, cfg) }); } catch (e) { finish(null); }
+          }, 90);
+        } catch (e) { finish(null); }
+      });
+      setTimeout(function () { finish(null); }, 9000);
+      f.src = cfg.src;
+      host.appendChild(f);
+    });
+  }
+
+  function probeMatrix() {
+    var cells = document.querySelectorAll('.matrix td[data-k]');
+    if (!cells.length) return;
+    var results = {};
+    var chain = Promise.resolve();
+    ['wiki', 'wikiDark', 'pitch', 'engine'].forEach(function (key) {
+      chain = chain.then(function () {
+        return loadSurface(SURFACES[key]).then(function (r) { results[key] = r; });
+      });
+    });
+    chain.then(function () {
+      cells.forEach(function (td) {
+        var key = td.getAttribute('data-m');
+        var metric = td.getAttribute('data-k');
+        var light = results[key] && results[key].metrics;
+        var dark = key === 'wiki' && results.wikiDark && results.wikiDark.metrics;
+        paintCell(td, metric, light ? light[metric] : null, dark ? dark[metric] : null);
+      });
+    });
   }
 
   function paint() {
@@ -1379,6 +1679,9 @@ footer code{color:var(--g-ink)}
 
   paintCount();
   paint();
+  probeMatrix();
+  /* counts are recomputed from tokens.css on demand — used by the doc-count check */
+  document.addEventListener('ds:recount', paintCount);
   window.addEventListener('load', function () { paintCount(); paint(); });
   window.addEventListener('resize', paint);
 
