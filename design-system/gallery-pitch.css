@@ -1,0 +1,265 @@
+/* ==========================================================================
+   gallery-pitch.css — the gallery's page chrome on the pitch shell.
+
+   The gallery used to switch the whole page between wiki-light and pitch.
+   Since the one-language pass the shell is pitch-locked: warm near-black
+   ground, hairline cards, cream ink, cream accent for the live state and the
+   focus ring (pitch-shell.css supplies the roles, the alias bridge, the focus
+   colour and the prose voice; the --g-* aliases live in the page's own
+   <style> because both the chrome and the swatch rows read them).
+
+   What this file must NOT touch:
+     · the specimen cells — each carries its own data-ds-theme / data-surface
+       map (PITCH / WIKI-LIGHT / WIKI-DARK / ENGINE). They are documentation:
+       the four cells have to keep looking like the four surfaces they show.
+     · the matrix section, which carries data-ds-theme="wiki-light" on purpose.
+
+   Loaded after the inline <style> and after pitch-shell.css, scoped with
+   html[data-ds-shell] so a harness that stamps data-theme / data-ds-theme on
+   <html> cannot repaint it. Values come from tokens.css only.
+   ========================================================================== */
+
+/* ---------- specimen cells keep their own focus colour ----------
+   pitch-shell.css pins one cream --focus-color on the page root. The cells are
+   documentation: each already declares its own theme map, and before the shell
+   their rings resolved to that cell's ink. Hand the inherited value back so the
+   four cells keep showing four different focus colours. */
+html[data-ds-shell="pitch"] .spec-cell {
+  --focus-color: currentColor;
+}
+
+/* ---------- the shell's prose voice stops at the cell edge ----------
+   pitch-shell.css states a page voice with :where(p …) / :where(h1 … h6) /
+   :where(code …). Inside the gallery those elements are specimen content: they
+   used to inherit straight from the cell's own map, and any element-level rule
+   beats inheritance. Hand them back to the cell so the four cells keep showing
+   what tokens.css actually ships. components.css sets no element-level colour
+   under a .ds-* class, so nothing else is competing for these properties. */
+html[data-ds-shell="pitch"] .spec-cell :where(p, li, dd, blockquote, h1, h2, h3, h4, h5, h6, code, kbd, samp, small, figcaption, cite) {
+  color: inherit;
+}
+
+/* the shell's heading weight (h3–h6 semibold) is page voice; a specimen's
+   <h4> title keeps the bold it rendered with before the shell existed */
+html[data-ds-shell="pitch"] .spec-cell :where(h1, h2, h3, h4, h5, h6) {
+  font-weight: var(--weight-bold);
+}
+
+/* ---------- code on the page ground ----------
+   The matrix section carries data-ds-theme="wiki-light" (its badges document
+   that map), so the shell's `:where(code)` colour would resolve against the
+   wiki-light faint slot — a dark grey on the pitch ground. Page-level code
+   keeps the pitch body ink (13.8:1); cell code is handed back to the cell by
+   the rule above, and table code keeps --g-ink. */
+html[data-ds-shell="pitch"] main code {
+  color: var(--g-body);
+}
+
+/* ---------- masthead ---------- */
+html[data-ds-shell="pitch"] .masthead {
+  border-bottom-color: var(--g-rule);
+}
+
+html[data-ds-shell="pitch"] .masthead h1 {
+  color: var(--g-ink);
+  font-size: var(--typography-size-display);
+  line-height: var(--line-height-display);
+  letter-spacing: var(--tracking-tight);
+  font-weight: var(--weight-bold);
+}
+
+html[data-ds-shell="pitch"] .masthead .kicker {
+  font-family: var(--typography-family-mono);
+  font-size: var(--typography-size-eyebrow);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--g-muted);
+}
+
+html[data-ds-shell="pitch"] .mast-lede {
+  color: var(--g-body);
+  max-width: 60ch;
+}
+
+html[data-ds-shell="pitch"] .mast-lede code {
+  color: var(--g-ink);
+}
+
+html[data-ds-shell="pitch"] .stats {
+  border-top-color: var(--g-rule);
+}
+
+html[data-ds-shell="pitch"] .stats dt {
+  font-family: var(--typography-family-mono);
+  font-size: var(--typography-size-eyebrow);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--g-muted);
+}
+
+html[data-ds-shell="pitch"] .stats dd {
+  color: var(--g-ink);
+}
+
+/* ---------- sidebar rail ---------- */
+html[data-ds-shell="pitch"] .side a {
+  color: var(--g-muted);
+  border-left-color: var(--g-rule);
+}
+
+html[data-ds-shell="pitch"] .side a:hover {
+  color: var(--g-ink);
+}
+
+html[data-ds-shell="pitch"] .side a.on {
+  color: var(--g-accent);
+  font-weight: var(--weight-medium);
+  border-left-color: var(--g-accent);
+}
+
+html[data-ds-shell="pitch"] .side .side-label {
+  font-family: var(--typography-family-mono);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--g-muted);
+  border-bottom-color: var(--g-rule);
+}
+
+html[data-ds-shell="pitch"] .side .side-foot {
+  color: var(--g-muted);
+}
+
+/* ---------- section heads ---------- */
+html[data-ds-shell="pitch"] .sec-head {
+  border-bottom-color: var(--g-rule);
+}
+
+html[data-ds-shell="pitch"] .sec-head h2 {
+  color: var(--g-ink);
+  letter-spacing: var(--tracking-tight);
+  font-weight: var(--weight-semibold);
+}
+
+html[data-ds-shell="pitch"] .sec-num {
+  font-family: var(--typography-family-mono);
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--g-accent);
+}
+
+html[data-ds-shell="pitch"] .sec-head p,
+html[data-ds-shell="pitch"] .sec-intro {
+  color: var(--g-body);
+}
+
+/* ---------- labels ---------- */
+html[data-ds-shell="pitch"] .swgroup-head .tag,
+html[data-ds-shell="pitch"] .sub-h {
+  font-family: var(--typography-family-mono);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--g-muted);
+}
+
+html[data-ds-shell="pitch"] .swgroup-head h3 {
+  color: var(--g-ink);
+}
+
+/* ---------- hairline cards ---------- */
+html[data-ds-shell="pitch"] .fam,
+html[data-ds-shell="pitch"] .edge {
+  background: var(--g-card);
+  border-color: var(--g-rule);
+  border-radius: var(--radius-sm);
+}
+
+html[data-ds-shell="pitch"] .fam .fam-k,
+html[data-ds-shell="pitch"] .fam .fam-tok,
+html[data-ds-shell="pitch"] .edge {
+  color: var(--g-muted);
+}
+
+html[data-ds-shell="pitch"] .fam .fam-spec {
+  color: var(--g-ink);
+}
+
+html[data-ds-shell="pitch"] .edge code {
+  color: var(--g-ink);
+}
+
+html[data-ds-shell="pitch"] .edge-dashed {
+  border-color: var(--g-muted);
+}
+
+/* ---------- tables ---------- */
+html[data-ds-shell="pitch"] .tok-table th,
+html[data-ds-shell="pitch"] .matrix thead th {
+  font-family: var(--typography-family-mono);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--g-muted);
+  border-bottom-color: var(--g-rule);
+}
+
+html[data-ds-shell="pitch"] .tok-table td,
+html[data-ds-shell="pitch"] .matrix th,
+html[data-ds-shell="pitch"] .matrix td {
+  border-bottom-color: var(--g-rule);
+}
+
+html[data-ds-shell="pitch"] .matrix thead th {
+  background: var(--g-wash);
+}
+
+html[data-ds-shell="pitch"] .matrix-wrap {
+  border-color: var(--g-rule);
+  border-radius: var(--radius-md);
+  background: var(--g-card);
+}
+
+html[data-ds-shell="pitch"] .matrix tbody th,
+html[data-ds-shell="pitch"] .tok-table td code,
+html[data-ds-shell="pitch"] .matrix td code {
+  color: var(--g-ink);
+}
+
+html[data-ds-shell="pitch"] .matrix td .note,
+html[data-ds-shell="pitch"] .matrix-legend,
+html[data-ds-shell="pitch"] .matrix-sum {
+  color: var(--g-muted);
+}
+
+/* ---------- component index ---------- */
+html[data-ds-shell="pitch"] .comp {
+  border-top-color: var(--g-rule);
+}
+
+html[data-ds-shell="pitch"] .comp-head h3 {
+  color: var(--g-ink);
+}
+
+html[data-ds-shell="pitch"] .comp-classes {
+  color: var(--g-muted);
+}
+
+/* ---------- footer ---------- */
+html[data-ds-shell="pitch"] footer {
+  border-top-color: var(--g-rule);
+  color: var(--g-muted);
+}
+
+html[data-ds-shell="pitch"] footer code {
+  color: var(--g-ink);
+}
+
+/* ---------- narrow shell ---------- */
+@media (max-width: 900px) {
+  html[data-ds-shell="pitch"] .side {
+    background: var(--g-bg);
+    border-bottom-color: var(--g-rule);
+  }
+
+  html[data-ds-shell="pitch"] .side a.on {
+    border-left-color: transparent;
+    border-bottom-color: var(--g-accent);
+  }
+}

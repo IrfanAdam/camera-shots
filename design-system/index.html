@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ds-manual>
+<html lang="en" data-ds-manual data-ds-shell="pitch">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -9,41 +9,23 @@
 <link rel="stylesheet" href="base.css">
 <link rel="stylesheet" href="components.css">
 <style>
-/* ---------- gallery chrome: neutral, token-fed ---------- */
+/* ---------- gallery chrome: pitch shell, token-fed ----------
+   The page shell is pitch-locked (one language across the four surfaces).
+   The --g-* aliases below are the page's own names, bridged to the pitch
+   ladder; every chrome override lives in gallery-pitch.css, loaded after
+   pitch-shell.css, and the specimen cells keep their own theme maps. */
 :root{
-  color-scheme: light;
-  --g-bg: var(--color-wiki-light-bg);
-  --g-card: var(--color-wiki-light-card);
-  --g-ink: var(--color-wiki-light-ink);
-  --g-muted: var(--color-wiki-light-muted);
-  --g-rule: var(--color-wiki-light-rule);
-  --g-wash: var(--color-wiki-light-accent-wash);
-  --g-amber: var(--color-wiki-light-amber);
-  --g-swatch-edge: color-mix(in srgb, var(--color-wiki-light-rule) 78%, transparent);
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    color-scheme: dark;
-    --g-bg: var(--color-pitch-bg);
-    --g-card: var(--color-pitch-surface-1);
-    --g-ink: var(--color-pitch-ink);
-    --g-muted: var(--color-pitch-muted);
-    --g-rule: var(--color-pitch-rule);
-    --g-wash: var(--color-pitch-surface-2);
-    --g-amber: var(--color-pitch-accent);
-    --g-swatch-edge: color-mix(in srgb, var(--color-wiki-light-rule) 26%, transparent);
-  }
-}
-:root[data-theme="dark"]{
-  color-scheme: dark;
   --g-bg: var(--color-pitch-bg);
   --g-card: var(--color-pitch-surface-1);
+  --g-wash: var(--color-pitch-surface-2);
   --g-ink: var(--color-pitch-ink);
+  --g-body: var(--color-pitch-body);
   --g-muted: var(--color-pitch-muted);
   --g-rule: var(--color-pitch-rule);
-  --g-wash: var(--color-pitch-surface-2);
   --g-amber: var(--color-pitch-accent);
-  --g-swatch-edge: color-mix(in srgb, var(--color-wiki-light-rule) 26%, transparent);
+  --g-accent: var(--color-pitch-accent);
+  --g-accent-ink: var(--color-pitch-accent-ink);
+  --g-swatch-edge: color-mix(in srgb, var(--color-pitch-muted-2) 42%, transparent);
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -65,16 +47,6 @@ code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-
 .masthead{border-bottom:var(--border-width-hairline) solid var(--g-rule);padding:var(--spacing-2xl) 0 var(--spacing-xl)}
 .mast-top{display:flex;align-items:center;justify-content:space-between;gap:var(--spacing-md);flex-wrap:wrap;margin-bottom:var(--spacing-xl)}
 .kicker{font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;font-weight:var(--weight-medium);color:var(--g-muted)}
-.themer{display:inline-flex;border:var(--border-width-hairline) solid var(--g-rule);border-radius:var(--radius-xs);padding:var(--spacing-2);background:var(--g-card)}
-.themer button{
-  font:inherit;font-size:var(--typography-size-meta);min-height:var(--touch-min);
-  padding:0 var(--spacing-md);border:0;border-radius:var(--radius-xs);
-  background:transparent;color:var(--g-muted);cursor:pointer;
-  transition:color var(--motion-duration-fast) var(--motion-easing-standard),background var(--motion-duration-fast) var(--motion-easing-standard);
-}
-.themer button:hover{color:var(--g-ink)}
-.themer button[aria-pressed="true"]{background:var(--g-ink);color:var(--g-bg)}
-.themer button:focus-visible{outline:2px solid var(--g-ink);outline-offset:2px}
 .masthead h1{font-size:var(--typography-size-display);line-height:var(--line-height-display);letter-spacing:var(--tracking-tight);font-weight:var(--weight-bold);max-width:18ch}
 .mast-lede{margin-top:var(--spacing-md);max-width:56ch;color:var(--g-muted);font-size:var(--typography-size-body)}
 .mast-lede code{color:var(--g-ink)}
@@ -216,7 +188,7 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
    in the theme maps, not :root), so each cell also paints itself from the same
    :root tokens through --x-* — the aliases stay page-local, like --g-*.
    data-ds-theme decides what the components see; data-surface decides what the
-   cell looks like. Neither one touches the page's own theme. */
+   cell looks like. Neither one touches the pitch page shell. */
 .spec-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--spacing-sm)}
 .spec-cell{
   --x-bg:var(--color-wiki-light-bg);
@@ -335,9 +307,10 @@ footer code{color:var(--g-ink)}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .mdot{transition:none}
-  .themer button{transition:none}
 }
 </style>
+<link rel="stylesheet" href="pitch-shell.css">
+<link rel="stylesheet" href="gallery-pitch.css">
 </head>
 <body>
 
@@ -346,18 +319,14 @@ footer code{color:var(--g-ink)}
 <header class="masthead">
   <div class="wrap">
     <div class="mast-top">
-      <p class="kicker">Design system · rendered from tokens.css</p>
-      <div class="themer" role="group" aria-label="Theme">
-        <button type="button" data-theme-set="light" aria-pressed="true">Light</button>
-        <button type="button" data-theme-set="dark" aria-pressed="false">Dark</button>
-      </div>
+      <p class="kicker">Design system · rendered from tokens.css · pitch shell</p>
     </div>
     <h1>Design System — Camera Shots</h1>
     <p class="mast-lede">Every specimen below is drawn with the custom properties in <code>tokens.css</code>, so what you see is what ships. Three surfaces, one token layer: <b>Wiki</b> (read), <b>Pitch</b> (persuade), <b>Engine</b> (operate).</p>
     <dl class="stats">
       <div><dt>Tokens</dt><dd><span class="js-token-count">—</span> · one <code>:root</code> block</dd></div>
       <div><dt>Surfaces</dt><dd>Wiki · Pitch · Engine</dd></div>
-      <div><dt>Theme family</dt><dd>light+dark · warm dark · cool dark</dd></div>
+      <div><dt>Theme maps</dt><dd>Pitch · Wiki light · Wiki dark · Engine</dd></div>
     </dl>
   </div>
 </header>
@@ -807,7 +776,7 @@ footer code{color:var(--g-ink)}
         <p><span class="js-block-count">—</span> blocks · <span class="js-theme-count">—</span> theme wrappers · <span class="js-state-count">—</span> static states</p>
       </div>
 
-      <p class="sec-intro">The shipped library, rendered rather than described. Every block is drawn once per theme map in <code>tokens.css</code>: the only thing that changes between the four cells is <code>data-ds-theme</code>, so a role token that fails to resolve shows up as a hole instead of a caption. Rest, hover, focus and disabled are static <code>[data-state]</code> cells where the CSS has that hook, and the same elements are real controls, so Tab reaches them. The page keeps its own light/dark theme — only these wrappers carry a theme map. <code>components.js</code> is loaded with <code>data-ds-manual</code> so the specimens stay exactly as authored.</p>
+      <p class="sec-intro">The shipped library, rendered rather than described. Every block is drawn once per theme map in <code>tokens.css</code>: the only thing that changes between the four cells is <code>data-ds-theme</code>, so a role token that fails to resolve shows up as a hole instead of a caption. Rest, hover, focus and disabled are static <code>[data-state]</code> cells where the CSS has that hook, and the same elements are real controls, so Tab reaches them. The page chrome is pitch-locked; only these wrappers carry a theme map. <code>components.js</code> is loaded with <code>data-ds-manual</code> so the specimens stay exactly as authored.</p>
 
       <article class="comp" id="spec-btn" data-specimen="btn">
         <div class="comp-head"><h3>Button</h3><span class="comp-classes">.ds-btn · [data-variant] primary|secondary|ghost|danger · [data-size] xs|compact|tall · [data-state]</span></div>
@@ -1749,36 +1718,9 @@ footer code{color:var(--g-ink)}
     });
   }
 
-  function markTheme(t) {
-    document.querySelectorAll('[data-theme-set]').forEach(function (b) {
-      b.setAttribute('aria-pressed', String(b.getAttribute('data-theme-set') === t));
-    });
-  }
-
-  function setTheme(t) {
-    root.setAttribute('data-theme', t);
-    markTheme(t);
-    try { localStorage.setItem('ds-gallery-theme', t); } catch (e) {}
-    requestAnimationFrame(paint);
-    setTimeout(paint, 60);
-  }
-
-  document.querySelectorAll('[data-theme-set]').forEach(function (b) {
-    b.addEventListener('click', function () { setTheme(b.getAttribute('data-theme-set')); });
-  });
-
-  var saved = null;
-  try { saved = localStorage.getItem('ds-gallery-theme'); } catch (e) {}
-  if (saved === 'light' || saved === 'dark') {
-    root.setAttribute('data-theme', saved);
-    markTheme(saved);
-  } else {
-    markTheme(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  }
-
-  var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
-  if (mq && mq.addEventListener) mq.addEventListener('change', paint);
-
+  /* page theme switch removed with the light/dark toggle: the shell is
+     pitch-locked in gallery-pitch.css, so a page-level scheme would repaint
+     nothing. Specimen cells keep their own data-ds-theme maps. */
   paintCount();
   paint();
   paintProgress();
