@@ -1,24 +1,27 @@
 <!DOCTYPE html>
-<html lang="en" data-ds-manual><head><meta charset="UTF-8">
+<html lang="en" data-ds-manual data-ds-shell="pitch" data-ds-theme="pitch"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Cinematography and Direction Wiki</title>
 <link rel="stylesheet" href="design-system/tokens.css">
 <link rel="stylesheet" href="design-system/base.css">
 <link rel="stylesheet" href="design-system/components.css">
-<script>/* theme before first paint: the page scheme drives the DS role map so --ds-* is never empty */!function(){var s=null;try{s=localStorage.getItem('cse-theme')}catch(e){}var h=document.documentElement,mq=window.matchMedia('(prefers-color-scheme:dark)'),dark=s?s==='dark':mq.matches;if(s)h.dataset.theme=s;h.dataset.dsTheme=dark?'wiki-dark':'wiki-light'}();</script>
 <style>
-:root{--bg:var(--color-wiki-light-bg);--card:var(--color-wiki-light-card);--ink:var(--color-wiki-light-ink);--mut:var(--color-wiki-light-muted);--rule:var(--color-wiki-light-rule);--acc:var(--color-wiki-light-accent);--acc2:var(--color-wiki-light-accent-wash);--amb:var(--color-wiki-light-amber);--acc-ink:var(--color-primitive-white);--ok:var(--color-status-success);--info:var(--color-status-info);--black:var(--color-primitive-black);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:var(--color-wiki-dark-bg);--card:var(--color-wiki-dark-card);--ink:var(--color-wiki-dark-ink);--mut:var(--color-wiki-dark-muted);--rule:var(--color-wiki-dark-rule);--acc:var(--color-wiki-dark-accent);--acc2:var(--color-wiki-dark-accent-wash);--amb:var(--color-wiki-dark-amber);--acc-ink:var(--color-wiki-dark-accent-ink)}}
-:root[data-theme="dark"]{--bg:var(--color-wiki-dark-bg);--card:var(--color-wiki-dark-card);--ink:var(--color-wiki-dark-ink);--mut:var(--color-wiki-dark-muted);--rule:var(--color-wiki-dark-rule);--acc:var(--color-wiki-dark-accent);--acc2:var(--color-wiki-dark-accent-wash);--amb:var(--color-wiki-dark-amber);--acc-ink:var(--color-wiki-dark-accent-ink)}
+/* page extras only: every paint/type name the chrome uses is mapped by
+   design-system/pitch-shell.css, which loads after this block. */
+:root{/* page-local copy of the shell alias map: the static token gate reads
+   definitions from this file, while pitch-shell.css stays the canonical source
+   and wins by specificity. Values are the pitch roles, not wiki colours. */
+--bg:var(--color-pitch-bg);--card:var(--color-pitch-surface-1);--ink:var(--color-pitch-ink);--mut:var(--color-pitch-muted);--body:var(--color-pitch-body);--rule:var(--color-pitch-rule);--acc:var(--color-pitch-accent);--acc2:var(--color-pitch-surface-2);--acc-ink:var(--color-pitch-accent-ink);
+--ok:var(--color-status-success);--info:var(--color-status-info);--black:var(--color-primitive-black);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{background:var(--bg);color:var(--ink)}
 .w{max-width:var(--layout-max-wiki);margin:0 auto;padding:var(--spacing-20)}
-.top{position:sticky;top:0;z-index:var(--z-sticky);background:var(--bg);border-bottom:var(--border-width-hairline) solid var(--rule);padding-top:calc(var(--spacing-10) + env(safe-area-inset-top,0px));padding-bottom:var(--spacing-10);display:flex;justify-content:space-between;align-items:baseline;gap:var(--spacing-md);flex-wrap:wrap}
+.top{position:sticky;top:0;z-index:var(--z-sticky);background:var(--color-pitch-overlay-bg);border-bottom:var(--border-width-hairline) solid var(--rule);padding-top:calc(var(--spacing-10) + env(safe-area-inset-top,0px));padding-bottom:var(--spacing-10);display:flex;justify-content:space-between;align-items:baseline;gap:var(--spacing-md);flex-wrap:wrap}
 .by{font-family:var(--typography-family-mono);letter-spacing:var(--tracking-eyebrow);color:var(--mut);font-size:var(--typography-size-small);white-space:nowrap}
 .hright{display:flex;align-items:center;gap:var(--spacing-10)}
-.eng{font-size:var(--typography-size-small);font-weight:var(--weight-medium);color:var(--acc-ink);background:var(--acc);min-height:var(--control-height-compact);padding:var(--spacing-6) var(--spacing-sm);border-radius:var(--radius-xs);text-decoration:none;transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard), filter var(--motion-duration-hover) var(--motion-easing-standard)}
+.eng{font-size:var(--typography-size-small);font-weight:var(--weight-semibold);color:var(--acc-ink);background:var(--acc);border:var(--border-width-hairline) solid var(--acc);min-height:var(--control-height-compact);padding:var(--spacing-6) var(--spacing-sm);border-radius:var(--radius-xs);text-decoration:none;transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard), filter var(--motion-duration-hover) var(--motion-easing-standard)}
 .eng:hover{filter:brightness(var(--hover-lift))}
-.pitch{font-size:var(--typography-size-small);font-weight:var(--weight-medium);color:var(--ink);background:transparent;border:var(--border-width-hairline) solid var(--rule);padding:var(--spacing-6) var(--spacing-sm);border-radius:var(--radius-xs);text-decoration:none;transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}
+.pitch{font-size:var(--typography-size-small);font-weight:var(--weight-semibold);color:var(--ink);background:transparent;border:var(--border-width-hairline) solid var(--rule);padding:var(--spacing-6) var(--spacing-sm);border-radius:var(--radius-xs);text-decoration:none;transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}
 .pitch:hover{border-color:var(--ink);background:var(--card)}
 h1{font-size:var(--typography-size-h1);letter-spacing:var(--tracking-tight)}.sub{color:var(--mut);font-size:var(--typography-size-body);margin:var(--spacing-2xs) 0 0}
 .sub a{color:var(--acc);transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}
@@ -29,12 +32,12 @@ h1{font-size:var(--typography-size-h1);letter-spacing:var(--tracking-tight)}.sub
 .list{display:flex;flex-direction:column;gap:var(--spacing-6);max-height:560px;overflow-y:auto}
 .list .ds-chip{text-align:left}
 .count{font-family:var(--typography-family-mono);font-size:var(--typography-size-timecode);letter-spacing:var(--tracking-eyebrow);color:var(--mut);padding:var(--spacing-2) var(--spacing-2xs)}
-.panel{background:var(--card);border:var(--border-width-hairline) solid var(--rule);border-radius:var(--radius-sm);padding:var(--spacing-20);min-width:0;box-shadow:var(--elevation-1)}
+.panel{background:var(--card);border:var(--border-width-hairline) solid var(--rule);border-radius:var(--radius-sm);padding:var(--spacing-20);min-width:0}
 .viz{background:var(--bg);border-radius:var(--radius-sm);display:flex;justify-content:center}
 .viz svg{width:100%;max-width:480px;height:auto}/* one-off: no token holds 480px; nearest is --layout-max-wiki 980 (shell width) */
-h2{font-size:var(--typography-size-h3);margin:var(--spacing-14) 0 var(--spacing-2xs)}h2 small{color:var(--amb);font-size:var(--typography-size-meta);margin-left:var(--spacing-6)}
-.k{font-family:var(--typography-family-mono);font-size:.7rem;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--mut);font-weight:var(--weight-bold);margin-top:var(--spacing-sm)}
-p{font-size:var(--typography-size-body)}.ad{margin-top:var(--spacing-14);border-left:var(--border-width-accent) solid var(--amb);padding:var(--spacing-xs) var(--spacing-sm);background:var(--bg);font-size:var(--typography-size-small)}
+h2{font-size:var(--typography-size-h2);letter-spacing:var(--tracking-tight);margin:var(--spacing-14) 0 var(--spacing-2xs)}h2 small{color:var(--acc);font-size:var(--typography-size-meta);letter-spacing:var(--tracking-snug);margin-left:var(--spacing-6)}
+.k{font-family:var(--typography-family-mono);font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--mut);font-weight:var(--weight-bold);margin-top:var(--spacing-sm)}
+p{font-size:var(--typography-size-body);color:var(--body)}.ad{margin-top:var(--spacing-14);border-left:var(--border-width-accent) solid var(--acc);padding:var(--spacing-xs) var(--spacing-sm);background:var(--bg);font-size:var(--typography-size-small)}
 .note{margin-top:var(--spacing-14);border:var(--border-width-hairline) dashed var(--rule);border-radius:var(--radius-sm);padding:var(--spacing-xs) var(--spacing-sm);font-size:var(--typography-size-small);color:var(--mut)}
 .go{display:inline-block;margin-top:var(--spacing-14);color:var(--acc);font-weight:var(--weight-medium);text-decoration:none;transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}.go:hover{text-decoration:underline}
 .panel .ds-pager{margin-top:var(--spacing-md)}
@@ -57,13 +60,15 @@ p{font-size:var(--typography-size-body)}.ad{margin-top:var(--spacing-14);border-
    (coarse) once [data-ds-compact] is gone; this only pins the square width */
 .mapacts button{min-inline-size:var(--touch-min)}
 .steps{display:flex;gap:var(--spacing-xs);margin:var(--spacing-sm) 0 var(--spacing-2xs);flex-wrap:wrap}
-.step{font-size:var(--typography-size-body);font-weight:var(--weight-semibold);padding:var(--spacing-xs) var(--spacing-2);margin-right:var(--spacing-18);border:none;border-bottom:var(--border-width-strong) solid transparent;background:none;color:var(--mut);cursor:pointer;border-radius:var(--radius-none);min-height:var(--control-height-default);transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}
+.step{position:relative;font-size:var(--typography-size-body);font-weight:var(--weight-semibold);padding:var(--spacing-xs) var(--spacing-2);margin-right:var(--spacing-18);border:none;border-bottom:var(--border-width-strong) solid transparent;background:none;color:var(--mut);cursor:pointer;border-radius:var(--radius-none);min-height:var(--control-height-default);transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}
 .step:hover{color:var(--ink)}
-.step.on{color:var(--ink);border-bottom-color:var(--acc)}
+.step.on{color:var(--ink);border-bottom-color:transparent}
+/* pitch control voice: active step carries the 5px champagne dot, not an underline */
+.step.on::after{content:'';position:absolute;left:50%;bottom:var(--spacing-2xs);transform:translateX(-50%);width:var(--dot-size);height:var(--dot-size);border-radius:var(--radius-circle);background:var(--acc)}
 .blurb{font-size:var(--typography-size-small);color:var(--mut);margin:var(--spacing-2) 0 var(--spacing-6)}
 .yt{position:relative;aspect-ratio:16/9;background:var(--black);border-radius:var(--radius-sm);overflow:hidden;margin-top:var(--spacing-xs);cursor:pointer}
 .yt img{width:100%;height:100%;object-fit:cover;opacity:var(--opacity-media)}
-.yt span{position:absolute;inset:0;margin:auto;width:60px;height:60px;border-radius:var(--radius-circle);background:var(--amb);color:var(--acc-ink);display:flex;align-items:center;justify-content:center;font-size:22px}
+.yt span{position:absolute;inset:0;margin:auto;width:60px;height:60px;border-radius:var(--radius-circle);background:var(--acc);color:var(--acc-ink);display:flex;align-items:center;justify-content:center;font-size:22px}
 .yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 footer{margin:var(--spacing-xl) 0 var(--spacing-md);color:var(--mut);font-size:var(--typography-size-meta)}
 @media(max-width:800px){.main{grid-template-columns:1fr}.list{flex-direction:row;max-height:none;overflow-x:auto;overflow-y:hidden;align-items:center}.count{width:auto;flex:none}}/* lint-allow: 800px sits between --breakpoint-md 767.5 and --breakpoint-lg 900; snapping moves the mobile rail 32-100px */
@@ -102,14 +107,17 @@ body{padding-bottom:calc(var(--control-height-touch) + var(--spacing-xs) + var(-
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 
 /* -- focus ring: base.css §2 is the one ring (--focus-width/--focus-offset + --ds-accent per theme) */
-</style></head><body>
+</style>
+<!-- pitch shell: LAST so its role map and pitch alias layer win over this page's
+     definitions; proven in design-system/pitch-shell.css -->
+<link rel="stylesheet" href="design-system/pitch-shell.css"></head><body>
 <a class="ds-skip-link" href="#main">Skip to content</a>
 <div class="w">
 <header class="top"><h1>Cinematography and Direction Wiki</h1><nav class="hright" aria-label="Other pages"><span class="by">by irfan</span><a class="pitch" href="pitch.html">pitch →</a><a class="eng" href="engine.html">engine →</a></nav></header>
 <main id="main" tabindex="-1">
 <p class="sub">A working reference for how films are shot and directed. Pick a concept, see what it does for the story, watch it explained, and copy the prompt phrase to use it.</p>
-<div class="controls"><label class="ds-sr-only" for="search">Filter cards in this tab</label><input id="search" class="ds-input" type="search" placeholder="Filter this tab…" aria-describedby="search-hint" autocomplete="off"><span class="ds-sr-only" id="search-hint">Examples: rack, golden, 180.</span><div class="ds-theme-toggle" role="group" aria-label="Colour theme"><button type="button" class="ds-btn" data-variant="ghost" data-theme-set="light" aria-pressed="false" aria-label="Light theme" title="Light theme">☀</button><button type="button" class="ds-btn" data-variant="ghost" data-theme-set="dark" aria-pressed="false" aria-label="Dark theme" title="Dark theme">☾</button></div></div>
-<div class="steps" id="steps" role="region" aria-label="Steps" tabindex="0"></div><div class="blurb" id="blurb"></div><div class="ds-tabs" id="tabs"></div>
+<div class="controls"><label class="ds-sr-only" for="search">Filter cards in this tab</label><input id="search" class="ds-input" type="search" placeholder="Filter this tab…" aria-describedby="search-hint" autocomplete="off"><span class="ds-sr-only" id="search-hint">Examples: rack, golden, 180.</span></div>
+<div class="steps" id="steps" role="region" aria-label="Steps" tabindex="0"></div><div class="blurb" id="blurb"></div><div class="ds-tabs" id="tabs" data-variant="underline"></div>
 <div class="main"><div class="list" id="list" role="region" aria-label="Cards in this tab" tabindex="0"></div><div class="panel" id="panel"></div></div>
 </main>
 <footer>Tip: ← → keys step through cards · / focuses filter · token copy gives you <code>CODE — prompt phrase</code> ready to paste. Direction tab: shoot order for the set.</footer>
@@ -249,41 +257,41 @@ PACE:"hold the shot, let it breathe",CUTM:"cut on motion",MATCH:"match cut acros
 const fig=(x,y,h,c='currentColor')=>`<g transform="translate(${x-50*h/200},${y}) scale(${h/200})" fill="${c}"><circle cx="50" cy="20" r="14"/><rect x="30" y="38" width="40" height="70" rx="8"/><rect x="34" y="108" width="14" height="90" rx="5"/><rect x="52" y="108" width="14" height="90" rx="5"/></g>`;
 const V={
 size(p){const[h,t]=p;return`<svg viewBox="0 0 240 135"><defs><clipPath id="c"><rect width="240" height="135"/></clipPath></defs><rect width="240" height="135" fill="none" stroke="var(--ink)" stroke-width="2"/><g clip-path="url(#c)" style="color:var(--ink)">${fig(120,t,h)}</g></svg>`},
-frame(p){const[n,m]=p;let s='';if(m==2)s=`<circle cx="190" cy="68" r="22" fill="var(--amb)"/><text x="190" y="74" text-anchor="middle" font-size="18">👁</text>`;else if(m==1)s=fig(70,28,95,'var(--mut)')+fig(150,25,100);else{const xs=n==1?[120]:n==2?[85,155]:[60,120,180];s=xs.map(x=>fig(x,20,110)).join('')}return`<svg viewBox="0 0 240 135" style="color:var(--ink)"><rect width="240" height="135" fill="none" stroke="var(--ink)" stroke-width="2"/>${s}</svg>`},
-focus(b){const f=b.map((v,i)=>`<filter id="f${i}"><feGaussianBlur stdDeviation="${v}"/></filter>`).join('');return`<svg viewBox="0 0 240 135"><defs>${f}</defs><circle cx="55" cy="95" r="26" fill="var(--amb)" filter="url(#f0)"/><circle cx="120" cy="68" r="20" fill="var(--ink)" filter="url(#f1)"/><circle cx="190" cy="42" r="14" fill="var(--mut)" filter="url(#f2)"/></svg>`},
-angle(p){const[cx,cy,d]=p,tx=190,ty=75,a=Math.atan2(ty-cy,tx-cx)*57.3;return`<svg viewBox="0 0 240 200"><line x1="0" y1="198" x2="240" y2="198" stroke="var(--mut)"/><g style="color:var(--ink)">${fig(tx,15,175)}</g><line x1="${cx}" y1="${cy}" x2="${tx}" y2="${ty}" stroke="var(--amb)" stroke-dasharray="4 3"/><g transform="translate(${cx},${cy}) rotate(${a+d})"><rect x="-14" y="-9" width="22" height="18" rx="3" fill="var(--amb)"/><path d="M8-6L18-11V11L8 6Z" fill="var(--amb)"/></g></svg>`},
-move(p){const[cx,cy,d]=p;return`<svg viewBox="0 0 240 200"><defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4 0 8Z" fill="var(--amb)"/></marker></defs><g style="color:var(--ink)">${fig(200,40,120)}</g>${d?`<path d="${d}" fill="none" stroke="var(--amb)" stroke-width="3" marker-end="url(#ar)"/>`:''}<g transform="translate(${cx},${cy})"><rect x="-14" y="-9" width="22" height="18" rx="3" fill="var(--amb)"/><path d="M8-6L18-11V11L8 6Z" fill="var(--amb)"/></g></svg>`},
-lens(p){const d=p[0],r=d*Math.PI/360,hh=Math.min(60,100*Math.tan(r)),H=Math.min(400,22/Math.tan(r));return`<svg viewBox="0 0 260 135"><defs><clipPath id="lc"><rect x="150" y="34" width="100" height="67"/></clipPath></defs><polygon points="20,68 120,${68-hh} 120,${68+hh}" fill="var(--ink)" opacity=".22"/><g transform="translate(14,60)"><rect width="14" height="16" rx="3" fill="var(--amb)"/></g><g style="color:var(--mut)">${fig(110,48,40)}</g><rect x="150" y="34" width="100" height="67" fill="none" stroke="var(--ink)" stroke-width="2"/><g clip-path="url(#lc)" style="color:var(--ink)">${fig(200,68-H*.3,H)}</g><text x="20" y="125" font-size="11" fill="var(--mut)">~${d}&deg; view</text></svg>`},
+frame(p){const[n,m]=p;let s='';if(m==2)s=`<circle cx="190" cy="68" r="22" fill="var(--acc)"/><text x="190" y="74" text-anchor="middle" font-size="18">👁</text>`;else if(m==1)s=fig(70,28,95,'var(--mut)')+fig(150,25,100);else{const xs=n==1?[120]:n==2?[85,155]:[60,120,180];s=xs.map(x=>fig(x,20,110)).join('')}return`<svg viewBox="0 0 240 135" style="color:var(--ink)"><rect width="240" height="135" fill="none" stroke="var(--ink)" stroke-width="2"/>${s}</svg>`},
+focus(b){const f=b.map((v,i)=>`<filter id="f${i}"><feGaussianBlur stdDeviation="${v}"/></filter>`).join('');return`<svg viewBox="0 0 240 135"><defs>${f}</defs><circle cx="55" cy="95" r="26" fill="var(--acc)" filter="url(#f0)"/><circle cx="120" cy="68" r="20" fill="var(--ink)" filter="url(#f1)"/><circle cx="190" cy="42" r="14" fill="var(--mut)" filter="url(#f2)"/></svg>`},
+angle(p){const[cx,cy,d]=p,tx=190,ty=75,a=Math.atan2(ty-cy,tx-cx)*57.3;return`<svg viewBox="0 0 240 200"><line x1="0" y1="198" x2="240" y2="198" stroke="var(--mut)"/><g style="color:var(--ink)">${fig(tx,15,175)}</g><line x1="${cx}" y1="${cy}" x2="${tx}" y2="${ty}" stroke="var(--acc)" stroke-dasharray="4 3"/><g transform="translate(${cx},${cy}) rotate(${a+d})"><rect x="-14" y="-9" width="22" height="18" rx="3" fill="var(--acc)"/><path d="M8-6L18-11V11L8 6Z" fill="var(--acc)"/></g></svg>`},
+move(p){const[cx,cy,d]=p;return`<svg viewBox="0 0 240 200"><defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4 0 8Z" fill="var(--acc)"/></marker></defs><g style="color:var(--ink)">${fig(200,40,120)}</g>${d?`<path d="${d}" fill="none" stroke="var(--acc)" stroke-width="3" marker-end="url(#ar)"/>`:''}<g transform="translate(${cx},${cy})"><rect x="-14" y="-9" width="22" height="18" rx="3" fill="var(--acc)"/><path d="M8-6L18-11V11L8 6Z" fill="var(--acc)"/></g></svg>`},
+lens(p){const d=p[0],r=d*Math.PI/360,hh=Math.min(60,100*Math.tan(r)),H=Math.min(400,22/Math.tan(r));return`<svg viewBox="0 0 260 135"><defs><clipPath id="lc"><rect x="150" y="34" width="100" height="67"/></clipPath></defs><polygon points="20,68 120,${68-hh} 120,${68+hh}" fill="var(--ink)" opacity=".22"/><g transform="translate(14,60)"><rect width="14" height="16" rx="3" fill="var(--acc)"/></g><g style="color:var(--mut)">${fig(110,48,40)}</g><rect x="150" y="34" width="100" height="67" fill="none" stroke="var(--ink)" stroke-width="2"/><g clip-path="url(#lc)" style="color:var(--ink)">${fig(200,68-H*.3,H)}</g><text x="20" y="125" font-size="11" fill="var(--mut)">~${d}&deg; view</text></svg>`},
 gear(p){return`<svg viewBox="0 0 240 135"><circle cx="120" cy="68" r="46" fill="none" stroke="var(--ink)" stroke-width="3"/><text x="120" y="82" text-anchor="middle" font-size="40" font-weight="700" fill="var(--ink)">${p[0]}</text></svg>`},
-light(k){const S=(x,y,r,c,op=1)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" opacity="${op}"/>`,L=(x1,y1,x2,y2,c='var(--amb)',dash='4 3')=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-dasharray="${dash}"/>`;
+light(k){const S=(x,y,r,c,op=1)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" opacity="${op}"/>`,L=(x1,y1,x2,y2,c='var(--acc)',dash='4 3')=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-dasharray="${dash}"/>`;
 const subj=`<g style="color:var(--ink)">${fig(150,25,110)}</g>`;let inner='';
 if(k=='key')inner=S(45,35,16,'var(--color-primitive-white)')+L(55,42,120,70)+subj;
 else if(k=='fill')inner=S(45,100,20,'var(--color-diagram-fill-wiki)',.55)+L(60,95,120,80,'var(--mut)')+subj;
-else if(k=='rim')inner=subj+S(195,30,13,'var(--color-wiki-dark-amber)')+L(185,38,160,60);
-else if(k=='gold')inner=`<rect width="240" height="135" fill="var(--color-wiki-dark-amber)" opacity=".14"/>`+S(200,95,22,'var(--color-wiki-dark-amber)')+L(185,88,160,75)+subj;
-else if(k=='blue')inner=`<rect width="240" height="135" fill="var(--color-wiki-dark-accent)" opacity=".13"/>`+S(200,30,14,'var(--color-wiki-dark-accent)')+subj;
+else if(k=='rim')inner=subj+S(195,30,13,'var(--color-wiki-light-amber)')+L(185,38,160,60);
+else if(k=='gold')inner=`<rect width="240" height="135" fill="var(--color-wiki-light-amber)" opacity=".14"/>`+S(200,95,22,'var(--color-wiki-light-amber)')+L(185,88,160,75)+subj;
+else if(k=='blue')inner=`<rect width="240" height="135" fill="var(--color-diagram-fill-wiki)" opacity=".13"/>`+S(200,30,14,'var(--color-diagram-fill-wiki)')+subj;
 else if(k=='soft')inner=`<ellipse cx="120" cy="18" rx="90" ry="16" fill="var(--color-primitive-white)" opacity=".35"/>`+L(120,34,150,60,'var(--mut)')+subj;
 else if(k=='hard')inner=S(45,30,8,'var(--color-primitive-white)')+L(52,34,130,70,'var(--color-primitive-white)','0')+`<line x1="160" y1="60" x2="200" y2="110" stroke="var(--mut)" stroke-width="6"/>`+subj;
-else if(k=='mot')inner=S(45,35,16,'var(--color-primitive-white)')+L(55,42,120,70)+S(60,100,7,'var(--color-wiki-dark-amber)')+subj;
+else if(k=='mot')inner=S(45,35,16,'var(--color-primitive-white)')+L(55,42,120,70)+S(60,100,7,'var(--color-wiki-light-amber)')+subj;
 else if(k=='dn')inner=`<rect width="240" height="135" fill="var(--color-diagram-scrim-wiki)" opacity=".55"/>`+S(200,30,12,'var(--color-primitive-white)')+subj;
-else inner=S(60,100,7,'var(--color-wiki-dark-amber)')+S(95,100,7,'var(--color-wiki-dark-amber)')+S(130,100,7,'var(--color-wiki-dark-accent)')+subj;
+else inner=S(60,100,7,'var(--color-wiki-light-amber)')+S(95,100,7,'var(--color-wiki-light-amber)')+S(130,100,7,'var(--color-diagram-fill-wiki)')+subj;
 return`<svg viewBox="0 0 240 135"><rect width="240" height="135" fill="none" stroke="var(--ink)" stroke-width="2"/>${inner}<text x="8" y="126" font-size="11" fill="var(--mut)">${k}</text></svg>`},
 comp(k){const F=`<rect width="240" height="135" fill="none" stroke="var(--ink)" stroke-width="2"/>`;let inner='';
-if(k=='thirds')inner=F+`<line x1="80" y1="0" x2="80" y2="135" stroke="var(--amb)"/><line x1="160" y1="0" x2="160" y2="135" stroke="var(--amb)"/><line x1="0" y1="45" x2="240" y2="45" stroke="var(--amb)"/><line x1="0" y1="90" x2="240" y2="90" stroke="var(--amb)"/><g style="color:var(--ink)">${fig(160,30,80)}</g>`;
-else if(k=='lead')inner=F+`<g style="color:var(--ink)">${fig(70,25,110)}</g><defs><marker id="ar2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4 0 8Z" fill="var(--amb)"/></marker></defs><line x1="120" y1="70" x2="210" y2="70" stroke="var(--amb)" stroke-width="3" marker-end="url(#ar2)"/>`;
-else if(k=='sym')inner=F+`<line x1="120" y1="0" x2="120" y2="135" stroke="var(--amb)" stroke-dasharray="4 3"/><g style="color:var(--ink)">${fig(80,25,100)}${fig(160,25,100)}</g>`;
+if(k=='thirds')inner=F+`<line x1="80" y1="0" x2="80" y2="135" stroke="var(--acc)"/><line x1="160" y1="0" x2="160" y2="135" stroke="var(--acc)"/><line x1="0" y1="45" x2="240" y2="45" stroke="var(--acc)"/><line x1="0" y1="90" x2="240" y2="90" stroke="var(--acc)"/><g style="color:var(--ink)">${fig(160,30,80)}</g>`;
+else if(k=='lead')inner=F+`<g style="color:var(--ink)">${fig(70,25,110)}</g><defs><marker id="ar2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4 0 8Z" fill="var(--acc)"/></marker></defs><line x1="120" y1="70" x2="210" y2="70" stroke="var(--acc)" stroke-width="3" marker-end="url(#ar2)"/>`;
+else if(k=='sym')inner=F+`<line x1="120" y1="0" x2="120" y2="135" stroke="var(--acc)" stroke-dasharray="4 3"/><g style="color:var(--ink)">${fig(80,25,100)}${fig(160,25,100)}</g>`;
 else if(k=='neg')inner=F+`<g style="color:var(--mut)" opacity=".8">${fig(195,70,45)}</g>`;
 else if(k=='fg')inner=F+`<ellipse cx="42" cy="98" rx="46" ry="62" fill="var(--mut)" opacity=".5"/><g style="color:var(--ink)">${fig(168,30,80)}</g>`;
 else inner=F+`<line x1="0" y1="120" x2="240" y2="120" stroke="var(--mut)"/><text x="8" y="112" font-size="11" fill="var(--mut)">axis — stay on this side</text><g style="color:var(--ink)">${fig(80,20,100)}${fig(170,20,100)}</g>`;
 return`<svg viewBox="0 0 240 135">${inner}</svg>`},
 edit(k){let inner='';const bar=(x,y,w,c='var(--ink)')=>`<rect x="${x}" y="${y}" width="${w}" height="26" rx="6" fill="${c}"/>`;
 if(k=='pace')inner=bar(15,20,150)+bar(15,55,60,'var(--mut)')+bar(15,90,210);
-else if(k=='cut')inner=bar(15,45,95)+`<text x="118" y="68" font-size="22" fill="var(--amb)">⚡</text>`+bar(140,45,85,'var(--amb)');
-else if(k=='match')inner=`<rect x="15" y="30" width="95" height="70" rx="8" fill="none" stroke="var(--ink)" stroke-width="2"/><circle cx="62" cy="65" r="20" fill="var(--ink)"/><rect x="130" y="30" width="95" height="70" rx="8" fill="none" stroke="var(--amb)" stroke-width="2"/><circle cx="177" cy="65" r="20" fill="var(--amb)"/>`;
-else if(k=='cutw')inner=bar(15,45,60)+bar(95,45,40,'var(--amb)')+bar(155,45,50);
-else inner=bar(15,45,210,'var(--amb)')+`<text x="20" y="63" font-size="14" font-weight="700" fill="var(--bg)">S3 HOLD</text>`;
+else if(k=='cut')inner=bar(15,45,95)+`<text x="118" y="68" font-size="22" fill="var(--acc)">⚡</text>`+bar(140,45,85,'var(--acc)');
+else if(k=='match')inner=`<rect x="15" y="30" width="95" height="70" rx="8" fill="none" stroke="var(--ink)" stroke-width="2"/><circle cx="62" cy="65" r="20" fill="var(--ink)"/><rect x="130" y="30" width="95" height="70" rx="8" fill="none" stroke="var(--acc)" stroke-width="2"/><circle cx="177" cy="65" r="20" fill="var(--acc)"/>`;
+else if(k=='cutw')inner=bar(15,45,60)+bar(95,45,40,'var(--acc)')+bar(155,45,50);
+else inner=bar(15,45,210,'var(--acc)')+`<text x="20" y="63" font-size="14" font-weight="700" fill="var(--bg)">S3 HOLD</text>`;
 return`<svg viewBox="0 0 240 135">${inner}</svg>`},
-res(p){return`<svg viewBox="0 0 240 135"><circle cx="120" cy="68" r="46" fill="none" stroke="var(--amb)" stroke-width="3"/><text x="120" y="84" text-anchor="middle" font-size="38" fill="var(--amb)">${p[0]}</text></svg>`}};
+res(p){return`<svg viewBox="0 0 240 135"><circle cx="120" cy="68" r="46" fill="none" stroke="var(--acc)" stroke-width="3"/><text x="120" y="84" text-anchor="middle" font-size="38" fill="var(--acc)">${p[0]}</text></svg>`}};
 const EX={"Extreme wide":"Mad Max: Fury Road","Wide / long":"The Martian","Full shot":"Django Unchained","Medium wide":"The Usual Suspects","Cowboy":"The Good, the Bad and the Ugly","Medium":"Furious 7","Medium close-up":"No Country for Old Men","Close-up":"The Usual Suspects","Extreme close-up":"Black Swan","Single":"Iron Man","Two shot":"The Matrix Reloaded","Three shot":"Harry Potter and the Deathly Hallows","Over the shoulder":"Westworld","Point of view":"Being John Malkovich","Rack focus":"Casino Royale","Shallow focus":"The Night Of","Deep focus":"12 Angry Men","Tilt-shift":"A Serious Man","Soft focus":"Carrie","Split diopter":"Jaws","Eye level":"Forrest Gump","Low angle":"The Empire Strikes Back","High angle":"The Princess Bride","Hip / knee / ground / shoulder":"Reservoir Dogs","Dutch tilt":"Mission: Impossible","Overhead":"Eternal Sunshine of the Spotless Mind","Aerial":"Blade Runner","Static":"Step Brothers","Zoom":"The Shining","Dolly zoom":"Vertigo effect compilation","Pan":"Munich","Tilt":"The Grand Budapest Hotel","Whip pan":"La La Land","Tracking":"Paths of Glory","Arc":"The Dark Knight","Crab and more":"Oldboy"};
 const fmtT=t=>Math.floor(t/60)+':'+String(t%60).padStart(2,'0');
 const GROUPS=Object.keys(D).filter(k=>k!='Prompt map'&&k!='Resources');
@@ -372,7 +380,6 @@ const n=tab=='Prompt map'?mapRows().length:items().length;const total=tab=='Prom
 DS.announce(q?`${n} of ${total} ${tab=='Prompt map'?'tokens':'cards'} match “${q}”`:`Filter cleared. ${total} ${tab=='Prompt map'?'tokens':'cards'} in ${tab}.`)},320)}
 let jump=false;
 document.addEventListener('click',e=>{const y=e.target.closest('.yt');if(y&&!y.querySelector('iframe')){playYt(y);return}
-const th=e.target.closest('[data-theme-set]');if(th){setTheme(th.dataset.themeSet);return}
 const cp=e.target.closest('[data-ds-copy]');if(cp){const done=()=>{if(document.activeElement===document.body)cp.focus()};try{Promise.resolve(DS.copy(cp.dataset.dsCopy,cp)).then(done,done)}catch(err){done()}return}
 const b=e.target.closest('button');if(!b)return;
 if(b.dataset.copyall){const done=()=>{if(document.activeElement===document.body)b.focus()};try{Promise.resolve(DS.copy(mapRows().map(r=>r.c+' — '+r.p).join('\n'),b)).then(done,done)}catch(err){done()}return}
@@ -396,13 +403,5 @@ if(e.key=='/'&&!typing){e.preventDefault();$('search').focus();return}
 if(typing||tab=='Prompt map')return;
 if(e.target.closest&&e.target.closest('[role="tablist"]'))return;
 if(e.key=='ArrowRight'||e.key=='ArrowLeft'){const n=(D[tab].items||[]).length;idx=(idx+(e.key=='ArrowRight'?1:-1)+n)%n;render()}});
-const mqDark=matchMedia('(prefers-color-scheme:dark)');
-function themeMode(){return document.documentElement.dataset.theme||(mqDark.matches?'dark':'light')}
-function syncTheme(){const m=themeMode(),h=document.documentElement;
-h.dataset.dsTheme=m=='dark'?'wiki-dark':'wiki-light';
-document.querySelectorAll('[data-theme-set]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.themeSet===m)))}
-function setTheme(m){const h=document.documentElement;h.dataset.theme=m;try{localStorage.setItem('cse-theme',m)}catch(e){}syncTheme()}
-if(mqDark.addEventListener)mqDark.addEventListener('change',()=>{if(!document.documentElement.dataset.theme)syncTheme()});
-syncTheme();
 draw();
 </script></body></html>

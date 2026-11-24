@@ -1,0 +1,122 @@
+/* ==========================================================================
+   pitch-shell.css — the pitch page's page-level language, as a reusable shell.
+
+   This is the bridge between a page's own chrome variables and the pitch
+   surface ladder. It is NOT a component layer (that is components.css) and it
+   declares no new values: every colour, type step, radius and hairline below
+   resolves to a token from tokens.css.
+
+   OPT IN
+   ------
+     <html lang="en" data-ds-shell="pitch" data-ds-theme="pitch">
+     <link rel="stylesheet" href="design-system/tokens.css">
+     ... the page's own base/component/page <style> ...
+     <link rel="stylesheet" href="design-system/pitch-shell.css">   <!-- LAST -->
+
+   ORDER MATTERS: load it after the page's inline <style>. The role/alias block
+   below is deliberately specific (0,1,1 — one class-level attribute on html) so
+   it beats a page's `:root` re-declaration, while the chrome voice uses
+   `:where()` so a page's own component rules still win where they are more
+   specific. That combination is what makes the shell safe to adopt without
+   adopting a layout.
+
+   CONTRACT
+   --------
+   Roles      pins all 17 --ds-* map slots to the pitch theme, including the two
+              slots the generated pitch map leaves null (accent-soft, rule-strong)
+   Aliases    --bg --card --s1 --s2 --ink --body --mut --mut2 --rule --acc
+              --acc2 --amb --acc-ink  (the wiki's page-level names) and the
+              pitch-native --s1/--s2/--body/--mut2 pair used by pitch.html
+   Chrome     body type, heading voice, prose ink, small/code colour, ::selection,
+              focus colour — voice only, never size or layout
+   Surfaces   --bg page ground · --card/--s1 raised card · --s2/--acc2 accent
+              wash · --rule hairline · --acc accent · --acc-ink ink on accent
+
+   MAPPING (source of truth: design-system/tokens.json -> color.pitch.*)
+     --bg        #0A0A0B  color.pitch.bg
+     --card/--s1 #141416  color.pitch.surface.1
+     --s2/--acc2 #1B1B1E  color.pitch.surface.2
+     --ink       #F2F0EB  color.pitch.ink
+     --body      #D9D7D2  color.pitch.body
+     --mut       #A7A5A0  color.pitch.muted
+     --mut2      #8E8C86  color.pitch.muted.2
+     --rule      #26262B  color.pitch.rule
+     --acc/--amb #C8B28A  color.pitch.accent
+     --acc-ink   #141310  color.pitch.accent.ink
+
+   --amb maps to the accent on purpose: the pitch page has ONE accent role.
+   A page that used amber as a second accent gets the champagne rule instead of
+   a competing hue; state that must read differently uses the status roles.
+   ========================================================================== */
+
+/* 1 · roles — pinned so the shell works even if a page forgets data-ds-theme.
+   Values are the generated pitch theme map in tokens.css. */
+html[data-ds-shell="pitch"]{
+  color-scheme:dark;
+  --ds-bg:var(--color-pitch-bg);
+  --ds-surface:var(--color-pitch-surface-1);
+  --ds-surface-alt:var(--color-pitch-surface-2);
+  --ds-control:var(--color-pitch-switch-bg);
+  --ds-accent-soft:var(--color-pitch-surface-2);   /* null in the generated map */
+  --ds-ink:var(--color-pitch-ink);
+  --ds-ink-2:var(--color-pitch-body);
+  --ds-muted:var(--color-pitch-muted);
+  --ds-faint:var(--color-pitch-muted-2);
+  --ds-on-accent:var(--color-pitch-accent-ink);
+  --ds-rule:var(--color-pitch-rule);
+  --ds-rule-strong:var(--color-pitch-muted-2);     /* null in the generated map */
+  --ds-accent:var(--color-pitch-accent);
+  --ds-success:var(--color-pitch-positive);
+  --ds-warning:var(--color-status-warning);
+  --ds-danger:var(--color-status-danger);
+  --ds-info:var(--color-status-info);
+
+  /* 2 · page alias bridge — the names the wiki and gallery chrome already use. */
+  --bg:var(--color-pitch-bg);
+  --card:var(--color-pitch-surface-1);
+  --s1:var(--color-pitch-surface-1);
+  --s2:var(--color-pitch-surface-2);
+  --ink:var(--color-pitch-ink);
+  --body:var(--color-pitch-body);
+  --mut:var(--color-pitch-muted);
+  --mut2:var(--color-pitch-muted-2);
+  --rule:var(--color-pitch-rule);
+  --acc:var(--color-pitch-accent);
+  --acc2:var(--color-pitch-surface-2);
+  --amb:var(--color-pitch-accent);
+  --acc-ink:var(--color-pitch-accent-ink);
+
+  /* 3 · one focus ring, cream — the pitch affordance (base.css owns the shape). */
+  --focus-color:var(--color-pitch-accent);
+}
+
+/* 4 · chrome voice. Every selector is :where()-wrapped to 0,0,1 so a page's own
+   class rule still wins; this only supplies the pitch baseline the page did not
+   state. Sizes are intentionally absent — a page keeps its IA and density. */
+:where(html[data-ds-shell="pitch"]) body{
+  background:var(--ds-bg);
+  color:var(--ds-ink);
+  font-family:var(--typography-family-sans);
+  font-size:var(--typography-size-body);
+  line-height:var(--line-height-reading);
+  -webkit-font-smoothing:antialiased;
+}
+:where(html[data-ds-shell="pitch"]) :where(h1,h2,h3,h4,h5,h6){
+  color:var(--ds-ink);
+  font-family:var(--typography-family-sans);
+  letter-spacing:var(--tracking-tight);
+  line-height:var(--line-height-tight);
+}
+:where(html[data-ds-shell="pitch"]) :where(h1,h2){font-weight:var(--weight-bold)}
+:where(html[data-ds-shell="pitch"]) :where(h3,h4,h5,h6){font-weight:var(--weight-semibold)}
+:where(html[data-ds-shell="pitch"]) :where(p,li,dd,blockquote){color:var(--ds-ink-2)}
+:where(html[data-ds-shell="pitch"]) :where(small,figcaption,cite){color:var(--ds-muted)}
+:where(html[data-ds-shell="pitch"]) :where(code,kbd,samp){color:var(--ds-faint);font-family:var(--typography-family-mono)}
+:where(html[data-ds-shell="pitch"]) :where(hr){
+  border:0;
+  border-block-start:var(--border-width-hairline) solid var(--ds-rule);
+}
+:where(html[data-ds-shell="pitch"]) ::selection{
+  background:var(--ds-accent);
+  color:var(--ds-on-accent);
+}
