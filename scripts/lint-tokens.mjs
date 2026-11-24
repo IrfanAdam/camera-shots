@@ -33,8 +33,10 @@
    Every class carries the exact count measured on 2026-11-24 as an explicit
    ceiling (BUDGETS below). A count at or under budget is PASS; only the
    excess is a violation, so the gate is green on day one and every regression
-   fails. `--check` exits 1 when any class exceeds its budget, when a token
-   `type`/`value` mismatch appears, or when an exemption is invalid.
+   fails. U1 is a budget class on the same loop (budget 0 per file): a dead
+   `var()` is enforced, not merely tabulated. `--check` exits 1 when any class
+   exceeds its budget, when a token `type`/`value` mismatch appears, or when an
+   exemption is invalid.
 
    Usage:
      node scripts/lint-tokens.mjs           human tables + writes audit-report.md
@@ -1075,12 +1077,17 @@ function t10Findings(contract, cssText) {
 }
 const t10 = t10Findings(themes, tokensText);
 
-/* T11 — `type` ↔ `value` shape; `other` stays out of the table on purpose. */
+/* T11 — `type` ↔ `value` shape; `other` stays out of the table on purpose.
+   A value that is itself a `var()` pointer is an alias: its shape is whatever
+   the target resolves to, so it is skipped here (and the target is judged on
+   its own row). A literal that contradicts its declared type still fails. */
 const t11 = [];
 for (const t of tokenEntries) {
   const check = TYPE_SHAPE[t.type];
   if (!check) continue;
-  if (!check(t.value)) {
+  const value = String(t.value).trim();
+  if (/^var\(/i.test(value)) continue;
+  if (!check(value)) {
     t11.push({ cls: 'T11', found: `${t.name} type=${t.type} value="${t.value}"`, note: 'type/value mismatch' });
   }
 }
@@ -1109,10 +1116,25 @@ for (const c of globalTClasses) totals[c] = globalFindings.filter((f) => f.cls =
 
 /* Consume each budget in file order; every hit past it is a violation. T15 is
    per file so one page cannot borrow another page's allowance. */
-const hitsOf = (cls) =>
-  globalTClasses.includes(cls)
-    ? globalFindings.filter((f) => f.cls === cls)
-    : results.flatMap((r) => (r.budgetHits[cls] || []).map((h) => ({ ...h, file: r.file })));
+const hitsOf = (cls) => {
+  if (globalTClasses.includes(cls)) return globalFindings.filter((f) => f.cls === cls);
+  /* U1 is a budget class like T1–T15: a dead var() is a violation, not a
+     statistic. Its hits live on `deadVars` (already exemption-filtered), so
+     they are folded into the same shape the budget loop consumes. */
+  if (cls === 'U1') {
+    return results.flatMap((r) =>
+      r.deadVars.map((d) => ({
+        cls: 'U1',
+        line: d.line,
+        col: d.col,
+        found: d.name,
+        note: 'undefined token',
+        file: r.file,
+      })),
+    );
+  }
+  return results.flatMap((r) => (r.budgetHits[cls] || []).map((h) => ({ ...h, file: r.file })));
+};
 
 const overGroups = [];
 const budgetRows = [];
@@ -1265,7 +1287,7 @@ const LEGEND = [
   ['T8', 'Token defined in the `:root` contract with no consumer (product page, `themes` map cell, or `components.css`)', 'Wire it in `index/pitch/engine.html`, in a theme map, or `components.css` — or delete it; gallery swatches do not count'],
   ['T9', 'Two role names resolving to one value: in the token set, or in one theme map and family', 'Alias one name to the other (`--other`) and remove the duplicate role; a slot that legitimately has no own value is declared `null`'],
   ['T10', 'Role contract parity: a map missing a slot, a slot outside the contract, or an emitted block with the wrong role-var count', 'Declare all 14 slots in every map (null where a theme has no value) and regenerate; nulls are explicit, not gaps'],
-  ['T11', 'Token `type` does not match its `value` shape', 'Fix the type or the value in `tokens.json` → regenerate'],
+  ['T11', 'Token `type` does not match its `value` shape (an alias `var(--other)` is skipped — the target is judged)', 'Fix the type or the value in `tokens.json` → regenerate'],
   ['T13', 'Two literal values in one `:root` (an alias `var(--other)` is skipped — it is a pointer, not a second truth)', 'Delete the redundant alias and keep one role name'],
   ['T14', '`!important`', 'Fix the cascade; `!important` is an escalation, not a style'],
   ['T15', 'Inline `style=` attribute', 'Move to a class in `<style>`; budget is per file'],
@@ -1350,7 +1372,7 @@ if (t9.length) {
   md += '\n';
 } else md += '_None._\n\n';
 md += `### T11 — \`type\` matches \`value\` (${totals.T11} mismatch)\n\n`;
-md += 'One regex per declared type: `color`, `dimension`, `fontSize`, `lineHeight`, `letterSpacing`, `fontWeight`, `fontFamily`, `duration`, `cubicBezier`, `boxShadow`, `number`. The 24 tokens typed `other` are not judged yet — Phase 2 retypes them.\n\n';
+md += 'One regex per declared type: `color`, `dimension`, `fontSize`, `lineHeight`, `letterSpacing`, `fontWeight`, `fontFamily`, `duration`, `cubicBezier`, `boxShadow`, `number`. A value that is a `var()` alias is skipped — it is a pointer, and the target token is judged on its own row. A literal that contradicts its declared type fails.\n\n';
 if (t11.length) {
   md += '| Token | Declared | Value |\n|---|---|---|\n';
   for (const t of t11) {
@@ -1405,7 +1427,7 @@ md += '- Budgets are ceilings, not exemptions: the count measured on 2026-11-24 
 md += '- `T8` counts `var()` references inside `<style>`/`<script>` of the three product pages, every `themes` map cell, and `design-system/components.css` when it exists; `design-system/index.html` is the system\'s own documentation and never counts as a consumer. Aliases (`value: var(--other)`) and `breakpoint.*` are exempt.\n';
 md += '- `T9` compares colors across the whole set but dimensions only between step names of one scale (`spacing.base ≡ spacing.2xs`), because `spacing.xs` and `radius.sm` both being 8px is two scales, not two roles. Role slots are compared only inside one theme map and one family, so the same warning color in two themes is a palette prior, not a duplicate role.\n';
 md += '- `T10` asserts the role contract: 14 slots in all four maps, nulls explicit, the fall-through covering exactly the null set, and one emitted block per map with 17 − nulls role vars. Themes legitimately differ in nulls (pitch 2, wiki-light 5, wiki-dark 5, engine 3).\n';
-md += '- `T11` validates the 9 canonical types; `other` is gone from the source and is rejected by the generator.\n';
+md += '- `T11` validates the 9 canonical types; `other` is gone from the source and is rejected by the generator. A `var()` alias value is skipped (it is a pointer; the target keeps its own row).\n';
 md += '- `T15` is budgeted per file (index 19, pitch 31, engine 2, gallery 148) so inline styles cannot migrate into the largest page without failing.\n';
 
 if (!CHECK) {

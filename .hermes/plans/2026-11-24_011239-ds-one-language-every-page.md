@@ -64,7 +64,7 @@ Audit lanes (foundations, components, docs, accessibility, visual) each wrote a 
 
 *Tags:* audit, gallery, gate, ci · *Status:* 6/6 tasks · GATE PASS
 
-Shipped: `ee347f3`+`7cf688b` (Tasks 1, 4), `a089fed` (Tasks 2, 3, part of 6), `9ae7f97` (Task 5), `2792fd2` (Task 6). Verified on this tree: `check-doc-counts.mjs`, `build-tokens.mjs --check`, `lint-tokens.mjs --check`, `check-anchors.mjs` all exit 0; a wrong README count still exits 1.
+Shipped: `ee347f3`+`7cf688b` (Tasks 1, 4), `a089fed` (Tasks 2, 3, part of 6), `9ae7f97` (Task 5), `2792fd2` (Task 6), `55103e7` (Phase 0 gate: doc-count gap closed, token map reconciled). All five SHAs are on this branch. Verified at HEAD after the Phase 1A gate fix: `build-tokens.mjs --check`, `lint-tokens.mjs --check`, `check-doc-counts.mjs` and `check-anchors.mjs` all exit 0; a wrong README count still exits 1.
 
 The system currently certifies itself with false evidence. Fix the certification surface and the checks before changing any value, or the rest of the work cannot be trusted.
 
@@ -125,7 +125,7 @@ The system currently certifies itself with false evidence. Fix the certification
 2. Add **T8** product-consumer audit (count `var()` refs in the 3 product pages **plus theme-map cells plus `components.css`**; gallery refs do not count; `var()` alias values and every `breakpoint.*` key are exempt — a media query cannot consume a custom property); **T9** two roles with one resolved value, **scoped per theme block** (a pitch role may equal a wiki role; two roles inside one block may not); **T10** theme slot presence, **all 14 slots declared in every block with explicit nulls** (not identical non-null lists — see Task 7); **T11** `type`↔`value` shape; **T13** duplicate alias value in one `:root`, **skipping `var()` alias values** (they resolve through their target and are not duplicates); **T14** `!important`; **T15** inline `style=` budget.
 3. Seed each new class with today's exact count as an explicit budget, so the gate is green on day one and only regressions fail.
 4. Print the new counts in `audit-report.md` next to V1–V8.
-**Verify:** `--check` exits 0 with budgets (T1 10, T2 36, T3 28, T4 53+3, T8 91, T9 5, T10 0, T11 1, T13 4, T14 8, T15 200; T8/T9/T10/T13 re-seed when Phase 1 widens their scope, and every re-seed is recorded in `audit-report.md`); inserting `body{font-size:15px}` exits 1.
+**Verify:** `--check` exits 0 with the landed budgets (V1–V8 0, U1 0, T1 10, T2 37, T3 27, T4 52+3, T8 104, T9 5, T10 0, T11 0, T13 0, T14 8, T15 200; T8/T9/T10/T11/T13 re-seed when Phase 1 widens their scope, and every re-seed is recorded in `audit-report.md`); inserting `body{font-size:15px}` exits 1.
 
 ### Task 6: Build validation + CI
 **Objective:** Make the committed CSS provably generated and the docs provably current.
@@ -143,20 +143,22 @@ The system currently certifies itself with false evidence. Fix the certification
 
 ## Phase 1 — Foundations v2 {#phase-1}
 
-*Tags:* tokens, themes, scale, generator · *Status:* 0/7 tasks · GATE OPEN
+*Tags:* tokens, themes, scale, generator · *Status:* 2/7 tasks (7, 8 shipped in `a05cefa`) · GATE OPEN
 
 One role contract, four theme maps, every scale consumed. No new values until the orphans are wired.
 
-**Verified Phase 1 reality** (recon `.hermes/.../token-map.md`, computed from `tokens.json`, not estimated): 229 → **186** keys. `206` is a stale estimate — it requires keeping ~20 phantom palette keys the same tasks delete. Actions: **64 deletes** (50 engine decoys + 14 dead keys, all 0 product refs), **44 renames** (16 `color.pro.*` → `color.engine.*` + 28 role/type/scale), **6 aliases** (each keeps its key for one release, value becomes a `var()` pointer), **21 additions** = 229 − 64 + 0 + 21. Deletes land **before** renames where a name collides (`color.engine.tool`, `color.engine.overlay.panel`) — the reverse deletes the value it just installed. Duration 10 → 5 and z 15 → 10 are **value changes, not alias folds**, so they move to Phase 5 Task 35; Phase 1 only adds `z.tooltip`/`z.pinned`.
+**Phase 1A gate fix (this commit):** U1 dead `var()` is enforced in the budget loop — an undefined token now fails `--check` instead of only printing — and T11 accepts a `var()` alias as an alias (skipped, target judged) while still rejecting a literal type mismatch.
+
+**Verified Phase 1 reality** (recon `.hermes/.../token-map.md`, computed from `tokens.json`, not estimated): 229 → **186** keys = the recon's **185** + `focus.color`, the token the re-pointed focus rings need. `206` is a stale estimate — it requires keeping ~20 phantom palette keys the same tasks delete. Actions: **64 deletes** (50 engine decoys + 14 dead keys, all 0 product refs), **44 renames** (16 `color.pro.*` → `color.engine.*` + 28 role/type/scale), **6 aliases** — the 6-key alias layer, not one deprecated alias per rename, **21 additions** = 229 − 64 + 0 + 21. Deletes land **before** renames where a name collides (`color.engine.tool`, `color.engine.overlay.panel`) — the reverse deletes the value it just installed. Duration 10 → 5 and z 15 → 10 are **value changes, not alias folds**, so they move to Phase 5 Task 35; Phase 1 only adds `z.tooltip`/`z.pinned`.
 
 | # | Task | Done when |
 |---|---|---|
-| 7 | Role contract + theme maps | 14 slots × 4 themes emitted as `[data-ds-theme]` blocks |
-| 8 | Add missing scales | line-height, tracking, weight, control heights, icon/dot sizes, hover lift, section spacing, z tooltip/pinned, breakpoints, layout roles |
-| 9 | Alias / rename / delete | 229 → 186 keys; one name per role; 6 aliases, 44 renames, 64 deletes, 21 additions |
-| 10 | Wire the 25 orphans | every kept token has ≥1 product/theme-map consumer; body type, layout widths, touch, elevation wired |
+| 7 | Role contract + theme maps | ✅ 14 slots × 4 themes emitted as `[data-ds-theme]` blocks (17 role vars each, nulls explicit) · shipped `a05cefa` |
+| 8 | Add missing scales | ✅ line-height, tracking, weight, control heights, icon/dot sizes, hover lift, section spacing, z tooltip/pinned, breakpoints, layout roles emitted · shipped `a05cefa` |
+| 9 | Alias / rename / delete | 229 → 186 keys (185 recon + `focus.color`); one name per role; 6 aliases, 44 renames, 64 deletes, 21 additions |
+| 10 | Wire the 39 orphans | every kept token has ≥1 product/theme-map consumer; body type, layout widths, touch, elevation wired |
 | 11 | Resolve the engine palette | engine renders one palette; 50 decoy keys deleted; 0 name/value contradictions |
-| 12 | Reconcile breakpoints | 9 raw `@media` values → 5 steps; 900/901, 639/640, 768/767.5 collapse |
+| 12 | Reconcile breakpoints | 15 width queries over 9 values → 5 steps; 900/901, 639/640, 768/767.5 and 760/768 collapse; 4 one-offs (800 ×2, 860, 520) |
 | 13 | Generate `foundations.md` | every table emitted from `tokens.json` with a `keys: N` line |
 
 ### Task 7: Role contract + theme maps
@@ -168,6 +170,7 @@ One role contract, four theme maps, every scale consumed. No new values until th
 3. Generator emits `[data-ds-theme="…"] { --ds-bg: …; --ds-surface: …; }` once per map, plus the raw `:root` tokens.
 4. Add a `T10` presence check: every theme block declares **all 14 slots**, using `null` where a role does not exist in that theme. Presence, not identity — the four non-null lists legitimately differ (pitch has 2 nulls, wiki light/dark 5, engine 3), so the gate must not demand identical lists.
 **Verify:** `tokens.css` contains 4 theme blocks, each carrying 17 role declarations (14 slots, `status` expanding to 4); setting `data-ds-theme` on `<html>` changes all 14 roles; no page needs a local alias for a role; T10 fails only on a slot missing from a block, never on a declared `null`.
+**Shipped:** `a05cefa` — 4 maps, 17 role vars each (pitch 2 nulls, wiki-light 5, wiki-dark 5, engine 3), T10 0.
 
 ### Task 8: Add missing scales
 **Objective:** Every axis that carries hierarchy has a constrained scale.
@@ -178,26 +181,27 @@ One role contract, four theme maps, every scale consumed. No new values until th
 3. Layout: `spacing.section` 26px (closes 1.6rem×3 + 1.4rem×2 within 2px); `z.tooltip` 5, `z.pinned` 80; 5 breakpoints 390/640/768/900/1024; layout roles for max-width, sidebar, drawer.
 4. Constrain spacing numerics → t-shirt names. **Do not** merge durations or band `z` here: 10 → 5 durations and 15 → 10 z bands are value changes (every merge moves a computed time/index), so they would smuggle visual deltas into the alias-only step. They move to Phase 5 Task 35; Phase 1 only adds `z.tooltip`/`z.pinned` and retypes the legacy `other` leaves.
 **Verify:** generator emits every new key; `z.tooltip`/`z.pinned` ship as `number`; duration/z cardinality still at 10/15 here and only collapses in Task 35.
+**Shipped:** `a05cefa` — every listed scale emitted; the token set is now **249 keys / 20 groups** (the Phase 1 target of 186 is Task 9's after the deletes).
 
 ### Task 9: Alias / rename / delete
-**Objective:** One name per role; remove the tokens that are claims without consumers. Target: 229 → 186 keys.
-**Files:** `design-system/tokens.json`, all 4 pages' `:root` blocks, `engine.html` canvas `CT('--…')` lookups.
+**Objective:** One name per role; remove the tokens that are claims without consumers. Target: 229 → 186 keys (the recon's 185 + `focus.color`).
+**Files:** `design-system/tokens.json`, all 4 pages' `:root` blocks, `engine.html` canvas `CT('--…')` / `WA('--…')` lookups.
 **Steps:**
-1. Alias **6** exact duplicates (key kept one release, value becomes a `var()` pointer): `wiki.light.card`→`primitive.white`; `wiki.light.amber`→`status.warning`; `pro.tool.hover`→`engine.divider`; `spacing.base`→`spacing.2xs`; `spacing.gutter.pro`→`spacing.md`; `print.ink`→`engine.accent.ink`. The other six the earlier draft proposed are 0-consumer alpha keys that duplicate a kept key — they are deleted, not aliased.
-2. Rename **44** names: 16 `color.pro.*` → `color.engine.*` (surface/text/divider/selection/canvas/tool/overlay) and 28 role/type/scale names (`size.h1.wiki|pitch`→`size.display`/`size.h1`, `weight.*` group prefix dropped, `lineheight`→`line-height`, `typography.size.h2.wiki`→`size.h3`). Emit a deprecated alias for one release, and rewrite the 42 `CT('--…')` canvas lookups in `engine.html` in the same commit — a renamed key fails silently in JS.
+1. Alias **6** exact duplicates (key kept one release, value becomes a `var()` pointer): `wiki.light.card`→`primitive.white`; `wiki.light.amber`→`status.warning`; `pro.tool.hover`→`engine.divider`; `spacing.base`→`spacing.2xs`; `spacing.gutter.pro`→`spacing.md`; `print.ink`→`engine.accent.ink`. This 6-key layer **is** the alias tier — the 44 renames below do not each emit a deprecated alias. The other six the earlier draft proposed are 0-consumer alpha keys that duplicate a kept key — they are deleted, not aliased.
+2. Rename **44** names: 16 `color.pro.*` → `color.engine.*` (surface/text/divider/selection/canvas/tool/overlay) and 28 role/type/scale names (`size.h1.wiki|pitch`→`size.display`/`size.h1`, `weight.*` group prefix dropped, `lineheight`→`line-height`, `typography.size.h2.wiki`→`size.h3`). Rewrite the **56** canvas lookups in `engine.html` in the same commit — `42 CT('--…')` plus `14 WA('--…', pct)`; `WA()` wraps `CT()`, so a renamed key fails silently in both.
 3. Delete **64** (50 engine decoys + 14 dead: `color.pitch.overlay.scrim`, `color.pitch.scrim.soft`, `elevation.0`, `motion.easing.sheet`, `opacity.scrim`, `touch.pro`, `touch.small`, `touch.field`, `touch.handle.timeline`, `layout.sheet.grab.width`, `layout.sheet.grab.height`, `radius.card`, `radius.xl`, `breakpoint.tablet`). All 64 have 0 product refs. **Order:** apply the decoy delete first, then the rename, where names collide (`color.engine.tool`, `color.engine.overlay.panel`) — the reverse deletes the value it just installed. Same commit.
 4. Record every rename/delete/alias (**114 actions**) in `design-system/DEPRECATIONS.md`.
 **Verify:** T8 reports 0 product-orphans under its Phase 1 scope (3 product pages + theme-map cells + `components.css`, with `var()` aliases and `breakpoint.*` exempt); T9 = 0 **per theme block**; T13 = 0 with `var()` alias values skipped; `grep` for each removed key returns no consumer; static pages render byte-identical where the change was alias-only.
 
-### Task 10: Wire the 25 orphans
-**Objective:** Stop documenting values the pages do not use. The recon's wiring list is 25 keys with 0 product refs today; "41" was a lane-A estimate and 89/91 counts whole-tree `var()` scans — neither is the wire list.
+### Task 10: Wire the 39 orphans
+**Objective:** Stop documenting values the pages do not use. The recon's wiring list is 39 keys with 0 product refs today; "25" was an earlier partial pass, and "41" was a lane-A estimate while 89/91 counted whole-tree `var()` scans — neither is the wire list.
 **Files:** `index.html:11-12,28`, `pitch.html:23,32,68,144`, `engine.html:32`, plus control rules.
 **Steps:**
 1. Body type: rewrite the 3 `font:` shorthands as `font-size`/`line-height`/`font-family` tokens (15.2/1.6; pitch 1.7 via `lineheight.reading`).
 2. Layout: 980 → `layout.max.wiki`; 230 → `layout.sidebar.wiki`; 1080 → `layout.max.pitch`; 220 → `layout.sidebar.pitch`; `min(720px,100vw)` → `layout.drawer.pitch.width`.
 3. Touch: apply `touch.min` to the 12 under-40 controls; `touch.handle.timeline` is deleted in Task 9, so nothing may reference it.
 4. Elevation: consume `0/1/ring/inset` or delete; weights/tracking wired on every heading and label.
-**Verify:** T1/T2/T4 = 0; T7 literal widths drops by 5; computed body = 15.2px on all 3 product pages; T8 = 0 with all 25 keys either consumed or recorded as delete-adjacent (`radius.lg`) / exempt (`spacing.base`, `spacing.gutter.pro`, `breakpoint.*`).
+**Verify:** T1/T2/T4 = 0; T7 literal widths drops by 5; computed body = 15.2px on all 3 product pages; T8 = 0 with all 39 keys either consumed or recorded as delete-adjacent (`radius.lg`) / exempt (`spacing.base`, `spacing.gutter.pro`, `breakpoint.*`).
 
 ### Task 11: Resolve the engine palette
 **Objective:** Token names must describe what the page renders.
@@ -214,9 +218,9 @@ One role contract, four theme maps, every scale consumed. No new values until th
 **Files:** `index.html`, `pitch.html`, `engine.html`, `design-system/index.html` media queries.
 **Steps:**
 1. Set 5 steps: 390 / 640 / 768 / 900 / 1024.
-2. Snap 639→640, 767.5→768, 900/901→900, 520/860→ the nearest step (520→640, 860→900) only where layout allows; otherwise keep and `lint-allow` with a reason.
+2. There are **15 width queries over 9 distinct values** (768×3, 900×2, 800×2, 760×2, 639×2, 901, 860, 640, 520). Snap 639→640, 760→768, 900/901→900; the **4 one-offs** are 800 (×2), 860 and 520 — send them to 768 / 900 / 640 only where layout allows; otherwise keep and `lint-allow` with a reason.
 3. Add T6: every literal `@media` px must equal a `breakpoint.*` value.
-**Verify:** T6 = 0 or documented one-offs; no 900/901 pair; mobile layout unchanged at 390.
+**Verify:** T6 = 0 or documented one-offs; no 900/901 or 760/768 pair; 15 queries resolve onto the 5 steps; mobile layout unchanged at 390.
 
 ### Task 13: Generate `foundations.md`
 **Objective:** The scale reference can no longer contradict the source.
@@ -228,7 +232,7 @@ One role contract, four theme maps, every scale consumed. No new values until th
 4. Cut README to ~60 lines: what/where/pipeline/rules, linking foundations.
 **Verify:** regenerate produces byte-identical output; README contains no scale table; every count matches `tokens.json`.
 
-**REF GATE 1 — how to judge:** `node scripts/lint-tokens.mjs --check` reports 0 product-orphans under the widened T8 scope (product pages + theme-map cells + `components.css`; `var()` aliases and `breakpoint.*` exempt) and the new classes at 0; `tokens.json` lands at **186 keys**; `tokens.css` has 4 theme blocks, each declaring all 14 slots with explicit nulls; switching `data-ds-theme` re-skins a page; body type computed 15.2px; engine renders one palette with 50 decoys gone and 0.000% pixel diff; `foundations.md` regenerates byte-identically.
+**REF GATE 1 — how to judge:** `node scripts/lint-tokens.mjs --check` reports 0 product-orphans under the widened T8 scope (product pages + theme-map cells + `components.css`; `var()` aliases and `breakpoint.*` exempt) and the new classes at 0; `tokens.json` lands at **186 keys** (recon 185 + `focus.color`); `tokens.css` has 4 theme blocks, each declaring all 14 slots with explicit nulls; switching `data-ds-theme` re-skins a page; body type computed 15.2px; engine renders one palette with 50 decoys gone and 0.000% pixel diff; `foundations.md` regenerates byte-identically.
 
 ---
 

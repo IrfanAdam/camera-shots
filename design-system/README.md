@@ -8,7 +8,7 @@ Three product surfaces (the wiki in `index.html`, the investor deck in `pitch.ht
 
 | Path | What it is | Generated | Safe to edit |
 |---|---|---|---|
-| `design-system/tokens.json` | Token source, 229 keys, 13 groups | no | yes, the only design-value source |
+| `design-system/tokens.json` | Token source, 249 keys, 20 groups | no | yes, the only design-value source |
 | `design-system/tokens.css` | Single `:root` block of custom properties | yes | never |
 | `scripts/build-tokens.mjs` | Generator, tokens.json to tokens.css | no | yes |
 | `scripts/lint-tokens.mjs` | Adherence gate, per-file line numbers, exit 1 on failure | no | yes |
@@ -124,7 +124,7 @@ Two families, no more: one sans for all text, one mono for labels, numbers, code
 
 ## Known debt
 
-`design-system/audit-report.md` is written by the gate, never by hand. It currently reports PASS with 0 violations and **21 documented exemptions** — read that as "within the gate's current classes", not "no literal survives": 8 of the 21 exemptions mask a token that was never created. The exemptions are enumerated in the report and summarised in `design-system/audit/2026-11-24/foundations.md`. Phase 6 adds `verification.md` as the single place the gate's scope and its exemptions are stated together.
+`design-system/audit-report.md` is written by the gate, never by hand. It currently reports PASS with 0 violations and **27 documented exemptions** — read that as "within the gate's current classes", not "no literal survives": several exemptions mask a token that was never created. The exemptions are enumerated in the report and summarised in `design-system/audit/2026-11-24/foundations.md`. Phase 6 adds `verification.md` as the single place the gate's scope and its exemptions are stated together.
 
 What the gate does not judge today:
 
