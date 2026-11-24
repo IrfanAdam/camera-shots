@@ -2,7 +2,7 @@
 
 ## What this is
 
-Three product surfaces (the wiki in `index.html`, the investor deck in `pitch.html`, the canvas app in `engine.html`) share one token space. Colour, radius, duration, z-index and touch dimensions resolve from `design-system/tokens.css`, which is generated from `design-system/tokens.json`. Page CSS may not hardcode those values: it declares short local aliases in `:root` and consumes `var(--token)` everywhere below that. Type is only partly tokenised — the literal sizes and weights that survive are listed under Known debt.
+Three product surfaces (the wiki in `index.html`, the investor deck in `pitch.html`, the canvas app in `engine.html`) share one token space. Colour, radius, duration, z-index and touch dimensions resolve from `design-system/tokens.css`, which is generated from `design-system/tokens.json`. Page CSS may not hardcode those values: it declares short local aliases in `:root` and consumes `var(--token)` everywhere below that. Type is only partly tokenised — the literal sizes, weights and leading that survive are budgeted per file in `scripts/lint-tokens.mjs` and listed line by line in `design-system/audit-report.md`.
 
 ## Map
 
@@ -36,10 +36,10 @@ Lowercase each dot-separated key, replace dots with dashes, prefix with `--`. Th
 
 | Source key | Custom property |
 |---|---|
-| `color.engine.accent.wash.18` | `--color-engine-accent-wash-18` |
-| `typography.size.h1.wiki` | `--typography-size-h1-wiki` |
+| `color.engine.surface.deep` | `--color-engine-surface-deep` |
+| `typography.size.h1` | `--typography-size-h1` |
 | `motion.easing.drawer` | `--motion-easing-drawer` |
-| `layout.sheet.grab.height` | `--layout-sheet-grab-height` |
+| `layout.drawer.engine.width` | `--layout-drawer-engine-width` |
 
 ## How a page consumes it
 
@@ -66,8 +66,7 @@ Color, per surface:
 | Pitch | `#0A0A0B` | `#141416` | `#F2F0EB` | `#A7A5A0` | `#26262B` | `#C8B28A` |
 | Wiki light | `#FAFAF8` | `#FFFFFF` | `#16181D` | `#5B6270` | `#E1E3E8` | `#0B5D66` |
 | Wiki dark | `#0E1213` | `#151B1C` | `#ECF1F1` | `#9DAAAB` | `#243032` | `#5CC4D0` |
-| Engine | `#0E1116` | `#161B22` | `#E8EAF0` | `#8B93A5` | `#262D38` | `#E8830C` |
-| Pro | `#0B0B0D` | `#1E1E22` | `#F5F5F7` | `#9A9AA0` | `#2C2C2E` | `#FFD60A` |
+| Engine | `#0B0B0D` | `#1E1E22` | `#F5F5F7` | `#9A9AA0` | `#2C2C2E` | `#E8830C` |
 
 Type:
 
@@ -77,10 +76,10 @@ Two families, no more: one sans for all text, one mono for labels, numbers, code
 |---|---|
 | `family.sans` | `system-ui, -apple-system, Segoe UI, sans-serif` |
 | `family.mono` | `ui-monospace, Menlo, monospace` |
-| `h1.pitch` | `clamp(2rem, 5vw, 3.1rem)` |
-| `h1.wiki` | `1.6rem` |
-| `h2.pitch` | `1.35rem` |
-| `h2.wiki` | `1.25rem` |
+| `size.display` | `clamp(2rem, 5vw, 3.1rem)` |
+| `size.h1` | `1.6rem` |
+| `size.h2` | `1.35rem` |
+| `size.h3` | `1.25rem` |
 | `body` | `0.95rem` |
 | `small` | `0.85rem` |
 | `meta` | `0.8rem` |
@@ -124,13 +123,11 @@ Two families, no more: one sans for all text, one mono for labels, numbers, code
 
 ## Known debt
 
-`design-system/audit-report.md` is written by the gate, never by hand. It currently reports PASS with 0 violations and **27 documented exemptions** — read that as "within the gate's current classes", not "no literal survives": several exemptions mask a token that was never created. The exemptions are enumerated in the report and summarised in `design-system/audit/2026-11-24/foundations.md`. Phase 6 adds `verification.md` as the single place the gate's scope and its exemptions are stated together.
+`design-system/audit-report.md` is written by the gate, never by hand. It reports PASS with 0 violations over every class in `audit-checklist.md` plus a documented-exemption list. Read `PASS` as "within the gate's classes and their measured budgets", not "no literal survives": each class holds the count measured at the last migration as an explicit ceiling. Each exemption carries its reason on the line it excuses, and the gate fails as `bad-allow` a marker whose reason no longer applies. The measured baseline is in `design-system/audit/2026-11-24/`.
 
-What the gate does not judge today:
+Still outside the gate:
 
-- Literal `font-size`: 8 across the three product pages (2 each — `index.html` `.7rem`/`22px`, `pitch.html` `.62rem`/`.9rem`, `engine.html` `.78rem`/`18px`), plus 2 `font:` shorthands that bypass the scale (15px/1.6 where the token says 15.2). 16 distinct computed sizes against 11 size tokens.
-- `line-height`: 36 literal declarations, 0 token refs. `font-weight`: 53 literals, 0 refs. `letter-spacing`: 28 literals.
-- Shadow, width/height, `@media` breakpoints, consumer counts, token `type` shape and theme-key parity.
-- `!important`: 2 in `index.html`, 5 in `pitch.html`, 1 in `engine.html`.
+- Raw `box-shadow` — `elevation.*` is documented and consumed, not enforced.
+- Raw `width`/`height` (T7) and `@media` pixel values (T6) — Phase 1 work, deliberately absent. Breakpoints stay literal because `var()` is invalid in `@media`.
 
 All of it is type-and-cascade cleanup, not token drift. The measured baseline and the full gap list live in `design-system/audit/2026-11-24/`.

@@ -14,7 +14,7 @@ Rules marked **proposed** describe UI that no page ships yet. They are future ac
 ## Typography
 - [ ] Families from `typography.family.*` only
 - [ ] Sizes from `typography.size.*` scale
-- [ ] Eyebrows uppercase + tracked (`typography.tracking.eyebrow`), never plain small caps
+- [ ] Eyebrows uppercase + tracked (`tracking.eyebrow`), never plain small caps
 - [ ] Timecode tabular, `typography.size.timecode`
 
 ## Spacing / Density
@@ -24,11 +24,11 @@ Rules marked **proposed** describe UI that no page ships yet. They are future ac
 
 ## Touch / Targets
 - [ ] All interactive targets ≥ `touch.min` (40px)
-- [ ] Transport/play controls ≥ `touch.pro` (48px) where finger-first
-- [ ] **Proposed:** timeline selection handles ≥ `touch.handle.timeline` (32px) — no such handle is implemented
+- [ ] Transport/play controls ≥ `touch.preferred` (44px) where finger-first
+- [ ] **Proposed:** timeline selection handles ≥ `spacing.xl` (32px) — no such handle is implemented
 
 ## Radius / Elevation
-- [ ] Radii from `radius.*` — shipped: 4px control (`radius.xs`), 8px panel (`radius.sm`); `radius.pill` only on badges, switch tracks/thumb and the sheet grab
+- [ ] Radii from `radius.*` — shipped: 4px control (`radius.xs`), 8px panel (`radius.sm`); `radius.pill` only on badges, switch tracks/thumb, progress track/fill and the sheet grab
 - [ ] Shadows from `elevation.*` only
 
 ## Motion
@@ -61,9 +61,10 @@ node scripts/lint-tokens.mjs --check  # CI mode: no write, exit 1 on any violati
 ```
 
 - Scans `index.html`, `pitch.html`, `engine.html` and `design-system/*.html` (never `tokens.css`), per file and per line.
-- Fails on: raw color (V1), raw duration/cubic-bezier (V2), raw `z-index` (V3), raw `border-radius` (V4), inline `style=` paint (V5), SVG `fill|stroke|stop-color="#…"` (V6), and dead `var(--name)` references (U1).
+- Fails on: raw color (V1), raw duration/cubic-bezier (V2), raw `z-index` (V3), raw `border-radius` (V4), inline `style=` paint (V5), SVG `fill|stroke|stop-color="#…"` (V6), raw border width (V7), raw spacing (V8), dead `var(--name)` references (U1), raw `font-size` (T1), raw `line-height` (T2), raw `letter-spacing` (T3), raw `font-weight` and literal family stacks (T4), `!important` (T14) and inline `style=` attributes (T15).
+- Fails on the token set too: tokens with 0 consumers (T8), two role names sharing one value (T9), role-contract parity across the theme maps (T10), `type` ↔ `value` shape (T11) and duplicate alias values in one `:root` (T13).
+- Every class carries the count measured at the last migration as an explicit ceiling: only the excess fails, so existing debt stays visible and any regression breaks the build.
 - `design-system/tokens.css` is the only place a literal may live; pages consume `var(--token)`. `:root` aliases may resolve to tokens (`--bg:var(--color-wiki-light-bg)`).
-- Media-query breakpoints are the documented raw-px exception (`var()` is invalid in `@media`).
-- 21 documented exemptions survive today; 8 of them mask a token that was never created. `PASS` means "no violation outside the gate's classes", not "every literal is tokenised" — read the exemption list in `audit-report.md`, or the summary in `audit/2026-11-24/foundations.md`.
-- `!important`, inline `style=` and `var(--)` counts are reported for visibility, not failed on.
+- Media-query breakpoints are the documented raw-px exception (`var()` is invalid in `@media`). `@media` pixel values (T6) and raw `width`/`height` (T7) are not enforced yet, and neither is raw `box-shadow`.
+- An exemption is a `lint-allow` marker carrying its reason on the line it excuses. The report lists every exemption; a marker whose reason no longer applies fails as `bad-allow`. `PASS` means "no violation outside the gate's classes", not "every literal is tokenised".
 - `design-system/audit-report.md` is machine-written — read it, never hand-edit it.

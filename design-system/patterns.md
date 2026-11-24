@@ -8,7 +8,7 @@ Compositions of components. Names the parts, the spacing, and when to use vs. th
 Doc Tabs + Cards + Buttons (export pill) + Drawer (plan/fund).
 
 **Layout rules**
-Sticky header (`touch.pro`-scale height band); brand left, tabs right; article centered at `layout.max.pitch`; section rhythm `spacing.xl` between blocks, `spacing.md` inside; every anchor offset for the sticky header.
+Sticky header (`touch.preferred`-scale height band); brand left, tabs right; article centered at `layout.max.pitch`; section rhythm `spacing.xl` between blocks, `spacing.md` inside; every anchor offset for the sticky header.
 
 **When to use**
 Long-form multi-doc pages (product / wiki / investors / MVP). Keep minimal clinical-cinema tone: light-on-dark, champagne accent, generous measure.
@@ -22,7 +22,7 @@ Dense canvas tools or dashboards — use Engine Canvas Shell instead.
 Search/Filter Input + chip tabs + list rows + panel Cards.
 
 **Layout rules**
-Two-column (`layout.sidebar.wiki` list + fluid panel) collapsing to stacked filter-chips on `breakpoint.tablet`; list scrolls independently; panel carries one concept at a time with token copy row.
+Two-column (`layout.sidebar.wiki` list + fluid panel) collapsing to stacked filter-chips on `breakpoint.md`; list scrolls independently; panel carries one concept at a time with token copy row.
 
 **When to use**
 Reference browsing where the user picks one item and acts on it (copy token, open video, follow link).
@@ -36,7 +36,7 @@ Narrative persuasion pages — use Pitch Document Shell.
 Transport Bar + Track Headers + Asset List Rows + Drawer + Toast.
 
 **Layout rules**
-Header tools; narrow left rail (`layout.sidebar.engine`); fluid stage; drawer overlays at `layout.drawer.width`; toast floats above bottom edge. Our own IA — rails group by workflow (assets → stage → inspector), never copied from any reference layout.
+Header tools; narrow left rail (`layout.sidebar.engine`); fluid stage; drawer overlays at `layout.drawer.engine.width`; toast floats above bottom edge. Our own IA — rails group by workflow (assets → stage → inspector), never copied from any reference layout.
 
 **When to use**
 Spatial editing where canvas state is primary and panels are transient.
@@ -52,7 +52,7 @@ Reading-heavy content — use Pitch or Wiki shells.
 Ruler with timecode (`typography.size.timecode`, tabular numbers); lanes of Timeline Chips color-coded by type; Transport Bar docked adjacent; playhead across all lanes.
 
 **Layout rules**
-Lane gutters at `spacing.gutter.pro`; chip radius `radius.sm`; selection handles at `touch.handle.timeline`; one hue per lane type always.
+Lane gutters at `spacing.gutter.pro`; chip radius `radius.sm`; selection handles at `spacing.xl` (32px); one hue per lane type always.
 
 **When to use**
 Any multi-lane temporal view in the engine.

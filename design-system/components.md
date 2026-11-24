@@ -2,7 +2,28 @@
 
 All specs reference `tokens.json` by name. Shipped geometry is named by token, with its resolved px in parentheses so the doc cannot drift from the sheet.
 
-**Radius truth (Phase 0, measured):** controls take `radius.xs` (4px), panels take `radius.sm` (8px). `radius.pill` (9999px) is shipped only on badges, switch tracks/thumb, and the sheet grab — never on a filter chip, button, or input.
+**Radius truth (Phase 0, measured):** controls take `radius.xs` (4px), panels and cards take `radius.sm` (8px). `radius.pill` (9999px) is shipped only on badges, switch tracks/thumb, progress track/fill, and the sheet grab — never on a filter chip, button, or input.
+
+## Engine role palette
+
+Every engine component below cites these sixteen roles and nothing else; the values live in `tokens.json`, not in this file. A spec that needs a colour the roles do not express is a gap to file, not a licence to reach for a deprecated alias.
+
+| Role | Token | Use |
+|---|---|---|
+| App background | `color.engine.surface.0` | page behind the shell |
+| Panel | `color.engine.surface.1` | drawers, toasts, asset panel |
+| Raised row | `color.engine.surface.2` | hovered row, slider track |
+| Deep panel | `color.engine.surface.deep` | inset wells, code blocks |
+| Canvas | `color.engine.canvas` | stage fill under the graph |
+| Text primary | `color.engine.text.primary` | labels, icons, values |
+| Text secondary | `color.engine.text.secondary` | meta, placeholder, inactive icon |
+| Tool surface | `color.engine.tool` | tool and transport buttons |
+| Divider | `color.engine.divider` | hairlines, hover surface |
+| Divider strong | `color.engine.divider.strong` | control borders, sheet grab |
+| Selection | `color.engine.selection` | selected edge, playhead, handles |
+| Track FX / title / audio | `color.engine.track.fx` / `.title` / `.audio` | one hue per lane type |
+| Overlay scrim | `color.engine.overlay.scrim` | modal backdrop |
+| Overlay panel | `color.engine.overlay.panel` | floating pill, translucent panel |
 
 ## Doc Tabs (pitch header, active-dot style)
 
@@ -65,13 +86,13 @@ Default | Hover (accent border) | Active/selected (accent) | Disabled (`opacity.
 | Property | Token |
 |---|---|
 | Button surface | color.engine.tool |
-| Button hover surface | color.engine.tool.hover |
-| Icon/text | color.engine.ink |
-| Secondary label | color.engine.muted |
+| Button hover surface | color.engine.divider |
+| Icon/text | color.engine.text.primary |
+| Secondary label | color.engine.text.secondary |
 | Active edge | color.engine.accent |
-| Destructive hover | color.semantic.danger |
+| Destructive hover | color.status.danger |
 | Radius | radius.sm |
-| Target size | touch.min minimum, touch.pro for transport |
+| Target size | touch.min minimum, touch.preferred for transport |
 
 **Dos and Don'ts**
 - DO keep transport containerless; buttons carry the affordance.
@@ -92,10 +113,10 @@ Rounded bar; leading glyph icon; short label; selection handles on active chip.
 
 | Variant | Description | Key differences |
 |---|---|---|
-| FX chip | Color/effect segment | `color.pro.track.fx` fill |
-| Title chip | Graphics/title segment | `color.pro.track.title` fill |
-| Audio chip | Music/dialogue segment | `color.pro.track.audio` fill |
-| Selected chip | Any active segment | `color.pro.selection` border + handles |
+| FX chip | Color/effect segment | `color.engine.track.fx` fill |
+| Title chip | Graphics/title segment | `color.engine.track.title` fill |
+| Audio chip | Music/dialogue segment | `color.engine.track.audio` fill |
+| Selected chip | Any active segment | `color.engine.selection` border + handles |
 
 **States**
 Default | Hover (brightness lift) | Selected (selection border + handles) | Muted/locked track (dimmed).
@@ -104,13 +125,13 @@ Default | Hover (brightness lift) | Selected (selection border + handles) | Mute
 
 | Property | Token |
 |---|---|
-| FX fill | color.pro.track.fx |
-| Title fill | color.pro.track.title |
-| Audio fill | color.pro.track.audio |
-| Selection edge/handles | color.pro.selection |
-| Label text | color.pro.text.primary |
+| FX fill | color.engine.track.fx |
+| Title fill | color.engine.track.title |
+| Audio fill | color.engine.track.audio |
+| Selection edge/handles | color.engine.selection |
+| Label text | color.engine.text.primary |
 | Radius | radius.sm |
-| Handle thickness | touch.handle.timeline |
+| Handle thickness | spacing.xl (32px) |
 
 **Dos and Don'ts**
 - DO keep one hue per track type, always.
@@ -143,9 +164,9 @@ Visible | Hidden (no selection) | Hover on navigation segment.
 
 | Property | Token |
 |---|---|
-| Pill surface | color.engine.panel + scrim translucency (`opacity.scrim` family) |
-| Active segment | color.engine.ink surface with dark text |
-| Text | color.engine.ink / color.pro.text.primary |
+| Pill surface | color.engine.overlay.panel |
+| Active segment | color.engine.text.primary surface with `color.engine.accent.ink` text |
+| Text | color.engine.text.primary / color.engine.text.secondary |
 | Shadow | elevation.popover |
 | Radius | radius.pill |
 | Padding | spacing.sm / spacing.md |
@@ -169,9 +190,9 @@ Surface container; title; body; optional gate/qualifier line.
 
 | Variant | Description | Key differences |
 |---|---|---|
-| Pitch card | Dark surface block | `color.pitch.surface.1`, `radius.lg` |
+| Pitch card | Dark surface block | `color.pitch.surface.1`, `radius.sm` |
 | Pitch accent card | Gated/emphasis block | Accent border |
-| Wiki panel | Light/dark dual-theme panel | `color.wiki.*.card`, `radius.md` |
+| Wiki panel | Light/dark dual-theme panel | `color.wiki.*.card`, `radius.sm` |
 
 **States**
 Default | Hover (subtle lift, linked cards only) | Accent (gate state).
@@ -185,7 +206,7 @@ Default | Hover (subtle lift, linked cards only) | Accent (gate state).
 | Title | color.pitch.ink / color.wiki.*.ink |
 | Body | color.pitch.muted / color.wiki.*.muted |
 | Gate line | color.pitch.accent / color.wiki.*.accent |
-| Radius | radius.lg (pitch) / radius.md (wiki) |
+| Radius | radius.sm (both surfaces) |
 | Padding | spacing.md |
 
 **Dos and Don'ts**
@@ -221,8 +242,8 @@ Default | Hover (brightness/border shift) | Armed (danger confirm, two-tap) | Di
 |---|---|
 | Primary fill | color.pitch.accent / color.engine.accent (surface-appropriate) |
 | Primary text | color.pitch.accent.ink |
-| Ghost border | color.pitch.rule / color.engine.border.strong |
-| Danger | color.semantic.danger |
+| Ghost border | color.pitch.rule / color.engine.divider.strong |
+| Danger | color.status.danger |
 | Radius | radius.xs — 4px on every button, pitch CTAs and engine tools alike; panels take radius.sm (8px) |
 | Disabled | opacity.disabled |
 
@@ -279,7 +300,7 @@ Slide-in panel; header with close + export; scrollable body; scrim backdrop.
 
 | Variant | Description | Key differences |
 |---|---|---|
-| Engine drawer | Narrow asset editor | `layout.drawer.width` |
+| Engine drawer | Narrow asset editor | `layout.drawer.engine.width` |
 | Pitch drawer | Wide plan/fund sheet | `layout.drawer.pitch.width` |
 
 **States**
@@ -289,8 +310,8 @@ Closed (translated off) | Open | Body scroll-locked while open.
 
 | Property | Token |
 |---|---|
-| Surface / border | color.engine.panel / color.engine.border.strong |
-| Scrim | color.pitch.overlay.scrim + opacity.scrim |
+| Surface / border | color.engine.surface.1 / color.engine.divider.strong |
+| Scrim | color.pitch.scrim.mid |
 | Motion | motion.duration.base + motion.easing.drawer |
 | Close target | touch.min circle |
 
@@ -323,9 +344,9 @@ Hidden | Visible (auto-dismiss) | Armed (danger).
 
 | Property | Token |
 |---|---|
-| Surface / border | color.engine.panel / color.engine.border.strong |
+| Surface / border | color.engine.surface.1 / color.engine.divider.strong |
 | Action fill | color.engine.accent |
-| Danger | color.semantic.danger |
+| Danger | color.status.danger |
 | Shadow | elevation.sheet |
 | Radius | radius.md |
 
@@ -358,10 +379,10 @@ Default | Hover | Locked/muted (dimmed + icon swap) | Missing media (placeholder
 
 | Property | Token |
 |---|---|
-| Icons | color.engine.muted → color.engine.ink on hover |
-| Row surface | color.engine.panel |
+| Icons | color.engine.text.secondary → color.engine.text.primary on hover |
+| Row surface | color.engine.surface.1 |
 | Meta text | typography.size.meta + muted tokens |
-| Badge fills | color.semantic.* |
+| Badge fills | color.status.* |
 
 **Dos and Don'ts**
 - DO show a placeholder for missing media, never a broken thumb.
