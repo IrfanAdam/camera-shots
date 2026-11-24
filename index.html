@@ -84,6 +84,11 @@ body{padding-bottom:calc(var(--control-height-touch) + var(--spacing-xs) + var(-
    cards at a 40rem container, so this replaces those labels with one head per
    group. Token, phrase and the two 40px actions per row; no repeated labels. */
 @media(max-width:639px){
+/* phone: the section nav stays in flow above the card. A fixed bottom rail
+   always paints over the last ~50px of card text, so on phones it is not
+   sticky at all and the body keeps no reserved rail space. */
+.steps{position:static;left:auto;bottom:auto;transform:none;z-index:auto;background:none;border:0;border-radius:0;padding:0;margin:var(--spacing-sm) 0 var(--spacing-2xs);box-shadow:none;max-width:none;overflow:visible;flex-wrap:wrap;gap:var(--spacing-xs)}
+body{padding-bottom:calc(var(--spacing-md) + env(safe-area-inset-bottom,0px))}
 .map thead{display:none}
 .map tbody{display:block}
 .map tbody.map-group{margin-block-end:var(--spacing-md)}
@@ -378,7 +383,7 @@ if(tab=='Prompt map'){const gs=['All',...GROUPS];
 list.innerHTML=`<div class="count">${mapRows().length} tokens${mapGroup!='All'?' in '+mapGroup:''}</div>`+gs.map(g=>`<button type="button" class="ds-chip" aria-pressed="${g==mapGroup}" data-g="${g}" data-ds-key="group-${g}">${g}</button>`).join('');
 panel.innerHTML=mapPanel();revealChip();return}
 const fl=items();
-list.innerHTML=`<div class="count">${fl.length} / ${(D[tab].items||[]).length}</div>`+fl.map(([x,i])=>`<button type="button" class="ds-chip" aria-pressed="${i==idx}" data-i="${i}" data-ds-key="chip-${i}">${x[0]}</button>`).join('');
+list.innerHTML=`<div class="count">${fl.length} result${fl.length===1?'':'s'}</div>`+fl.map(([x,i])=>`<button type="button" class="ds-chip" aria-pressed="${i==idx}" data-i="${i}" data-ds-key="chip-${i}">${x[0]}</button>`).join('');
 const x=(D[tab].items||[])[idx];
 if(!x){panel.innerHTML='<p>No matches in this tab.</p>';return}
 panel.innerHTML=(tab=='Resources')?resCard(x):card(x);
