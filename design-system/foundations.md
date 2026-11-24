@@ -28,7 +28,7 @@ Read order: [README](README.md) → this file → [components](components.md) �
 
 It is a **count of occurrences**, not the gate's T8 presence test: T8 asks only whether a product page, a theme cell or `components.css` names a token at all, and excludes the gallery. So a key can be T8-unconsumed and still show a non-zero count here — read the breakdown the gate prints, not this column, when judging orphans.
 
-Totals at committed HEAD: **1495 consumer references** across 189 keys, **17** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `color.status.danger.ink.light`, `elevation.inset`, `elevation.ring`, `focus.color`, `icon.size.lg`, `icon.size.md`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `spacing.section`, `tracking.label`).
+Totals at committed HEAD: **1485 consumer references** across 189 keys, **19** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `color.status.danger.ink.light`, `color.wiki.dark.accent.ink`, `elevation.1`, `elevation.inset`, `elevation.ring`, `focus.color`, `icon.size.lg`, `icon.size.md`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `spacing.section`, `tracking.label`).
 
 Under the gate's narrower **T8** scope — `var()` in the three product pages plus theme-map cells plus `components.css`, gallery excluded, aliases and `breakpoint.*` exempt — **10** key(s) are unconsumed: `color.engine.track.audio`, `color.engine.track.fx`, `color.engine.track.title`, `elevation.inset`, `elevation.ring`, `icon.size.lg`, `icon.size.md`, `radius.lg`, `spacing.section`, `tracking.label`. Keys that differ between the two views are canvas-only (`CT()`/`WA()` strings the gate cannot see) or gallery-only consumers; `scripts/lint-tokens.mjs` prints the authoritative list and its budget note.
 
@@ -113,10 +113,10 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 |---|---|---|---|
 | `border` | 3 | 3 | 0 |
 | `breakpoint` | 5 | 0 | 5 |
-| `color` | 70 | 69 | 1 |
+| `color` | 70 | 68 | 2 |
 | `control` | 4 | 4 | 0 |
 | `dot` | 1 | 1 | 0 |
-| `elevation` | 6 | 4 | 2 |
+| `elevation` | 6 | 3 | 3 |
 | `focus` | 3 | 2 | 1 |
 | `hover` | 1 | 1 | 0 |
 | `icon` | 3 | 1 | 2 |
@@ -131,7 +131,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `typography` | 13 | 13 | 0 |
 | `weight` | 5 | 5 | 0 |
 | `z` | 17 | 17 | 0 |
-| **total** | **189** | **172** | **17** |
+| **total** | **189** | **170** | **19** |
 
 ### border
 
@@ -140,7 +140,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
 | `border.width.accent` | `3px` | dimension | — | 1 (1/0/0) |
-| `border.width.hairline` | `1px` | dimension | — | 115 (115/0/0) |
+| `border.width.hairline` | `1px` | dimension | — | 116 (116/0/0) |
 | `border.width.strong` | `2px` | dimension | — | 10 (10/0/0) |
 
 ### breakpoint
@@ -161,7 +161,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
-| `color.diagram.fill.wiki` | `#9FC3D8` | color | — | 2 (1/0/1) |
+| `color.diagram.fill.wiki` | `#9FC3D8` | color | — | 5 (4/0/1) |
 | `color.diagram.scrim.wiki` | `#101828` | color | — | 2 (1/0/1) |
 | `color.engine.accent` | `#E8830C` | color | accent | 3 (1/1/1) |
 | `color.engine.accent.ink` | `#111111` | color | fg.on.accent | 6 (4/1/1) |
@@ -184,24 +184,24 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `color.engine.track.fx` | `#5E5CE6` | color | — | 2 (1/0/1) |
 | `color.engine.track.title` | `#30D158` | color | — | 2 (1/0/1) |
 | `color.engine.wash.25` | `rgba(255,255,255,.25)` | color | — | 4 (3/0/1) |
-| `color.pitch.accent` | `#C8B28A` | color | accent | 7 (5/1/1) |
-| `color.pitch.accent.ink` | `#141310` | color | fg.on.accent | 3 (1/1/1) |
-| `color.pitch.bg` | `#0A0A0B` | color | bg.page | 5 (3/1/1) |
-| `color.pitch.body` | `#D9D7D2` | color | fg.secondary | 3 (1/1/1) |
-| `color.pitch.ink` | `#F2F0EB` | color | fg.primary | 4 (2/1/1) |
-| `color.pitch.muted` | `#A7A5A0` | color | fg.muted | 5 (3/1/1) |
+| `color.pitch.accent` | `#C8B28A` | color | accent | 8 (6/1/1) |
+| `color.pitch.accent.ink` | `#141310` | color | fg.on.accent | 4 (2/1/1) |
+| `color.pitch.bg` | `#0A0A0B` | color | bg.page | 6 (4/1/1) |
+| `color.pitch.body` | `#D9D7D2` | color | fg.secondary | 4 (2/1/1) |
+| `color.pitch.ink` | `#F2F0EB` | color | fg.primary | 5 (3/1/1) |
+| `color.pitch.muted` | `#A7A5A0` | color | fg.muted | 6 (4/1/1) |
 | `color.pitch.muted.2` | `#8E8C86` | color | fg.faint | 4 (2/1/1) |
-| `color.pitch.overlay.bg` | `rgba(10,10,11,.92)` | color | — | 2 (1/0/1) |
+| `color.pitch.overlay.bg` | `rgba(10,10,11,.92)` | color | — | 3 (2/0/1) |
 | `color.pitch.overlay.surface` | `rgba(20,20,22,.92)` | color | — | 2 (1/0/1) |
 | `color.pitch.positive` | `#10B981` | color | status.success | 8 (4/3/1) |
 | `color.pitch.positive.ink` | `#06110C` | color | — | 2 (1/0/1) |
-| `color.pitch.rule` | `#26262B` | color | line.default | 4 (2/1/1) |
+| `color.pitch.rule` | `#26262B` | color | line.default | 5 (3/1/1) |
 | `color.pitch.scrim.mid` | `rgba(0,0,0,.6)` | color | — | 2 (1/0/1) |
-| `color.pitch.surface.1` | `#141416` | color | bg.surface | 3 (1/1/1) |
-| `color.pitch.surface.2` | `#1B1B1E` | color | bg.surface.alt | 3 (1/1/1) |
+| `color.pitch.surface.1` | `#141416` | color | bg.surface | 4 (2/1/1) |
+| `color.pitch.surface.2` | `#1B1B1E` | color | bg.surface.alt | 4 (2/1/1) |
 | `color.pitch.switch.bg` | `#101012` | color | bg.control | 3 (1/1/1) |
 | `color.primitive.black` | `#000000` | color | — | 8 (7/0/1) |
-| `color.primitive.white` | `#FFFFFF` | color | fg.on.accent | 27 (25/1/1) |
+| `color.primitive.white` | `#FFFFFF` | color | fg.on.accent | 26 (24/1/1) |
 | `color.print.accent` | `#8A6D2B` | color | — | 2 (1/0/1) |
 | `color.print.body` | `#333333` | color | — | 2 (1/0/1) |
 | `color.print.fine` | `#222222` | color | — | 2 (1/0/1) |
@@ -214,23 +214,23 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `color.status.info` | `#8A5CF6` | color | status.info | 6 (1/4/1) |
 | `color.status.success` | `#2E7D46` | color | status.success | 3 (1/1/1) |
 | `color.status.warning` | `#B86A00` | color | status.warning | 3 (0/2/1) |
-| `color.wiki.dark.accent` | `#5CC4D0` | color | accent | 7 (5/1/1) |
-| `color.wiki.dark.accent.ink` | `var(--color-wiki-dark-bg)` | color | — · alias → --color-wiki-dark-bg | 2 (2/0/0) |
-| `color.wiki.dark.accent.wash` | `#12383D` | color | bg.accent.soft | 4 (2/1/1) |
-| `color.wiki.dark.amber` | `#F0A648` | color | status.warning | 11 (8/2/1) |
-| `color.wiki.dark.bg` | `#0E1213` | color | bg.page, fg.on.accent | 5 (2/2/1) |
-| `color.wiki.dark.card` | `#151B1C` | color | bg.surface | 4 (2/1/1) |
-| `color.wiki.dark.ink` | `#ECF1F1` | color | fg.primary | 4 (2/1/1) |
-| `color.wiki.dark.muted` | `#9DAAAB` | color | fg.muted | 4 (2/1/1) |
-| `color.wiki.dark.rule` | `#243032` | color | line.default | 4 (2/1/1) |
-| `color.wiki.light.accent` | `#0B5D66` | color | accent | 3 (1/1/1) |
-| `color.wiki.light.accent.wash` | `#DDEFF1` | color | bg.accent.soft | 3 (1/1/1) |
-| `color.wiki.light.amber` | `#A76000` | color | — | 2 (1/0/1) |
-| `color.wiki.light.bg` | `#F8F8F4` | color | bg.page | 3 (1/1/1) |
-| `color.wiki.light.card` | `var(--color-primitive-white)` | color | bg.surface · alias → --color-primitive-white | 3 (1/1/1) |
-| `color.wiki.light.ink` | `#16181D` | color | fg.primary | 3 (1/1/1) |
-| `color.wiki.light.muted` | `#5B6270` | color | fg.muted | 3 (1/1/1) |
-| `color.wiki.light.rule` | `#D2D6DE` | color | line.default | 3 (1/1/1) |
+| `color.wiki.dark.accent` | `#5CC4D0` | color | accent | 2 (0/1/1) |
+| `color.wiki.dark.accent.ink` | `var(--color-wiki-dark-bg)` | color | — · alias → --color-wiki-dark-bg | 0 (0/0/0) |
+| `color.wiki.dark.accent.wash` | `#12383D` | color | bg.accent.soft | 2 (0/1/1) |
+| `color.wiki.dark.amber` | `#F0A648` | color | status.warning | 3 (0/2/1) |
+| `color.wiki.dark.bg` | `#0E1213` | color | bg.page, fg.on.accent | 3 (0/2/1) |
+| `color.wiki.dark.card` | `#151B1C` | color | bg.surface | 2 (0/1/1) |
+| `color.wiki.dark.ink` | `#ECF1F1` | color | fg.primary | 2 (0/1/1) |
+| `color.wiki.dark.muted` | `#9DAAAB` | color | fg.muted | 2 (0/1/1) |
+| `color.wiki.dark.rule` | `#243032` | color | line.default | 2 (0/1/1) |
+| `color.wiki.light.accent` | `#0B5D66` | color | accent | 2 (0/1/1) |
+| `color.wiki.light.accent.wash` | `#DDEFF1` | color | bg.accent.soft | 2 (0/1/1) |
+| `color.wiki.light.amber` | `#A76000` | color | — | 7 (6/0/1) |
+| `color.wiki.light.bg` | `#F8F8F4` | color | bg.page | 2 (0/1/1) |
+| `color.wiki.light.card` | `var(--color-primitive-white)` | color | bg.surface · alias → --color-primitive-white | 2 (0/1/1) |
+| `color.wiki.light.ink` | `#16181D` | color | fg.primary | 2 (0/1/1) |
+| `color.wiki.light.muted` | `#5B6270` | color | fg.muted | 2 (0/1/1) |
+| `color.wiki.light.rule` | `#D2D6DE` | color | line.default | 2 (0/1/1) |
 
 ### control
 
@@ -249,7 +249,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
-| `dot.size` | `5px` | dimension | — | 4 (4/0/0) |
+| `dot.size` | `5px` | dimension | — | 6 (6/0/0) |
 
 ### elevation
 
@@ -257,7 +257,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
-| `elevation.1` | `0 1px 2px rgb(15 23 42 / 0.05)` | shadow | — | 1 (1/0/0) |
+| `elevation.1` | `0 1px 2px rgb(15 23 42 / 0.05)` | shadow | — | 0 (0/0/0) |
 | `elevation.float` | `0 8px 24px rgba(0,0,0,.25)` | shadow | — | 1 (1/0/0) |
 | `elevation.inset` | `inset 0 0 0 1px rgba(232,131,12,.5)` | shadow | — | 0 (0/0/0) |
 | `elevation.popover` | `0 8px 24px rgba(0, 0, 0, 0.45)` | shadow | — | 6 (6/0/0) |
@@ -355,7 +355,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
-| `radius.circle` | `50%` | dimension | — | 6 (6/0/0) |
+| `radius.circle` | `50%` | dimension | — | 7 (7/0/0) |
 | `radius.lg` | `14px` | dimension | — | 0 (0/0/0) |
 | `radius.md` | `10px` | dimension | — | 1 (1/0/0) |
 | `radius.none` | `0` | dimension | — | 8 (8/0/0) |
@@ -375,7 +375,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `spacing.2` | `2px` | dimension | — | 22 (22/0/0) |
 | `spacing.20` | `20px` | dimension | — | 12 (12/0/0) |
 | `spacing.2xl` | `48px` | dimension | — | 6 (6/0/0) |
-| `spacing.2xs` | `4px` | dimension | — | 64 (64/0/0) |
+| `spacing.2xs` | `4px` | dimension | — | 65 (65/0/0) |
 | `spacing.6` | `6px` | dimension | — | 73 (73/0/0) |
 | `spacing.base` | `var(--spacing-2xs)` | dimension | — · alias → --spacing-2xs | 0 (0/0/0) |
 | `spacing.gutter.pro` | `var(--spacing-md)` | dimension | — · alias → --spacing-md | 0 (0/0/0) |
@@ -403,8 +403,8 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 |---|---|---|---|---|
 | `tracking.eyebrow` | `0.16em` | dimension | — | 6 (6/0/0) |
 | `tracking.label` | `0.05em` | dimension | — | 0 (0/0/0) |
-| `tracking.snug` | `-0.01em` | dimension | — | 2 (2/0/0) |
-| `tracking.tight` | `-0.02em` | dimension | — | 2 (2/0/0) |
+| `tracking.snug` | `-0.01em` | dimension | — | 3 (3/0/0) |
+| `tracking.tight` | `-0.02em` | dimension | — | 3 (3/0/0) |
 
 ### typography
 
@@ -416,10 +416,10 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `typography.family.sans` | `system-ui, -apple-system, Segoe UI, sans-serif` | fontFamily | — | 1 (1/0/0) |
 | `typography.size.body` | `0.95rem` | fontSize | — | 13 (13/0/0) |
 | `typography.size.display` | `clamp(2rem, 5vw, 3.1rem)` | fontSize | — | 1 (1/0/0) |
-| `typography.size.eyebrow` | `0.72rem` | fontSize | — | 24 (24/0/0) |
+| `typography.size.eyebrow` | `0.72rem` | fontSize | — | 25 (25/0/0) |
 | `typography.size.h1` | `1.6rem` | fontSize | — | 1 (1/0/0) |
-| `typography.size.h2` | `1.35rem` | fontSize | — | 1 (1/0/0) |
-| `typography.size.h3` | `1.25rem` | fontSize | — | 2 (2/0/0) |
+| `typography.size.h2` | `1.35rem` | fontSize | — | 2 (2/0/0) |
+| `typography.size.h3` | `1.25rem` | fontSize | — | 1 (1/0/0) |
 | `typography.size.lede` | `1.05rem` | fontSize | — | 3 (3/0/0) |
 | `typography.size.meta` | `0.8rem` | fontSize | — | 40 (40/0/0) |
 | `typography.size.small` | `0.85rem` | fontSize | — | 47 (47/0/0) |
@@ -434,9 +434,9 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 |---|---|---|---|---|
 | `weight.bold` | `700` | fontWeight | — | 11 (11/0/0) |
 | `weight.heavy` | `800` | fontWeight | — | 1 (1/0/0) |
-| `weight.medium` | `600` | fontWeight | — | 6 (6/0/0) |
+| `weight.medium` | `600` | fontWeight | — | 4 (4/0/0) |
 | `weight.regular` | `400` | fontWeight | — | 2 (2/0/0) |
-| `weight.semibold` | `650` | fontWeight | — | 9 (9/0/0) |
+| `weight.semibold` | `650` | fontWeight | — | 11 (11/0/0) |
 
 ### z
 
