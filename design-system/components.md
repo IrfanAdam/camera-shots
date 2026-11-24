@@ -1,6 +1,8 @@
 # Component Specs
 
-All specs reference `tokens.json` by name. No raw values below — resolve via the token map.
+All specs reference `tokens.json` by name. Shipped geometry is named by token, with its resolved px in parentheses so the doc cannot drift from the sheet.
+
+**Radius truth (Phase 0, measured):** controls take `radius.xs` (4px), panels take `radius.sm` (8px). `radius.pill` (9999px) is shipped only on badges, switch tracks/thumb, and the sheet grab — never on a filter chip, button, or input.
 
 ## Doc Tabs (pitch header, active-dot style)
 
@@ -16,7 +18,7 @@ Row container; text-only tab buttons; 5px active dot (`::after`, centered under 
 |---|---|---|
 | Pitch header tabs | Brand left, tabs right, sticky header | Dot token `color.pitch.accent`; type `typography.size.small` |
 | Wiki step tabs | Underline style, not dot | Active = ink text + amber underline (`color.wiki.light.amber`) |
-| Wiki chip tabs | Pill filter chips | Active = filled accent pill |
+| Wiki chip tabs | Filter chips, `radius.xs` (4px) | Active = accent-filled chip, `radius.xs` |
 
 **States**
 Default (muted, regular) | Hover (ink) | Active (ink, semibold, dot visible) | Focus-visible (accent outline) | Panel swap (fadeSlideIn, `motion.duration.tab` + rise, opacity-led).
@@ -117,7 +119,9 @@ Default | Hover (brightness lift) | Selected (selection border + handles) | Mute
 **Accessibility**
 Selected state must never rely on color alone — handles + label change required; contrast against surface per audit checklist.
 
-## Inspector Pills (floating status overlays)
+## Inspector Pills (floating status overlays) — proposed
+
+Not shipped: no page renders an inspector overlay yet (`patterns.md` marks it proposed). The shape below is the acceptance spec for when one lands, not a description of current UI.
 
 **Purpose**
 Transient floating status over the canvas (selection length, applied effect + navigation).
@@ -197,7 +201,7 @@ Card titles are real headings; linked cards are single `<a>` wrappers, not div-s
 Primary, secondary, and destructive actions across all three surfaces.
 
 **Anatomy**
-Label (+ optional icon); pill or rounded-rect container.
+Label (+ optional icon); 4px rounded-rect container (`radius.xs`), 8px panel when it wraps a block.
 
 **Variants**
 
@@ -206,7 +210,7 @@ Label (+ optional icon); pill or rounded-rect container.
 | Primary | Single main action | Accent fill, dark ink text |
 | Ghost/secondary | Companion actions | Transparent, bordered |
 | Danger | Destructive (delete drawer item) | Danger border/text; armed fill state |
-| Export pill | Small export trigger | Compact pill, muted → ink hover |
+| Export button | Small export trigger | Compact 4px button (`radius.xs`), muted → ink hover |
 
 **States**
 Default | Hover (brightness/border shift) | Armed (danger confirm, two-tap) | Disabled (`opacity.disabled`).
@@ -219,7 +223,7 @@ Default | Hover (brightness/border shift) | Armed (danger confirm, two-tap) | Di
 | Primary text | color.pitch.accent.ink |
 | Ghost border | color.pitch.rule / color.engine.border.strong |
 | Danger | color.semantic.danger |
-| Radius | radius.pill (pitch CTAs) / radius.sm (engine tools) |
+| Radius | radius.xs — 4px on every button, pitch CTAs and engine tools alike; panels take radius.sm (8px) |
 | Disabled | opacity.disabled |
 
 **Dos and Don'ts**
@@ -235,13 +239,13 @@ Min target `touch.min`; visible focus ring; danger actions announced.
 Filter lists in place (wiki concept filter).
 
 **Anatomy**
-Pill input, full-width flex; optional theme toggle companion.
+4px rounded field (`radius.xs`), full-width flex; optional theme toggle companion.
 
 **Variants**
 
 | Variant | Description | Key differences |
 |---|---|---|
-| Filter pill | In-list filter | Surface fill, rule border, pill radius |
+| Filter field | In-list filter | Surface fill, rule border, 4px radius (`radius.xs`) |
 
 **States**
 Default | Focus (accent border) | Populated (clearable).
@@ -253,7 +257,7 @@ Default | Focus (accent border) | Populated (clearable).
 | Surface | color.wiki.*.card |
 | Border / focus | color.wiki.*.rule → color.wiki.*.accent on focus |
 | Text | color.wiki.*.ink |
-| Radius | radius.pill |
+| Radius | radius.xs (4px); pill is badges/tracks/grab only |
 | Type | typography.size.small |
 
 **Dos and Don'ts**

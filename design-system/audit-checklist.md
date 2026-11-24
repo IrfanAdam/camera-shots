@@ -28,7 +28,7 @@ Rules marked **proposed** describe UI that no page ships yet. They are future ac
 - [ ] **Proposed:** timeline selection handles ≥ `touch.handle.timeline` (32px) — no such handle is implemented
 
 ## Radius / Elevation
-- [ ] Radii from `radius.*` — shipped: 4px control, 8px panel, 9999px filter pill
+- [ ] Radii from `radius.*` — shipped: 4px control (`radius.xs`), 8px panel (`radius.sm`); `radius.pill` only on badges, switch tracks/thumb and the sheet grab
 - [ ] Shadows from `elevation.*` only
 
 ## Motion

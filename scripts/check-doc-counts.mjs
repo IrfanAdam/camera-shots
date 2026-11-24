@@ -6,6 +6,10 @@
  *   1. design-system/tokens.css :root carries exactly as many custom properties
  *      as design-system/tokens.json has keys (the rendered total).
  *   2. every rendered token total in design-system/index.html matches that number.
+ *      A runtime placeholder (empty or dash text in a .js-token-count element) is
+ *      a SKIP, but only when the page JS that fills it is real: it must target
+ *      .js-token-count and set it from the CSSOM :root rules of tokens.css, which
+ *      assertion 1 pins to the tokens.json key count. A typed literal is checked.
  *   3. every gallery group tag ("N tokens") matches the swatches rendered under it.
  *   4. the swatch total equals the sum of the group tags.
  *   5. README's "N keys, M groups" claim matches the source, when it makes one.
@@ -95,8 +99,62 @@ function readGroups(html) {
 }
 
 const assertions = [];
+const skips = [];
 function check(label, ok, detail) {
   assertions.push({ label, ok, detail });
+}
+
+/**
+ * Text a .js-token-count element may hold before the page JS runs. An em dash is
+ * the shipped placeholder; an empty element is the same claim with less ink.
+ */
+const PLACEHOLDER_TEXT = /^(?:|—|–|&mdash;|&ndash;)$/;
+
+/**
+ * Prove the runtime binding behind those placeholders is real, not a promise:
+ * it must select .js-token-count, assign it from a value derived from the CSSOM
+ * :root custom-property names, and read only the generated tokens.css sheet (so
+ * gallery chrome can never inflate the total). Assertion 1 pins that CSSOM count
+ * to the tokens.json key count, so a placeholder and a literal prove the same fact.
+ */
+function inspectCountBinding(html) {
+  const scripts = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)]
+    .map((match) => match[1])
+    .join('\n');
+  const problems = [];
+
+  if (!/querySelectorAll\(\s*['"]\.js-token-count['"]\s*\)/.test(scripts)) {
+    problems.push("no querySelectorAll('.js-token-count') in the page script");
+  }
+
+  const assign = scripts.match(
+    /querySelectorAll\(\s*['"]\.js-token-count['"]\s*\)[\s\S]{0,400}?\.textContent\s*=\s*(?!['"\d])([A-Za-z_$][\w$]*)\s*;/,
+  );
+  if (!assign) {
+    problems.push('no .js-token-count textContent assignment from a computed value');
+  } else {
+    const source = assign[1];
+    const from = scripts.match(
+      new RegExp(`(?:var|let|const)\\s+${source}\\s*=\\s*(countRootTokens\\(\\)|rootTokenNames\\(\\)\\.length)\\s*;`),
+    );
+    if (!from) {
+      problems.push(`.js-token-count is set from "${source}", which is not derived from CSSOM :root names`);
+    } else if (
+      from[1] === 'countRootTokens()' &&
+      !/function\s+countRootTokens\s*\(\s*\)\s*\{\s*return\s+rootTokenNames\(\)\.length\s*;?\s*\}/.test(scripts)
+    ) {
+      problems.push('countRootTokens() does not return rootTokenNames().length');
+    }
+  }
+
+  if (!/selectorText\s*===\s*['"]:root['"]/.test(scripts)) {
+    problems.push("binding does not read a ':root' CSSStyleRule");
+  }
+  if (!/href[\s\S]{0,40}indexOf\(\s*['"]tokens\.css['"]\s*\)/.test(scripts)) {
+    problems.push('binding does not restrict the count to the generated tokens.css sheet');
+  }
+
+  return { ok: problems.length === 0, detail: problems.join('; ') };
 }
 
 // 1. tokens.json keys vs generated :root properties
@@ -116,7 +174,9 @@ if (rootCount === null) {
   );
 }
 
-// 2. rendered totals in the gallery
+// 2. rendered totals in the gallery. Two honest forms: a literal that must equal
+// the source count, or a runtime placeholder that is only acceptable when the
+// binding filling it is real (asserted immediately after).
 const galleryHtml = read(FILES.gallery);
 const galleryLines = galleryHtml.split('\n');
 const totalSpans = [];
@@ -128,11 +188,28 @@ galleryLines.forEach((line, i) => {
 if (totalSpans.length === 0) {
   check('gallery renders a token total', false, 'no .js-token-count element found');
 } else {
-  const bad = totalSpans.filter((span) => span.value !== String(keyCount));
+  const placeholders = totalSpans.filter((span) => PLACEHOLDER_TEXT.test(span.value));
+  const literals = totalSpans.filter((span) => !PLACEHOLDER_TEXT.test(span.value));
+
+  for (const span of placeholders) {
+    skips.push(
+      `gallery token total index.html:${span.line} is a runtime placeholder, filled by .js-token-count from CSSOM :root (asserted below)`,
+    );
+  }
+  if (literals.length) {
+    const bad = literals.filter((span) => span.value !== String(keyCount));
+    check(
+      `gallery token total (${literals.length} literal element${literals.length === 1 ? '' : 's'}) = ${keyCount}`,
+      bad.length === 0,
+      bad.map((span) => `index.html:${span.line} renders "${span.value}"`).join('; '),
+    );
+  }
+
+  const binding = inspectCountBinding(galleryHtml);
   check(
-    `gallery token total (${totalSpans.length} element${totalSpans.length === 1 ? '' : 's'}) = ${keyCount}`,
-    bad.length === 0,
-    bad.map((span) => `index.html:${span.line} renders "${span.value}"`).join('; '),
+    `gallery .js-token-count binding fills from tokens.css CSSOM :root (${placeholders.length} placeholder${placeholders.length === 1 ? '' : 's'})`,
+    binding.ok,
+    binding.detail,
   );
 }
 
@@ -141,7 +218,6 @@ if (totalSpans.length === 0) {
 // at runtime), so it is reported as a skip, never a failure. Stated counts must
 // agree with the swatches actually rendered under them.
 const groups = readGroups(galleryHtml);
-const skips = [];
 if (groups.length === 0) {
   check('gallery groups readable', false, 'no .swgroup blocks found');
 } else {
