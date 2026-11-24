@@ -15,6 +15,13 @@
 --ok:var(--color-status-success);--info:var(--color-status-info);--black:var(--color-primitive-black);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{background:var(--bg);color:var(--ink)}
+/* anchors: one cream accent everywhere; ink on hover, accent when visited.
+   A bare <a> with no class would otherwise fall back to the UA blue (and
+   purple when visited). Class controls (.pitch/.eng/.go/.ds-skip-link) still
+   win on specificity, so their button voice is unchanged. */
+a{color:var(--acc)}
+a:visited{color:var(--acc)}
+a:hover{color:var(--ink);text-decoration-color:var(--acc)}
 .w{max-width:var(--layout-max-wiki);margin:0 auto;padding:var(--spacing-20)}
 .top{position:sticky;top:0;z-index:var(--z-sticky);background:var(--color-pitch-overlay-bg);border-bottom:var(--border-width-hairline) solid var(--rule);padding-top:calc(var(--spacing-10) + env(safe-area-inset-top,0px));padding-bottom:var(--spacing-10);display:flex;justify-content:space-between;align-items:baseline;gap:var(--spacing-md);flex-wrap:wrap}
 .by{font-family:var(--typography-family-mono);letter-spacing:var(--tracking-eyebrow);color:var(--mut);font-size:var(--typography-size-small);white-space:nowrap}
