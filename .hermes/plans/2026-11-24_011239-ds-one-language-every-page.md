@@ -372,7 +372,7 @@ C1's structural whitelist is `0`, any `%`, any `fr`, `100vw/dvh`, `2px` only as 
 
 ## Phase 3 — Page adoption {#phase-3}
 
-*Tags:* wiki, pitch, engine, gallery, migration · *Status:* 0/4 tasks · GATE OPEN
+*Tags:* wiki, pitch, engine, gallery, migration · *Status:* 3/4 tasks · GATE PARTIAL
 
 File-disjoint lanes. Each page keeps its own `<style>` for layout and its own accent. Every visual delta must be declared in the lane report.
 
@@ -393,10 +393,10 @@ File-disjoint lanes. Each page keeps its own `<style>` for layout and its own ac
 
 | # | Task | Done when |
 |---|---|---|
-| 21 | Wiki adoption | wiki consumes ds- classes, landmarks, tabs, focus preservation; **no new** axe violations in both themes (dark is Task 27) |
-| 22 | Pitch adoption | pitch consumes ds- classes, trapped drawers, correct tabs/tables/export targets — **starts after its foreign lane commits** |
-| 23 | Engine adoption | engine consumes ds- classes, dialog semantics, live toast, one palette, menu contract, `--_z` overrides |
-| 24 | Gallery adoption | verification + skip link + the last 5/2/3/3/1 legacy specimens; docs-only forks removed |
+| 21 | Wiki adoption | ✅ wiki consumes ds- classes, landmarks, tabs, focus preservation; no new axe violations in both themes · shipped `8027d5c` + `bb88390` (11 groups, 4009.5px@1440 / 7882.4px@390, 40/44px actions) |
+| 22 | Pitch adoption | ✗ **BLOCKED** — `pitch.html` still carries a foreign uncommitted drawer-v4 edit (43+/20−, no commit on the chain); starts only after that lane commits |
+| 23 | Engine adoption | ✅ engine consumes ds- classes, dialog semantics, live toast, one palette, menu contract, `--_z` overrides · shipped `a0515c1` + `6542c01` + `a7c086d` |
+| 24 | Gallery adoption | ✅ verification + skip link + the last 5/2/3/3/1 legacy specimens; docs-only forks removed · shipped `869eb55` |
 
 ### Task 21: Wiki adoption
 **Files:** `index.html` (all inline CSS/JS).
@@ -410,6 +410,20 @@ File-disjoint lanes. Each page keeps its own `<style>` for layout and its own ac
 7. Declared deltas: body 15 → 15.2 (delete the `font:` shorthand — the page rule beats base.css), `.step` 16.8/700 → 15.2/600, copy 28 → 40, pager 38 → 40, `.eng` 34 → 40, `.pitch` link 36 → 40, `.go` 24 → 40, map table +1,437px unless `[data-ds-compact]` is applied.
 **Verify:** axe **no new** serious/critical at 1440/390 in both themes (the dark `.eng` 2.04 and light `h2 small` 4.11 stay until Task 27, or Task 27's two tokens land first and the verify becomes 0/0); focus survives tab/chip activation; off-viewport = 0 **unreachable** stops (10 reachable rail stops at 390 are expected and must be listed); every scrollable region focusable + named; screenshots both themes.
 
+**Shipped `8027d5c` + `bb88390`.** Measured at HEAD `bb88390` on a clean `git archive` tree, 390×844 and 1440×900, with the **Prompt map** tab activated (it lives under the *Intro* step, not the default *Shot language* tabs — a measurement of `.map` that skips that click measures nothing, which is what happened on the first probe):
+
+| Measure | 1440 | 390 |
+|---|---|---|
+| `.map` height | **4009.5px** (+7.3% on the 3,736px pre-compact height) | **7882.4px** (−53.8% on the pre-compaction height) |
+| groups / rows | 11 / 97 | 11 / 97 |
+| group header | `display:none` on the row; the Group column carries the label per row | `display:block` band, 32.47px, 306px wide in a 308px table (**1px inset**, aligned to the rows) |
+| action button | **40px** (`--touch-min`) | **44px** (`--control-height-touch`, coarse pointer — the touch floor, not drift) |
+| page overflow | none (scrollWidth 1440) | none (scrollWidth 390) |
+
+The 7.3% at 1440 is the 40px action column doing exactly what the token asks; the −53.8% at 390 is the group band replacing per-row group cells. Neither is undeclared.
+
+**Group header — occlusion, measured, not assumed.** At the natural page top the first `.map-grouphead th` is at **y=659**, `display:block`, **height 32.47px**, and `elementFromPoint` at its centre (195,676) returns the `th` itself: fully visible. Scrolled so the map's top edge sits at the viewport top (`scrollY 658`), the same header is at **y=1 (h 32)** and `elementFromPoint(195,18)` returns **`h1`** — the sticky `.top` (163px tall at 390, `position:sticky`, `z-index:40`) covers it **32/32px**. Scrolled to `scrollY 496` (map top minus header height) it sits at y=163, fully clear, hit = `th` again. So the header is **not clipped by any overflow or `display` rule** — `.ds-table-wrap` scrolls but the header is above it, and the band renders at full height. It is **occluded only at the map-top-aligned scroll position**, and that position is reachable: `html` has `scroll-padding-top:0px` and `.map` has `scroll-margin-top:0px`, so any `scrollIntoView`/anchor jump to the map lands the first group under the header. Nothing in the wiki links to the map today (`check-anchors`: index has 1 fragment link, `#main`), which is why it never showed up as a broken anchor. **Cause:** `.top{position:sticky;top:0;z-index:var(--z-sticky)}` with no `scroll-padding-top` on `html` and no `scroll-margin-top` on `.map`. **Minimal fix (not applied):** `html{scroll-padding-top:calc(var(--spacing-10)*2 + <h1 line> + safe-area)}` or, cheaper and exact, `.map{scroll-margin-top:var(--layout-header)}` with the 163px 390 / metric recorded; a third option is letting the 390 header wrap less, since 163px is 19% of an 844px viewport. Also seen at 390: the fixed bottom nav covers the *last* group band the same way — same class of bug, opposite edge.
+
 ### Task 22: Pitch adoption
 **Files:** `pitch.html`.
 **Steps:**
@@ -422,6 +436,8 @@ File-disjoint lanes. Each page keeps its own `<style>` for layout and its own ac
 7. Chart rects: keep them focusable and give each an accessible name; do **not** put `role="img"` on 18 focusable rects (anti-pattern — recon risk 8).
 **Verify:** axe 0/0 ×4 (its baseline is already 0); open `#fund-drawer` and Tab 30× — focus never leaves (today it escapes at **#24**); print preview repeats headers; 390 has no page overflow and 2 reachable rail stops are listed as reachable.
 
+**NOT STARTED — blocked on the foreign lane.** At HEAD `bb88390` `pitch.html` is still dirty: **43 insertions / 20 deletions** against the committed blob, working-tree sha256 `55d73eba…`, committed `1b3fa9b…`. The edit is the *plan drawer v4* block — `.drawer` padding `1.6rem` → `var(--spacing-lg)`, and `#plan-weeks .plan-context` rewritten to `gap:var(--spacing-xs)` with a mask fade, `flex:0 0 auto;max-width:var(--breakpoint-xs);background:var(--s2)`, plus a new `#plan-weeks{padding-block-end:var(--spacing-2xl)}`. It is **absent from every commit on the chain**: `git log 869eb55..bb88390 -- pitch.html` is empty, and no replayed commit touches pitch at all. Correction 5 stands: the selectors are moving, so nothing in this task was edited. It unblocks the moment that lane commits.
+
 ### Task 23: Engine adoption
 **Files:** `engine.html`.
 **Steps:**
@@ -433,6 +449,10 @@ File-disjoint lanes. Each page keeps its own `<style>` for layout and its own ac
 6. Declared deltas: toast bottom 56 → 48 (`spacing.2xl`), the two file inputs 4 → 40 (invisible), canvas z-index unchanged via `--_z`, `.proj-box` geometry unchanged.
 **Verify:** axe 0/0 ×4; off-viewport **unreachable** stops = 0 at both widths (7 at 1440 today); modal open → focus in, Tab cycles, Esc returns; drawer closed ⇒ its 5 controls are not tab stops; pixel diff 0.000% except the toast's 8px.
 
+**Shipped `a0515c1` + `6542c01` + `a7c086d`.** `a0515c1` did the adoption: tokens → base → components → components.js, tool row / chapter bar / side rail / rails / switches / drawer / both modals / toast / chips / file inputs on `ds-` classes, the 8 duplicate selectors merged, `#chapterSel` labelled, both file inputs `tabindex=-1 aria-hidden` behind their visible triggers. Overlays run `DS.overlay` (name, trap, return, background inert, closed = `hidden`+`inert`), modals keep `--_z:var(--z-canvas)`, `#projModal .proj-box` keeps its 880px sheet as a `__box` override, toast is `DS.toast` (`role=status`, 5s, pauses on hover/focus). Declared deltas are the two invisible file inputs (4×4 → 4×40) and toast bottom 56 → 48. Measured there: axe **critical 1 → 0**, 0 serious, 0 moderate, 0 minor; **0.0000% pixel diff** at 1440 and 390; off-viewport unreachable stops **7/3 → 0/0**. `a7c086d` closed the two C2 leftovers the gate found *after* the page commit (`#arrowpick button`, the `:root` alias block), C2 **2 → 0**, pixel diff still 0.0000%. `6542c01` is the `--check`-clean foundations regen that must follow a page commit (186 keys / 20 groups / 4 themes / 17 roles).
+
+One drift from the written step, recorded rather than hidden: step 1 asks for `data-ds-theme="engine"` on `<body>`; it shipped on **`<html>`** (same single writer, same one-commit rule, and the `[data-ds-theme]` role map resolves from either), which is what the wiki does too.
+
 ### Task 24: Gallery adoption
 **Files:** `design-system/index.html`.
 **Steps:**
@@ -442,21 +462,29 @@ File-disjoint lanes. Each page keeps its own `<style>` for layout and its own ac
 4. Make `.matrix-wrap` focusable and named (`tabindex="0" role="region" aria-label` — the @390 `scrollable-region-focusable` violation), and either fix the 100/41 contrast nodes (`badge--paid` 4.24, `badge-dev`, `.cite`) or hand them to Task 27 with a citation.
 **Verify:** the page's `<style>` contains no component definition (grep `^\.(btn|field|tool|sheet|badge|toast|chip|card)`); 19 specimen frames still resolve (`check-anchors`); axe serious/critical 0 ×4 or the contrast set explicitly cited to Task 27.
 
+**Shipped `869eb55`.** Verification confirmed the recon's "95% done" was 100% after the rewrite: the last section (nine articles — `.btn .chip .field .card .panel .tool .badge .toast .sheet`) duplicated the shipped specimens a block down, so the section was **deleted, not re-labelled**, together with the 128-line `.frame/.stage/.btn→.sheet-body` fork. The page `<style>` now holds layout, specimen frames and the data-driven matrix only — 0 occurrences of `btn/field/tool/sheet/badge/toast/card/panel/chip` in markup or style block. The 19-block section is untouched: **19 blocks, 76 theme cells, 40 static states**, computed at render. Structure: `.ds-skip-link` is first focusable, `<main id="main" tabindex="-1">` is its target; headless Chrome confirms the first Tab reveals it at y=8 and Enter moves focus and the hash to `#main` — which is why `check-anchors` now reports `index.html` (gallery) 39 unique ids with every fragment resolving. The contrast citation this task owed to Task 27 mostly evaporated instead of being deferred: `.badge--paid` (4.24) died with the section, the deviation flag became `.ds-badge[data-variant="danger"]` (**5.37**), and `.cite` moved to mono `--g-muted` (**5.76 light / 8.04 dark**) from danger red 3.67.
+
 **REF GATE 3 — how to judge:** for each page, compare 1440 and 390 before/after. The only differences allowed are the declared deltas in the lane report — and the recon's list (wiki 8, pitch 14, engine 4, gallery 0) is the starting point, not a guess. Every page uses `ds-` classes for controls, has one `<main>` with `id="main"`, a skip link, and 0 **unreachable** off-viewport stops. Axe baseline is 0 serious/critical, except the two contrast pairs explicitly owned by Task 27. Each lane's first commit carries the theme attribute and the floor decision with it.
+
+**Measured at HEAD `bb88390` — 3 of 4 lanes, PARTIAL, not PASS.** Wiki (`8027d5c`+`bb88390`), engine (`a0515c1`+`6542c01`+`a7c086d`) and gallery (`869eb55`) satisfy their rows: skip link + `id="main"` present on all three, the theme attribute on first paint for wiki and engine (the gallery sets it per specimen cell — 19–20 cells per theme, not on `<html>`), 0 unreachable off-viewport stops where the lane reported it (engine 7/3 → 0/0), pixel diff 0.0000% on engine. **Pitch does not**, and it is not a pass that is merely unrecorded: `pitch.html` is still carrying a foreign 43+/20− drawer-v4 edit at HEAD, no replayed commit touches it, so Task 22 has not begun. A gate that needs four pages cannot be PASS on three; the honest reading is **PARTIAL**.
+
+The wiki's own numbers, re-measured here rather than quoted: `.map` **4009.5px @1440** and **7882.4px @390**, **11 groups / 97 rows**, action buttons **40px @1440 and 44px @390** (coarse-pointer floor), group header 306px in a 308px table (1px inset). **Group-header finding:** the first `.map-grouphead` is *not* clipped — at the natural page top it is at y=659, `display:block`, 32.47px, and `elementFromPoint` returns the `th`. It is **fully occluded only when the map's top edge is scrolled to the viewport top**, where the 163px sticky `.top` covers all 32px and `elementFromPoint(195,18)` returns `h1`. That position is reachable by any `scrollIntoView`/anchor jump because `scroll-padding-top` and `scroll-margin-top` are both `0px`; nothing links to `#map` today, so it is latent rather than live. Fix is one declaration (`.map{scroll-margin-top:…}` or `html{scroll-padding-top:…}`), not applied here. See Task 21's receipt for the four scroll positions.
+
+**Chain audit (the receipts above are on the rebuilt chain, so say which one).** HEAD is `bb88390`; the four replayed commits are `bb88390` (foundations), `a31689b` (CI, replay of `5edca36`), `71fdc7d` (engine keyboard, replay of `71b6ec5`) and `8027d5c` (wiki compact, replay of `64b5b7e`), with `a0321c2` as the foundations regen between the last two. `git merge-base --is-ancestor` confirms `8027d5c`, `71fdc7d`, `a31689b`, `869eb55`, `a0515c1`, `6542c01`, `a7c086d` and `bb88390` are all ancestors of HEAD; `64b5b7e`, `71b6ec5` and `5edca36` still exist as objects but are **not** ancestors — they are the pre-rebuild originals, superseded, and nothing references them. Tree at HEAD carries the wiki group markup + CSS (`.map .map-grouphead` at index.html:55/84-85, `mapGroups()` at :344), the engine keyboard layer (`#cv` `tabindex`/`role=application` at :474, keydown at :1045), and the CI surface (`check-contrast`, `check-targets`, `check-axe`, `check-keyboard`, `scripts/a11y/*`, `design-system/accessibility.md`). No commit in `869eb55..bb88390` touches `pitch.html`.
 
 ---
 
 ## Phase 4 — Accessibility and interaction hardening {#phase-4}
 
-*Tags:* wcag, keyboard, canvas, contrast, ci · *Status:* 0/5 tasks · GATE OPEN
+*Tags:* wcag, keyboard, canvas, contrast, ci · *Status:* 2/5 tasks · GATE OPEN
 
 | # | Task | Done when |
 |---|---|---|
-| 25 | Canvas keyboard layer | every canvas operation has a keyboard path and a list equivalent |
-| 26 | Focus + live regions | wiki focus preservation, filter/copy/toast announced once |
-| 27 | Contrast tokens | all 4 failing pairs fixed; ratio table generated |
-| 28 | Tables, chart, print | captions/scopes, chart roles, print headers |
-| 29 | Verification jobs | axe/keyboard/contrast/target checks run in CI |
+| 25 | Canvas keyboard layer | ✅ every canvas operation has a keyboard path and a list equivalent · shipped `71fdc7d` (0-px unfocused frame; card @390 x94 y350 200×190) |
+| 26 | Focus + live regions | ◐ **partial** — wiki `focusPreserve` + announce verified, engine selection/mode announced; the cross-page announcement audit is not done |
+| 27 | Contrast tokens | ◐ **IN FLIGHT** — the contrast lane owns `tokens.css`/pages; 8 theme×pair debt rows still measured at HEAD, gate therefore still 8 debt / 0 passing |
+| 28 | Tables, chart, print | ◐ **partial** — wiki `.map` captioned + scoped with `data-label`; pitch's 6 tables and print headers blocked with Task 22 |
+| 29 | Verification jobs | ✅ axe/keyboard/contrast/target checks run in CI · shipped `a31689b` (9 axe surfaces, 19 keyboard assertions, 8 debt enumerated) |
 
 ### Task 25: Canvas keyboard layer
 **Files:** `engine.html` canvas JS, `design-system/components.js` (optional helper).
@@ -467,6 +495,10 @@ File-disjoint lanes. Each page keeps its own `<style>` for layout and its own ac
 4. Announce the selected node and mode.
 **Verify:** complete create→connect→rename→delete flow with keyboard only; screen reader announces mode/selection; axe canvas role valid.
 
+**Shipped `71fdc7d`.** `#cv` is now `<canvas id="cv" tabindex="0" role="application" aria-label="Storyboard canvas" aria-describedby="cvHelp">` with a `ds-sr-only` instruction paragraph naming every key, and a neutral inset ring on focus. The layer is a real handler, not a shortcut list: `Escape` → `kbCancel()`, arrows via `KB_DIR` → `kbMove()`, `Enter` → `kbLinkTo()` in link mode or `kbOpen()` otherwise, `Delete`/`Backspace` → `kbDelete()` (armed two-step, same as the drawer), `N` → `kbAdd()`, `C` → `kbLink()`; every branch calls `preventDefault()`+`stopPropagation()` and the whole handler bails when `kbTyping(e.target)` is true, so inputs, selects and contenteditable keep their own keys. Selection and mode are announced through `DS.announce`, and the assets list stays the DOM path to every card.
+
+The deterministic proof is in the commit, not in a screenshot nobody can diff: a seeded board (`cse-engine-v4`, one card at world 553,120) captured at 1440×900 and 390×844, with the card **fully in frame at 390 — absolute x94 y350, 200×190, fit `cam.x` 467** — and the **unfocused frame a 0-px diff** against the pre-change capture at both widths. axe: 0 violations across 8 runs (seeded/empty × 1440/390 × light/dark); 0 unreachable off-viewport tab stops. Verified here at HEAD: the canvas opens `tabindex="0"`, the keydown listener exists at `engine.html:1045`, and `check-axe`/`check-keyboard` both exit 0 on the archived tree.
+
 ### Task 26: Focus + live regions
 **Files:** `index.html` render functions, `design-system/components.js`.
 **Steps:**
@@ -474,6 +506,8 @@ File-disjoint lanes. Each page keeps its own `<style>` for layout and its own ac
 2. Add one polite status region; announce filter count, copy confirmation, panel change, toast.
 3. Remove label-swap-only confirmations.
 **Verify:** activating a tab keeps `activeElement` on the same logical control; VoiceOver announces each change once; no double announcements.
+
+**Partial — and the parts that landed are verified, the parts that did not are named.** Wiki: every render goes through `DS.focusPreserve(document.body, draw)` (one call site, `draw()` is the only innerHTML writer), tabs/chips/steps use `data-ds-key` so activation re-focuses the same logical control, and `DS.announce` fires once for the filter count and once for copy — not for both label-swaps that used to double up. Engine: `71fdc7d` announces selection and mode from the canvas layer through the same `DS.announce`. **Not done:** the cross-page audit the verify line actually asks for — one pass over all four surfaces confirming exactly one announcement per change — because pitch is blocked (Task 22) and gallery announcements were only exercised through the specimen harness, not the page. Counting this ✓ on the strength of two pages would be the same optimism the earlier phases were corrected for, so it stays partial.
 
 ### Task 27: Contrast tokens
 **Files:** `tokens.json`, pages consuming accent/amber/badge.
@@ -484,6 +518,8 @@ File-disjoint lanes. Each page keeps its own `<style>` for layout and its own ac
 4. Generate a contrast table (pair, ratio, pass) into `accessibility.md`.
 **Verify:** contrast script reports 0 fails across all themes; table regenerates.
 
+**IN FLIGHT — another lane owns this file set.** No token or page edit for Task 27 exists in the replayed chain (`869eb55..bb88390` touches `index.html`, `engine.html`, `design-system/*`, `scripts/*`, `.github/*`, never `tokens.*` for contrast), so every number in this receipt is measured at a **pre-contrast HEAD**. What the gate says right now: `check-contrast` exits 0 with **51 pairs / 4 themes, 0 failing, 8 known debt, 0 skipped** — and the 8 are exactly the pairs this task must retire: pitch `warning/surface` 4.47, wiki-light `warning/surface` 4.12, wiki-light `danger/surface` 3.91, wiki-light `white/status-info` 4.25, wiki-light `danger/wikil-bg` 3.68, wiki-dark `danger/surface` 4.45, wiki-dark `white/wikidark-accent` **2.05**, engine `danger/surface` 4.24. Axe independently agrees on the ones that reach the DOM: `wiki:light:1440` and `wiki:light:390` report one `color-contrast` serious node (`small`), `wiki:dark:1440` one (`.eng`) — the rest of the debt is in pairs the page never paints. Exit 0 here means "no regression", **not** "fixed"; this task is not done until the debt list is empty and the ratio table in `accessibility.md` regenerates from it.
+
 ### Task 28: Tables, chart, print
 **Files:** wiki `.map`, pitch 6 tables, gallery matrix, pitch chart/print.
 **Steps:**
@@ -492,6 +528,8 @@ File-disjoint lanes. Each page keeps its own `<style>` for layout and its own ac
 3. Print: `thead{display:table-header-group}`, print doc title, prose URL expansion only.
 4. Gallery matrix scroll region focusable with a visible ring.
 **Verify:** axe table/aria checks 0; print preview repeats headers; matrix scrolls by keyboard at 390.
+
+**Partial — the wiki half is done and measured; the pitch half is blocked; engine has no data table.** Wiki `.map`: a `ds-sr-only` `<caption>` ("Every prompt token with its group, code and phrase, plus a copy action"), **4 `scope="col"`** on the column headers plus **1 `scope="colgroup"`** on the group band, and **5 `data-label`** occurrences so the 390 stacked rows keep their column names — all live in `8027d5c`/`bb88390`'s markup, which is why the 390 group bands read as sections rather than orphan rows. Engine ships **no `<table>`** (it is a canvas app), so nothing was owed there; the header/`scope` work in its dialogs was Task 23's. **Pitch is untouched:** 6 `<table>` elements and **0** `scope` attributes at HEAD, **0** `table-header-group`, which is exactly Task 22's blocked file. Gallery matrix scroll region is not this task's to close separately — `869eb55` made it focusable and named. So: wiki ✓, print/pitch ✗ blocked, and the "matrix scrolls by keyboard at 390" leg is proven by `check-keyboard`'s tab/dialog/menu runs but not by the matrix itself.
 
 ### Task 29: Verification jobs
 **Files:** `.github/workflows/ds-gate.yml`, `tools/` (playwright + axe), `scripts/`.
@@ -502,7 +540,13 @@ File-disjoint lanes. Each page keeps its own `<style>` for layout and its own ac
 4. Publish artifacts + a one-line baseline in the PR.
 **Verify:** CI red on a reverted focus fix; baseline committed; run time under 5 min.
 
+**Shipped `a31689b`.** Three blocking jobs, all reproducible without a dev server (the harness binds an ephemeral loopback port and refuses 5173): `a11y-static` runs contrast (51 pairs × 4 themes, 4.5:1 floor, no large-text allowance) and targets (base.css 40px `:where()` floor + 44px coarse, every `--_ctl-h` ≥ 40, the `[data-ds-compact]`/compact-size/compact-density exemption pinned to 34); `a11y-browser` installs the pinned puppeteer 24.15.0 + axe-core 4.10.3 and runs **9 axe surface runs** (wiki light/dark @1440, wiki light @390, pitch @1440/@390, engine @1440, gallery light/dark @1440, gallery light @390) against `scripts/a11y/baseline.json` with 14 required rules asserted present, plus **19 keyboard assertions** (tab arrows/Home/End + roving, dialog focus-in/trap/inert/Escape-return, menu ArrowDown/roving/Escape-return) that fail on any page JS error.
+
+Re-run here on a clean `git archive HEAD` tree at `bb88390`: **axe exit 0 — 9 surfaces, 0 failures**; **keyboard exit 0 — 19 assertions, 0 failing**; **contrast exit 0 — 51 pairs, 8 known debt**; **targets exit 0 — 11 checks**. The one number to correct rather than repeat: the commit says the axe baseline is "2 color-contrast nodes", and it is **2 distinct selectors** (wiki light `small`, wiki dark `.eng`) but **3 node instances**, because `small` appears at both 1440 and 390. The gate counts nodes, so the honest baseline figure is 2 selectors / 3 instances — both are Task 27 debt and neither is new. `design-system/accessibility.md` is the contract: pair table, thresholds, exemptions, ratchet, exact commands, negative proofs, and the limit list (canvas text unmeasurable, static target analysis, incomplete axe nodes, no screen reader).
+
 **REF GATE 4 — how to judge:** axe 0 serious/critical on all pages and states; contrast 0 fails; 0 off-viewport stops; keyboard-only pass of the 4 core tasks (filter wiki, switch docs, edit a scene, read/export pitch); print preview. **All five, not four.**
+
+**Measured at HEAD `bb88390` — 2 of 5 done, GATE OPEN, not PASS.** The verify jobs exist and pass (Task 29), the canvas keyboard layer is shipped and proofed (Task 25), and both are real: the five existing gates plus contrast/targets/axe/keyboard all exit 0 on an archived HEAD. But the gate's own five conditions are not all met — **contrast is 8 debt / 0 failing, not 0 fails** (Task 27 is another lane's, still in flight), the **print-preview leg is untestable while pitch is blocked** (Task 28), and the cross-page announcement audit (Task 26) is unrun. A gate that reads "0 contrast fails" is false at this SHA, so it stays OPEN.
 
 ---
 
