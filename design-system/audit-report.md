@@ -9,24 +9,114 @@ node scripts/lint-tokens.mjs          # table + regenerate this report
 node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 ```
 
-- Generated: 2026-11-23
+- Generated: 2026-11-24
 - Tokens defined: 229 (`design-system/tokens.css`)
 - Files scanned: `index.html`, `pitch.html`, `engine.html`, `design-system/index.html`
-- Result: **PASS** — 0 violation(s), 21 exempt, 0 bad-allow
+- Result: **PASS** — 0 over budget, 27 exempt, 0 bad-allow
+- Budgets: V1 0/0 · V2 0/0 · V3 0/0 · V4 0/0 · V5 0/0 · V6 0/0 · V7 0/0 · V8 0/0 · U1 0/0 · T1 10/10 · T2 37/37 · T3 27/27 · T4w 52/52 · T4f 3/3 · T10 0/0 · T13 4/4 · T14 8/8 · T15 200/200 · T8 91/91 · T9 5/5 · T11 1/1
 
 ## Per-file violations
 
-| File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | V7 border width | V8 spacing | U1 dead var | exempt | bad-allow | `!important` | inline `style=` | `var(--)` uses |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 2 | 19 | 407 |
-| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 7 | 0 | 5 | 31 | 433 |
-| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 10 | 0 | 1 | 2 | 977 |
-| `design-system/index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 0 | 148 | 794 |
-| **Total** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | **21** | **0** | **8** | **200** | **2611** |
+| File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | V7 border width | V8 spacing | U1 dead var | exempt | bad-allow | inline `style=` | `var(--)` uses |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 19 | 407 |
+| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 8 | 0 | 31 | 433 |
+| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 15 | 0 | 2 | 977 |
+| `design-system/index.html` | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 148 | 801 |
+| **Total** | **0** | **0** | **1** | **0** | **0** | **0** | **0** | **0** | **0** | **27** | **0** | **200** | **2618** |
 
-## Violation detail
+## Type, consumer & theme counts
 
-_No violations._
+| File | T1 font-size | T2 line-height | T3 tracking | T4 weight | T4 family | T10 theme parity | T13 dup alias | T14 `!important` | T15 inline `style=` |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `index.html` | 3 | 1 | 2 | 8 | 0 | 0 | 0 | 2 | 19 |
+| `pitch.html` | 3 | 6 | 11 | 22 | 1 | 0 | 0 | 5 | 31 |
+| `engine.html` | 2 | 17 | 10 | 22 | 2 | 0 | 4 | 1 | 2 |
+| `design-system/index.html` | 2 | 13 | 4 | 0 | 0 | 0 | 0 | 0 | 148 |
+| **Total** | **10** | **37** | **27** | **52** | **3** | **0** | **4** | **8** | **200** |
+
+Token-set checks (not per file): **T8** 91 unconsumed tokens · **T9** 5 duplicate role values · **T11** 1 type/value mismatch.
+
+## Budgets
+
+Each class carries the count measured on 2026-11-24 as a ceiling. A count at or under its budget is PASS; only the excess is a violation, so this receipt is green on day one and every regression fails `--check`.
+
+| Class | Now | Budget | Status |
+|---|---:|---:|---|
+| V1 | 0 | 0 | ok |
+| V2 | 0 | 0 | ok |
+| V3 | 0 | 0 | ok |
+| V4 | 0 | 0 | ok |
+| V5 | 0 | 0 | ok |
+| V6 | 0 | 0 | ok |
+| V7 | 0 | 0 | ok |
+| V8 | 0 | 0 | ok |
+| U1 | 0 | 0 | ok |
+| T1 | 10 | 10 (per file index.html 3, pitch.html 3, engine.html 2, design-system/index.html 2) | ok |
+| T2 | 37 | 37 (per file index.html 1, pitch.html 6, engine.html 17, design-system/index.html 13) | ok |
+| T3 | 27 | 27 (per file index.html 2, pitch.html 11, engine.html 10, design-system/index.html 4) | ok |
+| T4w | 52 | 52 (per file index.html 8, pitch.html 22, engine.html 22, design-system/index.html 0) | ok |
+| T4f | 3 | 3 (per file index.html 0, pitch.html 1, engine.html 2, design-system/index.html 0) | ok |
+| T10 | 0 | 0 | ok |
+| T13 | 4 | 4 (per file engine.html 4) | ok |
+| T14 | 8 | 8 (per file index.html 2, pitch.html 5, engine.html 1, design-system/index.html 0) | ok |
+| T15 | 200 | 200 (per file index.html 19, pitch.html 31, engine.html 2, design-system/index.html 148) | ok |
+| T8 | 91 | 91 | ok |
+| T9 | 5 | 5 | ok |
+| T11 | 1 | 1 | ok |
+
+## Over-budget detail
+
+_No class is over budget._
+
+## Token-set baseline
+
+The three set-level checks are budgeted at today's measured value, so they document the gap without failing the build until it grows.
+
+### T8 — no product consumer (91)
+
+A `var()` reference in `index.html`, `pitch.html` or `engine.html` counts; a gallery swatch does not. Tokens are declared in `tokens.css` and referenced nowhere in the product.
+
+<details><summary>Unconsumed tokens</summary>
+
+- `--breakpoint-grid-collapse`, `--breakpoint-sidenav`, `--breakpoint-table-stack`, `--breakpoint-tablet`, `--color-engine-accent-wash-10`, `--color-engine-accent-wash-12`
+- `--color-engine-accent-wash-14`, `--color-engine-accent-wash-18`, `--color-engine-accent-wash-35`, `--color-engine-accent-wash-50`, `--color-engine-bg`, `--color-engine-border`
+- `--color-engine-border-strong`, `--color-engine-canvas-bg`, `--color-engine-code`, `--color-engine-code-hover`, `--color-engine-code-punct`, `--color-engine-graph-arc`
+- `--color-engine-graph-edge`, `--color-engine-graph-handle`, `--color-engine-graph-label`, `--color-engine-graph-node-bottom`, `--color-engine-graph-node-top`, `--color-engine-graph-title`
+- `--color-engine-highlight`, `--color-engine-ink`, `--color-engine-input-edge`, `--color-engine-input-focus`, `--color-engine-muted`, `--color-engine-muted-2`
+- `--color-engine-overlay-72`, `--color-engine-overlay-82`, `--color-engine-overlay-88`, `--color-engine-overlay-90`, `--color-engine-overlay-panel`, `--color-engine-overlay-panel-94`
+- `--color-engine-overlay-panel-97`, `--color-engine-panel`, `--color-engine-panel-codes`, `--color-engine-panel-deep`, `--color-engine-panel-project`, `--color-engine-placeholder`
+- `--color-engine-row`, `--color-engine-switch-border`, `--color-engine-switch-track`, `--color-engine-teal`, `--color-engine-teal-bright`, `--color-engine-tool`
+- `--color-engine-tool-hover`, `--color-engine-wash-10`, `--color-engine-wash-12`, `--color-engine-wash-14`, `--color-engine-wash-16`, `--color-engine-wash-6`
+- `--color-pitch-overlay-scrim`, `--color-pitch-scrim-soft`, `--color-pro-track-audio`, `--color-pro-track-fx`, `--color-pro-track-title`, `--color-semantic-warning`
+- `--elevation-0`, `--elevation-1`, `--elevation-inset-accent`, `--elevation-ring-accent`, `--layout-drawer-pitch-width`, `--layout-max-pitch`
+- `--layout-max-wiki`, `--layout-sheet-grab-height`, `--layout-sheet-grab-width`, `--layout-sidebar-pitch`, `--layout-sidebar-wiki`, `--motion-easing-sheet`
+- `--opacity-disabled`, `--opacity-overlay-thumb`, `--opacity-scrim`, `--radius-card`, `--radius-lg`, `--radius-xl`
+- `--spacing-base`, `--spacing-gutter-pro`, `--touch-field`, `--touch-handle-timeline`, `--touch-pro`, `--touch-small`
+- `--typography-lineheight-body`, `--typography-lineheight-pitch-h1`, `--typography-tracking-tight`, `--typography-weight-bold`, `--typography-weight-medium`, `--typography-weight-regular`
+- `--typography-weight-semibold`
+
+</details>
+
+### T9 — two role names, one value (5)
+
+Colors are compared across the whole set; dimensions only between step names of the same scale, because two scales sharing a length is not a duplicate role.
+
+| Pair | Value |
+|---|---|
+| `color.wiki.light.card ≡ color.neutral.white` | #FFFFFF |
+| `color.wiki.light.amber ≡ color.semantic.warning` | #B86A00 |
+| `color.pro.tool.hover ≡ color.pro.divider` | #2C2C2E |
+| `color.engine.accent.ink ≡ color.print.ink` | #111111 |
+| `spacing.base ≡ spacing.2xs` | 4px |
+
+### T11 — `type` matches `value` (1 mismatch)
+
+One regex per declared type: `color`, `dimension`, `fontSize`, `lineHeight`, `letterSpacing`, `fontWeight`, `fontFamily`, `duration`, `cubicBezier`, `boxShadow`, `number`. The 24 tokens typed `other` are not judged yet — Phase 2 retypes them.
+
+| Token | Declared | Value |
+|---|---|---|
+| `typography.lineheight.pitch.h1` | fontSize | `1.08` |
 
 ### `index.html` — Exempt (1)
 
@@ -34,7 +124,7 @@ _No violations._
 |---:|---|---|---|
 | 64 | V8 | `padding-bottom:5.4rem` | 5.4rem mobile step-rail clearance is layout geometry, not UI rhythm |
 
-### `pitch.html` — Exempt (7)
+### `pitch.html` — Exempt (8)
 
 | Line | Class | Found | Reason |
 |---:|---|---|---|
@@ -43,19 +133,25 @@ _No violations._
 | 91 | V8 | `padding:2.6rem 0 1.6rem` | hero section pad is layout-scale; 41.6px and 25.6px have no step within 0.9px |
 | 97 | V8 | `margin-top:1.4rem` | 22.4px CTA lift sits between the 20 and 24 steps; snapping moves 1.6px |
 | 144 | V8 | `padding:1.6rem` | 25.6px drawer pad sits between the 24 step and the 32px layout gap |
+| 173 | T2 | `line-height:1.6` | no z step exists between --z-content (2) and --z-sticky (40); the frame tooltip must clear sibling cards inside its own stacking context without rising to the sticky header layer |
 | 173 | V3 | `z-index:5` | no z step exists between --z-content (2) and --z-sticky (40); the frame tooltip must clear sibling cards inside its own stacking context without rising to the sticky header layer |
 | 203 | V8 | `padding:1.6rem 0 var(--spacing-md)` | 25.6px compact-hero pad sits between the 24 and 32 steps |
 
-### `engine.html` — Exempt (10)
+### `engine.html` — Exempt (15)
 
 | Line | Class | Found | Reason |
 |---:|---|---|---|
 | 1 | V1 | `#0B0B0D` | meta theme-color cannot resolve custom properties; value mirrors --color-pro-surface-0 (#0B0B0D) |
 | 110 | V8 | `padding:5px` | 5px menu inset sits between 4 and 6; snapping reflows the menu rows |
 | 117 | V8 | `padding:5px` | 5px panel inset sits between 4 and 6; snapping reflows the asset rows |
+| 149 | T2 | `line-height:1.5` | 2.3rem prompt-label clearance is layout-scale, beyond the 32px step |
 | 149 | V8 | `padding-top:2.3rem` | 2.3rem prompt-label clearance is layout-scale, beyond the 32px step |
 | 153 | V3 | `z-index:3` | drawer menu stacks one step above drawer content; no z token holds 3 (nearest --z-content 2) and adding z.raise.deep would invent a step for one element |
+| 264 | T2 | `line-height:1.5` | 118px label indent aligns to the field column, not the rhythm |
 | 264 | V8 | `margin:0 0 var(--spacing-2xs) 118px` | 118px label indent aligns to the field column, not the rhythm |
+| 265 | T2 | `line-height:1.6` | 1px chip inset is an optical hairline; no 2px step exists |
+| 265 | T3 | `letter-spacing:.04em` | 1px chip inset is an optical hairline; no 2px step exists |
+| 265 | T4w | `font-weight:700` | 1px chip inset is an optical hairline; no 2px step exists |
 | 265 | V8 | `padding:1px var(--spacing-xs)` | 1px chip inset is an optical hairline; no 2px step exists |
 | 288 | V8 | `padding:0 0 0 3px` | 3px chip inset cancels the -3px gutter so the token stays flush |
 | 288 | V8 | `margin:0 0 0 -3px` | 3px chip inset cancels the -3px gutter so the token stays flush |
@@ -67,7 +163,7 @@ _No violations._
 |---:|---|---|---|
 | 90 | V8 | `padding-left:calc(var(--spacing-sm) - 1px)` | 1px optical offset inside calc aligns the rail rule; no 2px step |
 | 182 | V8 | `margin-top:-10px` | negative half of the 20px dot centres it against the track |
-| 416 | V8 | `padding:1px var(--spacing-xs)` | 1px badge inset is an optical hairline; no 2px step exists |
+| 419 | V8 | `padding:1px var(--spacing-xs)` | 1px badge inset is an optical hairline; no 2px step exists |
 
 ## How to fix
 
@@ -82,10 +178,21 @@ _No violations._
 | V7 | Raw px border width in `border` / `border-top|right|bottom|left` | `border.width.*` → `var(--border-width-hairline|strong|accent)` as the width position of the shorthand |
 | V8 | Raw px/rem number inside a `padding` / `margin` / `gap` declaration (incl. `-top|-right|-bottom|-left|-block|-inline`, `row-gap`, `column-gap`) | `0`, `auto` and percentages pass; `spacing.*` → `var(--spacing-2|2xs|6|xs|10|sm|14|md|18|20|lg|xl|2xl)`; layout-scale and off-grid values get an in-place `lint-allow` reason |
 | U1 | Dead `var(--name)`: not defined in tokens.css and not declared in this page | Add the token to `design-system/tokens.json` → regenerate, or use the existing token; never rely on a fallback |
+| T1 | Raw numeric `font-size`, or a literal size inside the `font:` shorthand | `typography.size.*` → `var(--typography-size-*)`; `font:` shorthand takes `var(--typography-size-*)/var(--line-height-*)` |
+| T2 | Raw numeric `line-height`, or a literal leading inside the `font:` shorthand | `typography.lineheight.*` → `var(--line-height-*)` once the scale exists |
+| T3 | Raw `letter-spacing` value | `typography.tracking.*` → `var(--typography-tracking-*)` |
+| T4 | Raw numeric `font-weight`, or a literal family stack | `typography.weight.*` / `typography.family.*` → `var(--typography-weight-*)` / `var(--typography-family-*)` |
+| T8 | Token defined in tokens.css with no `var()` reference from a product page | Wire it in `index/pitch/engine.html` or delete it; gallery swatches do not count as consumption |
+| T9 | Two role names resolving to one value | Alias one name to the other (`--other`) and remove the duplicate role |
+| T10 | A dark theme block that invents a role or disagrees with the other dark map | Declare every theme role in the base `:root`; write the dark mapping once |
+| T11 | Token `type` does not match its `value` shape | Fix the type or the value in `tokens.json` → regenerate |
+| T13 | Two local aliases in one `:root` with the same value | Delete the redundant alias and keep one role name |
+| T14 | `!important` | Fix the cascade; `!important` is an escalation, not a style |
+| T15 | Inline `style=` attribute | Move to a class in `<style>`; budget is per file |
 
 ### Exemptions (`lint-allow`)
 
-A hit may be tolerated only **in place, on the same line, with a reason**: `/* lint-allow: reason */` in CSS, `// lint-allow: reason` in JS, `<!-- lint-allow: reason -->` in HTML. The marker clears every hit on its own line (V1–V8, U1) and nothing on the next line. The reason must be at least 8 characters after trimming; a marker with no reason, or with `ok`, exempts nothing — the hit stays a violation and is additionally reported as **BAD-ALLOW**, so the mechanism cannot silently blanket-suppress.
+A hit may be tolerated only **in place, on the same line, with a reason**: `/* lint-allow: reason */` in CSS, `// lint-allow: reason` in JS, `<!-- lint-allow: reason -->` in HTML. The marker clears every hit on its own line (V1–V8, U1 and the budgeted T classes) and nothing on the next line. The reason must be at least 8 characters after trimming; a marker with no reason, or with `ok`, exempts nothing — the hit stays a violation and is additionally reported as **BAD-ALLOW**, so the mechanism cannot silently blanket-suppress.
 
 Legitimate only where **a browser cannot resolve the value from a custom property**: the `meta` theme-color tag, `@media` / `@supports` conditions, and canvas or gradient string composites assembled in JS. Never legitimate for any color, duration, radius, border width, spacing step or `z-index` that a token could hold — those get a token (or get fixed), because that is exactly the drift this gate exists to catch.
 
@@ -97,3 +204,9 @@ Legitimate only where **a browser cannot resolve the value from a custom propert
 - A hex color is legal only as a `var()` fallback: `var(--color-x, #fff)`.
 - Spacing is a 2px grid: `padding`/`margin`/`gap` take `var(--spacing-2|2xs|6|xs|10|sm|14|md|18|20|lg|xl|2xl)` or `0`/`auto`/a percentage. `width`, `height`, `top`, `left`, `inset`, `transform` and `grid-template` are geometry and stay out of V8.
 - Layout-scale padding above 48px, negative offsets, and off-grid values (22.4, 25.6, 41.6, 86.4, 118) that would move more than 0.9px are kept literal with an in-place `lint-allow` reason.
+- Budgets are ceilings, not exemptions: the count measured on 2026-11-24 stays visible, no file is excluded from any check, and a count below budget is progress. Only the excess fails `--check`.
+- `T8` counts `var()` references inside `<style>`/`<script>` of the three product pages; `design-system/index.html` is the system's own documentation and never counts as a consumer.
+- `T9` compares colors across the whole set but dimensions only between step names of one scale (`spacing.base ≡ spacing.2xs`), because `spacing.xs` and `radius.sm` both being 8px is two scales, not two roles.
+- `T10` compares each dark theme block with the base `:root` key set and with the other dark block in the same file; the duplicated dark map must stay identical.
+- `T11` validates the 11 declared types; the 24 tokens typed `other` are outside the table until Phase 2 retypes them.
+- `T15` is budgeted per file (index 19, pitch 31, engine 2, gallery 148) so inline styles cannot migrate into the largest page without failing.
