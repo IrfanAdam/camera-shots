@@ -1,145 +1,59 @@
 # Design System
 
-## What this is
+Three product surfaces — the wiki in `index.html`, the investor deck in `pitch.html`, the canvas app in `engine.html` — share one token contract and one gate. This file is a router: it says what exists, where it lives, and how the pipeline runs. Values live in the generated references, never here.
 
-Three product surfaces (the wiki in `index.html`, the investor deck in `pitch.html`, the canvas app in `engine.html`) share one token space. Colour, radius, duration, z-index and touch dimensions resolve from `design-system/tokens.css`, which is generated from `design-system/tokens.json`. Page CSS may not hardcode those values: it declares short local aliases in `:root` and consumes `var(--token)` everywhere below that. Type is only partly tokenised — the literal sizes, weights and leading that survive are budgeted per file in `scripts/lint-tokens.mjs` and listed line by line in `design-system/audit-report.md`.
+## Where things are
 
-## Map
-
-| Path | What it is | Generated | Safe to edit |
-|---|---|---|---|
-| `design-system/tokens.json` | Token source, 186 keys, 20 groups | no | yes, the only design-value source |
-| `design-system/tokens.css` | Single `:root` block of custom properties | yes | never |
-| `scripts/build-tokens.mjs` | Generator, tokens.json to tokens.css | no | yes |
-| `scripts/lint-tokens.mjs` | Adherence gate, per-file line numbers, exit 1 on failure | no | yes |
-| `design-system/index.html` | Rendered gallery: color, type, space and shape, motion, touch, components, consistency matrix | no | yes |
-| `design-system/components.md` | Component specs | no | yes |
-| `design-system/patterns.md` | Shell and composition patterns | no | yes |
-| `design-system/audit/2026-11-24/` | Measured audit baseline — five lane reports, metrics, 10 screenshots | no | yes |
-| `design-system/audit/archive/audit-2026-11-23.md` | Historical findings, token-gap closure, re-point map (archived) | no | no |
-| `design-system/audit-report.md` | Machine receipt written by the gate | yes | never |
-| `design-system/DEPRECATIONS.md` | Token retirement log: every renamed or deleted key, with its replacement | no | yes |
-| `design-system/audit-checklist.md` | Checklist to run per screen before shipping | no | yes |
+| Path | What it is | Generated |
+|---|---|---|
+| `design-system/tokens.json` | Token source: **186 keys, 20 groups**, 4 theme maps | no — the only hand-edited value source |
+| `design-system/tokens.css` | Generated `:root` properties + `[data-ds-theme]` role blocks | yes |
+| `design-system/foundations.md` | Generated scale reference: every group, theme contract, type scale with line-height, consumer counts | yes |
+| `scripts/build-tokens.mjs` | `tokens.json` → `tokens.css`, with type validation and `--check` | no |
+| `scripts/build-foundations.mjs` | `tokens.json` + `tokens.css` → `foundations.md`, with `--check` | no |
+| `scripts/lint-tokens.mjs` | Adherence gate: per-file line numbers, token-set classes, exit 1 on failure | no |
+| `scripts/check-doc-counts.mjs` | Docs may not state a count the source contradicts | no |
+| `scripts/check-anchors.mjs` | Fragment links, ids and `[plan:…]` anchors resolve | no |
+| `design-system/index.html` | Rendered gallery: swatches, type, motion, shape, components, consistency matrix | no |
+| `design-system/components.md` | Component specs | no |
+| `design-system/patterns.md` | Shell and composition patterns | no |
+| `design-system/DEPRECATIONS.md` | Every retired key, with its replacement | no |
+| `design-system/audit-report.md` | Machine receipt written by the gate | yes — never edit |
+| `design-system/audit/2026-11-24/` | Measured audit baseline: five lane reports, metrics, screenshots | no |
+| `.github/workflows/ds-gate.yml` | CI: byte-stability, gate, doc counts, anchors | no |
 
 ## The pipeline
 
 ```
-node scripts/build-tokens.mjs          # regenerate tokens.css from tokens.json
-node scripts/lint-tokens.mjs           # scan pages, print the table, write audit-report.md
-node scripts/lint-tokens.mjs --check   # CI gate: same scan, no write, exit 1 on failure
+node scripts/build-tokens.mjs            # regenerate tokens.css from tokens.json
+node scripts/build-foundations.mjs       # regenerate foundations.md from tokens.json + tokens.css
+node scripts/lint-tokens.mjs             # scan the pages, print counts, write audit-report.md
+node scripts/lint-tokens.mjs --check     # CI gate: same scan, no write, exit 1 on failure
 ```
 
-`tokens.json` is the only file you edit by hand for a design value. `tokens.css` is regenerated; editing it is lost work. The generator is deterministic and idempotent (verified: a fresh run reproduces the on-disk file byte for byte).
-
-## Naming rule
-
-Lowercase each dot-separated key, replace dots with dashes, prefix with `--`. The generator also splits camelCase.
-
-| Source key | Custom property |
-|---|---|
-| `color.engine.surface.deep` | `--color-engine-surface-deep` |
-| `typography.size.h1` | `--typography-size-h1` |
-| `motion.easing.drawer` | `--motion-easing-drawer` |
-| `layout.drawer.engine.width` | `--layout-drawer-engine-width` |
+Both generators are deterministic and idempotent: a fresh run reproduces the committed file byte for byte, and `--check` diffs without writing. `tokens.json` is the only file you edit by hand for a design value. Editing `tokens.css` or `foundations.md` is lost work.
 
 ## How a page consumes it
 
-Each page links the generated sheet in `<head>` (`<link rel="stylesheet" href="design-system/tokens.css">`), then its own `:root` re-points short local names at canonical tokens. Deeper rules consume the local names, and the local names resolve to the token set.
-
-Before the re-point (`pitch.html` in git history):
+Each page links `design-system/tokens.css` in `<head>`, then its own `:root` re-points short local names at canonical tokens; deeper rules consume the local names. Names are mechanical: lowercase, dots → dashes, `--` prefix.
 
 ```css
---bg:#0A0A0B;--s1:#141416;--s2:#1B1B1E;--ink:#F2F0EB;
+/* pitch.html:11 */
+--bg:var(--color-pitch-bg);--accent:var(--color-pitch-accent);
 ```
 
-After (`pitch.html:11`):
-
-```css
---bg:var(--color-pitch-bg);--s1:var(--color-pitch-surface-1);--s2:var(--color-pitch-surface-2);
-```
-
-## The scales
-
-Color, per surface:
-
-| Surface | bg | surface | ink | muted | rule/border | accent |
-|---|---|---|---|---|---|---|
-| Pitch | `#0A0A0B` | `#141416` | `#F2F0EB` | `#A7A5A0` | `#26262B` | `#C8B28A` |
-| Wiki light | `#FAFAF8` | `#FFFFFF` | `#16181D` | `#5B6270` | `#E1E3E8` | `#0B5D66` |
-| Wiki dark | `#0E1213` | `#151B1C` | `#ECF1F1` | `#9DAAAB` | `#243032` | `#5CC4D0` |
-| Engine | `#0B0B0D` | `#1E1E22` | `#F5F5F7` | `#9A9AA0` | `#2C2C2E` | `#E8830C` |
-
-Type:
-
-Two families, no more: one sans for all text, one mono for labels, numbers, code and timecode. Hierarchy is size, weight and tracking only — there is no display face and no quote face. The size keys below are `typography.size.*`; the two family keys are `typography.family.sans` and `typography.family.mono`.
-
-| Token | Value |
-|---|---|
-| `family.sans` | `system-ui, -apple-system, Segoe UI, sans-serif` |
-| `family.mono` | `ui-monospace, Menlo, monospace` |
-| `size.display` | `clamp(2rem, 5vw, 3.1rem)` |
-| `size.h1` | `1.6rem` |
-| `size.h2` | `1.35rem` |
-| `size.h3` | `1.25rem` |
-| `body` | `0.95rem` |
-| `small` | `0.85rem` |
-| `meta` | `0.8rem` |
-| `eyebrow` | `0.72rem` |
-| `timecode` | `0.75rem` |
-
-| Radius | none | xs | sm | md | lg | pill | circle |
-|---|---|---|---|---|---|---|---|
-| Value | `0` | `4px` | `8px` | `10px` | `14px` | `9999px` | `50%` |
-
-| Duration | none | tick | instant | hover | fast | tab | opacity | base | slow | pulse |
-|---|---|---|---|---|---|---|---|---|---|---|
-| Value | `0s` | `0.06s` | `0.16s` | `0.2s` | `0.22s` | `0.24s` | `0.25s` | `0.28s` | `0.32s` | `1.1s` |
-
-| Easing | standard | out | drawer | emphasized |
-|---|---|---|---|---|
-| Value | `ease` | `ease-out` | `cubic-bezier(0.32, 0.72, 0.24, 1)` | `cubic-bezier(0.22,1,0.36,1)` |
-
-| z | base | raise | content | tooltip | sticky | sticky.rail | bar | overlay | sheet | drawer | drawer.child | popover | pinned | canvas | toast | menu | max |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Value | `0` | `1` | `2` | `5` | `40` | `41` | `50` | `60` | `65` | `70` | `71` | `72` | `80` | `90` | `120` | `130` | `200` |
-
-| Touch | min | preferred |
-|---|---|---|
-| Value | `40px` | `44px` |
-
-| Control height | compact | default | touch | reading |
-|---|---|---|---|---|
-| Value | `34px` | `40px` | `44px` | `46px` |
-
-| Spacing (t-shirt) | 2xs | xs | sm | md | lg | xl | 2xl |
-|---|---|---|---|---|---|---|---|
-| Value | `4px` | `8px` | `12px` | `16px` | `24px` | `32px` | `48px` |
-
-| Spacing (2px micro-grid) | 2 | 6 | 10 | 14 | 18 | 20 | section |
-|---|---|---|---|---|---|---|---|
-| Value | `2px` | `6px` | `10px` | `14px` | `18px` | `20px` | `26px` |
-
-`spacing.base` (4px) and `spacing.gutter.pro` (16px) are one-release aliases: their values are `var(--spacing-2xs)` and `var(--spacing-md)`, so a consumer that still names them resolves through the target.
+Themes are one attribute: `data-ds-theme="pitch|wiki-light|wiki-dark|engine"` declares the same 14 role slots (17 vars), with explicit nulls where a surface has no value.
 
 ## Rules
 
 - No raw hex, `rgb()` or `rgba()` outside `tokens.css`. The one legal literal is a `var()` fallback.
-- No raw duration or `cubic-bezier()` in `transition` or `animation`.
-- No raw `z-index` and no raw `border-radius` (including bare `0`); use `z.*` and `radius.*`.
-- Media-query breakpoints stay in raw px: `var()` is invalid in `@media`. This is the documented exception; the gate ignores it.
-- Every interactive element needs the `:focus-visible` pair: `outline:var(--focus-width) solid <accent>` plus `outline-offset:var(--focus-offset)`.
+- No raw duration, `cubic-bezier()`, `z-index` or `border-radius` (including bare `0`); use the token.
+- Media-query breakpoints stay in raw px — `var()` is invalid in `@media`. That is the documented exception, and T6 checks each query against the breakpoint scale.
+- Every interactive element needs the `:focus-visible` pair: `outline:var(--focus-width) solid …` plus `outline-offset:var(--focus-offset)`.
 - When a value is within 1px of a token step, use the token, not the nearest literal.
-- To add a value: open `tokens.json`, add the key with `type` and `value`, run the generator, then consume the new `var(--...)`.
-- A page change is not done until `node scripts/lint-tokens.mjs` is green.
+- To add a value: edit `tokens.json`, run both generators, then consume the new `var(--…)`.
+- A page change is not done until `node scripts/lint-tokens.mjs` is green and the regenerated files are committed with it.
 
-## Known debt
+## Read next
 
-`design-system/audit-report.md` is written by the gate, never by hand. It reports PASS with 0 violations over every class in `audit-checklist.md` plus a documented-exemption list. Read `PASS` as "within the gate's classes and their measured budgets", not "no literal survives": each class holds the count measured at the last migration as an explicit ceiling. Each exemption carries its reason on the line it excuses, and the gate fails as `bad-allow` a marker whose reason no longer applies. The measured baseline is in `design-system/audit/2026-11-24/`.
-
-Still outside the gate:
-
-- Raw `box-shadow` — `elevation.*` is documented and consumed, not enforced.
-- Raw `width`/`height` (T7) — Phase 1 work, deliberately absent. `@media` width pixels (T6) *are* enforced: each query must equal a `breakpoint.*` value or carry a same-line reason, and the 4 pitch queries are budgeted until Task 12 lands.
-- 11 tokens still have no product `var()` consumer (T8, budgeted): 3 are read through `CT()`/`WA()` canvas strings the counter cannot see, 8 are gallery/doc consumers whose product wiring is Phase 2–3 work. `scripts/lint-tokens.mjs` prints all 11 on every run.
-
-All of it is type-and-cascade cleanup, not token drift. The measured baseline and the full gap list live in `design-system/audit/2026-11-24/`.
+[foundations.md](foundations.md) for values and roles · [components.md](components.md) for specs · [patterns.md](patterns.md) for compositions · `design-system/audit-report.md` for the measured counts the gate reports against explicit per-class budgets (and the exemptions that carry their reasons on the line they excuse) · `design-system/audit/2026-11-24/` for the baseline those budgets were seeded from.

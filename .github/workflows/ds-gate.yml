@@ -40,6 +40,11 @@ jobs:
       - name: Generated CSS matches tokens.json
         run: node scripts/build-tokens.mjs --check
 
+      # foundations.md is rendered from the same source and asserted against
+      # tokens.css, so a token change without a regenerated doc fails here.
+      - name: Generated foundations match tokens.json
+        run: node scripts/build-foundations.mjs --check
+
       - name: Token adherence gate
         run: node scripts/lint-tokens.mjs --check
 
