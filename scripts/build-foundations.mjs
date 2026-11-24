@@ -11,6 +11,14 @@
  * Deterministic and idempotent: no timestamps, groups and keys sorted, role
  * slots and theme maps in contract order. Running twice yields identical bytes.
  *
+ * Consumer counts are pinned to committed HEAD: the four consumer files are
+ * read with `git show HEAD:<path>`, never from the worktree, and tokens.json /
+ * tokens.css are read from the worktree so a token edit still regenerates the
+ * doc before it is committed. A page that is mid-edit therefore cannot drift
+ * this file — commit the page change, then regenerate. When git is unavailable
+ * (an exported tree, e.g. `git archive`) or a consumer file is untracked, that
+ * file is read from disk instead.
+ *
  * The doc states nothing it does not read. Before a byte is written:
  *   - every leaf of tokens.json becomes exactly one table row (186 keys, 20
  *     groups at the time of writing, both counted, never typed);
@@ -29,9 +37,10 @@
  * Exit codes: 0 ok, 1 out of date / inconsistent source, 2 bad usage.
  */
 
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, realpathSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { dirname, resolve, relative } from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { dirname, resolve, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -59,6 +68,65 @@ function read(relPath, { optional = false } = {}) {
 function fail(message) {
   console.error(`FAIL: ${message}`);
   process.exit(1);
+}
+
+// ---------------------------------------------------------------------------
+// Committed-HEAD reads for consumer pages
+// ---------------------------------------------------------------------------
+
+/**
+ * `git rev-parse --show-toplevel` from ROOT, or null when this tree is not a
+ * git checkout (an exported archive, a copied directory). ROOT may sit below
+ * the toplevel, so its repo-relative prefix is carried along for path lookups.
+ */
+function gitTopLevel() {
+  const run = spawnSync('git', ['rev-parse', '--show-toplevel'], { cwd: ROOT, encoding: 'utf8' });
+  if (run.status !== 0) return null;
+  const top = run.stdout.trim();
+  if (!top) return null;
+  const real = (p) => {
+    try { return realpathSync(p); } catch { return resolve(p); }
+  };
+  const relFromTop = relative(real(top), real(ROOT));
+  if (relFromTop.startsWith('..')) return null; // a repo that does not contain ROOT
+  return { top, prefix: relFromTop ? relFromTop.split(sep).join('/') : '' };
+}
+
+const GIT = gitTopLevel();
+
+/** Tracked at HEAD? (`ls-files` succeeds only for a path in the index.) */
+function trackedAtHead(repoPath) {
+  const run = spawnSync('git', ['ls-files', '--error-unmatch', '--', repoPath], {
+    cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  return run.status === 0;
+}
+
+let headReads = 0;
+let diskReads = 0;
+
+/**
+ * Read a consumer file as committed at HEAD. Worktree edits are ignored by
+ * design: a generated doc must not bake a neighbour's uncommitted page. Falls
+ * back to the worktree when git is unavailable or the path is untracked.
+ */
+function readCommitted(relPath, { optional = false } = {}) {
+  if (GIT) {
+    const repoPath = GIT.prefix ? `${GIT.prefix}/${relPath}` : relPath;
+    if (trackedAtHead(repoPath)) {
+      const run = spawnSync('git', ['show', `HEAD:${repoPath}`], {
+        cwd: ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024,
+        stdio: ['ignore', 'pipe', 'pipe'],
+      });
+      if (run.status === 0) {
+        headReads += 1;
+        return run.stdout;
+      }
+    }
+  }
+  const text = read(relPath, { optional });
+  if (text !== null) diskReads += 1;
+  return text;
 }
 
 // ---------------------------------------------------------------------------
@@ -184,11 +252,15 @@ const escapeRe = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
  *          is why a primitive exists even when no page names it.
  * gallery  one per `.sw` swatch row in design-system/index.html naming `--k`.
  *
+ * Every consumer file is read as committed at HEAD (see readCommitted), so the
+ * worktree cannot move these numbers; tokens.json and tokens.css still come
+ * from disk, so a token edit regenerates here before it is committed.
+ *
  * This is a count of occurrences, not the gate's T8 presence test: T8 asks only
  * whether any of product/theme/`components.css` names a token and excludes the
  * gallery, so a key can be T8-unconsumed and still count here.
  */
-const productFiles = PRODUCT_FILES.map((file) => ({ file, text: read(file) }));
+const productFiles = PRODUCT_FILES.map((file) => ({ file, text: readCommitted(file) }));
 
 function productCounts() {
   const varCounts = new Map();
@@ -226,7 +298,7 @@ for (const theme of THEME_NAMES) {
 
 function galleryCounts() {
   const counts = new Map();
-  const html = read(GALLERY, { optional: true });
+  const html = readCommitted(GALLERY, { optional: true });
   if (!html) return counts;
   for (const line of html.split('\n')) {
     if (!/class="sw"/.test(line)) continue;
@@ -255,7 +327,7 @@ for (const leaf of leaves) {
 /* T8's narrower scope, reproduced so the doc can name the gate's orphans: a
    `var()` reference from a product page, a theme cell, or components.css;
    gallery excluded; aliases (`value: var(--other)`) and breakpoint.* exempt. */
-const componentsCss = read('design-system/components.css', { optional: true }) ?? '';
+const componentsCss = readCommitted('design-system/components.css', { optional: true }) ?? '';
 const componentRefs = new Set([...componentsCss.matchAll(/var\(\s*(--[a-z0-9-]+)/g)].map((match) => match[1]));
 const gateOrphans = leaves.filter((leaf) => {
   if (/^var\(/.test(leaf.value.trim())) return false; // alias: the pointer is its own consumer
@@ -417,6 +489,8 @@ lines.push('# Foundations');
 lines.push('');
 lines.push('> GENERATED — do not hand-edit · regenerate: `node scripts/build-foundations.mjs`');
 lines.push('');
+lines.push('Consumer counts are pinned to the committed `HEAD` blobs of the consumer files — the three product pages, the gallery, and `components.css` for the T8 view — never the dirty worktree, so a page mid-edit cannot drift this file. **Commit page changes before regenerating.** Token values still come from the worktree files, so a `tokens.json` edit regenerates here before it is committed.');
+lines.push('');
 lines.push(`The token set as shipped: **${leaves.length} keys · ${groupNames.length} groups**, rendered into \`${TOKENS_CSS}\` with **${THEME_NAMES.length} theme maps** behind the \`${ATTRIBUTE}\` attribute, **${THEME_SLOTS.length} role slots** expanding to **${ROLE_VARS.length} role vars**.`);
 lines.push('');
 lines.push(`Read order: [README](README.md) → this file → [components](components.md) → [patterns](patterns.md). Values are read from \`${TOKENS_JSON}\`; the theme and type sections are asserted against \`${TOKENS_CSS}\` before this file is written, so a stale sheet fails the generator instead of being documented.`);
@@ -437,9 +511,11 @@ lines.push('1. **Product** — occurrences of `var(--k)` in `index.html`, `pitch
 lines.push('2. **Theme** — one per theme-map cell in `tokens.json` whose value is `var(--k)`. The role contract is why a primitive exists even when no page names it directly.');
 lines.push(`3. **Gallery** — one per \`.sw\` swatch row in \`${GALLERY}\` naming \`--k\`. The gallery proves a token renders; it is not product usage.`);
 lines.push('');
+lines.push('**Source:** the consumer files are read as committed at `HEAD` (`git show HEAD:<path>`), so an uncommitted page or component edit cannot move these numbers — commit the change, then regenerate. `tokens.json` and `tokens.css` are read from disk, so a token edit is reflected before it is committed. When git is unavailable (an exported tree, e.g. `git archive`) or a consumer file is untracked, that file is read from disk instead.');
+lines.push('');
 lines.push('It is a **count of occurrences**, not the gate\'s T8 presence test: T8 asks only whether a product page, a theme cell or `components.css` names a token at all, and excludes the gallery. So a key can be T8-unconsumed and still show a non-zero count here — read the breakdown the gate prints, not this column, when judging orphans.');
 lines.push('');
-lines.push(`Totals at this render: **${totalConsumers} consumer references** across ${leaves.length} keys, **${zeroConsumer.length}** key(s) with none${zeroConsumer.length ? ` (${zeroConsumer.map((leaf) => `\`${leaf.key}\``).join(', ')})` : ''}.`);
+lines.push(`Totals at committed HEAD: **${totalConsumers} consumer references** across ${leaves.length} keys, **${zeroConsumer.length}** key(s) with none${zeroConsumer.length ? ` (${zeroConsumer.map((leaf) => `\`${leaf.key}\``).join(', ')})` : ''}.`);
 lines.push('');
 lines.push(`Under the gate's narrower **T8** scope — \`var()\` in the three product pages plus theme-map cells plus \`components.css\`, gallery excluded, aliases and \`breakpoint.*\` exempt — **${gateOrphans.length}** key(s) are unconsumed: ${gateOrphans.length ? gateOrphans.map((leaf) => `\`${leaf.key}\``).join(', ') : 'none'}. Keys that differ between the two views are canvas-only (\`CT()\`/\`WA()\` strings the gate cannot see) or gallery-only consumers; \`scripts/lint-tokens.mjs\` prints the authoritative list and its budget note.`);
 lines.push('');
@@ -602,6 +678,7 @@ function describeDiff(expected, actual) {
 const summary = [
   `Keys: ${leaves.length}; Groups: ${groupNames.length}; Themes: ${THEME_NAMES.length}; Role vars: ${ROLE_VARS.length}; Nulls: ${THEME_NAMES.map((theme) => nullCounts[theme]).join('/')}`,
   `Consumers: ${totalConsumers} references; zero-consumer keys: ${zeroConsumer.length}${zeroConsumer.length ? ` (${zeroConsumer.map((leaf) => leaf.key).join(', ')})` : ''}`,
+  `Consumer files: ${headReads} from HEAD, ${diskReads} from the worktree${GIT ? '' : ' (no git checkout — exported tree)'}`,
   `Bytes: ${Buffer.byteLength(markdown, 'utf8')}; sha256: ${sha256(markdown)}`,
 ];
 

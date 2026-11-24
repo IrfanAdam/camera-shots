@@ -2,6 +2,8 @@
 
 > GENERATED — do not hand-edit · regenerate: `node scripts/build-foundations.mjs`
 
+Consumer counts are pinned to the committed `HEAD` blobs of the consumer files — the three product pages, the gallery, and `components.css` for the T8 view — never the dirty worktree, so a page mid-edit cannot drift this file. **Commit page changes before regenerating.** Token values still come from the worktree files, so a `tokens.json` edit regenerates here before it is committed.
+
 The token set as shipped: **186 keys · 20 groups**, rendered into `design-system/tokens.css` with **4 theme maps** behind the `data-ds-theme` attribute, **14 role slots** expanding to **17 role vars**.
 
 Read order: [README](README.md) → this file → [components](components.md) → [patterns](patterns.md). Values are read from `design-system/tokens.json`; the theme and type sections are asserted against `design-system/tokens.css` before this file is written, so a stale sheet fails the generator instead of being documented.
@@ -22,9 +24,11 @@ Read order: [README](README.md) → this file → [components](components.md) �
 2. **Theme** — one per theme-map cell in `tokens.json` whose value is `var(--k)`. The role contract is why a primitive exists even when no page names it directly.
 3. **Gallery** — one per `.sw` swatch row in `design-system/index.html` naming `--k`. The gallery proves a token renders; it is not product usage.
 
+**Source:** the consumer files are read as committed at `HEAD` (`git show HEAD:<path>`), so an uncommitted page or component edit cannot move these numbers — commit the change, then regenerate. `tokens.json` and `tokens.css` are read from disk, so a token edit is reflected before it is committed. When git is unavailable (an exported tree, e.g. `git archive`) or a consumer file is untracked, that file is read from disk instead.
+
 It is a **count of occurrences**, not the gate's T8 presence test: T8 asks only whether a product page, a theme cell or `components.css` names a token at all, and excludes the gallery. So a key can be T8-unconsumed and still show a non-zero count here — read the breakdown the gate prints, not this column, when judging orphans.
 
-Totals at this render: **1573 consumer references** across 186 keys, **16** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `elevation.inset`, `elevation.ring`, `focus.color`, `icon.size.lg`, `icon.size.md`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `spacing.section`, `tracking.label`).
+Totals at committed HEAD: **1561 consumer references** across 186 keys, **16** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `elevation.inset`, `elevation.ring`, `focus.color`, `icon.size.lg`, `icon.size.md`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `spacing.section`, `tracking.label`).
 
 Under the gate's narrower **T8** scope — `var()` in the three product pages plus theme-map cells plus `components.css`, gallery excluded, aliases and `breakpoint.*` exempt — **11** key(s) are unconsumed: `color.engine.track.audio`, `color.engine.track.fx`, `color.engine.track.title`, `elevation.inset`, `elevation.ring`, `icon.size.lg`, `icon.size.md`, `opacity.disabled`, `radius.lg`, `spacing.section`, `tracking.label`. Keys that differ between the two views are canvas-only (`CT()`/`WA()` strings the gate cannot see) or gallery-only consumers; `scripts/lint-tokens.mjs` prints the authoritative list and its budget note.
 
@@ -136,7 +140,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
 | `border.width.accent` | `3px` | dimension | — | 1 (1/0/0) |
-| `border.width.hairline` | `1px` | dimension | — | 120 (120/0/0) |
+| `border.width.hairline` | `1px` | dimension | — | 119 (119/0/0) |
 | `border.width.strong` | `2px` | dimension | — | 9 (9/0/0) |
 
 ### breakpoint
@@ -351,10 +355,10 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `radius.circle` | `50%` | dimension | — | 6 (6/0/0) |
 | `radius.lg` | `14px` | dimension | — | 0 (0/0/0) |
 | `radius.md` | `10px` | dimension | — | 1 (1/0/0) |
-| `radius.none` | `0` | dimension | — | 6 (6/0/0) |
+| `radius.none` | `0` | dimension | — | 7 (7/0/0) |
 | `radius.pill` | `9999px` | dimension | — | 13 (13/0/0) |
 | `radius.sm` | `8px` | dimension | — | 32 (32/0/0) |
-| `radius.xs` | `4px` | dimension | — | 64 (64/0/0) |
+| `radius.xs` | `4px` | dimension | — | 63 (63/0/0) |
 
 ### spacing
 
@@ -368,16 +372,16 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `spacing.2` | `2px` | dimension | — | 23 (23/0/0) |
 | `spacing.20` | `20px` | dimension | — | 13 (13/0/0) |
 | `spacing.2xl` | `48px` | dimension | — | 5 (5/0/0) |
-| `spacing.2xs` | `4px` | dimension | — | 67 (67/0/0) |
+| `spacing.2xs` | `4px` | dimension | — | 66 (66/0/0) |
 | `spacing.6` | `6px` | dimension | — | 76 (76/0/0) |
 | `spacing.base` | `var(--spacing-2xs)` | dimension | — · alias → --spacing-2xs | 0 (0/0/0) |
 | `spacing.gutter.pro` | `var(--spacing-md)` | dimension | — · alias → --spacing-md | 0 (0/0/0) |
-| `spacing.lg` | `24px` | dimension | — | 16 (16/0/0) |
+| `spacing.lg` | `24px` | dimension | — | 9 (9/0/0) |
 | `spacing.md` | `16px` | dimension | — | 30 (30/0/0) |
 | `spacing.section` | `26px` | dimension | — | 0 (0/0/0) |
-| `spacing.sm` | `12px` | dimension | — | 75 (75/0/0) |
+| `spacing.sm` | `12px` | dimension | — | 74 (74/0/0) |
 | `spacing.xl` | `32px` | dimension | — | 6 (6/0/0) |
-| `spacing.xs` | `8px` | dimension | — | 98 (98/0/0) |
+| `spacing.xs` | `8px` | dimension | — | 96 (96/0/0) |
 
 ### touch
 
