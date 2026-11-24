@@ -2,7 +2,7 @@
    tokens.css — GENERATED FILE, DO NOT EDIT BY HAND.
    Source:     design-system/tokens.json
    Regenerate: node scripts/build-tokens.mjs
-   Tokens:     186
+   Tokens:     189
    Themes:     4 · role slots: 14 · role vars: 17
    ========================================================================== */
 
@@ -33,7 +33,7 @@
   --color-wiki-light-rule: #D2D6DE;
   --color-wiki-light-accent: #0B5D66;
   --color-wiki-light-accent-wash: #DDEFF1;
-  --color-wiki-light-amber: var(--color-status-warning);
+  --color-wiki-light-amber: #A76000;
   --color-wiki-dark-bg: #0E1213;
   --color-wiki-dark-card: #151B1C;
   --color-wiki-dark-ink: #ECF1F1;
@@ -42,6 +42,7 @@
   --color-wiki-dark-accent: #5CC4D0;
   --color-wiki-dark-accent-wash: #12383D;
   --color-wiki-dark-amber: #F0A648;
+  --color-wiki-dark-accent-ink: var(--color-wiki-dark-bg);
 
   /* color.engine */
   --color-engine-tool: #1C1C1E;
@@ -72,6 +73,8 @@
   /* color.status */
   --color-status-success: #2E7D46;
   --color-status-danger: #E5484D;
+  --color-status-danger-ink-light: #C93F43;
+  --color-status-danger-ink-dark: #EA6C70;
   --color-status-warning: #B86A00;
   --color-status-info: #8A5CF6;
 

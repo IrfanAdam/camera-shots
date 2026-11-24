@@ -180,7 +180,7 @@ const ROLE_VAR_COUNT = 17;
  * `--themes-pitch-bg-page` would push this over and fail the build loudly
  * instead of shipping ~70 invented properties.
  */
-const EXPECTED_LEAVES = 186;
+const EXPECTED_LEAVES = 189;
 
 const typeLabel = (path) => path.join('.');
 

@@ -268,18 +268,6 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
   outline:var(--focus-width) solid var(--focus-color,currentColor);
   outline-offset:var(--focus-offset);
 }
-/* Danger ink: the shipped pair is primitive white on --ds-danger (#E5484D)
-   = 3.67:1, and --ds-danger as *text* on a surface = 3.67 light / 3.91 dark;
-   both miss AA at 11.5px. The armed and danger states render only in this
-   gallery, so the stage corrects the pair and keeps the finding for the
-   library (Phase 4) instead of editing components.css from a page lane:
-   primitive black is the measured 5.37:1 ink on the red fill, and a danger
-   control on the light surface takes the surface ink (the red border keeps
-   the signal). Armed wins over both because it is declared last. */
-.spec-cell .ds-menu__item[data-variant="danger"]{color:var(--x-ink)}
-.spec-cell[data-surface="wiki-light"] .ds-btn[data-variant="danger"]:not([data-armed]){color:var(--x-ink)}
-.spec-cell .ds-btn[data-armed],
-.spec-cell .ds-menu__item[data-armed]{color:var(--color-primitive-black)}
 /* icon sizing from the icons.svg contract (components.css ships .ds-icon-btn,
    not .ds-icon): one dialect, three sizes, stroke inherits the text colour */
 .ds-icon{

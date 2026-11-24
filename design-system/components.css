@@ -128,17 +128,17 @@
 .ds-btn[data-variant="danger"]{
   background:transparent;
   border-color:var(--ds-danger);
-  color:var(--ds-danger);
+  color:var(--_danger-ink);
 }
 .ds-btn[data-variant="danger"]:is(:hover,[data-state~="hover"]){
   background:var(--ds-danger);
   border-color:var(--ds-danger);
-  color:var(--color-primitive-white);
+  color:var(--color-primitive-black);
 }
 .ds-btn[data-armed]{
   background:var(--ds-danger);
   border-color:var(--ds-danger);
-  color:var(--color-primitive-white);
+  color:var(--color-primitive-black);
 }
 /* target-floor opt-out, component side. base.css §6/§8 exempt any control
    carrying [data-ds-compact] from the 40/44px floor; a .ds- component has its
@@ -205,7 +205,7 @@
 }
 
 /* 3 · field / input / select / textarea ----------------------------------- */
-.ds-field{--_alert-ink:var(--ds-danger);display:flex;flex-direction:column;gap:var(--spacing-2xs)}
+.ds-field{--_alert-ink:var(--_danger-ink);display:flex;flex-direction:column;gap:var(--spacing-2xs)}
 .ds-label{
   font-size:var(--typography-size-eyebrow);
   font-weight:var(--weight-medium);
@@ -251,12 +251,9 @@
   cursor:not-allowed;
 }
 .ds-note{font-size:var(--typography-size-meta);color:var(--ds-muted)}
-/* Invalid state ink is a local var too. wiki-light re-points it because
-   --ds-danger is a fill tone, not a text tone there: 3.68 on --ds-bg and
-   3.91 on the card. Role ink clears both (16.3 / 16.9) and the red input
-   border still carries the tone. GAP: no dark danger ink token exists, so a
-   light theme has no red that passes — see the report. */
-[data-ds-theme="wiki-light"] .ds-field{--_alert-ink:var(--ds-ink)}
+/* Invalid state ink is the danger text ink (--_danger-ink, declared in §7's
+   block): 4.61 on the light page, 4.91 on the card, 4.68 on the worst dark
+   surface. The red input border still carries the 3:1 UI tone. */
 .ds-field[data-invalid="true"] .ds-note{color:var(--_alert-ink)}
 
 /* 4 · switch — real checkbox, styled track, form-submittable -------------- */
@@ -446,6 +443,17 @@
 .ds-chip:is(:disabled,[aria-disabled="true"],[data-state~="disabled"]){
   opacity:var(--opacity-disabled);
   cursor:not-allowed;
+}
+
+/* danger *text* ink is component-local: the fill stays --ds-danger (a 3:1 UI
+   boundary and the badge fill), but the label needs a red that clears 4.5 on
+   every surface of its theme. Light maps take the darkened ink (4.61 on --bg,
+   4.91 on the card); the dark maps take the lightened one (4.68 worst surface
+   -2 / 5.44 panel / 5.71 wiki-dark card). Armed and hover ink on the fill is
+   primitive black (5.37) — white on #E5484D is 3.91 and is retired. */
+[data-ds-theme]{--_danger-ink:var(--color-status-danger-ink-light)}
+[data-ds-theme="wiki-dark"],[data-ds-theme="engine"],[data-ds-theme="pitch"]{
+  --_danger-ink:var(--color-status-danger-ink-dark);
 }
 
 /* 7 · badge -------------------------------------------------------------- */
@@ -687,11 +695,11 @@
   outline-color:var(--focus-color,currentColor);
   outline-offset:calc(-1 * var(--focus-offset));
 }
-.ds-menu__item[data-variant="danger"]{color:var(--ds-danger)}
+.ds-menu__item[data-variant="danger"]{color:var(--_danger-ink)}
 .ds-menu__item[data-variant="danger"]:is(:hover,[data-state~="hover"]){background:var(--ds-surface-alt)}
 .ds-menu__item[data-armed]{
   background:var(--ds-danger);
-  color:var(--color-primitive-white);
+  color:var(--color-primitive-black);
 }
 
 /* 14 · toast ------------------------------------------------------------- */

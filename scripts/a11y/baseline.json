@@ -1,31 +1,13 @@
 {
   "_doc": [
     "Ratchet for scripts/check-axe.mjs. Each entry allows N serious/critical nodes for one axe rule on one surface run; anything above N fails, anything below is printed as 'improved' so the entry can be tightened.",
-    "`color-contrast` entries are Task 27 debt: the wiki light `h2 small` (#B86A00 on #FFFFFF, 4.12:1) and the wiki dark `a.eng` (white on #5CC4D0, 2.05:1) nodes measured in design-system/audit/2026-11-24/accessibility.md D-18. They are known WCAG 1.4.3 failures, not passes.",
+    "The baseline allows 0 nodes everywhere on purpose: the wiki light `h2 small` (#A76000 on #FFFFFF, 4.87:1) and the wiki dark `a.eng` (#0E1213 on #5CC4D0, 9.21:1) color-contrast entries that used to live here were Task 27 debt and are closed (design-system/accessibility.md §1). Nothing is allowed to regress into this file.",
     "Any other rule appearing here must name a real owner and reason. Empty surfaces are listed explicitly so a new violation on a clean surface fails loudly."
   ],
   "surfaces": {
-    "wiki:light:1440": {
-      "color-contrast": {
-        "count": 1,
-        "owner": "Task 27 (contrast tokens)",
-        "reason": "`h2 small` amber #B86A00 on #FFFFFF = 4.11:1; needs a darker small-size amber token or >=18.66px bold"
-      }
-    },
-    "wiki:dark:1440": {
-      "color-contrast": {
-        "count": 1,
-        "owner": "Task 27 (contrast tokens)",
-        "reason": "`a.eng` white on #5CC4D0 = 2.04:1; the label must use the on-accent token, not primitive white"
-      }
-    },
-    "wiki:light:390": {
-      "color-contrast": {
-        "count": 1,
-        "owner": "Task 27 (contrast tokens)",
-        "reason": "same `h2 small` node as 1440, reflowed"
-      }
-    },
+    "wiki:light:1440": {},
+    "wiki:dark:1440": {},
+    "wiki:light:390": {},
     "pitch:default:1440": {},
     "pitch:default:390": {},
     "engine:default:1440": {},

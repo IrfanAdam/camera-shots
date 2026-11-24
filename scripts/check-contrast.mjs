@@ -47,43 +47,93 @@ export const PAIRS = [
   { id: 'accent/bg', label: 'link text + focus ring on page', fg: '--ds-accent', bg: '--ds-bg', min: TEXT },
   { id: 'accent/surface', label: 'link text on card', fg: '--ds-accent', bg: '--ds-surface', min: TEXT },
   { id: 'success/surface', label: 'success text on card', fg: '--ds-success', bg: '--ds-surface', min: TEXT },
+  /* Pitch is the one map whose warning *fill* has no text consumer: its amber
+     label is a badge fill whose ink is --ds-bg (4.80), and the page measures
+     0/105 failing nodes. 4.47 is real for the role, so it stays declared and
+     owned until Task 22 gives the role a text use. */
   {
     id: 'warning/surface', label: 'warning text on card', fg: '--ds-warning', bg: '--ds-surface', min: TEXT,
+    themes: ['pitch', 'wiki-dark', 'engine'],
     debt: {
-      owner: 'Task 27 (contrast tokens)',
-      expect: {
-        pitch: { ratio: 4.47, node: 'pitch amber note text 4.47:1' },
-        'wiki-light': { ratio: 4.12, node: 'wiki light `h2 small` 4.12:1' },
-      },
+      owner: 'Task 27 (contrast tokens) — latent, no node paints pitch --ds-warning as text',
+      expect: { pitch: { ratio: 4.47, node: 'pitch warning fill label pair, no text consumer; retire with Task 22' } },
     },
   },
+
+  /* Danger *text* is the ink, never the fill. The fill (#E5484D) stays a 3:1
+     UI boundary and the badge fill; a label on it takes primitive black
+     (5.37) — white on it is 3.91 and the idiom is retired, not fixed. */
   {
-    id: 'danger/surface', label: 'danger text on card', fg: '--ds-danger', bg: '--ds-surface', min: TEXT,
+    id: 'danger-ink/surface', label: 'danger text on card', themes: ['wiki-light'],
+    fg: '--color-status-danger-ink-light', bg: '--ds-surface', min: TEXT,
+  },
+  {
+    id: 'danger-ink/bg', label: 'danger text on page', themes: ['wiki-light'],
+    fg: '--color-status-danger-ink-light', bg: '--ds-bg', min: TEXT,
+  },
+  {
+    id: 'danger-ink-dark/surface', label: 'danger text on card', themes: ['wiki-dark', 'engine'],
+    fg: '--color-status-danger-ink-dark', bg: '--ds-surface', min: TEXT,
+  },
+  {
+    id: 'danger-ink/alt', label: 'danger text on raised row', themes: ['wiki-dark', 'engine'],
+    fg: '--color-status-danger-ink-dark', bg: '--ds-surface-alt', min: TEXT,
+  },
+  {
+    id: 'danger-ink/control', label: 'danger text on toolbar', themes: ['engine'],
+    fg: '--color-status-danger-ink-dark', bg: '--ds-control', min: TEXT,
+  },
+  {
+    id: 'armed-ink/danger-fill', label: 'armed / hover label on the danger fill',
+    fg: '--color-primitive-black', bg: '--ds-danger', min: TEXT,
+  },
+  {
+    id: 'badge-danger-ink', label: 'danger badge label on its fill',
+    themes: ['pitch', 'wiki-dark', 'engine'], fg: '--ds-on-accent', bg: '--ds-danger', min: TEXT,
+  },
+  {
+    id: 'badge-danger-ink', label: 'danger badge label on its fill', themes: ['wiki-light'],
+    fg: '--color-primitive-black', bg: '--ds-danger', min: TEXT,
+  },
+
+  /* The two wiki-dark fills the new accent ink serves, and the three
+     consumers of the light amber value change. */
+  {
+    id: 'wikidark-fill-ink/accent', label: 'wiki dark `.eng` label on the accent fill', themes: ['wiki-dark'],
+    fg: '--color-wiki-dark-accent-ink', bg: '--ds-accent', min: TEXT,
+  },
+  {
+    id: 'wikidark-fill-ink/amber', label: 'wiki dark `.yt` glyph on the amber fill', themes: ['wiki-dark'],
+    fg: '--color-wiki-dark-accent-ink', bg: '--color-wiki-dark-amber', min: TEXT,
+  },
+  {
+    id: 'wikil-amber-text/card', label: 'wiki light `h2 small` amber on the card', themes: ['wiki-light'],
+    fg: '--color-wiki-light-amber', bg: '--ds-surface', min: TEXT,
+  },
+  {
+    id: 'wikil-amber-text/bg', label: 'wiki light amber on the page', themes: ['wiki-light'],
+    fg: '--color-wiki-light-amber', bg: '--ds-bg', min: TEXT,
+  },
+  {
+    id: 'white-on-wikil-amber', label: 'wiki light `.yt` glyph on the amber fill', themes: ['wiki-light'],
+    fg: '--color-primitive-white', bg: '--color-wiki-light-amber', min: TEXT,
+  },
+
+  /* WCAG 1.4.11: a hairline is the only affordance for an outlined control.
+     1.19-1.46 today; reaching 3.0 changes the rule tokens and repaints every
+     divider on four pages, so it is a Phase 5 palette decision, not a Task 27
+     value. Declared, owned, and ratcheted so it cannot silently worsen. */
+  {
+    id: 'rule/surface', label: 'hairline boundary on card', fg: '--ds-rule', bg: '--ds-surface', min: 3.0,
     debt: {
-      owner: 'Task 27 (contrast tokens)',
+      owner: 'Phase 5 (line.strong per theme) — 1.4.11 non-text contrast',
       expect: {
-        'wiki-light': { ratio: 3.91, node: 'gallery `span.badge-dev` 3.68:1 on page bg' },
-        'wiki-dark': { ratio: 4.45, node: 'wiki dark danger note 4.45:1' },
-        engine: { ratio: 4.24, node: 'engine danger note 4.24:1' },
+        pitch: { ratio: 1.22, node: 'hairline divider on the pitch card' },
+        'wiki-light': { ratio: 1.46, node: 'hairline divider on the light card' },
+        'wiki-dark': { ratio: 1.28, node: 'hairline divider on the dark card' },
+        engine: { ratio: 1.19, node: 'hairline divider on the canvas card' },
       },
     },
-  },
-  /* The four nodes the audit measured, expressed with the tokens the pages
-     actually combine, so the gate sees the same colour maths. */
-  {
-    id: 'white/wikidark-accent', label: 'wiki dark `.eng` label (page uses primitive white)',
-    themes: ['wiki-dark'], fg: '--color-primitive-white', bg: '--ds-accent', min: TEXT,
-    debt: { owner: 'Task 27 (contrast tokens)', expect: { 'wiki-dark': { ratio: 2.05, node: 'wiki dark `a.eng` 2.05:1' } } },
-  },
-  {
-    id: 'white/status-info', label: 'gallery `badge--paid` label (page uses primitive white)',
-    themes: ['wiki-light'], fg: '--color-primitive-white', bg: '--color-status-info', min: TEXT,
-    debt: { owner: 'Task 27 (contrast tokens)', expect: { 'wiki-light': { ratio: 4.25, node: 'gallery `span.badge--paid` 4.25:1' } } },
-  },
-  {
-    id: 'danger/wikil-bg', label: 'gallery `badge-dev` label on page bg', themes: ['wiki-light'],
-    fg: '--color-status-danger', bg: '--color-wiki-light-bg', min: TEXT,
-    debt: { owner: 'Task 27 (contrast tokens)', expect: { 'wiki-light': { ratio: 3.68, node: 'gallery `span.badge-dev` 3.68:1 ×8' } } },
   },
 ];
 

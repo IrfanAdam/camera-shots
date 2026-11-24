@@ -25,6 +25,7 @@
   --teal:var(--color-engine-divider-strong);
   --teal-bright:var(--color-engine-text-primary);
   --danger:var(--color-status-danger);
+  --_danger-ink:var(--color-status-danger-ink-dark);
   --tap:var(--touch-preferred);
   --tap-min:var(--touch-min);
   --bar-h:var(--layout-bar-engine);
@@ -63,20 +64,20 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 #arrowpick button:hover{border-color:var(--color-engine-text-secondary)}
 #arrowpick button.on{border-color:var(--sel);color:var(--sel)}
 #arrowpick #apDel{align-self:stretch;color:var(--mut)}
-#arrowpick #apDel:hover{color:var(--danger);border-color:var(--danger)}
+#arrowpick #apDel:hover{color:var(--_danger-ink);border-color:var(--danger)}
 .menu{position:relative;display:inline-flex}
 #menuDrop{display:block;position:absolute;right:0;top:calc(100% + 6px);background:var(--panel);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-sm);padding:var(--spacing-6);min-width:150px;box-shadow:var(--elevation-popover);z-index:var(--z-overlay)}
 #menuDrop[hidden]{display:none}
 #menuDrop button{width:100%;text-align:left;font:inherit;font-size:var(--typography-size-small);color:var(--ink);background:transparent;border:0;border-radius:var(--radius-xs);padding:var(--spacing-6) var(--spacing-10);cursor:pointer;white-space:nowrap}
-#menuDrop button:hover{background:var(--tool);color:var(--danger)}
+#menuDrop button:hover{background:var(--tool);color:var(--_danger-ink)}
 /* engine skin on .ds-toast: the shared toast owns position/stacking (bottom steps
    from 56px to --spacing-2xl 48px — the declared delta); this page keeps its own
    inset, gap and elevation so the message box does not grow. */
 #toast{padding:var(--spacing-xs) var(--spacing-xs) var(--spacing-xs) var(--spacing-14);gap:var(--spacing-sm);box-shadow:var(--elevation-sheet);max-inline-size:none;z-index:var(--z-max)}
 #toastBtn{background:var(--acc);border:0;border-radius:var(--radius-xs);color:var(--color-engine-accent-ink);font-weight:700;padding:var(--spacing-6) var(--spacing-sm);cursor:pointer;font-size:var(--typography-size-small)}
-#drawerDel{background:transparent;border:var(--border-width-hairline) solid var(--danger);color:var(--danger);border-radius:var(--radius-xs);padding:var(--spacing-2xs) var(--spacing-sm);cursor:pointer;font-size:var(--typography-size-meta);margin-top:var(--spacing-10)}
-#drawerDel:hover{background:var(--danger);color:var(--color-primitive-white)}
-#drawerDel.armed{background:var(--danger);border-color:var(--danger);color:var(--color-primitive-white);font-weight:700}
+#drawerDel{background:transparent;border:var(--border-width-hairline) solid var(--danger);color:var(--_danger-ink);border-radius:var(--radius-xs);padding:var(--spacing-2xs) var(--spacing-sm);cursor:pointer;font-size:var(--typography-size-meta);margin-top:var(--spacing-10)}
+#drawerDel:hover{background:var(--danger);color:var(--color-primitive-black)}
+#drawerDel.armed{background:var(--danger);border-color:var(--danger);color:var(--color-primitive-black);font-weight:700}
 #drawerDelCancel{background:transparent;border:var(--border-width-hairline) solid var(--border-strong);color:var(--mut);border-radius:var(--radius-xs);padding:var(--spacing-2xs) var(--spacing-sm);cursor:pointer;font-size:var(--typography-size-meta);margin-top:var(--spacing-10);margin-left:var(--spacing-xs)}
 #drawerDelCancel:hover{background:var(--tool-hover);color:var(--ink);border-color:var(--color-engine-text-secondary)}
 #shotProps{display:flex;gap:var(--spacing-sm);align-items:center;font-size:var(--typography-size-meta);color:var(--mut2);margin:var(--spacing-xs) 0;flex-wrap:wrap}
@@ -87,8 +88,8 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 #slotBtns[hidden]{display:none}
 #slotBtns button{border-radius:var(--radius-xs);padding:var(--spacing-6) var(--spacing-14);cursor:pointer;font-size:var(--typography-size-small)}
 #goShot{background:var(--acc);border:0;color:var(--color-engine-accent-ink);font-weight:700}
-#removeSlot{background:transparent;border:var(--border-width-hairline) solid var(--danger);color:var(--danger)}
-#removeSlot:hover{background:var(--danger);color:var(--color-primitive-white)}
+#removeSlot{background:transparent;border:var(--border-width-hairline) solid var(--danger);color:var(--_danger-ink)}
+#removeSlot:hover{background:var(--danger);color:var(--color-primitive-black)}
 #scrim{position:fixed;inset:0;background:var(--color-engine-scrim);opacity:0;pointer-events:none;transition:opacity var(--motion-duration-fast);z-index:var(--z-drawer)}
 #scrim.open{opacity:1}
 #drawer{position:fixed;top:0;right:0;bottom:0;width:var(--layout-drawer-engine-width);padding:0;block-size:auto;overflow:visible;background:var(--panel);border-left:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-none);z-index:var(--z-drawer-child);transform:translateX(105%);transition:transform var(--motion-duration-base) var(--motion-easing-standard);display:flex;flex-direction:column}
@@ -165,8 +166,8 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 #drawerMenu button{width:100%;text-align:left;background:transparent;border:0;border-radius:var(--radius-xs);padding:var(--spacing-6) var(--spacing-10);color:var(--ink);font-size:var(--typography-size-small);cursor:pointer;white-space:nowrap}
 #drawerMenu button:hover{background:var(--tool)}
 #drawerMenu button[hidden]{display:none}
-#drawerMenu #menuDel:hover{background:var(--tool);color:var(--danger)}
-#drawerMenu #menuDel.armed{background:var(--danger);border-color:var(--danger);color:var(--color-primitive-white);font-weight:700}
+#drawerMenu #menuDel:hover{background:var(--tool);color:var(--_danger-ink)}
+#drawerMenu #menuDel.armed{background:var(--danger);border-color:var(--danger);color:var(--color-primitive-black);font-weight:700}
 #delConfirm{display:flex;gap:var(--spacing-xs);margin:var(--spacing-6) 0}
 #delConfirm[hidden]{display:none}
 #delConfirm #drawerDel,#delConfirm #drawerDelCancel{margin-top:0}
@@ -328,8 +329,8 @@ input.tin.tin-pilled{color:transparent !important}
 #assetEditList .aeactions{display:flex;gap:var(--spacing-2xs);flex-wrap:wrap;justify-content:flex-end;flex:none}
 #assetEditList .aeactions button{background:var(--tool);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);color:var(--ink);font-size:var(--typography-size-timecode);padding:var(--spacing-2xs) var(--spacing-xs);cursor:pointer;white-space:nowrap}
 #assetEditList .aeactions button:hover{border-color:var(--color-engine-text-secondary)}
-#assetEditList .aeactions button.danger{color:var(--danger);border-color:var(--danger);background:transparent}
-#assetEditList .aeactions button.danger.armed{background:var(--danger);color:var(--color-primitive-white);font-weight:700}
+#assetEditList .aeactions button.danger{color:var(--_danger-ink);border-color:var(--danger);background:transparent}
+#assetEditList .aeactions button.danger.armed{background:var(--danger);color:var(--color-primitive-black);font-weight:700}
 #assetEditList .aeempty{color:var(--mut);font-size:var(--typography-size-small);font-style:italic;padding:var(--spacing-xs) var(--spacing-2xs)}
 #refPop{position:fixed;z-index:var(--z-menu);width:240px;background:var(--panel);color:var(--ink);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-md);box-shadow:var(--elevation-popover);padding:var(--spacing-10)}
 #refPop[hidden]{display:none}
