@@ -1,0 +1,74 @@
+name: DS gate
+
+# Phase 0 Task 6 — the design system certifies itself in CI, not in review.
+# Four blocking checks: the committed CSS is provably generated from
+# tokens.json, the token gate passes, no doc states a stale count, and no
+# fragment link points at an id that does not exist.
+#
+# Static site, no build step: nothing is installed for the blocking jobs, and
+# there is no root package.json by design (Vercel stays framework: null).
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ds-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    name: tokens, docs, anchors
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Byte-stability: render tokens.json in memory and diff it against the
+      # committed tokens.css. Fails without writing, so a stale file is visible
+      # in the log rather than silently repaired.
+      - name: Generated CSS matches tokens.json
+        run: node scripts/build-tokens.mjs --check
+
+      - name: Token adherence gate
+        run: node scripts/lint-tokens.mjs --check
+
+      - name: Doc counts match the source
+        run: node scripts/check-doc-counts.mjs
+
+      - name: Anchors and ids resolve
+        run: node scripts/check-anchors.mjs
+
+  html-validate:
+    name: html-validate (advisory)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # TODO(phase-6): make this job blocking once the four pages pass. Phase 0
+    # owns the scripts, not the pages, so the pages are deliberately NOT edited
+    # to satisfy the validator — the job reports and the merge is not gated.
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # A one-shot dev tool fetch, not a runtime dependency: no npm install, no
+      # lockfile, no root package.json. Pinned so the advisory noise is stable.
+      - name: Validate the four shipped HTML surfaces
+        run: >-
+          npx --yes html-validate@8.24.1
+          index.html pitch.html engine.html design-system/index.html
