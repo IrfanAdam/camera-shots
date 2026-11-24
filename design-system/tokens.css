@@ -2,7 +2,7 @@
    tokens.css — GENERATED FILE, DO NOT EDIT BY HAND.
    Source:     design-system/tokens.json
    Regenerate: node scripts/build-tokens.mjs
-   Tokens:     292
+   Tokens:     186
    Themes:     4 · role slots: 14 · role vars: 17
    ========================================================================== */
 
@@ -18,11 +18,9 @@
   --color-pitch-rule: #26262B;
   --color-pitch-accent: #C8B28A;
   --color-pitch-accent-ink: #141310;
-  --color-pitch-overlay-scrim: #00000073;
   --color-pitch-positive: #10B981;
   --color-pitch-positive-ink: #06110C;
   --color-pitch-switch-bg: #101012;
-  --color-pitch-scrim-soft: rgba(0,0,0,.5);
   --color-pitch-scrim-mid: rgba(0,0,0,.6);
   --color-pitch-overlay-surface: rgba(20,20,22,.92);
   --color-pitch-overlay-bg: rgba(10,10,11,.92);
@@ -44,24 +42,10 @@
   --color-wiki-dark-accent: #5CC4D0;
   --color-wiki-dark-accent-wash: #12383D;
   --color-wiki-dark-amber: #F0A648;
-  --color-wiki-diagram-fill: var(--color-diagram-fill-wiki);
-  --color-wiki-scrim-thumb: var(--color-diagram-scrim-wiki);
 
   /* color.engine */
-  --color-engine-bg: #0E1116;
-  --color-engine-panel: #161B22;
-  --color-engine-panel-deep: #0B0E13;
-  --color-engine-ink: #E8EAF0;
-  --color-engine-muted: #8B93A5;
-  --color-engine-muted-2: #AAB2C2;
-  --color-engine-code: #C8CFDB;
   --color-engine-tool: #1C1C1E;
-  --color-engine-tool-hover: #1D2530;
-  --color-engine-border: #262D38;
-  --color-engine-border-strong: #313B4A;
   --color-engine-accent: #E8830C;
-  --color-engine-teal: #0F766E;
-  --color-engine-teal-bright: #5EEAD4;
   --color-engine-surface-0: #0B0B0D;
   --color-engine-surface-1: #1E1E22;
   --color-engine-surface-2: #2A2A2E;
@@ -77,77 +61,19 @@
   --color-engine-track-audio: #32ADE6;
   --color-engine-overlay-scrim: rgba(0,0,0,.9);
   --color-engine-accent-ink: #111111;
-  --color-engine-canvas-bg: #1A2130;
-  --color-engine-graph-title: #1B2230;
-  --color-engine-graph-node-top: #1C2432;
-  --color-engine-graph-node-bottom: #0D1117;
-  --color-engine-graph-edge: #9AA3B5;
-  --color-engine-graph-label: #C7CEDB;
-  --color-engine-graph-arc: #7C3AED;
-  --color-engine-graph-handle: #2A3342;
-  --color-engine-switch-track: #2A3340;
-  --color-engine-switch-border: #3A4554;
-  --color-engine-code-punct: #4B5563;
-  --color-engine-code-hover: #1B212B;
-  --color-engine-input-focus: #1E2632;
-  --color-engine-input-edge: #B45309;
-  --color-engine-row: #0F141B;
-  --color-engine-panel-project: #10151C;
-  --color-engine-panel-codes: #0D1218;
-  --color-engine-placeholder: #5B6577;
-  --color-engine-highlight: #FBBF24;
-  --color-engine-wash-6: rgba(232,234,240,.06);
-  --color-engine-wash-10: rgba(232,234,240,.10);
-  --color-engine-wash-12: rgba(232,234,240,.12);
-  --color-engine-wash-14: rgba(232,234,240,.14);
-  --color-engine-wash-16: rgba(232,234,240,.16);
-  --color-engine-accent-wash-10: rgba(232,131,12,.10);
-  --color-engine-accent-wash-12: rgba(232,131,12,.12);
-  --color-engine-accent-wash-14: rgba(232,131,12,.14);
-  --color-engine-accent-wash-18: rgba(232,131,12,.18);
-  --color-engine-accent-wash-35: rgba(232,131,12,.35);
-  --color-engine-accent-wash-50: rgba(232,131,12,.50);
   --color-engine-scrim: rgba(0,0,0,.45);
   --color-engine-scrim-strong: rgba(0,0,0,.55);
-  --color-engine-overlay-72: rgba(10,13,18,.72);
-  --color-engine-overlay-90: rgba(10,13,18,.9);
   --color-engine-overlay-panel: rgba(30,30,34,.94);
-  --color-engine-overlay-panel-94: rgba(22,27,34,.94);
-  --color-engine-overlay-panel-97: rgba(22,27,34,.97);
   --color-engine-wash-25: rgba(255,255,255,.25);
-  --color-engine-overlay-82: rgba(10,13,18,.82);
-  --color-engine-overlay-88: rgba(10,13,18,.88);
 
   /* color.pro */
-  --color-pro-surface-0: var(--color-engine-surface-0);
-  --color-pro-surface-1: var(--color-engine-surface-1);
-  --color-pro-surface-2: var(--color-engine-surface-2);
-  --color-pro-surface-deep: var(--color-engine-surface-deep);
-  --color-pro-canvas: var(--color-engine-canvas);
-  --color-pro-text-primary: var(--color-engine-text-primary);
-  --color-pro-text-secondary: var(--color-engine-text-secondary);
-  --color-pro-tool: var(--color-engine-tool);
   --color-pro-tool-hover: var(--color-engine-divider);
-  --color-pro-divider: var(--color-engine-divider);
-  --color-pro-divider-strong: var(--color-engine-divider-strong);
-  --color-pro-selection: var(--color-engine-selection);
-  --color-pro-track-fx: var(--color-engine-track-fx);
-  --color-pro-track-title: var(--color-engine-track-title);
-  --color-pro-track-audio: var(--color-engine-track-audio);
-  --color-pro-overlay-scrim: var(--color-engine-overlay-scrim);
-  --color-pro-overlay-panel: var(--color-engine-overlay-panel);
 
   /* color.status */
   --color-status-success: #2E7D46;
   --color-status-danger: #E5484D;
   --color-status-warning: #B86A00;
   --color-status-info: #8A5CF6;
-
-  /* color.semantic */
-  --color-semantic-success: var(--color-status-success);
-  --color-semantic-danger: var(--color-status-danger);
-  --color-semantic-warning: var(--color-status-warning);
-  --color-semantic-info: var(--color-status-info);
 
   /* color.diagram */
   --color-diagram-fill-wiki: #9FC3D8;
@@ -164,23 +90,15 @@
   --color-primitive-white: #FFFFFF;
   --color-primitive-black: #000000;
 
-  /* color.neutral */
-  --color-neutral-white: var(--color-primitive-white);
-  --color-neutral-black: var(--color-primitive-black);
-
   /* typography.family */
   --typography-family-sans: system-ui, -apple-system, Segoe UI, sans-serif;
   --typography-family-mono: ui-monospace, Menlo, monospace;
 
   /* typography.size */
   --typography-size-display: clamp(2rem, 5vw, 3.1rem);
-  --typography-size-h1-pitch: var(--typography-size-display);
   --typography-size-h1: 1.6rem;
-  --typography-size-h1-wiki: var(--typography-size-h1);
   --typography-size-h2: 1.35rem;
-  --typography-size-h2-pitch: var(--typography-size-h2);
   --typography-size-h3: 1.25rem;
-  --typography-size-h2-wiki: var(--typography-size-h3);
   --typography-size-body: 0.95rem;
   --typography-size-small: 0.85rem;
   --typography-size-meta: 0.8rem;
@@ -188,20 +106,6 @@
   --typography-size-timecode: 0.75rem;
   --typography-size-ui: 1rem;
   --typography-size-lede: 1.05rem;
-
-  /* typography.weight */
-  --typography-weight-regular: var(--weight-regular);
-  --typography-weight-medium: var(--weight-medium);
-  --typography-weight-semibold: var(--weight-semibold);
-  --typography-weight-bold: var(--weight-bold);
-
-  /* typography.lineheight */
-  --typography-lineheight-body: var(--line-height-reading);
-  --typography-lineheight-pitch-h1: var(--line-height-display);
-
-  /* typography.tracking */
-  --typography-tracking-tight: var(--tracking-tight);
-  --typography-tracking-eyebrow: var(--tracking-eyebrow);
 
   /* weight.regular */
   --weight-regular: 400;
@@ -314,15 +218,6 @@
   /* radius.xs */
   --radius-xs: 4px;
 
-  /* radius.card */
-  --radius-card: 12px;
-
-  /* radius.xl */
-  --radius-xl: 18px;
-
-  /* elevation.0 */
-  --elevation-0: none;
-
   /* elevation.1 */
   --elevation-1: 0 1px 2px rgb(15 23 42 / 0.05);
 
@@ -337,11 +232,9 @@
 
   /* elevation.ring */
   --elevation-ring: 0 0 0 2px rgba(232,131,12,.18);
-  --elevation-ring-accent: var(--elevation-ring);
 
   /* elevation.inset */
   --elevation-inset: inset 0 0 0 1px rgba(232,131,12,.5);
-  --elevation-inset-accent: var(--elevation-inset);
 
   /* motion.duration */
   --motion-duration-fast: 0.22s;
@@ -358,7 +251,6 @@
   /* motion.easing */
   --motion-easing-drawer: cubic-bezier(0.32, 0.72, 0.24, 1);
   --motion-easing-standard: ease;
-  --motion-easing-sheet: cubic-bezier(0.16, 1, 0.3, 1);
   --motion-easing-emphasized: cubic-bezier(0.22,1,0.36,1);
   --motion-easing-out: ease-out;
 
@@ -368,29 +260,11 @@
   /* opacity.media */
   --opacity-media: 0.85;
 
-  /* opacity.overlay */
-  --opacity-overlay-thumb: var(--opacity-media);
-
-  /* opacity.scrim */
-  --opacity-scrim: 0.45;
-
   /* touch.min */
   --touch-min: 40px;
 
   /* touch.preferred */
   --touch-preferred: 44px;
-
-  /* touch.pro */
-  --touch-pro: 48px;
-
-  /* touch.handle */
-  --touch-handle-timeline: 32px;
-
-  /* touch.small */
-  --touch-small: 28px;
-
-  /* touch.field */
-  --touch-field: 38px;
 
   /* layout.max */
   --layout-max-wiki: 980px;
@@ -403,37 +277,19 @@
 
   /* layout.drawer */
   --layout-drawer-engine-width: min(360px, 92vw);
-  --layout-drawer-width: var(--layout-drawer-engine-width);
   --layout-drawer-pitch-width: min(720px, 100vw);
 
   /* layout.bar */
   --layout-bar-engine: 62px;
-  --layout-bar-transport: var(--layout-bar-engine);
-
-  /* layout.sheet */
-  --layout-sheet-grab-width: 44px;
-  --layout-sheet-grab-height: 5px;
-
-  /* breakpoint.tablet */
-  --breakpoint-tablet: 720px;
 
   /* breakpoint.xl */
   --breakpoint-xl: 1023.5px;
 
-  /* breakpoint.sidenav */
-  --breakpoint-sidenav: var(--breakpoint-xl);
-
   /* breakpoint.md */
   --breakpoint-md: 767.5px;
 
-  /* breakpoint.grid */
-  --breakpoint-grid-collapse: var(--breakpoint-md);
-
   /* breakpoint.sm */
   --breakpoint-sm: 639px;
-
-  /* breakpoint.table */
-  --breakpoint-table-stack: var(--breakpoint-sm);
 
   /* breakpoint.xs */
   --breakpoint-xs: 390px;

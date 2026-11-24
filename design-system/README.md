@@ -8,7 +8,7 @@ Three product surfaces (the wiki in `index.html`, the investor deck in `pitch.ht
 
 | Path | What it is | Generated | Safe to edit |
 |---|---|---|---|
-| `design-system/tokens.json` | Token source, 292 keys, 20 groups | no | yes, the only design-value source |
+| `design-system/tokens.json` | Token source, 186 keys, 20 groups | no | yes, the only design-value source |
 | `design-system/tokens.css` | Single `:root` block of custom properties | yes | never |
 | `scripts/build-tokens.mjs` | Generator, tokens.json to tokens.css | no | yes |
 | `scripts/lint-tokens.mjs` | Adherence gate, per-file line numbers, exit 1 on failure | no | yes |

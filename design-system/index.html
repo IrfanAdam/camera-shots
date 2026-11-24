@@ -196,9 +196,6 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
   display:grid;place-items:center;font-size:var(--typography-size-eyebrow);font-weight:var(--weight-medium);
 }
 .touch-box.t-preferred{width:var(--touch-preferred);height:var(--touch-preferred)}
-.touch-box.t-pro{width:var(--touch-pro);height:var(--touch-pro)}
-.touch-box.t-small{width:var(--touch-small);height:var(--touch-small);border-style:dashed}
-.touch-box.t-field{width:var(--touch-field);height:var(--touch-field);border-style:dashed}
 .touch-meta{font-size:var(--typography-size-eyebrow);color:var(--g-muted);line-height:1.6}
 .touch-meta code{color:var(--g-ink);font-size:var(--typography-size-eyebrow)}
 .touch-measured{color:var(--g-ink);font-weight:var(--weight-medium)}
@@ -249,14 +246,14 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
   --s-accent-ink: var(--color-pitch-accent-ink);
 }
 .stage[data-surface="engine"]{
-  --s-bg: var(--color-engine-bg);
-  --s-card: var(--color-engine-panel);
+  --s-bg: var(--color-engine-surface-0);
+  --s-card: var(--color-engine-surface-1);
   --s-wash: var(--color-engine-tool);
-  --s-ink: var(--color-engine-ink);
-  --s-body: var(--color-engine-muted-2);
-  --s-muted: var(--color-engine-muted);
-  --s-rule: var(--color-engine-border);
-  --s-rule-strong: var(--color-engine-border-strong);
+  --s-ink: var(--color-engine-text-primary);
+  --s-body: var(--color-engine-text-secondary);
+  --s-muted: var(--color-engine-text-secondary);
+  --s-rule: var(--color-engine-divider);
+  --s-rule-strong: var(--color-engine-divider-strong);
   --s-accent: var(--color-engine-accent);
   --s-accent-ink: var(--color-engine-accent-ink);
 }
@@ -382,7 +379,7 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
 
 /* sheet */
 .sheet{max-width:360px;width:100%;background:var(--s-card);border:var(--border-width-hairline) solid var(--s-rule-strong);border-radius:var(--radius-lg);box-shadow:var(--elevation-sheet);overflow:hidden}
-.grab{display:block;width:var(--layout-sheet-grab-width);height:var(--layout-sheet-grab-height);border-radius:var(--radius-pill);background:var(--s-muted);margin:var(--spacing-sm) auto var(--spacing-2xs)}
+.grab{display:block;width:var(--control-height-touch);height:var(--dot-size);border-radius:var(--radius-pill);background:var(--s-muted);margin:var(--spacing-sm) auto var(--spacing-2xs)}
 .sheet-h{display:flex;align-items:center;justify-content:space-between;gap:var(--spacing-sm);padding:var(--spacing-xs) var(--spacing-md) var(--spacing-md);border-bottom:var(--border-width-hairline) solid var(--s-rule)}
 .sheet-h h4{font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--s-muted);font-weight:var(--weight-bold)}
 .sheet-x{
@@ -521,11 +518,9 @@ footer code{color:var(--g-ink)}
           <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-rule)"></span><code>--color-pitch-rule</code><span class="sw-val" data-live="--color-pitch-rule">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-accent)"></span><code>--color-pitch-accent</code><span class="sw-val" data-live="--color-pitch-accent">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-accent-ink)"></span><code>--color-pitch-accent-ink</code><span class="sw-val" data-live="--color-pitch-accent-ink">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-overlay-scrim)"></span><code>--color-pitch-overlay-scrim</code><span class="sw-val" data-live="--color-pitch-overlay-scrim">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-positive)"></span><code>--color-pitch-positive</code><span class="sw-val" data-live="--color-pitch-positive">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-positive-ink)"></span><code>--color-pitch-positive-ink</code><span class="sw-val" data-live="--color-pitch-positive-ink">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-switch-bg)"></span><code>--color-pitch-switch-bg</code><span class="sw-val" data-live="--color-pitch-switch-bg">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-scrim-soft)"></span><code>--color-pitch-scrim-soft</code><span class="sw-val" data-live="--color-pitch-scrim-soft">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-scrim-mid)"></span><code>--color-pitch-scrim-mid</code><span class="sw-val" data-live="--color-pitch-scrim-mid">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-overlay-surface)"></span><code>--color-pitch-overlay-surface</code><span class="sw-val" data-live="--color-pitch-overlay-surface">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-overlay-bg)"></span><code>--color-pitch-overlay-bg</code><span class="sw-val" data-live="--color-pitch-overlay-bg">—</span></div>
@@ -563,73 +558,25 @@ footer code{color:var(--g-ink)}
       <div class="swgroup">
         <div class="swgroup-head"><h3>Engine — cool dark</h3><span class="tag">—</span></div>
         <div class="swgrid">
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-bg)"></span><code>--color-engine-bg</code><span class="sw-val" data-live="--color-engine-bg">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-panel)"></span><code>--color-engine-panel</code><span class="sw-val" data-live="--color-engine-panel">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-panel-deep)"></span><code>--color-engine-panel-deep</code><span class="sw-val" data-live="--color-engine-panel-deep">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-ink)"></span><code>--color-engine-ink</code><span class="sw-val" data-live="--color-engine-ink">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-muted)"></span><code>--color-engine-muted</code><span class="sw-val" data-live="--color-engine-muted">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-muted-2)"></span><code>--color-engine-muted-2</code><span class="sw-val" data-live="--color-engine-muted-2">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-code)"></span><code>--color-engine-code</code><span class="sw-val" data-live="--color-engine-code">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-engine-tool)"></span><code>--color-engine-tool</code><span class="sw-val" data-live="--color-engine-tool">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-tool-hover)"></span><code>--color-engine-tool-hover</code><span class="sw-val" data-live="--color-engine-tool-hover">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-border)"></span><code>--color-engine-border</code><span class="sw-val" data-live="--color-engine-border">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-border-strong)"></span><code>--color-engine-border-strong</code><span class="sw-val" data-live="--color-engine-border-strong">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-engine-accent)"></span><code>--color-engine-accent</code><span class="sw-val" data-live="--color-engine-accent">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-engine-accent-ink)"></span><code>--color-engine-accent-ink</code><span class="sw-val" data-live="--color-engine-accent-ink">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-teal)"></span><code>--color-engine-teal</code><span class="sw-val" data-live="--color-engine-teal">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-teal-bright)"></span><code>--color-engine-teal-bright</code><span class="sw-val" data-live="--color-engine-teal-bright">—</span></div>
         </div>
       </div>
 
       <div class="swgroup">
         <div class="swgroup-head"><h3>Engine — canvas &amp; tooling</h3><span class="tag">—</span></div>
         <div class="swgrid compact">
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-canvas-bg)"></span><code>--color-engine-canvas-bg</code><span class="sw-val" data-live="--color-engine-canvas-bg">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-graph-title)"></span><code>--color-engine-graph-title</code><span class="sw-val" data-live="--color-engine-graph-title">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-graph-node-top)"></span><code>--color-engine-graph-node-top</code><span class="sw-val" data-live="--color-engine-graph-node-top">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-graph-node-bottom)"></span><code>--color-engine-graph-node-bottom</code><span class="sw-val" data-live="--color-engine-graph-node-bottom">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-graph-edge)"></span><code>--color-engine-graph-edge</code><span class="sw-val" data-live="--color-engine-graph-edge">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-graph-label)"></span><code>--color-engine-graph-label</code><span class="sw-val" data-live="--color-engine-graph-label">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-graph-arc)"></span><code>--color-engine-graph-arc</code><span class="sw-val" data-live="--color-engine-graph-arc">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-graph-handle)"></span><code>--color-engine-graph-handle</code><span class="sw-val" data-live="--color-engine-graph-handle">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-switch-track)"></span><code>--color-engine-switch-track</code><span class="sw-val" data-live="--color-engine-switch-track">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-switch-border)"></span><code>--color-engine-switch-border</code><span class="sw-val" data-live="--color-engine-switch-border">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-code-punct)"></span><code>--color-engine-code-punct</code><span class="sw-val" data-live="--color-engine-code-punct">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-code-hover)"></span><code>--color-engine-code-hover</code><span class="sw-val" data-live="--color-engine-code-hover">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-input-focus)"></span><code>--color-engine-input-focus</code><span class="sw-val" data-live="--color-engine-input-focus">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-input-edge)"></span><code>--color-engine-input-edge</code><span class="sw-val" data-live="--color-engine-input-edge">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-row)"></span><code>--color-engine-row</code><span class="sw-val" data-live="--color-engine-row">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-panel-project)"></span><code>--color-engine-panel-project</code><span class="sw-val" data-live="--color-engine-panel-project">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-panel-codes)"></span><code>--color-engine-panel-codes</code><span class="sw-val" data-live="--color-engine-panel-codes">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-placeholder)"></span><code>--color-engine-placeholder</code><span class="sw-val" data-live="--color-engine-placeholder">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-highlight)"></span><code>--color-engine-highlight</code><span class="sw-val" data-live="--color-engine-highlight">—</span></div>
         </div>
       </div>
 
       <div class="swgroup">
         <div class="swgroup-head"><h3>Engine — washes, scrims &amp; overlays</h3><span class="tag">—</span></div>
         <div class="swgrid compact">
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-wash-6)"></span><code>--color-engine-wash-6</code><span class="sw-val" data-live="--color-engine-wash-6">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-wash-10)"></span><code>--color-engine-wash-10</code><span class="sw-val" data-live="--color-engine-wash-10">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-wash-12)"></span><code>--color-engine-wash-12</code><span class="sw-val" data-live="--color-engine-wash-12">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-wash-14)"></span><code>--color-engine-wash-14</code><span class="sw-val" data-live="--color-engine-wash-14">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-wash-16)"></span><code>--color-engine-wash-16</code><span class="sw-val" data-live="--color-engine-wash-16">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-accent-wash-10)"></span><code>--color-engine-accent-wash-10</code><span class="sw-val" data-live="--color-engine-accent-wash-10">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-accent-wash-12)"></span><code>--color-engine-accent-wash-12</code><span class="sw-val" data-live="--color-engine-accent-wash-12">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-accent-wash-14)"></span><code>--color-engine-accent-wash-14</code><span class="sw-val" data-live="--color-engine-accent-wash-14">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-accent-wash-18)"></span><code>--color-engine-accent-wash-18</code><span class="sw-val" data-live="--color-engine-accent-wash-18">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-accent-wash-35)"></span><code>--color-engine-accent-wash-35</code><span class="sw-val" data-live="--color-engine-accent-wash-35">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-accent-wash-50)"></span><code>--color-engine-accent-wash-50</code><span class="sw-val" data-live="--color-engine-accent-wash-50">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-engine-scrim)"></span><code>--color-engine-scrim</code><span class="sw-val" data-live="--color-engine-scrim">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-engine-scrim-strong)"></span><code>--color-engine-scrim-strong</code><span class="sw-val" data-live="--color-engine-scrim-strong">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-overlay-72)"></span><code>--color-engine-overlay-72</code><span class="sw-val" data-live="--color-engine-overlay-72">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-overlay-90)"></span><code>--color-engine-overlay-90</code><span class="sw-val" data-live="--color-engine-overlay-90">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-engine-overlay-panel)"></span><code>--color-engine-overlay-panel</code><span class="sw-val" data-live="--color-engine-overlay-panel">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-overlay-panel-94)"></span><code>--color-engine-overlay-panel-94</code><span class="sw-val" data-live="--color-engine-overlay-panel-94">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-overlay-panel-97)"></span><code>--color-engine-overlay-panel-97</code><span class="sw-val" data-live="--color-engine-overlay-panel-97">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-engine-wash-25)"></span><code>--color-engine-wash-25</code><span class="sw-val" data-live="--color-engine-wash-25">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-overlay-82)"></span><code>--color-engine-overlay-82</code><span class="sw-val" data-live="--color-engine-overlay-82">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-overlay-88)"></span><code>--color-engine-overlay-88</code><span class="sw-val" data-live="--color-engine-overlay-88">—</span></div>
         </div>
       </div>
 
@@ -767,9 +714,7 @@ footer code{color:var(--g-ink)}
         <div class="radius-cell"><span class="radius-box" style="border-radius:var(--radius-xs)"></span><code>--radius-xs</code><span class="radius-val" data-live="--radius-xs">—</span></div>
         <div class="radius-cell"><span class="radius-box" style="border-radius:var(--radius-sm)"></span><code>--radius-sm</code><span class="radius-val" data-live="--radius-sm">—</span></div>
         <div class="radius-cell"><span class="radius-box" style="border-radius:var(--radius-md)"></span><code>--radius-md</code><span class="radius-val" data-live="--radius-md">—</span></div>
-        <div class="radius-cell"><span class="radius-box" style="border-radius:var(--radius-card)"></span><code>--radius-card</code><span class="radius-val" data-live="--radius-card">—</span></div>
         <div class="radius-cell"><span class="radius-box" style="border-radius:var(--radius-lg)"></span><code>--radius-lg</code><span class="radius-val" data-live="--radius-lg">—</span></div>
-        <div class="radius-cell"><span class="radius-box" style="border-radius:var(--radius-xl)"></span><code>--radius-xl</code><span class="radius-val" data-live="--radius-xl">—</span></div>
         <div class="radius-cell"><span class="radius-box" style="border-radius:var(--radius-pill)"></span><code>--radius-pill</code><span class="radius-val" data-live="--radius-pill">—</span></div>
         <div class="radius-cell"><span class="radius-box" style="border-radius:var(--radius-circle)"></span><code>--radius-circle</code><span class="radius-val" data-live="--radius-circle">—</span></div>
       </div>
@@ -856,7 +801,7 @@ footer code{color:var(--g-ink)}
           <tr>
             <td><code>--motion-duration-slow</code></td>
             <td class="live" data-live="--motion-duration-slow">—</td>
-            <td><button class="mplay" type="button" aria-label="Play slow duration"><span class="mdot" style="transition-duration:var(--motion-duration-slow);transition-timing-function:var(--motion-easing-sheet)"></span></button></td>
+            <td><button class="mplay" type="button" aria-label="Play slow duration"><span class="mdot" style="transition-duration:var(--motion-duration-slow);transition-timing-function:var(--motion-easing-emphasized)"></span></button></td>
           </tr>
           <tr>
             <td><code>--motion-duration-pulse</code></td>
@@ -877,11 +822,6 @@ footer code{color:var(--g-ink)}
             <td><code>--motion-easing-standard</code></td>
             <td class="live" data-live="--motion-easing-standard">—</td>
             <td><button class="mplay" type="button" aria-label="Play standard curve"><span class="mdot"></span></button></td>
-          </tr>
-          <tr>
-            <td><code>--motion-easing-sheet</code></td>
-            <td class="live" data-live="--motion-easing-sheet">—</td>
-            <td><button class="mplay" type="button" aria-label="Play sheet curve"><span class="mdot" style="transition-duration:var(--motion-duration-base);transition-timing-function:var(--motion-easing-sheet)"></span></button></td>
           </tr>
           <tr>
             <td><code>--motion-easing-emphasized</code></td>
@@ -913,20 +853,7 @@ footer code{color:var(--g-ink)}
           <span class="touch-box t-preferred" id="box-preferred" data-measure="m-preferred">pref</span>
           <span class="touch-meta"><code>--touch-preferred</code><br><span class="touch-measured" id="m-preferred">—</span></span>
         </div>
-        <div class="touch-cell">
-          <span class="touch-box t-pro" id="box-pro" data-measure="m-pro">pro</span>
-          <span class="touch-meta"><code>--touch-pro</code><br><span class="touch-measured" id="m-pro">—</span></span>
-        </div>
-        <div class="touch-cell">
-          <span class="touch-box t-field" id="box-field" data-measure="m-field">field</span>
-          <span class="touch-meta"><code>--touch-field</code><br><span class="touch-measured" id="m-field">—</span></span>
-        </div>
-        <div class="touch-cell">
-          <span class="touch-box t-small" id="box-small" data-measure="m-small">small</span>
-          <span class="touch-meta"><code>--touch-small</code><br><span class="touch-measured" id="m-small">—</span></span>
-        </div>
       </div>
-      <p class="matrix-sum">Dashed boxes are legacy debt: --touch-small (28px) and --touch-field (38px) are below --touch-min and must not be used on new controls.</p>
     </section>
 
     <!-- ============ 06 COMPONENTS ============ -->
@@ -1031,7 +958,7 @@ footer code{color:var(--g-ink)}
             <tbody>
               <tr><td>Radius</td><td><code>--radius-sm</code></td><td class="live" data-live="--radius-sm">—</td></tr>
               <tr><td>Height</td><td><code>--touch-min</code></td><td class="live" data-live="--touch-min">—</td></tr>
-              <tr><td>Border</td><td><code>--color-engine-border-strong</code></td><td class="live" data-live="--color-engine-border-strong">—</td></tr>
+              <tr><td>Border</td><td><code>--color-engine-divider-strong</code></td><td class="live" data-live="--color-engine-divider-strong">—</td></tr>
               <tr><td>Error</td><td><code>--color-status-danger</code></td><td class="live" data-live="--color-status-danger">—</td></tr>
             </tbody>
           </table>
@@ -1185,7 +1112,7 @@ footer code{color:var(--g-ink)}
             <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
             <tbody>
               <tr><td>Radius</td><td><code>--radius-md</code></td><td class="live" data-live="--radius-md">—</td></tr>
-              <tr><td>Fill</td><td><code>--color-engine-panel</code></td><td class="live" data-live="--color-engine-panel">—</td></tr>
+              <tr><td>Fill</td><td><code>--color-engine-surface-1</code></td><td class="live" data-live="--color-engine-surface-1">—</td></tr>
               <tr><td>Shadow</td><td><code>--elevation-popover</code></td><td class="live" data-live="--elevation-popover">—</td></tr>
               <tr><td>Action fill</td><td><code>--color-engine-accent</code></td><td class="live" data-live="--color-engine-accent">—</td></tr>
             </tbody>
@@ -1217,8 +1144,6 @@ footer code{color:var(--g-ink)}
           <table class="tok-table">
             <thead><tr><th>Property</th><th>Token</th><th>Value</th></tr></thead>
             <tbody>
-              <tr><td>Grab width</td><td><code>--layout-sheet-grab-width</code></td><td class="live" data-live="--layout-sheet-grab-width">—</td></tr>
-              <tr><td>Grab height</td><td><code>--layout-sheet-grab-height</code></td><td class="live" data-live="--layout-sheet-grab-height">—</td></tr>
               <tr><td>Radius</td><td><code>--radius-lg</code></td><td class="live" data-live="--radius-lg">—</td></tr>
               <tr><td>Shadow</td><td><code>--elevation-sheet</code></td><td class="live" data-live="--elevation-sheet">—</td></tr>
             </tbody>

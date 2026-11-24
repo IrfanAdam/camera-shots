@@ -10,32 +10,32 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 ```
 
 - Generated: 2026-11-24
-- Tokens defined: 249 (`design-system/tokens.css`)
+- Tokens defined: 186 (`design-system/tokens.css`)
 - Files scanned: `index.html`, `pitch.html`, `engine.html`, `design-system/index.html`
-- Result: **PASS** — 0 over budget, 27 exempt, 0 bad-allow
-- Budgets: V1 0/0 · V2 0/0 · V3 0/0 · V4 0/0 · V5 0/0 · V6 0/0 · V7 0/0 · V8 0/0 · U1 0/0 · T1 10/10 · T2 37/37 · T3 27/27 · T4w 52/52 · T4f 3/3 · T13 0/0 · T14 8/8 · T15 200/200 · T8 104/104 · T9 5/5 · T10 0/0 · T11 0/0
+- Result: **PASS** — 0 over budget, 29 exempt, 0 bad-allow
+- Budgets: V1 0/0 · V2 0/0 · V3 1/1 · V4 0/0 · V5 0/0 · V6 0/0 · V7 0/0 · V8 0/0 · U1 0/0 · T1 10/10 · T2 32/37 · T3 21/27 · T4w 22/52 · T4f 2/3 · T6 5/5 · T13 0/0 · T14 8/8 · T15 147/200 · T8 11/110 · T9 0/3 · T10 0/0 · T11 0/0
 
 ## Per-file violations
 
 | File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | V7 border width | V8 spacing | U1 dead var | exempt | bad-allow | inline `style=` | `var(--)` uses |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 19 | 407 |
-| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 8 | 0 | 31 | 433 |
-| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 15 | 0 | 2 | 977 |
-| `design-system/index.html` | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 148 | 801 |
-| **Total** | **0** | **0** | **1** | **0** | **0** | **0** | **0** | **0** | **0** | **27** | **0** | **200** | **2618** |
+| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 19 | 428 |
+| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 6 | 0 | 31 | 550 |
+| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 17 | 0 | 2 | 979 |
+| `design-system/index.html` | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 95 | 741 |
+| **Total** | **0** | **0** | **1** | **0** | **0** | **0** | **0** | **0** | **0** | **29** | **0** | **147** | **2698** |
 
 ## Type, consumer & theme counts
 
-| File | T1 font-size | T2 line-height | T3 tracking | T4 weight | T4 family | T13 dup alias | T14 `!important` | T15 inline `style=` |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| `index.html` | 3 | 1 | 2 | 8 | 0 | 0 | 2 | 19 |
-| `pitch.html` | 3 | 6 | 11 | 22 | 1 | 0 | 5 | 31 |
-| `engine.html` | 2 | 17 | 10 | 22 | 2 | 0 | 1 | 2 |
-| `design-system/index.html` | 2 | 13 | 4 | 0 | 0 | 0 | 0 | 148 |
-| **Total** | **10** | **37** | **27** | **52** | **3** | **0** | **8** | **200** |
+| File | T1 font-size | T2 line-height | T3 tracking | T4 weight | T4 family | T6 `@media` px | T13 dup alias | T14 `!important` | T15 inline `style=` |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `index.html` | 3 | 0 | 1 | 0 | 0 | 0 | 0 | 2 | 19 |
+| `pitch.html` | 3 | 2 | 6 | 0 | 0 | 4 | 0 | 5 | 31 |
+| `engine.html` | 2 | 17 | 10 | 22 | 2 | 0 | 0 | 1 | 2 |
+| `design-system/index.html` | 2 | 13 | 4 | 0 | 0 | 1 | 0 | 0 | 95 |
+| **Total** | **10** | **32** | **21** | **22** | **2** | **5** | **0** | **8** | **147** |
 
-Token-set checks (not per file): **T8** 104 unconsumed tokens · **T9** 5 duplicate role values · **T10** 0 role-contract gaps · **T11** 0 type/value mismatch.
+Token-set checks (not per file): **T8** 11 unconsumed tokens · **T9** 0 duplicate role values · **T10** 0 role-contract gaps · **T11** 0 type/value mismatch.
 
 ## Budgets
 
@@ -45,7 +45,7 @@ Each class carries the count measured on 2026-11-24 as a ceiling. A count at or 
 |---|---:|---:|---|
 | V1 | 0 | 0 | ok |
 | V2 | 0 | 0 | ok |
-| V3 | 0 | 0 | ok |
+| V3 | 1 | 1 (per file index.html 0, pitch.html 0, engine.html 0, design-system/index.html 1) | ok |
 | V4 | 0 | 0 | ok |
 | V5 | 0 | 0 | ok |
 | V6 | 0 | 0 | ok |
@@ -53,15 +53,16 @@ Each class carries the count measured on 2026-11-24 as a ceiling. A count at or 
 | V8 | 0 | 0 | ok |
 | U1 | 0 | 0 | ok |
 | T1 | 10 | 10 (per file index.html 3, pitch.html 3, engine.html 2, design-system/index.html 2) | ok |
-| T2 | 37 | 37 (per file index.html 1, pitch.html 6, engine.html 17, design-system/index.html 13) | ok |
-| T3 | 27 | 27 (per file index.html 2, pitch.html 11, engine.html 10, design-system/index.html 4) | ok |
-| T4w | 52 | 52 (per file index.html 8, pitch.html 22, engine.html 22, design-system/index.html 0) | ok |
-| T4f | 3 | 3 (per file index.html 0, pitch.html 1, engine.html 2, design-system/index.html 0) | ok |
+| T2 | 32 | 37 (per file index.html 1, pitch.html 6, engine.html 17, design-system/index.html 13) | under |
+| T3 | 21 | 27 (per file index.html 2, pitch.html 11, engine.html 10, design-system/index.html 4) | under |
+| T4w | 22 | 52 (per file index.html 8, pitch.html 22, engine.html 22, design-system/index.html 0) | under |
+| T4f | 2 | 3 (per file index.html 0, pitch.html 1, engine.html 2, design-system/index.html 0) | under |
+| T6 | 5 | 5 (per file index.html 0, pitch.html 4, engine.html 0, design-system/index.html 1) | ok |
 | T13 | 0 | 0 | ok |
 | T14 | 8 | 8 (per file index.html 2, pitch.html 5, engine.html 1, design-system/index.html 0) | ok |
-| T15 | 200 | 200 (per file index.html 19, pitch.html 31, engine.html 2, design-system/index.html 148) | ok |
-| T8 | 104 | 104 | ok |
-| T9 | 5 | 5 | ok |
+| T15 | 147 | 200 (per file index.html 19, pitch.html 31, engine.html 2, design-system/index.html 148) | under |
+| T8 | 11 | 110 | under |
+| T9 | 0 | 3 | under |
 | T10 | 0 | 0 | ok |
 | T11 | 0 | 0 | ok |
 
@@ -73,44 +74,22 @@ _No class is over budget._
 
 The four set-level checks are budgeted at the measured post-Phase-1A value, so they document the gap without failing the build until it grows.
 
-### T8 — no consumer (104)
+### T8 — no consumer (11)
 
 A `var()` reference in `index.html`, `pitch.html` or `engine.html`, a `themes` map cell, or (from Phase 2) `components.css` counts; a gallery swatch does not. Aliases (`value: var(--other)`) and `breakpoint.*` are exempt because neither can be consumed by a page.
 
 <details><summary>Unconsumed tokens</summary>
 
-- `--color-engine-accent-wash-10`, `--color-engine-accent-wash-12`, `--color-engine-accent-wash-14`, `--color-engine-accent-wash-18`, `--color-engine-accent-wash-35`, `--color-engine-accent-wash-50`
-- `--color-engine-bg`, `--color-engine-border`, `--color-engine-border-strong`, `--color-engine-canvas-bg`, `--color-engine-code`, `--color-engine-code-hover`
-- `--color-engine-code-punct`, `--color-engine-graph-arc`, `--color-engine-graph-edge`, `--color-engine-graph-handle`, `--color-engine-graph-label`, `--color-engine-graph-node-bottom`
-- `--color-engine-graph-node-top`, `--color-engine-graph-title`, `--color-engine-highlight`, `--color-engine-ink`, `--color-engine-input-edge`, `--color-engine-input-focus`
-- `--color-engine-muted`, `--color-engine-muted-2`, `--color-engine-overlay-72`, `--color-engine-overlay-82`, `--color-engine-overlay-88`, `--color-engine-overlay-90`
-- `--color-engine-overlay-panel`, `--color-engine-overlay-panel-94`, `--color-engine-overlay-panel-97`, `--color-engine-panel`, `--color-engine-panel-codes`, `--color-engine-panel-deep`
-- `--color-engine-panel-project`, `--color-engine-placeholder`, `--color-engine-row`, `--color-engine-switch-border`, `--color-engine-switch-track`, `--color-engine-teal`
-- `--color-engine-teal-bright`, `--color-engine-tool`, `--color-engine-tool-hover`, `--color-engine-wash-10`, `--color-engine-wash-12`, `--color-engine-wash-14`
-- `--color-engine-wash-16`, `--color-engine-wash-6`, `--color-pitch-overlay-scrim`, `--color-pitch-scrim-soft`, `--color-pro-track-audio`, `--color-pro-track-fx`
-- `--color-pro-track-title`, `--control-height-compact`, `--control-height-default`, `--control-height-reading`, `--control-height-touch`, `--dot-size`
-- `--elevation-0`, `--elevation-1`, `--elevation-inset-accent`, `--elevation-ring-accent`, `--hover-lift`, `--icon-size-lg`
-- `--icon-size-md`, `--icon-size-sm`, `--layout-drawer-pitch-width`, `--layout-max-pitch`, `--layout-max-wiki`, `--layout-sheet-grab-height`
-- `--layout-sheet-grab-width`, `--layout-sidebar-pitch`, `--layout-sidebar-wiki`, `--line-height-normal`, `--line-height-relaxed`, `--line-height-tight`
-- `--motion-easing-sheet`, `--opacity-disabled`, `--opacity-overlay-thumb`, `--opacity-scrim`, `--radius-card`, `--radius-lg`
-- `--radius-xl`, `--spacing-base`, `--spacing-gutter-pro`, `--spacing-section`, `--touch-field`, `--touch-handle-timeline`
-- `--touch-pro`, `--touch-small`, `--tracking-label`, `--tracking-snug`, `--typography-lineheight-body`, `--typography-lineheight-pitch-h1`
-- `--typography-tracking-tight`, `--typography-weight-bold`, `--typography-weight-medium`, `--typography-weight-regular`, `--typography-weight-semibold`, `--weight-heavy`
-- `--z-pinned`, `--z-tooltip`
+- `--color-engine-track-audio`, `--color-engine-track-fx`, `--color-engine-track-title`, `--elevation-inset`, `--elevation-ring`, `--icon-size-lg`
+- `--icon-size-md`, `--opacity-disabled`, `--radius-lg`, `--spacing-section`, `--tracking-label`
 
 </details>
 
-### T9 — two role names, one value (5)
+### T9 — two role names, one value (0)
 
 Colors are compared across the whole set; dimensions only between step names of the same scale, because two scales sharing a length is not a duplicate role.
 
-| Pair | Value |
-|---|---|
-| `color.wiki.light.card ≡ color.neutral.white` | #FFFFFF |
-| `color.wiki.light.amber ≡ color.semantic.warning` | #B86A00 |
-| `color.pro.tool.hover ≡ color.pro.divider` | #2C2C2E |
-| `color.engine.accent.ink ≡ color.print.ink` | #111111 |
-| `spacing.base ≡ spacing.2xs` | 4px |
+_None._
 
 ### T11 — `type` matches `value` (0 mismatch)
 
@@ -118,13 +97,15 @@ One regex per declared type: `color`, `dimension`, `fontSize`, `lineHeight`, `le
 
 _None._
 
-### `index.html` — Exempt (1)
+### `index.html` — Exempt (3)
 
 | Line | Class | Found | Reason |
 |---:|---|---|---|
+| 61 | T6 | `@media width:800px` | 800px sits between --breakpoint-md 767.5 and --breakpoint-lg 900; snapping moves the mobile rail 32-100px |
+| 63 | T6 | `@media width:800px` | 800px rail block matches the query above; 800 sits between --breakpoint-md 767.5 and --breakpoint-lg 900 |
 | 64 | V8 | `padding-bottom:5.4rem` | 5.4rem mobile step-rail clearance is layout geometry, not UI rhythm |
 
-### `pitch.html` — Exempt (8)
+### `pitch.html` — Exempt (6)
 
 | Line | Class | Found | Reason |
 |---:|---|---|---|
@@ -133,21 +114,20 @@ _None._
 | 91 | V8 | `padding:2.6rem 0 1.6rem` | hero section pad is layout-scale; 41.6px and 25.6px have no step within 0.9px |
 | 97 | V8 | `margin-top:1.4rem` | 22.4px CTA lift sits between the 20 and 24 steps; snapping moves 1.6px |
 | 144 | V8 | `padding:1.6rem` | 25.6px drawer pad sits between the 24 step and the 32px layout gap |
-| 173 | T2 | `line-height:1.6` | no z step exists between --z-content (2) and --z-sticky (40); the frame tooltip must clear sibling cards inside its own stacking context without rising to the sticky header layer |
-| 173 | V3 | `z-index:5` | no z step exists between --z-content (2) and --z-sticky (40); the frame tooltip must clear sibling cards inside its own stacking context without rising to the sticky header layer |
 | 203 | V8 | `padding:1.6rem 0 var(--spacing-md)` | 25.6px compact-hero pad sits between the 24 and 32 steps |
 
-### `engine.html` — Exempt (15)
+### `engine.html` — Exempt (17)
 
 | Line | Class | Found | Reason |
 |---:|---|---|---|
-| 1 | V1 | `#0B0B0D` | meta theme-color cannot resolve custom properties; value mirrors --color-pro-surface-0 (#0B0B0D) |
+| 1 | V1 | `#0B0B0D` | meta theme-color cannot resolve custom properties; value mirrors --color-engine-surface-0 (#0B0B0D) |
 | 110 | V8 | `padding:5px` | 5px menu inset sits between 4 and 6; snapping reflows the menu rows |
 | 117 | V8 | `padding:5px` | 5px panel inset sits between 4 and 6; snapping reflows the asset rows |
 | 149 | T2 | `line-height:1.5` | 2.3rem prompt-label clearance is layout-scale, beyond the 32px step |
 | 149 | V8 | `padding-top:2.3rem` | 2.3rem prompt-label clearance is layout-scale, beyond the 32px step |
 | 153 | V3 | `z-index:3` | drawer menu stacks one step above drawer content; no z token holds 3 (nearest --z-content 2) and adding z.raise.deep would invent a step for one element |
-| 264 | T2 | `line-height:1.5` | 118px label indent aligns to the field column, not the rhythm |
+| 228 | T6 | `@media width:760px` | 760px predates the breakpoint scale; --breakpoint-md 767.5 would reflow the projection rail 7.5px earlier |
+| 242 | T6 | `@media width:760px` | 760px must stay paired with the projection rail query above; snapping both shifts the edit panel 7.5px |
 | 264 | V8 | `margin:0 0 var(--spacing-2xs) 118px` | 118px label indent aligns to the field column, not the rhythm |
 | 265 | T2 | `line-height:1.6` | 1px chip inset is an optical hairline; no 2px step exists |
 | 265 | T3 | `letter-spacing:.04em` | 1px chip inset is an optical hairline; no 2px step exists |
@@ -155,7 +135,8 @@ _None._
 | 265 | V8 | `padding:1px var(--spacing-xs)` | 1px chip inset is an optical hairline; no 2px step exists |
 | 288 | V8 | `padding:0 0 0 3px` | 3px chip inset cancels the -3px gutter so the token stays flush |
 | 288 | V8 | `margin:0 0 0 -3px` | 3px chip inset cancels the -3px gutter so the token stays flush |
-| 1228 | V3 | `z-index:80` | fixed node-picker popover must clear --z-overlay (60) and stay below --z-canvas (90); no token holds 80 and inventing z.critical for one node would fork the scale |
+| 355 | T6 | `@media width:860px` | 860px collapses the engine header; --breakpoint-lg 900 would hide the tool row 40px later |
+| 394 | T6 | `@media width:520px` | 520px keeps the chapter bar single-line on 390-520 phones; no token sits between --breakpoint-xs 390 and --breakpoint-sm 639 |
 
 ### `design-system/index.html` — Exempt (3)
 
@@ -163,7 +144,7 @@ _None._
 |---:|---|---|---|
 | 90 | V8 | `padding-left:calc(var(--spacing-sm) - 1px)` | 1px optical offset inside calc aligns the rail rule; no 2px step |
 | 182 | V8 | `margin-top:-10px` | negative half of the 20px dot centres it against the track |
-| 419 | V8 | `padding:1px var(--spacing-xs)` | 1px badge inset is an optical hairline; no 2px step exists |
+| 416 | V8 | `padding:1px var(--spacing-xs)` | 1px badge inset is an optical hairline; no 2px step exists |
 
 ## How to fix
 
@@ -182,6 +163,7 @@ _None._
 | T2 | Raw numeric `line-height`, or a literal leading inside the `font:` shorthand | `typography.lineheight.*` → `var(--line-height-*)` once the scale exists |
 | T3 | Raw `letter-spacing` value | `typography.tracking.*` → `var(--typography-tracking-*)` |
 | T4 | Raw numeric `font-weight`, or a literal family stack | `typography.weight.*` / `typography.family.*` → `var(--typography-weight-*)` / `var(--typography-family-*)` |
+| T6 | Raw px width in an `@media` query that does not equal a `breakpoint.*` value | Use the token's px value exactly (`var()` is invalid in a media prelude) — or keep the one-off with an in-place `lint-allow` reason |
 | T8 | Token defined in the `:root` contract with no consumer (product page, `themes` map cell, or `components.css`) | Wire it in `index/pitch/engine.html`, in a theme map, or `components.css` — or delete it; gallery swatches do not count |
 | T9 | Two role names resolving to one value: in the token set, or in one theme map and family | Alias one name to the other (`--other`) and remove the duplicate role; a slot that legitimately has no own value is declared `null` |
 | T10 | Role contract parity: a map missing a slot, a slot outside the contract, or an emitted block with the wrong role-var count | Declare all 14 slots in every map (null where a theme has no value) and regenerate; nulls are explicit, not gaps |
@@ -198,7 +180,7 @@ Legitimate only where **a browser cannot resolve the value from a custom propert
 
 ### Documented exceptions
 
-- Media-query breakpoints stay raw px (`var()` is invalid in `@media`).
+- Media-query breakpoints stay raw px (`var()` is invalid in `@media`); `T6` requires the number to equal a `breakpoint.*` value from `tokens.json` (alias breakpoints resolved) or to carry a same-line `lint-allow` reason for a documented one-off.
 - `design-system/tokens.css` is the token source and is never scanned.
 - Page-local alias declarations in `:root` are legal when they resolve to a token: `--bg:var(--color-wiki-light-bg)`. `--spacing-*` is the only scale that may hold rhythm.
 - A hex color is legal only as a `var()` fallback: `var(--color-x, #fff)`.
