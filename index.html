@@ -58,9 +58,9 @@ table.map{width:100%;border-collapse:collapse;font-size:var(--typography-size-sm
 .yt span{position:absolute;inset:0;margin:auto;width:60px;height:60px;border-radius:var(--radius-circle);background:var(--amb);color:var(--neutral);display:flex;align-items:center;justify-content:center;font-size:22px}
 .yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 footer{margin:var(--spacing-xl) 0 var(--spacing-md);color:var(--mut);font-size:var(--typography-size-meta)}
-@media(max-width:800px){.main{grid-template-columns:1fr}.list{flex-direction:row;max-height:none;overflow-x:auto;overflow-y:hidden;align-items:center}.count{width:auto;flex:none}}/* one-off: 800px sits between --breakpoint-md 767.5 and --breakpoint-lg 900; snapping moves the mobile rail 32-100px */
+@media(max-width:800px){.main{grid-template-columns:1fr}.list{flex-direction:row;max-height:none;overflow-x:auto;overflow-y:hidden;align-items:center}.count{width:auto;flex:none}}/* lint-allow: 800px sits between --breakpoint-md 767.5 and --breakpoint-lg 900; snapping moves the mobile rail 32-100px */
 /* mobile excellence (additive): bottom step rail, stacked map cards, 44px targets, reduced motion */
-@media(max-width:800px){
+@media(max-width:800px){/* lint-allow: 800px rail block matches the query above; 800 sits between --breakpoint-md 767.5 and --breakpoint-lg 900 */
 body{padding-bottom:5.4rem} /* lint-allow: 5.4rem mobile step-rail clearance is layout geometry, not UI rhythm */
 .steps{position:fixed;bottom:calc(.7rem + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);z-index:var(--z-bar);gap:var(--spacing-2);background:var(--card);border:var(--border-width-hairline) solid var(--rule);border-radius:var(--radius-sm);padding:var(--spacing-2xs) var(--spacing-xs);margin:0;box-shadow:var(--elevation-float);max-width:calc(100vw - 1.5rem);overflow-x:auto;flex-wrap:nowrap}
 .step{margin-right:var(--spacing-2xs);white-space:nowrap;border-bottom-color:transparent}

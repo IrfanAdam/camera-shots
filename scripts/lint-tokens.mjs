@@ -13,6 +13,7 @@
      V4 radius           V8 spacing                 `font:` shorthand leading)
      U1 dead var()                              T3  raw letter-spacing
                                                 T4  raw font-weight / literal family
+                                                T6  raw px in an @media width query
                                                 T8  token with 0 consumers
                                                 T9  two role names, one value
                                                 T10 role contract parity
@@ -27,7 +28,10 @@
    keeps the token-set duplicate check and adds a per-theme role check (two
    slots in one map, one family, one primitive). T10 asserts the 14-slot
    contract across all four maps, nulls included, and the emitted blocks. T6
-   (@media px) and T7 (raw width/height) are Phase 1 and deliberately absent.
+   (raw `@media` width px) is enforced: a width query must equal a
+   `breakpoint.*` value from tokens.json or carry a same-line reason, because
+   `var()` is invalid in a media prelude. T7 (raw width/height) remains Phase 1
+   and deliberately absent.
 
    Budgets
    Every class carries the exact count measured on 2026-11-24 as an explicit
@@ -90,6 +94,7 @@ const BUDGETS = {
   T3: 27,
   T4w: 52,
   T4f: 3,
+  T6: 5,
   T8: 110,
   T9: 3,
   T10: 0,
@@ -101,6 +106,7 @@ const BUDGETS = {
 /* A budget above 0 is a decision, and it has to say why on every run. */
 const BUDGET_NOTES = {
   V3: 'design-system/index.html:427 z-index:-1 — the swatch rail must sit under its own stacking context; no z token holds -1, and rounding it to --z-base (0) would lift it over the page',
+  T6: 'the 4 pitch.html width queries (768 ×3, 901) are deferred with Task 12 — pitch.html is under foreign editing and cannot be touched; the 1 gallery query (640 in the swatch preview) stays raw because design-system/** is out of this lane. index/engine carry budget 0 each',
 };
 /* Per-file share of each budget, measured on the same run. Enforcing the share
    as well as the total means a fix on one page cannot pay for a regression on
@@ -113,6 +119,7 @@ const BUDGET_SEED = {
   T3: { 'index.html': 2, 'pitch.html': 11, 'engine.html': 10, 'design-system/index.html': 4 },
   T4w: { 'index.html': 8, 'pitch.html': 22, 'engine.html': 22, 'design-system/index.html': 0 },
   T4f: { 'index.html': 0, 'pitch.html': 1, 'engine.html': 2, 'design-system/index.html': 0 },
+  T6: { 'index.html': 0, 'pitch.html': 4, 'engine.html': 0, 'design-system/index.html': 1 },
   T14: { 'index.html': 2, 'pitch.html': 5, 'engine.html': 1, 'design-system/index.html': 0 },
   T15: { 'index.html': 19, 'pitch.html': 31, 'engine.html': 2, 'design-system/index.html': 148 },
 };
@@ -244,6 +251,44 @@ const aliasNames = new Set(
 const breakpointNames = new Set(
   tokenEntries.filter((t) => t.name.startsWith('breakpoint.')).map((t) => `--${cssName(t.name)}`),
 );
+/* T6 compares a raw `@media` width against the breakpoint scale. `var()` is
+   invalid in a media prelude, so equality with the token's resolved px value is
+   the only honest proof that a query and the token agree. Alias breakpoints
+   (`breakpoint.sidenav → var(--breakpoint-xl)`) are followed to their target;
+   a breakpoint declared in rem/em simply never matches a px query. */
+const breakpointPx = new Set();
+{
+  const byName = new Map(tokenEntries.map((t) => [`--${cssName(t.name)}`, String(t.value).trim()]));
+  const resolve = (value, seen = new Set()) => {
+    const m = String(value).match(/^var\(\s*(--[A-Za-z0-9_-]+)\s*\)$/);
+    if (!m) return String(value).trim();
+    if (seen.has(m[1])) return '';
+    seen.add(m[1]);
+    return resolve(byName.get(m[1]) ?? '', seen);
+  };
+  for (const t of tokenEntries) {
+    if (!t.name.startsWith('breakpoint.')) continue;
+    const px = resolve(t.value).match(/^(\d*\.?\d+)px$/i);
+    if (px) breakpointPx.add(Number(px[1]));
+  }
+}
+
+/* Width features only: `print`, `(pointer:coarse)` and a preference query hold
+   no breakpoint. Classic `(min-width:…)` and the range form `(width >= …)` are
+   both read, because both are one decision about a length. */
+function widthFeatures(prelude) {
+  const out = [];
+  for (const m of prelude.matchAll(/\(\s*(?:min|max)-width\s*:\s*([^)]*)\)/gi)) {
+    out.push({ value: m[1].trim(), index: m.index + m[0].indexOf(m[1]) });
+  }
+  for (const m of prelude.matchAll(/\(\s*width\s*(?:<=|>=|<|>)\s*([^)]*)\)/gi)) {
+    out.push({ value: m[1].trim(), index: m.index });
+  }
+  for (const m of prelude.matchAll(/\(\s*([^()<>=\s]+)\s*(?:<=|>=|<|>)\s*width\s*\)/gi)) {
+    out.push({ value: m[1].trim(), index: m.index });
+  }
+  return out;
+}
 
 /* --------------------------------------------------------------- helpers */
 
@@ -699,7 +744,7 @@ for (const file of files) {
      BUDGETS after exemptions, and only the excess fails. A same-line
      lint-allow marker works here exactly as it does for V1–V8. */
   const budgetHits = {
-    T1: [], T2: [], T3: [], T4w: [], T4f: [], T13: [], T14: [], T15: [],
+    T1: [], T2: [], T3: [], T4w: [], T4f: [], T6: [], T13: [], T14: [], T15: [],
   };
   const hit = (cls, offset, found, note) => {
     const line = lineOf(starts, offset);
@@ -775,6 +820,21 @@ for (const file of files) {
     if (!rest || /^(?:inherit|initial|unset|revert)$/i.test(rest)) continue;
     if (/[a-z]/i.test(rest)) {
       hit('T4f', m.index, `font-family:${short(value, 64)}`, 'literal family stack');
+    }
+  }
+
+  /* T6 — a raw px width in a @media prelude. `var()` cannot appear in a media
+     condition, so the query has to restate the number; it passes only when
+     that number IS a breakpoint token's value, or when the same line carries a
+     `lint-allow` reason for the one-off. The prelude is read from the
+     comment-masked text, so the reason itself never hides the query. */
+  for (const m of masked.matchAll(/@media([^{]*)\{/gi)) {
+    const prelude = m[1];
+    const base = m.index + m[0].indexOf(prelude);
+    for (const f of widthFeatures(prelude)) {
+      const px = f.value.match(/^(\d*\.?\d+)px$/i);
+      if (px && breakpointPx.has(Number(px[1]))) continue;
+      hit('T6', base + f.index, `@media width:${short(f.value, 30)}`, 'raw @media px (no breakpoint match)');
     }
   }
 
@@ -909,6 +969,7 @@ for (const file of files) {
       T3: keptBudget.T3.length,
       T4w: keptBudget.T4w.length,
       T4f: keptBudget.T4f.length,
+      T6: keptBudget.T6.length,
       T13: keptBudget.T13.length,
       T14: keptBudget.T14.length,
       T15: keptBudget.T15.length,
@@ -919,7 +980,7 @@ for (const file of files) {
 /* ---------------------------------------------------------------- totals */
 
 const classes = ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'V8', 'U1'];
-const fileTClasses = ['T1', 'T2', 'T3', 'T4w', 'T4f', 'T13', 'T14', 'T15'];
+const fileTClasses = ['T1', 'T2', 'T3', 'T4w', 'T4f', 'T6', 'T13', 'T14', 'T15'];
 const globalTClasses = ['T8', 'T9', 'T10', 'T11'];
 const ALL_CLASSES = [...classes, ...fileTClasses, ...globalTClasses];
 
@@ -1306,6 +1367,7 @@ const LEGEND = [
   ['T2', 'Raw numeric `line-height`, or a literal leading inside the `font:` shorthand', '`typography.lineheight.*` → `var(--line-height-*)` once the scale exists'],
   ['T3', 'Raw `letter-spacing` value', '`typography.tracking.*` → `var(--typography-tracking-*)`'],
   ['T4', 'Raw numeric `font-weight`, or a literal family stack', '`typography.weight.*` / `typography.family.*` → `var(--typography-weight-*)` / `var(--typography-family-*)`'],
+  ['T6', 'Raw px width in an `@media` query that does not equal a `breakpoint.*` value', 'Use the token\'s px value exactly (`var()` is invalid in a media prelude) — or keep the one-off with an in-place `lint-allow` reason'],
   ['T8', 'Token defined in the `:root` contract with no consumer (product page, `themes` map cell, or `components.css`)', 'Wire it in `index/pitch/engine.html`, in a theme map, or `components.css` — or delete it; gallery swatches do not count'],
   ['T9', 'Two role names resolving to one value: in the token set, or in one theme map and family', 'Alias one name to the other (`--other`) and remove the duplicate role; a slot that legitimately has no own value is declared `null`'],
   ['T10', 'Role contract parity: a map missing a slot, a slot outside the contract, or an emitted block with the wrong role-var count', 'Declare all 14 slots in every map (null where a theme has no value) and regenerate; nulls are explicit, not gaps'],
@@ -1340,12 +1402,12 @@ for (const r of results) {
 md += `| **Total** | **${totals.V1}** | **${totals.V2}** | **${totals.V3}** | **${totals.V4}** | **${totals.V5}** | **${totals.V6}** | **${totals.V7}** | **${totals.V8}** | **${totals.U1}** | **${totalExempt}** | **${totalBadAllow}** | **${totals.T15}** | **${totalVars}** |\n\n`;
 
 md += '## Type, consumer & theme counts\n\n';
-md += '| File | T1 font-size | T2 line-height | T3 tracking | T4 weight | T4 family | T13 dup alias | T14 `!important` | T15 inline `style=` |\n';
-md += '|---|---:|---:|---:|---:|---:|---:|---:|---:|\n';
+md += '| File | T1 font-size | T2 line-height | T3 tracking | T4 weight | T4 family | T6 `@media` px | T13 dup alias | T14 `!important` | T15 inline `style=` |\n';
+md += '|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n';
 for (const r of results) {
-  md += `| \`${r.file}\` | ${r.counts.T1} | ${r.counts.T2} | ${r.counts.T3} | ${r.counts.T4w} | ${r.counts.T4f} | ${r.counts.T13} | ${r.counts.T14} | ${r.counts.T15} |\n`;
+  md += `| \`${r.file}\` | ${r.counts.T1} | ${r.counts.T2} | ${r.counts.T3} | ${r.counts.T4w} | ${r.counts.T4f} | ${r.counts.T6} | ${r.counts.T13} | ${r.counts.T14} | ${r.counts.T15} |\n`;
 }
-md += `| **Total** | **${totals.T1}** | **${totals.T2}** | **${totals.T3}** | **${totals.T4w}** | **${totals.T4f}** | **${totals.T13}** | **${totals.T14}** | **${totals.T15}** |\n\n`;
+md += `| **Total** | **${totals.T1}** | **${totals.T2}** | **${totals.T3}** | **${totals.T4w}** | **${totals.T4f}** | **${totals.T6}** | **${totals.T13}** | **${totals.T14}** | **${totals.T15}** |\n\n`;
 md += `Token-set checks (not per file): **T8** ${totals.T8} unconsumed tokens · **T9** ${totals.T9} duplicate role values · **T10** ${totals.T10} role-contract gaps · **T11** ${totals.T11} type/value mismatch.\n\n`;
 
 md += '## Budgets\n\n';
@@ -1439,7 +1501,7 @@ md += `The reason must be at least ${MIN_REASON} characters after trimming; a ma
 md += 'Legitimate only where **a browser cannot resolve the value from a custom property**: the `meta` theme-color tag, `@media` / `@supports` conditions, and canvas or gradient string composites assembled in JS. ';
 md += 'Never legitimate for any color, duration, radius, border width, spacing step or `z-index` that a token could hold — those get a token (or get fixed), because that is exactly the drift this gate exists to catch.\n\n';
 md += '### Documented exceptions\n\n';
-md += '- Media-query breakpoints stay raw px (`var()` is invalid in `@media`).\n';
+md += '- Media-query breakpoints stay raw px (`var()` is invalid in `@media`); `T6` requires the number to equal a `breakpoint.*` value from `tokens.json` (alias breakpoints resolved) or to carry a same-line `lint-allow` reason for a documented one-off.\n';
 md += '- `design-system/tokens.css` is the token source and is never scanned.\n';
 md += '- Page-local alias declarations in `:root` are legal when they resolve to a token: `--bg:var(--color-wiki-light-bg)`. `--spacing-*` is the only scale that may hold rhythm.\n';
 md += '- A hex color is legal only as a `var()` fallback: `var(--color-x, #fff)`.\n';
