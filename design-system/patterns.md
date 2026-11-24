@@ -44,7 +44,9 @@ Spatial editing where canvas state is primary and panels are transient.
 **When NOT to use**
 Reading-heavy content — use Pitch or Wiki shells.
 
-## Timeline Stack (ruler + lanes + transport)
+## Timeline Stack (ruler + lanes + transport) — proposed
+
+**Status: proposed.** Specced from reference feel; no page renders timeline lanes, chips or selection handles yet. Do not cite this as shipped behaviour.
 
 **Purpose-built from reference feel, our own structure.**
 Ruler with timecode (`typography.size.timecode`, tabular numbers); lanes of Timeline Chips color-coded by type; Transport Bar docked adjacent; playhead across all lanes.
@@ -55,7 +57,9 @@ Lane gutters at `spacing.gutter.pro`; chip radius `radius.sm`; selection handles
 **When to use**
 Any multi-lane temporal view in the engine.
 
-## Inspector Overlay (pills over canvas)
+## Inspector Overlay (pills over canvas) — proposed
+
+**Status: proposed.** The pill spans are specced; only the engine toast and drawer render today. Do not audit a page against this pattern.
 
 **Combines**
 Inspector Pills (status + split) over the stage; never in flow.

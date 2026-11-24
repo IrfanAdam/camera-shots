@@ -2,7 +2,7 @@
 
 ## What this is
 
-Three product surfaces (the wiki in `index.html`, the investor deck in `pitch.html`, the canvas app in `engine.html`) share one token space. Every color, size, radius, duration, z-index and touch dimension resolves from `design-system/tokens.css`, which is generated from `design-system/tokens.json`. Page CSS may not hardcode a value: it declares short local aliases in `:root` and consumes `var(--token)` everywhere below that.
+Three product surfaces (the wiki in `index.html`, the investor deck in `pitch.html`, the canvas app in `engine.html`) share one token space. Colour, radius, duration, z-index and touch dimensions resolve from `design-system/tokens.css`, which is generated from `design-system/tokens.json`. Page CSS may not hardcode those values: it declares short local aliases in `:root` and consumes `var(--token)` everywhere below that. Type is only partly tokenised — the literal sizes and weights that survive are listed under Known debt.
 
 ## Map
 
@@ -15,7 +15,8 @@ Three product surfaces (the wiki in `index.html`, the investor deck in `pitch.ht
 | `design-system/index.html` | Rendered gallery: color, type, space and shape, motion, touch, components, consistency matrix | no | yes |
 | `design-system/components.md` | Component specs | no | yes |
 | `design-system/patterns.md` | Shell and composition patterns | no | yes |
-| `design-system/audit.md` | Findings, token-gap closure, re-point map | no | yes |
+| `design-system/audit/2026-11-24/` | Measured audit baseline — five lane reports, metrics, 10 screenshots | no | yes |
+| `design-system/audit/archive/audit-2026-11-23.md` | Historical findings, token-gap closure, re-point map (archived) | no | no |
 | `design-system/audit-report.md` | Machine receipt written by the gate | yes | never |
 | `design-system/audit-checklist.md` | Checklist to run per screen before shipping | no | yes |
 
@@ -123,11 +124,13 @@ Two families, no more: one sans for all text, one mono for labels, numbers, code
 
 ## Known debt
 
-`design-system/audit-report.md` (generated 2026-11-23) reports PASS, 0 violations, 21 documented exemptions — every raw paint, motion, z-index, radius, border width and spacing value now resolves from a token, and no page references an undefined token.
+`design-system/audit-report.md` is written by the gate, never by hand. It currently reports PASS with 0 violations and **21 documented exemptions** — read that as "within the gate's current classes", not "no literal survives": 8 of the 21 exemptions mask a token that was never created. The exemptions are enumerated in the report and summarised in `design-system/audit/2026-11-24/foundations.md`. Phase 6 adds `verification.md` as the single place the gate's scope and its exemptions are stated together.
 
-What the gate does not judge:
+What the gate does not judge today:
 
-- Literal `font-size` values survive beside the type tokens: 2 distinct non-`var()` sizes per page (`index.html` `.7rem` / `22px`, `pitch.html` `.62rem` / `.9rem`, `engine.html` `.78rem` / `18px`). The gate has no font-size class; folding them into the scale is the next pass.
-- `!important`: 2 in `index.html`, 5 in `pitch.html`, 1 in `engine.html`. Same lane.
+- Literal `font-size`: 8 across the three product pages (2 each — `index.html` `.7rem`/`22px`, `pitch.html` `.62rem`/`.9rem`, `engine.html` `.78rem`/`18px`), plus 2 `font:` shorthands that bypass the scale (15px/1.6 where the token says 15.2). 16 distinct computed sizes against 11 size tokens.
+- `line-height`: 36 literal declarations, 0 token refs. `font-weight`: 53 literals, 0 refs. `letter-spacing`: 28 literals.
+- Shadow, width/height, `@media` breakpoints, consumer counts, token `type` shape and theme-key parity.
+- `!important`: 2 in `index.html`, 5 in `pitch.html`, 1 in `engine.html`.
 
-Both are type-and-cascade cleanup, not token drift.
+All of it is type-and-cascade cleanup, not token drift. The measured baseline and the full gap list live in `design-system/audit/2026-11-24/`.
