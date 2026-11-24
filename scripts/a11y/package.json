@@ -2,7 +2,7 @@
   "name": "ds-a11y-checks",
   "private": true,
   "version": "1.0.0",
-  "description": "Pinned browser harness for the DS accessibility gate (axe, keyboard). Not a runtime dependency of the site.",
+  "description": "Pinned harness for the DS gate: axe, keyboard, screenshots and html-validate. Not a runtime dependency of the site.",
   "type": "module",
   "dependencies": {
     "axe-core": "4.10.3",
@@ -13,6 +13,11 @@
     "targets": "node ../check-targets.mjs",
     "axe": "node ../check-axe.mjs",
     "keyboard": "node ../check-keyboard.mjs",
-    "all": "node ../check-contrast.mjs && node ../check-targets.mjs && node ../check-axe.mjs && node ../check-keyboard.mjs"
+    "shots": "node check-shots.mjs",
+    "html": "node_modules/.bin/html-validate --config ../htmlvalidate.config.json ../index.html ../pitch.html ../engine.html ../design-system/index.html",
+    "all": "node ../check-contrast.mjs && node ../check-targets.mjs && node ../check-axe.mjs && node ../check-keyboard.mjs && node check-shots.mjs"
+  },
+  "devDependencies": {
+    "html-validate": "8.24.1"
   }
 }

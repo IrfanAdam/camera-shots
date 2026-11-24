@@ -1,19 +1,29 @@
 name: DS gate
 
-# Phase 0 Task 6 — the design system certifies itself in CI, not in review.
-# Five static checks in `gate`: the committed CSS is provably generated from
-# tokens.json, the token gate passes (V/T page + token classes and C1–C6 for
-# base.css / components.css / components.js / icons.svg), no doc states a stale
-# count, and no fragment link points at an id that does not exist.
-# Phase 4 Task 29 adds two accessibility jobs that also block: `a11y-static`
-# (WCAG contrast pairs + target sizes, no browser) and `a11y-browser` (axe-core
-# 4.10.3 and a keyboard smoke on the gallery specimens, headless Chrome pinned
-# by scripts/a11y/package-lock.json). Contract and known debt:
-# design-system/accessibility.md.
+# The design system certifies itself in CI, not in review.
 #
-# Static site, no build step: the gate job installs nothing. The browser job is
-# the only one with dependencies, scoped to scripts/a11y — there is still no root
-# package.json by design (Vercel stays framework: null).
+# Jobs, all blocking:
+#   static-docs   — generated CSS/foundations are byte-identical, the token gate
+#                   passes, no doc states a stale count, every anchor/id/idref
+#                   resolves, and every local href/src + markdown link resolves.
+#                   (Phase 0 Task 6 + Phase 6 Task 39.)
+#   a11y-static   — WCAG contrast pairs + target sizes, no browser.
+#                   (Phase 4 Task 29.)
+#   a11y-browser  — axe-core 4.10.3 and a keyboard smoke, headless Chrome pinned
+#                   by scripts/a11y/package-lock.json. (Phase 4 Task 29.)
+#   html-validate — curated structural HTML rules over the four surfaces.
+#                   (Phase 6 Task 39; was advisory, now blocking.)
+#   shots         — 12 screenshots (4 pages x 1440/390, both schemes where the
+#                   surface declares one), uploaded as artifacts. Fails on a page
+#                   JS error, horizontal overflow > 1px, or a blank capture.
+#                   (Phase 6 Task 39.)
+#
+# Contract, disabled-rule list and known debt: design-system/verification.md.
+#
+# Static site, no build step. Only the three browser-tool jobs install, and they
+# install inside scripts/a11y — there is still no root package.json by design
+# (Vercel stays framework: null). No job serves :5173; every browser job binds
+# an ephemeral loopback port through scripts/a11y/lib/server.mjs.
 
 on:
   pull_request:
@@ -28,8 +38,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  gate:
-    name: tokens, docs, anchors
+  static-docs:
+    name: static-docs (tokens, docs, anchors, links)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -64,6 +74,13 @@ jobs:
 
       - name: Anchors and ids resolve
         run: node scripts/check-anchors.mjs
+
+      # Local href/src in the four shipped pages plus relative links in
+      # design-system/*.md. Fragments stay with check-anchors; external http(s)
+      # is deliberately not fetched (no network flake in CI — see
+      # design-system/verification.md § Blind spots).
+      - name: Local links resolve
+        run: node scripts/check-links.mjs
 
   a11y-static:
     name: contrast + target sizes
@@ -104,11 +121,12 @@ jobs:
         with:
           node-version: '20'
 
-      # The only dependency in the repo, scoped to the gate: puppeteer 24.15.0
-      # and axe-core 4.10.3 exactly (scripts/a11y/package-lock.json). No root
-      # package.json, so the site build stays framework: null.
-      # No actions/cache on the browser dir: a half-restored Chrome is the one
-      # failure mode that reads as a gate bug, and a cold download is ~1 min.
+      # The only dependency tree in the repo, scoped to the gate: puppeteer
+      # 24.15.0, axe-core 4.10.3 and html-validate 8.24.1 exactly
+      # (scripts/a11y/package-lock.json). No root package.json, so the site
+      # build stays framework: null. No actions/cache on the browser dir: a
+      # half-restored Chrome is the one failure mode that reads as a gate bug,
+      # and a cold download is ~1 min.
       - name: Install the pinned harness
         run: npm ci --prefix scripts/a11y --no-audit --no-fund
 
@@ -132,13 +150,9 @@ jobs:
         run: node scripts/check-keyboard.mjs
 
   html-validate:
-    name: html-validate (advisory)
+    name: html-validate (structural)
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # TODO(phase-6): make this job blocking once the four pages pass. Phase 0
-    # owns the scripts, not the pages, so the pages are deliberately NOT edited
-    # to satisfy the validator — the job reports and the merge is not gated.
-    continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -148,9 +162,63 @@ jobs:
         with:
           node-version: '20'
 
-      # A one-shot dev tool fetch, not a runtime dependency: no npm install, no
-      # lockfile, no root package.json. Pinned so the advisory noise is stable.
+      # html-validate 8.24.1 is pinned in scripts/a11y (devDependency, in the
+      # lockfile). This job needs no browser, so skip the Chrome download.
+      - name: Install the pinned validator
+        run: npm ci --prefix scripts/a11y --no-audit --no-fund
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: '1'
+
+      # scripts/htmlvalidate.config.json is a curated structural set, NOT
+      # html-validate:recommended. Rules the current pages violate
+      # (no-inline-style 113, no-implicit-button-type 48, wcag/h63 27,
+      # prefer-native-element 15, heading-level 1, element-required-attributes 1,
+      # empty-heading 1, unique-landmark 1, aria-label-misuse 1, doctype-style 2)
+      # are deliberately NOT enabled: this task owns the gate, not the pages, so
+      # they are a documented blind spot in design-system/verification.md rather
+      # than a silently green job.
       - name: Validate the four shipped HTML surfaces
         run: >-
-          npx --yes html-validate@8.24.1
+          scripts/a11y/node_modules/.bin/html-validate
+          --config scripts/htmlvalidate.config.json
           index.html pitch.html engine.html design-system/index.html
+
+      - name: Report the rule set
+        run: 'echo "RESULT: PASS — 16 structural rules over 4 pages (scripts/htmlvalidate.config.json)"'
+
+  shots:
+    name: screenshots (1440 + 390)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install the pinned harness
+        run: npm ci --prefix scripts/a11y --no-audit --no-fund
+
+      - name: Install the pinned Chrome for Testing
+        working-directory: scripts/a11y
+        run: npx --no-install puppeteer browsers install chrome
+
+      # 12 cells: index.html light+dark at 1440 and 390, the gallery light+dark
+      # at 1440 and 390, pitch and engine at 1440 and 390. Serves on an
+      # ephemeral loopback port through scripts/a11y/lib/server.mjs — never
+      # 5173. Fails on a page JS error, horizontal overflow > 1px, or a capture
+      # under 5KB (a page that did not paint). Artifact-only: no pixel diff.
+      - name: Capture the matrix
+        run: node scripts/a11y/check-shots.mjs
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ds-shots
+          path: artifacts/shots
+          retention-days: 14
+          if-no-files-found: ignore

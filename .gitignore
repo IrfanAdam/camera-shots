@@ -1,3 +1,4 @@
 .vercel
 .env*
 scripts/a11y/node_modules/
+artifacts/
