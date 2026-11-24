@@ -62,9 +62,10 @@ p{font-size:var(--typography-size-body);color:var(--body)}.ad{margin-top:var(--s
 .steps{display:flex;gap:var(--spacing-xs);margin:var(--spacing-sm) 0 var(--spacing-2xs);flex-wrap:wrap}
 .step{position:relative;font-size:var(--typography-size-body);font-weight:var(--weight-semibold);padding:var(--spacing-xs) var(--spacing-2);margin-right:var(--spacing-18);border:none;border-bottom:var(--border-width-strong) solid transparent;background:none;color:var(--mut);cursor:pointer;border-radius:var(--radius-none);min-height:var(--control-height-default);transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}
 .step:hover{color:var(--ink)}
-.step.on{color:var(--ink);border-bottom-color:transparent}
-/* pitch control voice: active step carries the 5px champagne dot, not an underline */
-.step.on::after{content:'';position:absolute;left:50%;bottom:var(--spacing-2xs);transform:translateX(-50%);width:var(--dot-size);height:var(--dot-size);border-radius:var(--radius-circle);background:var(--acc)}
+/* active grammar: cream text + 2px champagne underline (same rule as the
+   sub-tabs); the solid champagne fill is reserved for the selected list row
+   and primary actions. */
+.step.on{color:var(--ink);border-bottom-color:var(--acc)}
 .blurb{font-size:var(--typography-size-small);color:var(--mut);margin:var(--spacing-2) 0 var(--spacing-6)}
 .yt{position:relative;aspect-ratio:16/9;background:var(--black);border-radius:var(--radius-sm);overflow:hidden;margin-top:var(--spacing-xs);cursor:pointer}
 .yt img{width:100%;height:100%;object-fit:cover;opacity:var(--opacity-media)}
@@ -97,7 +98,10 @@ body{padding-bottom:calc(var(--control-height-touch) + var(--spacing-xs) + var(-
 .map td[data-label="Actions"]{grid-area:1/2/3/3;justify-self:end}
 .mapacts{gap:var(--spacing-xs)}
 #search{flex:1 0 100%;min-width:0}
-.list{scrollbar-width:thin;scrollbar-color:var(--rule) transparent;padding-inline-end:var(--spacing-md);mask-image:linear-gradient(to right,currentColor calc(100% - var(--spacing-2xl)),transparent)}
+/* horizontal card rail: a 96px mask fade is the scroll affordance — long enough
+   to read on a near-black ground — and the same 96px of end padding lets the
+   last chip scroll fully clear of it (revealChip() reads this padding) */
+.list{scrollbar-width:thin;scrollbar-color:var(--rule) transparent;padding-inline-end:calc(var(--spacing-2xl) * 2);mask-image:linear-gradient(to right,currentColor calc(100% - var(--spacing-2xl) * 2),transparent)}
 .list .ds-chip{flex:none;white-space:nowrap}
 }
 @media(pointer:coarse){
@@ -351,6 +355,13 @@ return `<div class="k" style="margin-top:0">Every token in one table — copy a 
 <div class="ds-table-wrap"><table class="ds-table map"><caption class="ds-sr-only">Every prompt token with its group, code and phrase, plus a copy action</caption><thead><tr><th scope="col">Group</th><th scope="col">Token</th><th scope="col">Prompt phrase</th><th scope="col"><span class="ds-sr-only">Actions</span></th></tr></thead>
 ${rows.length?mapGroups(rows).map(g=>`<tbody class="map-group" data-group="${g.g}"><tr class="map-grouphead"><th colspan="4" scope="colgroup">${g.g}</th></tr>${g.rows.map(mapRow).join('')}</tbody>`).join(''):'<tbody><tr><td colspan="4">No matches.</td></tr></tbody>'}</table></div>
 <div class="ds-pager"><span>${rows.length} tokens</span><button type="button" class="ds-btn" data-variant="ghost" data-copyall="1" data-ds-copy-message="Copied all ${rows.length} prompt phrases">Copy all (${mapGroup})</button></div>`}
+/* keep the selected chip fully in view when the list is the mobile scroll rail:
+   arrow keys move the selection, and without this the new chip can sit half
+   under the 48px fade at the right edge. */
+function revealChip(){const l=$('list');if(!l||l.scrollWidth<=l.clientWidth)return;const c=l.querySelector('.ds-chip[aria-pressed="true"]');if(!c)return;
+const lb=l.getBoundingClientRect(),cb=c.getBoundingClientRect(),pad=parseFloat(getComputedStyle(l).paddingInlineEnd)||0;
+if(cb.left<lb.left)l.scrollLeft-=lb.left-cb.left;
+else if(cb.right>lb.right-pad)l.scrollLeft+=cb.right-(lb.right-pad);}
 function draw(){
 const curStep=stepOf(tab);
 $('steps').innerHTML=STEPS.map(s=>`<button type="button" class="step${s.name==curStep?' on':''}" data-step="${s.name}" data-ds-key="step-${s.name}"${s.name==curStep?' aria-current="step"':''}>${s.name}</button>`).join('');
@@ -365,12 +376,13 @@ if(pillTabs.length>1){panel.setAttribute('role','tabpanel');panel.setAttribute('
 else{panel.setAttribute('role','region');panel.removeAttribute('aria-labelledby');panel.setAttribute('aria-label',tab+' cards')}
 if(tab=='Prompt map'){const gs=['All',...GROUPS];
 list.innerHTML=`<div class="count">${mapRows().length} tokens${mapGroup!='All'?' in '+mapGroup:''}</div>`+gs.map(g=>`<button type="button" class="ds-chip" aria-pressed="${g==mapGroup}" data-g="${g}" data-ds-key="group-${g}">${g}</button>`).join('');
-panel.innerHTML=mapPanel();return}
+panel.innerHTML=mapPanel();revealChip();return}
 const fl=items();
 list.innerHTML=`<div class="count">${fl.length} / ${(D[tab].items||[]).length}</div>`+fl.map(([x,i])=>`<button type="button" class="ds-chip" aria-pressed="${i==idx}" data-i="${i}" data-ds-key="chip-${i}">${x[0]}</button>`).join('');
 const x=(D[tab].items||[])[idx];
 if(!x){panel.innerHTML='<p>No matches in this tab.</p>';return}
 panel.innerHTML=(tab=='Resources')?resCard(x):card(x);
+revealChip();
 }
 const tabId=k=>'tab-'+k.toLowerCase().replace(/[^a-z0-9]+/g,'-');
 function render(){DS.focusPreserve(document.body,draw)}

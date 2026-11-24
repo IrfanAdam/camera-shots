@@ -361,6 +361,7 @@
   position:relative;
   padding:var(--spacing-xs) var(--spacing-2);
   border:0;
+  border-block-end:var(--border-width-strong) solid transparent;
   border-radius:var(--radius-none);
   background:transparent;
   color:var(--ds-muted);
@@ -369,25 +370,7 @@
   background:transparent;
   color:var(--ds-ink);
   font-weight:var(--weight-semibold);
-}
-.ds-tabs[data-variant="underline"] .ds-tab::after{
-  content:"";
-  position:absolute;
-  /* Inside the tab, not on its bottom edge: .ds-tabs is an overflow-x rail, so a
-     marker hung below the tab's box is clipped and the active tab reads as text
-     only. 4px up matches the pitch page's active-tab dot. */
-  inset-block-end:var(--spacing-2xs);
-  /* Centred under the label, like the pitch page's active-tab dot. */
-  inset-inline-start:50%;
-  transform:translateX(-50%);
-  inline-size:var(--dot-size);
-  block-size:var(--dot-size);
-  border-radius:var(--radius-circle);
-  background:var(--ds-accent);
-  display:none;
-}
-.ds-tabs[data-variant="underline"] .ds-tab:is([aria-selected="true"],[data-state~="selected"])::after{
-  display:block;
+  border-block-end-color:var(--ds-accent);
 }
 .ds-tabs[data-variant="rail"]{
   flex-direction:column;
