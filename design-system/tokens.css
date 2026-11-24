@@ -2,7 +2,7 @@
    tokens.css — GENERATED FILE, DO NOT EDIT BY HAND.
    Source:     design-system/tokens.json
    Regenerate: node scripts/build-tokens.mjs
-   Tokens:     249
+   Tokens:     292
    Themes:     4 · role slots: 14 · role vars: 17
    ========================================================================== */
 
@@ -29,13 +29,13 @@
 
   /* color.wiki */
   --color-wiki-light-bg: #F8F8F4;
-  --color-wiki-light-card: #FFFFFF;
+  --color-wiki-light-card: var(--color-primitive-white);
   --color-wiki-light-ink: #16181D;
   --color-wiki-light-muted: #5B6270;
   --color-wiki-light-rule: #D2D6DE;
   --color-wiki-light-accent: #0B5D66;
   --color-wiki-light-accent-wash: #DDEFF1;
-  --color-wiki-light-amber: #B86A00;
+  --color-wiki-light-amber: var(--color-status-warning);
   --color-wiki-dark-bg: #0E1213;
   --color-wiki-dark-card: #151B1C;
   --color-wiki-dark-ink: #ECF1F1;
@@ -44,8 +44,8 @@
   --color-wiki-dark-accent: #5CC4D0;
   --color-wiki-dark-accent-wash: #12383D;
   --color-wiki-dark-amber: #F0A648;
-  --color-wiki-diagram-fill: #9FC3D8;
-  --color-wiki-scrim-thumb: #101828;
+  --color-wiki-diagram-fill: var(--color-diagram-fill-wiki);
+  --color-wiki-scrim-thumb: var(--color-diagram-scrim-wiki);
 
   /* color.engine */
   --color-engine-bg: #0E1116;
@@ -55,13 +55,27 @@
   --color-engine-muted: #8B93A5;
   --color-engine-muted-2: #AAB2C2;
   --color-engine-code: #C8CFDB;
-  --color-engine-tool: #222A36;
+  --color-engine-tool: #1C1C1E;
   --color-engine-tool-hover: #1D2530;
   --color-engine-border: #262D38;
   --color-engine-border-strong: #313B4A;
   --color-engine-accent: #E8830C;
   --color-engine-teal: #0F766E;
   --color-engine-teal-bright: #5EEAD4;
+  --color-engine-surface-0: #0B0B0D;
+  --color-engine-surface-1: #1E1E22;
+  --color-engine-surface-2: #2A2A2E;
+  --color-engine-surface-deep: #0C0C0C;
+  --color-engine-canvas: #08080A;
+  --color-engine-text-primary: #F5F5F7;
+  --color-engine-text-secondary: #9A9AA0;
+  --color-engine-divider: #2C2C2E;
+  --color-engine-divider-strong: #3A3A3C;
+  --color-engine-selection: #FFD60A;
+  --color-engine-track-fx: #5E5CE6;
+  --color-engine-track-title: #30D158;
+  --color-engine-track-audio: #32ADE6;
+  --color-engine-overlay-scrim: rgba(0,0,0,.9);
   --color-engine-accent-ink: #111111;
   --color-engine-canvas-bg: #1A2130;
   --color-engine-graph-title: #1B2230;
@@ -97,7 +111,7 @@
   --color-engine-scrim-strong: rgba(0,0,0,.55);
   --color-engine-overlay-72: rgba(10,13,18,.72);
   --color-engine-overlay-90: rgba(10,13,18,.9);
-  --color-engine-overlay-panel: rgba(22,27,34,.92);
+  --color-engine-overlay-panel: rgba(30,30,34,.94);
   --color-engine-overlay-panel-94: rgba(22,27,34,.94);
   --color-engine-overlay-panel-97: rgba(22,27,34,.97);
   --color-engine-wash-25: rgba(255,255,255,.25);
@@ -105,50 +119,68 @@
   --color-engine-overlay-88: rgba(10,13,18,.88);
 
   /* color.pro */
-  --color-pro-surface-0: #0B0B0D;
-  --color-pro-surface-1: #1E1E22;
-  --color-pro-surface-2: #2A2A2E;
-  --color-pro-surface-deep: #0C0C0C;
-  --color-pro-canvas: #08080A;
-  --color-pro-text-primary: #F5F5F7;
-  --color-pro-text-secondary: #9A9AA0;
-  --color-pro-tool: #1C1C1E;
-  --color-pro-tool-hover: #2C2C2E;
-  --color-pro-divider: #2C2C2E;
-  --color-pro-divider-strong: #3A3A3C;
-  --color-pro-selection: #FFD60A;
-  --color-pro-track-fx: #5E5CE6;
-  --color-pro-track-title: #30D158;
-  --color-pro-track-audio: #32ADE6;
-  --color-pro-overlay-scrim: rgba(0,0,0,.9);
-  --color-pro-overlay-panel: rgba(30,30,34,.94);
+  --color-pro-surface-0: var(--color-engine-surface-0);
+  --color-pro-surface-1: var(--color-engine-surface-1);
+  --color-pro-surface-2: var(--color-engine-surface-2);
+  --color-pro-surface-deep: var(--color-engine-surface-deep);
+  --color-pro-canvas: var(--color-engine-canvas);
+  --color-pro-text-primary: var(--color-engine-text-primary);
+  --color-pro-text-secondary: var(--color-engine-text-secondary);
+  --color-pro-tool: var(--color-engine-tool);
+  --color-pro-tool-hover: var(--color-engine-divider);
+  --color-pro-divider: var(--color-engine-divider);
+  --color-pro-divider-strong: var(--color-engine-divider-strong);
+  --color-pro-selection: var(--color-engine-selection);
+  --color-pro-track-fx: var(--color-engine-track-fx);
+  --color-pro-track-title: var(--color-engine-track-title);
+  --color-pro-track-audio: var(--color-engine-track-audio);
+  --color-pro-overlay-scrim: var(--color-engine-overlay-scrim);
+  --color-pro-overlay-panel: var(--color-engine-overlay-panel);
+
+  /* color.status */
+  --color-status-success: #2E7D46;
+  --color-status-danger: #E5484D;
+  --color-status-warning: #B86A00;
+  --color-status-info: #8A5CF6;
 
   /* color.semantic */
-  --color-semantic-success: #2E7D46;
-  --color-semantic-danger: #E5484D;
-  --color-semantic-warning: #B86A00;
-  --color-semantic-info: #8A5CF6;
+  --color-semantic-success: var(--color-status-success);
+  --color-semantic-danger: var(--color-status-danger);
+  --color-semantic-warning: var(--color-status-warning);
+  --color-semantic-info: var(--color-status-info);
+
+  /* color.diagram */
+  --color-diagram-fill-wiki: #9FC3D8;
+  --color-diagram-scrim-wiki: #101828;
 
   /* color.print */
   --color-print-rule: #DDDDDD;
   --color-print-body: #333333;
   --color-print-fine: #222222;
   --color-print-accent: #8A6D2B;
-  --color-print-ink: #111111;
+  --color-print-ink: var(--color-engine-accent-ink);
+
+  /* color.primitive */
+  --color-primitive-white: #FFFFFF;
+  --color-primitive-black: #000000;
 
   /* color.neutral */
-  --color-neutral-white: #FFFFFF;
-  --color-neutral-black: #000000;
+  --color-neutral-white: var(--color-primitive-white);
+  --color-neutral-black: var(--color-primitive-black);
 
   /* typography.family */
   --typography-family-sans: system-ui, -apple-system, Segoe UI, sans-serif;
   --typography-family-mono: ui-monospace, Menlo, monospace;
 
   /* typography.size */
-  --typography-size-h1-pitch: clamp(2rem, 5vw, 3.1rem);
-  --typography-size-h1-wiki: 1.6rem;
-  --typography-size-h2-pitch: 1.35rem;
-  --typography-size-h2-wiki: 1.25rem;
+  --typography-size-display: clamp(2rem, 5vw, 3.1rem);
+  --typography-size-h1-pitch: var(--typography-size-display);
+  --typography-size-h1: 1.6rem;
+  --typography-size-h1-wiki: var(--typography-size-h1);
+  --typography-size-h2: 1.35rem;
+  --typography-size-h2-pitch: var(--typography-size-h2);
+  --typography-size-h3: 1.25rem;
+  --typography-size-h2-wiki: var(--typography-size-h3);
   --typography-size-body: 0.95rem;
   --typography-size-small: 0.85rem;
   --typography-size-meta: 0.8rem;
@@ -158,21 +190,63 @@
   --typography-size-lede: 1.05rem;
 
   /* typography.weight */
-  --typography-weight-regular: 400;
-  --typography-weight-medium: 600;
-  --typography-weight-semibold: 650;
-  --typography-weight-bold: 700;
+  --typography-weight-regular: var(--weight-regular);
+  --typography-weight-medium: var(--weight-medium);
+  --typography-weight-semibold: var(--weight-semibold);
+  --typography-weight-bold: var(--weight-bold);
 
   /* typography.lineheight */
-  --typography-lineheight-body: 1.7;
-  --typography-lineheight-pitch-h1: 1.08;
+  --typography-lineheight-body: var(--line-height-reading);
+  --typography-lineheight-pitch-h1: var(--line-height-display);
 
   /* typography.tracking */
-  --typography-tracking-tight: -0.02em;
-  --typography-tracking-eyebrow: 0.16em;
+  --typography-tracking-tight: var(--tracking-tight);
+  --typography-tracking-eyebrow: var(--tracking-eyebrow);
+
+  /* weight.regular */
+  --weight-regular: 400;
+
+  /* weight.medium */
+  --weight-medium: 600;
+
+  /* weight.semibold */
+  --weight-semibold: 650;
+
+  /* weight.bold */
+  --weight-bold: 700;
+
+  /* weight.heavy */
+  --weight-heavy: 800;
+
+  /* line-height.reading */
+  --line-height-reading: 1.7;
+
+  /* line-height.display */
+  --line-height-display: 1.08;
+
+  /* line-height.tight */
+  --line-height-tight: 1.25;
+
+  /* line-height.normal */
+  --line-height-normal: 1.5;
+
+  /* line-height.relaxed */
+  --line-height-relaxed: 1.6;
+
+  /* tracking.tight */
+  --tracking-tight: -0.02em;
+
+  /* tracking.eyebrow */
+  --tracking-eyebrow: 0.16em;
+
+  /* tracking.snug */
+  --tracking-snug: -0.01em;
+
+  /* tracking.label */
+  --tracking-label: 0.05em;
 
   /* spacing.base */
-  --spacing-base: 4px;
+  --spacing-base: var(--spacing-2xs);
 
   /* spacing.2 */
   --spacing-2: 2px;
@@ -214,7 +288,7 @@
   --spacing-2xl: 48px;
 
   /* spacing.gutter */
-  --spacing-gutter-pro: 16px;
+  --spacing-gutter-pro: var(--spacing-md);
 
   /* spacing.section */
   --spacing-section: 26px;
@@ -262,10 +336,12 @@
   --elevation-float: 0 8px 24px rgba(0,0,0,.25);
 
   /* elevation.ring */
-  --elevation-ring-accent: 0 0 0 2px rgba(232,131,12,.18);
+  --elevation-ring: 0 0 0 2px rgba(232,131,12,.18);
+  --elevation-ring-accent: var(--elevation-ring);
 
   /* elevation.inset */
-  --elevation-inset-accent: inset 0 0 0 1px rgba(232,131,12,.5);
+  --elevation-inset: inset 0 0 0 1px rgba(232,131,12,.5);
+  --elevation-inset-accent: var(--elevation-inset);
 
   /* motion.duration */
   --motion-duration-fast: 0.22s;
@@ -289,8 +365,11 @@
   /* opacity.disabled */
   --opacity-disabled: 0.35;
 
+  /* opacity.media */
+  --opacity-media: 0.85;
+
   /* opacity.overlay */
-  --opacity-overlay-thumb: 0.85;
+  --opacity-overlay-thumb: var(--opacity-media);
 
   /* opacity.scrim */
   --opacity-scrim: 0.45;
@@ -323,11 +402,13 @@
   --layout-sidebar-engine: 148px;
 
   /* layout.drawer */
-  --layout-drawer-width: min(360px, 92vw);
+  --layout-drawer-engine-width: min(360px, 92vw);
+  --layout-drawer-width: var(--layout-drawer-engine-width);
   --layout-drawer-pitch-width: min(720px, 100vw);
 
   /* layout.bar */
-  --layout-bar-transport: 62px;
+  --layout-bar-engine: 62px;
+  --layout-bar-transport: var(--layout-bar-engine);
 
   /* layout.sheet */
   --layout-sheet-grab-width: 44px;
@@ -336,14 +417,23 @@
   /* breakpoint.tablet */
   --breakpoint-tablet: 720px;
 
+  /* breakpoint.xl */
+  --breakpoint-xl: 1023.5px;
+
   /* breakpoint.sidenav */
-  --breakpoint-sidenav: 1023.5px;
+  --breakpoint-sidenav: var(--breakpoint-xl);
+
+  /* breakpoint.md */
+  --breakpoint-md: 767.5px;
 
   /* breakpoint.grid */
-  --breakpoint-grid-collapse: 767.5px;
+  --breakpoint-grid-collapse: var(--breakpoint-md);
+
+  /* breakpoint.sm */
+  --breakpoint-sm: 639px;
 
   /* breakpoint.table */
-  --breakpoint-table-stack: 639px;
+  --breakpoint-table-stack: var(--breakpoint-sm);
 
   /* breakpoint.xs */
   --breakpoint-xs: 390px;
@@ -404,28 +494,13 @@
   /* focus.offset */
   --focus-offset: 2px;
 
+  /* focus.color */
+  --focus-color: var(--ds-accent);
+
   /* border.width */
   --border-width-hairline: 1px;
   --border-width-strong: 2px;
   --border-width-accent: 3px;
-
-  /* line-height.tight */
-  --line-height-tight: 1.25;
-
-  /* line-height.normal */
-  --line-height-normal: 1.5;
-
-  /* line-height.relaxed */
-  --line-height-relaxed: 1.6;
-
-  /* tracking.snug */
-  --tracking-snug: -0.01em;
-
-  /* tracking.label */
-  --tracking-label: 0.05em;
-
-  /* weight.heavy */
-  --weight-heavy: 800;
 
   /* control.height */
   --control-height-compact: 34px;
@@ -471,9 +546,9 @@
   /* --ds-rule-strong: null -> fall-through */
   --ds-accent: var(--color-pitch-accent);
   --ds-success: var(--color-pitch-positive);
-  --ds-warning: var(--color-semantic-warning);
-  --ds-danger: var(--color-semantic-danger);
-  --ds-info: var(--color-semantic-info);
+  --ds-warning: var(--color-status-warning);
+  --ds-danger: var(--color-status-danger);
+  --ds-info: var(--color-status-info);
 }
 
 /* wiki-light — 12 of 17 role vars (5 null, inherited from the fall-through block) */
@@ -487,14 +562,14 @@
   /* --ds-ink-2: null -> fall-through */
   --ds-muted: var(--color-wiki-light-muted);
   /* --ds-faint: null -> fall-through */
-  --ds-on-accent: var(--color-neutral-white);
+  --ds-on-accent: var(--color-primitive-white);
   --ds-rule: var(--color-wiki-light-rule);
   /* --ds-rule-strong: null -> fall-through */
   --ds-accent: var(--color-wiki-light-accent);
-  --ds-success: var(--color-semantic-success);
-  --ds-warning: var(--color-semantic-warning);
-  --ds-danger: var(--color-semantic-danger);
-  --ds-info: var(--color-semantic-info);
+  --ds-success: var(--color-status-success);
+  --ds-warning: var(--color-status-warning);
+  --ds-danger: var(--color-status-danger);
+  --ds-info: var(--color-status-info);
 }
 
 /* wiki-dark — 12 of 17 role vars (5 null, inherited from the fall-through block) */
@@ -514,27 +589,27 @@
   --ds-accent: var(--color-wiki-dark-accent);
   --ds-success: var(--color-pitch-positive);
   --ds-warning: var(--color-wiki-dark-amber);
-  --ds-danger: var(--color-semantic-danger);
-  --ds-info: var(--color-semantic-info);
+  --ds-danger: var(--color-status-danger);
+  --ds-info: var(--color-status-info);
 }
 
 /* engine — 14 of 17 role vars (3 null, inherited from the fall-through block) */
 [data-ds-theme="engine"] {
-  --ds-bg: var(--color-pro-surface-0);
-  --ds-surface: var(--color-pro-surface-1);
-  --ds-surface-alt: var(--color-pro-surface-2);
-  --ds-control: var(--color-pro-tool);
+  --ds-bg: var(--color-engine-surface-0);
+  --ds-surface: var(--color-engine-surface-1);
+  --ds-surface-alt: var(--color-engine-surface-2);
+  --ds-control: var(--color-engine-tool);
   /* --ds-accent-soft: null -> fall-through */
-  --ds-ink: var(--color-pro-text-primary);
+  --ds-ink: var(--color-engine-text-primary);
   /* --ds-ink-2: null -> fall-through */
-  --ds-muted: var(--color-pro-text-secondary);
+  --ds-muted: var(--color-engine-text-secondary);
   /* --ds-faint: null -> fall-through */
   --ds-on-accent: var(--color-engine-accent-ink);
-  --ds-rule: var(--color-pro-divider);
-  --ds-rule-strong: var(--color-pro-divider-strong);
+  --ds-rule: var(--color-engine-divider);
+  --ds-rule-strong: var(--color-engine-divider-strong);
   --ds-accent: var(--color-engine-accent);
   --ds-success: var(--color-pitch-positive);
   --ds-warning: var(--color-wiki-dark-amber);
-  --ds-danger: var(--color-semantic-danger);
-  --ds-info: var(--color-semantic-info);
+  --ds-danger: var(--color-status-danger);
+  --ds-info: var(--color-status-info);
 }

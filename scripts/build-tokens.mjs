@@ -97,9 +97,12 @@ const COLOR_VALUE = String.raw`(?:#[0-9a-f]{3,4}|#[0-9a-f]{6}|#[0-9a-f]{8}|(?:rg
 const CSS_FN = String.raw`(?:min|max|clamp|calc)\((?:[^()]|\([^()]*\))*\)`;
 const VAR = String.raw`var\(--[a-z0-9-]+(?:\s*,[^)]*)?\)`;
 
-/** Accepts "none" or 2-4 lengths, at most one `inset` and one colour. */
+/** Accepts "none", a `var()` alias, or 2-4 lengths with at most one `inset` and one colour. */
 function isShadow(value) {
   if (/^none$/i.test(value)) return true;
+  // A deprecated alias is a pointer, not a second truth: `var(--elevation-ring)`
+  // is a legal shadow value before it is resolved.
+  if (/^var\(--[a-z0-9-]+\)$/i.test(value.trim())) return true;
   const parts = [];
   let depth = 0;
   let current = '';
@@ -138,7 +141,7 @@ const TYPE_RULES = {
   fontWeight: /^(?:[1-9]\d{0,2}|1000|normal|bold|bolder|lighter|var\(--[a-z0-9-]+\))$/i,
   duration: new RegExp(`^(?:0|${NUM}(?:s|ms)|${VAR})$`, 'i'),
   cubicBezier: new RegExp(`^(?:cubic-bezier\\(\\s*${NUM}\\s*,\\s*${NUM}\\s*,\\s*${NUM}\\s*,\\s*${NUM}\\s*\\)|ease|ease-in|ease-out|ease-in-out|linear|step-start|step-end|${VAR})$`, 'i'),
-  number: new RegExp(`^${NUM}$`),
+  number: new RegExp(`^(?:${NUM}|var\\(--[a-z0-9-]+\\))$`),
   shadow: { test: isShadow },
 };
 
@@ -169,7 +172,7 @@ const ROLE_VAR_COUNT = 17;
  * `--themes-pitch-bg-page` would push this over and fail the build loudly
  * instead of shipping ~70 invented properties.
  */
-const EXPECTED_LEAVES = 249;
+const EXPECTED_LEAVES = 292;
 
 const typeLabel = (path) => path.join('.');
 
