@@ -9,7 +9,9 @@
                 focus/floor: a, button, [role], [tabindex], input, select,
                 textarea, summary, [contenteditable]
    Attributes   none required. Optional: [data-ds-theme] on any wrapper — the
-                role layer in tokens.css; [data-ds-density] — components.css.
+                role layer in tokens.css; [data-ds-density] — components.css;
+                [data-ds-compact] on a control — opt out of the 40/44px target
+                floor (§6/§8) for dense repeated controls, e.g. table cells.
    Role vars    --ds-bg --ds-surface --ds-ink --ds-rule (read with fallbacks;
                 undefined until a wrapper carries [data-ds-theme]).
    Tokens used  --focus-width --focus-offset --focus-color --touch-min
@@ -45,7 +47,18 @@ body{
 /* 2 · focus ring — the only ring in the system. :where() keeps specificity 0
    so the three existing page rings still win; --focus-color resolves to
    --ds-accent only under [data-ds-theme], and the currentColor fallback keeps
-   the ring visible on any page that has no theme attribute yet. */
+   the ring visible on any page that has no theme attribute yet.
+
+   Longhands, never the `outline:` shorthand. tokens.css declares
+   `--focus-color: var(--ds-accent)`, and --ds-accent is undefined until a
+   wrapper carries [data-ds-theme], so the substituted value can be invalid at
+   computed-value time. A shorthand takes all three longhands down with it when
+   that happens — a `--focus-color` that resolves to nothing can drop the ring
+   silently. Spelled as longhands the style is unconditionally `solid` and the
+   colour degrades to currentColor (also its initial value), so no token can
+   unset the ring. Verified in headless Chrome 156: no [data-ds-theme] ancestor
+   → 2px solid currentColor at 2px offset; with it → 2px solid --ds-accent; with
+   `--focus-color` forced to an invalid/empty value → 2px solid currentColor. */
 :where(
   a:focus-visible,
   button:focus-visible,
@@ -57,7 +70,9 @@ body{
   summary:focus-visible,
   [contenteditable]:focus-visible
 ){
-  outline:var(--focus-width) solid var(--focus-color,currentColor);
+  outline-style:solid;
+  outline-width:var(--focus-width);
+  outline-color:var(--focus-color,currentColor);
   outline-offset:var(--focus-offset);
 }
 :where(:focus:not(:focus-visible)){outline:none}
@@ -101,10 +116,29 @@ body{
 .ds-scroll-y{overflow-y:auto;overscroll-behavior-y:contain;scrollbar-width:thin}
 
 /* 6 · target floor — one declaration for every interactive primitive.
-   :where() = 0 specificity, so a page that sets its own height still wins. */
+   :where() = 0 specificity, so a page that sets its own height still wins.
+
+   OPT-OUT  [data-ds-compact] on the control itself drops it out of this floor
+   and out of §8. The :not() lives INSIDE :where() on purpose: a trailing
+   `:where(…):not([data-ds-compact])` computes to 0,1,0 and would start beating
+   page rules, which is exactly what the contract above forbids.
+
+   Use it only for dense, repeated, non-primary controls inside a table or a
+   grid — the wiki prompt map is the reference case: 388 map-cell buttons at
+   the 40px floor grow `table.map` from 3,736px to 5,173px (+38%). Never on
+   the primary action of a view, never on a control a thumb has to hit
+   repeatedly, and never as a way to shrink below the component's own height. */
 :where(
-  a,button,[role="button"],[role="tab"],[role="menuitem"],[role="switch"],
-  summary,input,select,textarea
+  a:not([data-ds-compact]),
+  button:not([data-ds-compact]),
+  [role="button"]:not([data-ds-compact]),
+  [role="tab"]:not([data-ds-compact]),
+  [role="menuitem"]:not([data-ds-compact]),
+  [role="switch"]:not([data-ds-compact]),
+  summary:not([data-ds-compact]),
+  input:not([data-ds-compact]),
+  select:not([data-ds-compact]),
+  textarea:not([data-ds-compact])
 ){
   min-block-size:var(--touch-min);
 }
@@ -132,11 +166,21 @@ body{
 }
 
 /* 8 · coarse pointers — the four duplicated expansion lists become one floor,
-   one step above the fine-pointer minimum. */
+   one step above the fine-pointer minimum. Same [data-ds-compact] opt-out as
+   §6: a dense table keeps its own height on touch too, which is a deliberate
+   trade (a 44px row would triple the scroll length of a 97-row map). */
 @media (pointer:coarse){
   :where(
-    a,button,[role="button"],[role="tab"],[role="menuitem"],[role="switch"],
-    summary,input,select,textarea
+    a:not([data-ds-compact]),
+    button:not([data-ds-compact]),
+    [role="button"]:not([data-ds-compact]),
+    [role="tab"]:not([data-ds-compact]),
+    [role="menuitem"]:not([data-ds-compact]),
+    [role="switch"]:not([data-ds-compact]),
+    summary:not([data-ds-compact]),
+    input:not([data-ds-compact]),
+    select:not([data-ds-compact]),
+    textarea:not([data-ds-compact])
   ){
     min-block-size:var(--control-height-touch);
   }

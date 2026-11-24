@@ -36,6 +36,10 @@
                                        colour; without it every --ds-* is unset)
      data-ds-density=compact|engine|pitch on any wrapper → control height
                                        34 / 44 / 46 (default 40)
+     data-ds-compact on a control      → opts out of base.css' 40/44px target
+                                       floor and takes the 34px compact step
+                                       (dense tables/grids; explicit data-size
+                                       still wins)
      data-state~=hover|focus|disabled|pressed|selected|current on specimens —
                                        gallery-only; product DOM uses the real
                                        :hover / :focus-visible / [aria-*] states
@@ -136,6 +140,14 @@
   border-color:var(--ds-danger);
   color:var(--color-primitive-white);
 }
+/* target-floor opt-out, component side. base.css §6/§8 exempt any control
+   carrying [data-ds-compact] from the 40/44px floor; a .ds- component has its
+   own height, so the same attribute maps it to the compact step (34px). An
+   explicit [data-size] declared later still wins. Additive: no existing
+   caller sets the attribute. */
+.ds-btn[data-ds-compact],.ds-icon-btn[data-ds-compact],
+.ds-chip[data-ds-compact],.ds-tab[data-ds-compact],
+.ds-nav-item[data-ds-compact]{--_ctl-h:var(--control-height-compact)}
 .ds-btn[data-size="xs"]{
   --_ctl-h:var(--touch-min);
   padding:0 var(--spacing-md);
@@ -144,7 +156,9 @@
 .ds-btn[data-size="tall"]{--_ctl-h:var(--control-height-reading)}
 .ds-btn[data-size="compact"]{--_ctl-h:var(--control-height-compact)}
 .ds-btn:is(:focus-visible,[data-state~="focus"]){
-  outline:var(--focus-width) solid var(--focus-color,currentColor);
+  outline-style:solid;
+  outline-width:var(--focus-width);
+  outline-color:var(--focus-color,currentColor);
   outline-offset:var(--focus-offset);
 }
 .ds-btn:is(:disabled,[aria-disabled="true"],[data-state~="disabled"]){
@@ -180,7 +194,9 @@
   border-radius:var(--radius-circle);
 }
 .ds-icon-btn:is(:focus-visible,[data-state~="focus"]){
-  outline:var(--focus-width) solid var(--focus-color,currentColor);
+  outline-style:solid;
+  outline-width:var(--focus-width);
+  outline-color:var(--focus-color,currentColor);
   outline-offset:var(--focus-offset);
 }
 .ds-icon-btn:is(:disabled,[aria-disabled="true"],[data-state~="disabled"]){
@@ -220,7 +236,9 @@
 .ds-select:is(:focus-visible,[data-state~="focus"]),
 .ds-textarea:is(:focus-visible,[data-state~="focus"]){
   border-color:var(--ds-accent);
-  outline:var(--focus-width) solid var(--focus-color,currentColor);
+  outline-style:solid;
+  outline-width:var(--focus-width);
+  outline-color:var(--focus-color,currentColor);
   outline-offset:var(--focus-offset);
 }
 .ds-input[aria-invalid="true"],.ds-select[aria-invalid="true"],
@@ -289,7 +307,9 @@
   transform:translateX(calc(var(--spacing-2xl) - var(--spacing-lg)));
 }
 .ds-switch__input:focus-visible + .ds-switch__track{
-  outline:var(--focus-width) solid var(--focus-color,currentColor);
+  outline-style:solid;
+  outline-width:var(--focus-width);
+  outline-color:var(--focus-color,currentColor);
   outline-offset:var(--focus-offset);
 }
 .ds-switch__input:disabled + .ds-switch__track{
@@ -331,7 +351,9 @@
   color:var(--ds-on-accent);
 }
 .ds-tab:is(:focus-visible,[data-state~="focus"]){
-  outline:var(--focus-width) solid var(--focus-color,currentColor);
+  outline-style:solid;
+  outline-width:var(--focus-width);
+  outline-color:var(--focus-color,currentColor);
   outline-offset:var(--focus-offset);
 }
 .ds-tabs[data-variant="underline"]{
@@ -416,7 +438,9 @@
 .ds-chip:is([aria-pressed="true"],[data-state~="pressed"]) .ds-chip__count{color:var(--ds-on-accent)}
 .ds-chip[data-variant="pill"]{border-radius:var(--radius-pill)}
 .ds-chip:is(:focus-visible,[data-state~="focus"]){
-  outline:var(--focus-width) solid var(--focus-color,currentColor);
+  outline-style:solid;
+  outline-width:var(--focus-width);
+  outline-color:var(--focus-color,currentColor);
   outline-offset:var(--focus-offset);
 }
 .ds-chip:is(:disabled,[aria-disabled="true"],[data-state~="disabled"]){
@@ -658,7 +682,9 @@
 }
 .ds-menu__item:is(:hover,[data-state~="hover"],[data-active]){background:var(--ds-control)}
 .ds-menu__item:is(:focus-visible,[data-state~="focus"]){
-  outline:var(--focus-width) solid var(--focus-color,currentColor);
+  outline-style:solid;
+  outline-width:var(--focus-width);
+  outline-color:var(--focus-color,currentColor);
   outline-offset:calc(-1 * var(--focus-offset));
 }
 .ds-menu__item[data-variant="danger"]{color:var(--ds-danger)}
@@ -797,7 +823,9 @@
   background:var(--ds-accent);
 }
 .ds-nav-item:is(:focus-visible,[data-state~="focus"]){
-  outline:var(--focus-width) solid var(--focus-color,currentColor);
+  outline-style:solid;
+  outline-width:var(--focus-width);
+  outline-color:var(--focus-color,currentColor);
   outline-offset:var(--focus-offset);
 }
 .ds-theme-toggle{
