@@ -78,14 +78,15 @@ const REPORT = path.join(ROOT, 'design-system', 'audit-report.md');
    freely, only the excess fails `--check`. V1–V8 are budgeted on the same loop
    as U1/T1–T15 — they used to be tabulated and never compared, so a new raw
    paint value was invisible to `--check`. V3 is the one exception in the tree:
-   `design-system/index.html:427` keeps `z-index:-1` (the swatch rail sits under
-   its own stacking context and no z token holds −1), so V3 carries an explicit
+   `design-system/index.html:424` keeps `z-index:-1` on `#probe-host` (a 1×1
+   fixed off-screen frame that measures a clipped page copy; no z token holds
+   −1 and the frame must stay out of the paint order), so V3 carries an explicit
    budget of 1, per-file. Any second raw z-index anywhere fails. T4 is split
    (weight + literal family) because one class covers two properties; T15 is per
    file so styles cannot migrate into the largest page unnoticed.
    Every figure below is the measured post-retirement count, not an estimate:
-   T8 11 because 3 canvas-read track keys are invisible to a `var()` counter and
-   8 tokens are consumed only by the gallery and docs until Phase 2; T9 0 because
+   T8 11 because 2 canvas-read track keys are invisible to a `var()` counter and
+   9 tokens are consumed only by the gallery and docs until Phase 2; T9 0 because
    the 106 retired keys took the last duplicate role values with them; T15 147
    because 53 inline swatch styles left with their rows. */
 const BUDGETS = {
@@ -106,9 +107,9 @@ const BUDGETS = {
 };
 /* A budget above 0 is a decision, and it has to say why on every run. */
 const BUDGET_NOTES = {
-  V3: 'design-system/index.html:427 z-index:-1 — the swatch rail must sit under its own stacking context; no z token holds -1, and rounding it to --z-base (0) would lift it over the page',
+  V3: 'design-system/index.html:424 z-index:-1 on #probe-host — a 1x1 fixed, off-screen, opacity:0 measurement frame copied from the page one clipped 1440 frame at a time; no z token holds -1 and rounding it to --z-base (0) would put the measurement copy into the page paint order',
   T6: 'the 4 pitch.html width queries (768 ×3, 901) are deferred with Task 12 — pitch.html is under foreign editing and cannot be touched; the 1 gallery query (640 in the swatch preview) stays raw. index/engine carry budget 0 each',
-  T8: '3 of the 11 are canvas-only consumers (color.engine.track.fx/title/audio read through CT()/WA() strings, which a var() counter cannot see); the other 8 (elevation.ring/inset, icon.size.md/lg, opacity.disabled, radius.lg, spacing.section, tracking.label) are gallery and doc consumers whose product wiring belongs to Phase 2-3 — recorded, not hidden',
+  T8: '2 canvas-only + 9 gallery/doc: color.engine.track.fx and color.engine.track.title are read through CT() strings in engine.html (a var() counter cannot see a string argument); color.engine.track.audio, elevation.ring, elevation.inset, icon.size.md, icon.size.lg, opacity.disabled, radius.lg, spacing.section and tracking.label are gallery and doc consumers whose product wiring belongs to Phase 2-3 — recorded, not hidden',
 };
 /* Per-file share of each budget, measured on the same run. Enforcing the share
    as well as the total means a fix on one page cannot pay for a regression on
@@ -256,7 +257,7 @@ const breakpointNames = new Set(
 /* T6 compares a raw `@media` width against the breakpoint scale. `var()` is
    invalid in a media prelude, so equality with the token's resolved px value is
    the only honest proof that a query and the token agree. Alias breakpoints
-   (`breakpoint.sidenav → var(--breakpoint-xl)`) are followed to their target;
+   (`breakpoint.xl = var(--…)`) are followed to their target;
    a breakpoint declared in rem/em simply never matches a px query. */
 const breakpointPx = new Set();
 {

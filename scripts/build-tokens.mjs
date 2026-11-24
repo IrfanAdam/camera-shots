@@ -13,6 +13,14 @@
  * error names both the key and the offending value, so a bad token never
  * reaches the committed CSS.
  *
+ * A leaf whose whole value is `var(--x)` is an alias — a pointer, not a second
+ * truth — so its target is resolved against the set the build actually emits
+ * (every `:root` key plus the 17 theme role vars) and a pointer to a name that
+ * nothing declares fails the build by key path. Chained aliases are walked to
+ * their literal, and a cycle fails: a loop resolves to nothing at paint time,
+ * and the gate's T11 skips alias values on purpose, so this is the only check
+ * that ever proves the target exists.
+ *
  * Three tiers: the token map is the primitive palette, the semantic status
  * vocabulary and the component/scale steps; the top-level `themes` object is
  * NOT a token branch — it is the role contract (14 slots -> 17 vars) mapped
@@ -382,6 +390,48 @@ function validateThemes(themes, tokenNames) {
 }
 
 /**
+ * Alias targets: a leaf whose whole value is `var(--x)` must point at something
+ * this build emits. `live` is every `--<kebab key>` from the token map plus
+ * every theme role var. A dangling pointer paints nothing, and neither the type
+ * table (a `var()` passes every shape) nor the gate's T11 (which skips alias
+ * values so the target owns the shape) would catch it — so it fails here,
+ * naming the key path.
+ */
+function validateAliasTargets(leaves, live) {
+  const errs = [];
+  const target = new Map();
+  for (const leaf of leaves) {
+    const key = leaf.path.join('.');
+    const value = String(leaf.value).trim();
+    const m = value.match(/^var\(\s*(--[A-Za-z0-9_-]+)\s*\)$/);
+    if (!m) continue;
+    target.set(`--${leaf.name}`, m[1]);
+    if (!live.has(m[1])) {
+      errs.push(`${key}: alias value ${value} does not resolve — nothing emits ${m[1]} (not a token key, not a theme role var)`);
+    }
+  }
+  // Walk every chain to its literal. A loop has no literal end, so the value
+  // resolves to nothing even though each name in it exists.
+  const reported = new Set();
+  for (const start of target.keys()) {
+    const seen = [];
+    let cur = start;
+    while (target.has(cur) && !seen.includes(cur)) {
+      seen.push(cur);
+      cur = target.get(cur);
+    }
+    if (target.has(cur)) {
+      const loop = seen.slice(seen.indexOf(cur)).concat(cur);
+      const id = [...new Set(loop)].sort().join('|');
+      if (reported.has(id)) continue;
+      reported.add(id);
+      errs.push(`${loop.map((n) => n.slice(2)).join(' -> ')}: alias cycle — the chain never reaches a literal value`);
+    }
+  }
+  return errs;
+}
+
+/**
  * Emitted shape, in this order and no other:
  *   [data-ds-theme]        fall-through for every slot some theme leaves null
  *   [data-ds-theme="…"]    one block per map, declared order, null slots skipped
@@ -508,6 +558,17 @@ function render() {
   if (themeErrors.length) {
     console.error(`FAIL: ${themeErrors.length} invalid theme map entr${themeErrors.length === 1 ? 'y' : 'ies'} in ${srcPath}:`);
     for (const e of themeErrors) console.error(`  - ${e}`);
+    process.exit(1);
+  }
+
+  // Alias pointers, checked against what this build actually emits: the token
+  // keys in `:root` plus the 17 role vars in the theme blocks.
+  const live = new Set([...names].map((name) => `--${name}`));
+  for (const roleVar of roleVarList(themes)) live.add(roleVar);
+  const aliasErrors = validateAliasTargets(leaves, live);
+  if (aliasErrors.length) {
+    console.error(`FAIL: ${aliasErrors.length} invalid token alias target${aliasErrors.length === 1 ? '' : 's'} in ${srcPath}:`);
+    for (const e of aliasErrors) console.error(`  - ${e}`);
     process.exit(1);
   }
 
