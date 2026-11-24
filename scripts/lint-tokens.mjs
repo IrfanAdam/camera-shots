@@ -73,40 +73,42 @@ const TOKENS_JSON = path.join(ROOT, 'design-system', 'tokens.json');
 const REPORT = path.join(ROOT, 'design-system', 'audit-report.md');
 
 /* ---------------------------------------------------------------- budgets */
-/* Measured 2026-11-24 against the committed tree, post Phase-1B stage 1. A
-   budget is a ceiling, not a target: counts may fall freely, only the excess
-   fails `--check`. V1–V8 are budgeted on the same loop as U1/T1–T15 — they used
-   to be tabulated and never compared, so a new raw paint value was invisible to
-   `--check`. V3 is the one exception in the tree: `design-system/index.html:427`
-   keeps `z-index:-1` (the swatch rail sits under its own stacking context and no
-   z token holds −1), so V3 carries an explicit budget of 1, per-file. Any second
-   raw z-index anywhere fails. T4 is split (weight + literal family) because one
-   class covers two properties; T15 is per file so styles cannot migrate into the
-   largest page unnoticed. T8 rose 104 → 110 on this commit: the 43 new names are
-   added ahead of their consumers (a deprecated `var()` alias is exempt, but the
-   target it points at has no page reference until the later stages land), and
-   the 50 aliases that replaced literal keys leave the orphan list. T9 fell 5 → 3
-   because two engine palette duplicates became `var()` aliases. */
+/* Measured 2026-11-24 against the committed tree, post Phase-1B stage 5 (the
+   186-key retirement). A budget is a ceiling, not a target: counts may fall
+   freely, only the excess fails `--check`. V1–V8 are budgeted on the same loop
+   as U1/T1–T15 — they used to be tabulated and never compared, so a new raw
+   paint value was invisible to `--check`. V3 is the one exception in the tree:
+   `design-system/index.html:427` keeps `z-index:-1` (the swatch rail sits under
+   its own stacking context and no z token holds −1), so V3 carries an explicit
+   budget of 1, per-file. Any second raw z-index anywhere fails. T4 is split
+   (weight + literal family) because one class covers two properties; T15 is per
+   file so styles cannot migrate into the largest page unnoticed.
+   Every figure below is the measured post-retirement count, not an estimate:
+   T8 11 because 3 canvas-read track keys are invisible to a `var()` counter and
+   8 tokens are consumed only by the gallery and docs until Phase 2; T9 0 because
+   the 106 retired keys took the last duplicate role values with them; T15 147
+   because 53 inline swatch styles left with their rows. */
 const BUDGETS = {
   V1: 0, V2: 0, V3: 1, V4: 0, V5: 0, V6: 0, V7: 0, V8: 0, U1: 0,
   T1: 10,
-  T2: 37,
-  T3: 27,
-  T4w: 52,
-  T4f: 3,
+  T2: 32,
+  T3: 21,
+  T4w: 22,
+  T4f: 2,
   T6: 5,
-  T8: 110,
-  T9: 3,
+  T8: 11,
+  T9: 0,
   T10: 0,
   T11: 0,
   T13: 0,
   T14: 8,
-  T15: 200,
+  T15: 147,
 };
 /* A budget above 0 is a decision, and it has to say why on every run. */
 const BUDGET_NOTES = {
   V3: 'design-system/index.html:427 z-index:-1 — the swatch rail must sit under its own stacking context; no z token holds -1, and rounding it to --z-base (0) would lift it over the page',
-  T6: 'the 4 pitch.html width queries (768 ×3, 901) are deferred with Task 12 — pitch.html is under foreign editing and cannot be touched; the 1 gallery query (640 in the swatch preview) stays raw because design-system/** is out of this lane. index/engine carry budget 0 each',
+  T6: 'the 4 pitch.html width queries (768 ×3, 901) are deferred with Task 12 — pitch.html is under foreign editing and cannot be touched; the 1 gallery query (640 in the swatch preview) stays raw. index/engine carry budget 0 each',
+  T8: '3 of the 11 are canvas-only consumers (color.engine.track.fx/title/audio read through CT()/WA() strings, which a var() counter cannot see); the other 8 (elevation.ring/inset, icon.size.md/lg, opacity.disabled, radius.lg, spacing.section, tracking.label) are gallery and doc consumers whose product wiring belongs to Phase 2-3 — recorded, not hidden',
 };
 /* Per-file share of each budget, measured on the same run. Enforcing the share
    as well as the total means a fix on one page cannot pay for a regression on
@@ -115,13 +117,13 @@ const BUDGET_NOTES = {
 const BUDGET_SEED = {
   V3: { 'index.html': 0, 'pitch.html': 0, 'engine.html': 0, 'design-system/index.html': 1 },
   T1: { 'index.html': 3, 'pitch.html': 3, 'engine.html': 2, 'design-system/index.html': 2 },
-  T2: { 'index.html': 1, 'pitch.html': 6, 'engine.html': 17, 'design-system/index.html': 13 },
-  T3: { 'index.html': 2, 'pitch.html': 11, 'engine.html': 10, 'design-system/index.html': 4 },
-  T4w: { 'index.html': 8, 'pitch.html': 22, 'engine.html': 22, 'design-system/index.html': 0 },
-  T4f: { 'index.html': 0, 'pitch.html': 1, 'engine.html': 2, 'design-system/index.html': 0 },
+  T2: { 'index.html': 0, 'pitch.html': 2, 'engine.html': 17, 'design-system/index.html': 13 },
+  T3: { 'index.html': 1, 'pitch.html': 6, 'engine.html': 10, 'design-system/index.html': 4 },
+  T4w: { 'index.html': 0, 'pitch.html': 0, 'engine.html': 22, 'design-system/index.html': 0 },
+  T4f: { 'index.html': 0, 'pitch.html': 0, 'engine.html': 2, 'design-system/index.html': 0 },
   T6: { 'index.html': 0, 'pitch.html': 4, 'engine.html': 0, 'design-system/index.html': 1 },
   T14: { 'index.html': 2, 'pitch.html': 5, 'engine.html': 1, 'design-system/index.html': 0 },
-  T15: { 'index.html': 19, 'pitch.html': 31, 'engine.html': 2, 'design-system/index.html': 148 },
+  T15: { 'index.html': 19, 'pitch.html': 31, 'engine.html': 2, 'design-system/index.html': 95 },
 };
 
 /* ------------------------------------------------------------------ targets */

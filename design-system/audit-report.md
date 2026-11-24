@@ -13,7 +13,7 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 - Tokens defined: 186 (`design-system/tokens.css`)
 - Files scanned: `index.html`, `pitch.html`, `engine.html`, `design-system/index.html`
 - Result: **PASS** — 0 over budget, 29 exempt, 0 bad-allow
-- Budgets: V1 0/0 · V2 0/0 · V3 1/1 · V4 0/0 · V5 0/0 · V6 0/0 · V7 0/0 · V8 0/0 · U1 0/0 · T1 10/10 · T2 32/37 · T3 21/27 · T4w 22/52 · T4f 2/3 · T6 5/5 · T13 0/0 · T14 8/8 · T15 147/200 · T8 11/110 · T9 0/3 · T10 0/0 · T11 0/0
+- Budgets: V1 0/0 · V2 0/0 · V3 1/1 · V4 0/0 · V5 0/0 · V6 0/0 · V7 0/0 · V8 0/0 · U1 0/0 · T1 10/10 · T2 32/32 · T3 21/21 · T4w 22/22 · T4f 2/2 · T6 5/5 · T13 0/0 · T14 8/8 · T15 147/147 · T8 11/11 · T9 0/0 · T10 0/0 · T11 0/0
 
 ## Per-file violations
 
@@ -53,16 +53,16 @@ Each class carries the count measured on 2026-11-24 as a ceiling. A count at or 
 | V8 | 0 | 0 | ok |
 | U1 | 0 | 0 | ok |
 | T1 | 10 | 10 (per file index.html 3, pitch.html 3, engine.html 2, design-system/index.html 2) | ok |
-| T2 | 32 | 37 (per file index.html 1, pitch.html 6, engine.html 17, design-system/index.html 13) | under |
-| T3 | 21 | 27 (per file index.html 2, pitch.html 11, engine.html 10, design-system/index.html 4) | under |
-| T4w | 22 | 52 (per file index.html 8, pitch.html 22, engine.html 22, design-system/index.html 0) | under |
-| T4f | 2 | 3 (per file index.html 0, pitch.html 1, engine.html 2, design-system/index.html 0) | under |
+| T2 | 32 | 32 (per file index.html 0, pitch.html 2, engine.html 17, design-system/index.html 13) | ok |
+| T3 | 21 | 21 (per file index.html 1, pitch.html 6, engine.html 10, design-system/index.html 4) | ok |
+| T4w | 22 | 22 (per file index.html 0, pitch.html 0, engine.html 22, design-system/index.html 0) | ok |
+| T4f | 2 | 2 (per file index.html 0, pitch.html 0, engine.html 2, design-system/index.html 0) | ok |
 | T6 | 5 | 5 (per file index.html 0, pitch.html 4, engine.html 0, design-system/index.html 1) | ok |
 | T13 | 0 | 0 | ok |
 | T14 | 8 | 8 (per file index.html 2, pitch.html 5, engine.html 1, design-system/index.html 0) | ok |
-| T15 | 147 | 200 (per file index.html 19, pitch.html 31, engine.html 2, design-system/index.html 148) | under |
-| T8 | 11 | 110 | under |
-| T9 | 0 | 3 | under |
+| T15 | 147 | 147 (per file index.html 19, pitch.html 31, engine.html 2, design-system/index.html 95) | ok |
+| T8 | 11 | 11 | ok |
+| T9 | 0 | 0 | ok |
 | T10 | 0 | 0 | ok |
 | T11 | 0 | 0 | ok |
 

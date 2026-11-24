@@ -18,6 +18,7 @@ Three product surfaces (the wiki in `index.html`, the investor deck in `pitch.ht
 | `design-system/audit/2026-11-24/` | Measured audit baseline — five lane reports, metrics, 10 screenshots | no | yes |
 | `design-system/audit/archive/audit-2026-11-23.md` | Historical findings, token-gap closure, re-point map (archived) | no | no |
 | `design-system/audit-report.md` | Machine receipt written by the gate | yes | never |
+| `design-system/DEPRECATIONS.md` | Token retirement log: every renamed or deleted key, with its replacement | no | yes |
 | `design-system/audit-checklist.md` | Checklist to run per screen before shipping | no | yes |
 
 ## The pipeline
@@ -70,7 +71,7 @@ Color, per surface:
 
 Type:
 
-Two families, no more: one sans for all text, one mono for labels, numbers, code and timecode. Hierarchy is size, weight and tracking only — there is no display face and no quote face.
+Two families, no more: one sans for all text, one mono for labels, numbers, code and timecode. Hierarchy is size, weight and tracking only — there is no display face and no quote face. The size keys below are `typography.size.*`; the two family keys are `typography.family.sans` and `typography.family.mono`.
 
 | Token | Value |
 |---|---|
@@ -86,29 +87,39 @@ Two families, no more: one sans for all text, one mono for labels, numbers, code
 | `eyebrow` | `0.72rem` |
 | `timecode` | `0.75rem` |
 
-| Radius | none | xs | sm | md | card | lg | xl | pill | circle |
-|---|---|---|---|---|---|---|---|---|---|
-| Value | `0` | `4px` | `8px` | `10px` | `12px` | `14px` | `18px` | `9999px` | `50%` |
-
-| Duration | instant | hover | fast | tab | opacity | base | slow |
+| Radius | none | xs | sm | md | lg | pill | circle |
 |---|---|---|---|---|---|---|---|
-| Value | `0.16s` | `0.2s` | `0.22s` | `0.24s` | `0.25s` | `0.28s` | `0.32s` |
+| Value | `0` | `4px` | `8px` | `10px` | `14px` | `9999px` | `50%` |
 
-| Easing | standard | out | drawer | sheet | emphasized |
-|---|---|---|---|---|---|
-| Value | `ease` | `ease-out` | `cubic-bezier(0.32, 0.72, 0.24, 1)` | `cubic-bezier(0.16, 1, 0.3, 1)` | `cubic-bezier(0.22,1,0.36,1)` |
+| Duration | none | tick | instant | hover | fast | tab | opacity | base | slow | pulse |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Value | `0s` | `0.06s` | `0.16s` | `0.2s` | `0.22s` | `0.24s` | `0.25s` | `0.28s` | `0.32s` | `1.1s` |
 
-| z | base | raise | content | sticky | bar | overlay | sheet | drawer | popover | canvas | toast | menu | max |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Value | `0` | `1` | `2` | `40` | `50` | `60` | `65` | `70` | `72` | `90` | `120` | `130` | `200` |
+| Easing | standard | out | drawer | emphasized |
+|---|---|---|---|---|
+| Value | `ease` | `ease-out` | `cubic-bezier(0.32, 0.72, 0.24, 1)` | `cubic-bezier(0.22,1,0.36,1)` |
 
-| Touch | small | field | min | preferred | pro | handle |
-|---|---|---|---|---|---|---|
-| Value | `28px` | `38px` | `40px` | `44px` | `48px` | `32px` |
+| z | base | raise | content | tooltip | sticky | sticky.rail | bar | overlay | sheet | drawer | drawer.child | popover | pinned | canvas | toast | menu | max |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Value | `0` | `1` | `2` | `5` | `40` | `41` | `50` | `60` | `65` | `70` | `71` | `72` | `80` | `90` | `120` | `130` | `200` |
 
-| Spacing | 2xs | xs | sm | md | lg | xl | 2xl |
+| Touch | min | preferred |
+|---|---|---|
+| Value | `40px` | `44px` |
+
+| Control height | compact | default | touch | reading |
+|---|---|---|---|---|
+| Value | `34px` | `40px` | `44px` | `46px` |
+
+| Spacing (t-shirt) | 2xs | xs | sm | md | lg | xl | 2xl |
 |---|---|---|---|---|---|---|---|
 | Value | `4px` | `8px` | `12px` | `16px` | `24px` | `32px` | `48px` |
+
+| Spacing (2px micro-grid) | 2 | 6 | 10 | 14 | 18 | 20 | section |
+|---|---|---|---|---|---|---|---|
+| Value | `2px` | `6px` | `10px` | `14px` | `18px` | `20px` | `26px` |
+
+`spacing.base` (4px) and `spacing.gutter.pro` (16px) are one-release aliases: their values are `var(--spacing-2xs)` and `var(--spacing-md)`, so a consumer that still names them resolves through the target.
 
 ## Rules
 
@@ -128,6 +139,7 @@ Two families, no more: one sans for all text, one mono for labels, numbers, code
 Still outside the gate:
 
 - Raw `box-shadow` — `elevation.*` is documented and consumed, not enforced.
-- Raw `width`/`height` (T7) and `@media` pixel values (T6) — Phase 1 work, deliberately absent. Breakpoints stay literal because `var()` is invalid in `@media`.
+- Raw `width`/`height` (T7) — Phase 1 work, deliberately absent. `@media` width pixels (T6) *are* enforced: each query must equal a `breakpoint.*` value or carry a same-line reason, and the 4 pitch queries are budgeted until Task 12 lands.
+- 11 tokens still have no product `var()` consumer (T8, budgeted): 3 are read through `CT()`/`WA()` canvas strings the counter cannot see, 8 are gallery/doc consumers whose product wiring is Phase 2–3 work. `scripts/lint-tokens.mjs` prints all 11 on every run.
 
 All of it is type-and-cascade cleanup, not token drift. The measured baseline and the full gap list live in `design-system/audit/2026-11-24/`.
