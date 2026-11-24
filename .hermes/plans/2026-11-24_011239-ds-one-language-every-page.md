@@ -656,13 +656,13 @@ Two facts a later reader must not lose: **no source image exists in the tree**, 
 
 ## Phase 6 — Governance and release {#phase-6}
 
-*Tags:* docs, governance, changelog, ci, release · *Status:* **1/4 · GATE OPEN** — 37 ✅; 38–40 open
+*Tags:* docs, governance, changelog, ci, release · *Status:* **2/4 · GATE OPEN** — 37 ✅, 39 ✅; 38 (version/tag) and 40 (final audit) open
 
 | # | Task | Done when |
 |---|---|---|
 | 37 | Docs IA completion | foundations/components/patterns/surfaces/accessibility/verification/governance/decisions all exist and are true |
 | 38 | Version + changelog | `ds-v1.0.0` tagged; CHANGELOG entry; change classes documented |
-| 39 | CI hardening | doc counts, anchors, links, html-validate, axe, screenshots all blocking |
+| 39 | CI hardening ✅ | doc counts, anchors, links, html-validate, axe, screenshots all blocking — `bac9ce0` |
 | 40 | Final audit | before/after numbers published; gate and docs agree |
 
 ### Task 37: Docs IA completion
@@ -693,6 +693,10 @@ Every measured claim cites a command or `file:line` — `check-anchors` walks **
 3. PR evidence: gate tail, byte-stability, doc counts, screenshots, contrast row, changelog line.
 **Verify:** a deliberate regression in each class fails the correct job; `main` is green; Vercel preview unchanged.
 
+**Shipped `bac9ce0` — Task 39 ✅, with its blind spots stated rather than hidden.** `.github/workflows/ds-gate.yml` now runs **five blocking jobs covering twelve checks**: `static-docs` (tokens `--check`, foundations `--check`, `lint-tokens`, doc counts, anchors and — new — **local links** via `scripts/check-links.mjs`), `a11y-static` (contrast, targets), `a11y-browser` (axe, keyboard, pinned Chrome), **`html-validate`** (previously advisory, now blocking) and **`shots`** (new `scripts/a11y/check-shots.mjs`). html-validate runs `scripts/htmlvalidate.config.json` — **16 curated `error` rules** (`doctype-html`, `no-dup-id`, `no-dup-attr`, `no-dup-class`, `no-redundant-role`, `element-permitted-content`, `close-order`, `void-style`, `no-implicit-close`, `no-unknown-elements`, `no-missing-references`, `aria-hidden-body`, `wcag/h30`, `wcag/h32`, `wcag/h37`, `input-missing-label`) over all four surfaces. Shots capture **12 cells** — wiki and gallery light+dark at 1440/390, pitch and engine at default palette 1440/390 — and upload `artifacts/shots/` as the `ds-shots` artifact with 14-day retention; the job fails on a page JS error, horizontal overflow >1px, or a PNG under 5KB. Wall clock is **~2 min**: jobs run in parallel and `a11y-browser`'s cold Chrome install (~90s) dominates, inside the 5-minute budget. **Four negative proofs**, each injected once and restored, all exit 1: a missing local `base.css` asset fails `static-docs` at `index.html:6`, `engine.html:3` and gallery `:9`; an appended `./does-not-exist.md` link fails `check-links`; a duplicate `id="main"` fails `no-dup-id` plus `element-permitted-content`; a 3000px-wide div at 390 fails `shots` with `horizontal overflow 2626px at 390px (tolerance 1px)`. All twelve checks exit 0 on the real tree.
+
+The blind spots are the honest half, all recorded in `design-system/verification.md` § Blind spots: **external links are never fetched** — a dead vendor URL or redirected citation passes, because a third-party 503 must not fail a merge; **ten recommended html-validate rules stay disabled** because the shipped pages violate them and this task owns the gate, not the pages (`no-inline-style` 113, `no-implicit-button-type` 48, `wcag/h63` 27, `prefer-native-element` 15, `doctype-style` 2, and five rules with one each: `heading-level`, `element-required-attributes`, `empty-heading`, `unique-landmark`, `aria-label-misuse`); **shots are artifacts, not assertions** — no pixel diff, so a colour, spacing or z-order regression inside the viewport passes and visual judgement still needs a human with the PNGs; **link scope is the four shipped pages plus `design-system/*.md`** — 132 local targets, fragments stay with `check-anchors`, `design-system/references/**` is out of scope and 7 `${…}` placeholders only exist at runtime; and **every off-origin request is stubbed 204 by `scripts/a11y/lib/harness.mjs`**, so a CDN outage reads as a quiet blank rather than a gate failure. No job touches :5173 — each browser job binds an ephemeral loopback port through `scripts/a11y/lib/server.mjs`.
+
 ### Task 40: Final audit
 **Files:** `design-system/audit/2026-12-…/` (new dated folder), gallery.
 **Steps:**
@@ -703,9 +707,9 @@ Every measured claim cites a command or `file:line` — `check-anchors` walks **
 
 **REF GATE 6 — how to judge:** from a fresh clone, one command regenerates tokens and foundations byte-identically; one command runs the gate and verification; every doc claim is checkable; `ds-v1.0.0` exists. **Pass means a stranger can maintain this without asking you.**
 
-**Measured at HEAD `3833b23` — 1 of 4, GATE OPEN, not PASS, and not v1.0.0.** Two conditions hold and two do not. *Holds:* regeneration is byte-identical on a clean `git archive HEAD` export — `build-tokens --check` prints `189 keys / 20 groups / 4 themes`, sha256 `1128…dab`, and `build-foundations --check` reproduces `foundations.md` exactly (17 role vars, nulls 2/5/5/3, 1495 consumer refs); and every doc claim is checkable by machine — `check-anchors` resolves 55 html targets, 39 markdown targets and 1 plan anchor with **0 unresolved and every id unique**, `check-doc-counts` passes **3 assertions**, and `lint-tokens --check` reports 0 dead token references. *Does not hold:* **`ds-v1.0.0` does not exist** (`git tag -l` is empty, no `CHANGELOG.md`, no `DESIGN-SYSTEM.md` — Task 38), and **"one command runs the gate and verification"** is only half-true: `.github/workflows/ds-gate.yml` runs the six script gates in three jobs, but the hardening Task 39 owns (link check, html-validate blocking, screenshot matrix with artifact upload, PR-evidence block) is in flight in another lane, so a stranger cloning today gets the scripts, not one documented entry point. Counting Task 37 as the whole gate would be the same optimism this plan keeps correcting: the docs are true and the pipeline is reproducible, but the release does not exist and the CI contract is not finished.
+**Measured at HEAD `bac9ce0` — 2 of 4, GATE OPEN, not PASS, and not v1.0.0.** Two conditions fully hold, a third holds through CI rather than a local script, and one does not. *Holds:* regeneration is byte-identical on a clean `git archive HEAD` export — `build-tokens --check` prints `189 keys / 20 groups / 4 themes`, sha256 `1128…dab`, and `build-foundations --check` reproduces `foundations.md` exactly (17 role vars, nulls 2/5/5/3, 1495 consumer refs); and every doc claim is checkable by machine — `check-anchors` resolves 55 html targets, 39 markdown targets and 1 plan anchor with **0 unresolved and every id unique**, `check-doc-counts` passes **3 assertions**, and `lint-tokens --check` reports 0 dead token references. *Does not hold:* **`ds-v1.0.0` does not exist** (`git tag -l` is empty, no `CHANGELOG.md`, no `DESIGN-SYSTEM.md` — Task 38). The CI contract is finished rather than half-built: `bac9ce0` makes **all twelve checks blocking across five jobs** — link check, html-validate and the 12-cell screenshot matrix included — and falsifies each new class with an injected failure. What stays soft is literal: "one command" is the workflow, not a local runner — a stranger runs the five command groups in `verification.md` § PR evidence, documented and checkable but not one script. Counting Task 39 as the whole gate would be the same optimism this plan keeps correcting: the pipeline is hard and the docs are true, but the release does not exist.
 
-### Remaining to close — measured `3833b23`, 2026-11-24
+### Remaining to close — measured `bac9ce0`, 2026-11-24
 
 | # | Item | State | What unblocks it |
 |---|---|---|---|
@@ -716,10 +720,11 @@ Every measured claim cites a command or `file:line` — `check-anchors` walks **
 | 32 | Pitch separation + heights | ⛔ **blocked** | same foreign edit; also owns `line.strong`, which is what retires the four 1.19–1.46 hairline rows |
 | 33–36 | Label voice, control geometry, footer/chrome + motion, reference components | not started | 33/34/35 need pitch unblocked for a full four-surface pass; 36 needs the components built (`ds-segmented`, `ds-tabbar`, `ds-btn--block`, `ds-row`) |
 | 38 | Version + changelog | open | `CHANGELOG.md` + `DESIGN-SYSTEM.md` + a `ds-v1.0.0` tag that must not be created before 31–36 close |
-| 39 | CI hardening | in flight elsewhere | doc counts/anchors already blocking; link check, html-validate, screenshot matrix, PR evidence still owed |
+| 39 | CI hardening | ✅ **closed** | shipped `bac9ce0` — twelve checks blocking, four negative proofs; external links, ten html rules, pixel diff, link scope and CDN stubs remain blind spots |
 | 40 | Final audit | open | needs 22, 26, 28, 31–36, 38 first; publishes 91→0 orphans, 16→≤6 sizes, 24→0 forks, 4→0 contrast fails, 20→0 stale claims |
+| — | Foreign worktree edits (pitch/engine) | ⛔ **awaiting owner's decision** | `pitch.html` and `engine.html` still carry uncommitted foreign edits; **no WIP was committed** by the CI lane — merge, hand back or drop before any page task resumes |
 
-**The system is not v1.0.0.** Nine gates are green and no regression is outstanding, but **nine of the eleven Phase 5/6 tasks are still open or blocked** (only 30 and 37 are closed), `ds-v1.0.0` is untagged, and one of four shipped surfaces cannot be edited by this lane. Anything that reports the design system as released, or as passing REF GATE 5/6, is wrong at this SHA.
+**The system is not v1.0.0.** All twelve CI checks are green and no regression is outstanding, but **eight of the eleven Phase 5/6 tasks are still open or blocked** (only 30, 37 and 39 are closed), `ds-v1.0.0` is untagged, and two of four shipped surfaces carry foreign edits this lane will not commit. Anything that reports the design system as released, or as passing REF GATE 5/6, is wrong at this SHA.
 
 ---
 
