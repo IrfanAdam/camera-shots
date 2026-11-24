@@ -1,9 +1,10 @@
 name: DS gate
 
 # Phase 0 Task 6 — the design system certifies itself in CI, not in review.
-# Four blocking checks: the committed CSS is provably generated from
-# tokens.json, the token gate passes, no doc states a stale count, and no
-# fragment link points at an id that does not exist.
+# Five blocking checks: the committed CSS is provably generated from
+# tokens.json, the token gate passes (V/T page + token classes and C1–C6 for
+# base.css / components.css / components.js / icons.svg), no doc states a stale
+# count, and no fragment link points at an id that does not exist.
 #
 # Static site, no build step: nothing is installed for the blocking jobs, and
 # there is no root package.json by design (Vercel stays framework: null).
@@ -45,7 +46,11 @@ jobs:
       - name: Generated foundations match tokens.json
         run: node scripts/build-foundations.mjs --check
 
-      - name: Token adherence gate
+      # V1–V8/U1/T1–T15 judge the four pages and the token set; C1–C6 judge the
+      # shared layer (raw values in base.css/components.css, duplicate selectors
+      # keyed by cascade scope, aria-modal semantics, a .ds-* class defined
+      # twice, svg#id resolution, paint literals in components.js/icons.svg).
+      - name: Token + component gate (V/T/C classes)
         run: node scripts/lint-tokens.mjs --check
 
       - name: Doc counts match the source

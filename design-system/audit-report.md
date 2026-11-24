@@ -12,18 +12,18 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 - Generated: 2026-11-24
 - Tokens defined: 186 (`design-system/tokens.css`)
 - Files scanned: `index.html`, `pitch.html`, `engine.html`, `design-system/index.html`
-- Result: **PASS** — 0 over budget, 29 exempt, 0 bad-allow
-- Budgets: V1 0/0 · V2 0/0 · V3 1/1 · V4 0/0 · V5 0/0 · V6 0/0 · V7 0/0 · V8 0/0 · U1 0/0 · T1 10/10 · T2 32/32 · T3 21/21 · T4w 22/22 · T4f 2/2 · T6 5/5 · T13 0/0 · T14 8/8 · T15 147/147 · T8 11/11 · T9 0/0 · T10 0/0 · T11 0/0
+- Result: **PASS** — 0 over budget, 28 exempt, 0 bad-allow
+- Budgets: V1 0/0 · V2 0/0 · V3 1/1 · V4 0/0 · V5 0/0 · V6 0/0 · V7 0/0 · V8 0/0 · U1 0/0 · T1 10/10 · T2 32/32 · T3 21/21 · T4w 22/22 · T4f 2/2 · T6 5/5 · T13 0/0 · T14 8/8 · T15 147/147 · T8 10/10 · T9 0/0 · T10 0/0 · T11 0/0 · C1 6/6 · C2 12/12 · C3 0/0 · C4 0/0 · C5 0/0 · C6 0/0
 
 ## Per-file violations
 
 | File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | V7 border width | V8 spacing | U1 dead var | exempt | bad-allow | inline `style=` | `var(--)` uses |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 19 | 428 |
-| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 6 | 0 | 31 | 550 |
+| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 5 | 0 | 31 | 552 |
 | `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 17 | 0 | 2 | 979 |
-| `design-system/index.html` | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 95 | 741 |
-| **Total** | **0** | **0** | **1** | **0** | **0** | **0** | **0** | **0** | **0** | **29** | **0** | **147** | **2698** |
+| `design-system/index.html` | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 95 | 778 |
+| **Total** | **0** | **0** | **1** | **0** | **0** | **0** | **0** | **0** | **0** | **28** | **0** | **147** | **2737** |
 
 ## Type, consumer & theme counts
 
@@ -35,7 +35,7 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 | `design-system/index.html` | 2 | 13 | 4 | 0 | 0 | 1 | 0 | 0 | 95 |
 | **Total** | **10** | **32** | **21** | **22** | **2** | **5** | **0** | **8** | **147** |
 
-Token-set checks (not per file): **T8** 11 unconsumed tokens · **T9** 0 duplicate role values · **T10** 0 role-contract gaps · **T11** 0 type/value mismatch.
+Token-set checks (not per file): **T8** 10 unconsumed tokens · **T9** 0 duplicate role values · **T10** 0 role-contract gaps · **T11** 0 type/value mismatch.
 
 ## Budgets
 
@@ -61,10 +61,42 @@ Each class carries the count measured on 2026-11-24 as a ceiling. A count at or 
 | T13 | 0 | 0 | ok |
 | T14 | 8 | 8 (per file index.html 2, pitch.html 5, engine.html 1, design-system/index.html 0) | ok |
 | T15 | 147 | 147 (per file index.html 19, pitch.html 31, engine.html 2, design-system/index.html 95) | ok |
-| T8 | 11 | 11 | ok |
+| T8 | 10 | 10 | ok |
 | T9 | 0 | 0 | ok |
 | T10 | 0 | 0 | ok |
 | T11 | 0 | 0 | ok |
+| C1 | 6 | 6 (per file design-system/base.css 0, design-system/components.css 6) | ok |
+| C2 | 12 | 12 (per file index.html 0, pitch.html 4, engine.html 8, design-system/index.html 0) | ok |
+| C3 | 0 | 0 | ok |
+| C4 | 0 | 0 | ok |
+| C5 | 0 | 0 | ok |
+| C6 | 0 | 0 | ok |
+
+## Component gate (C1–C6)
+
+The shared layer (`base.css`, `components.css`, `components.js`, `icons.svg`) is additive and opt-in, so no page class sees it: a raw hex in `components.css`, a second definition of `.ds-btn`, or an unlabelled `aria-modal` changes no V or T count. These six classes close that hole. C2 is measured on the committed `HEAD` blob of each page — CI checks out `HEAD`, and a sibling lane's uncommitted edit must not move a budget.
+
+| File | Value | Count | Ceiling | Why it is not a token |
+|---|---|---:|---:|---|
+| `design-system/components.css` | `560px` | 1 | 1 | dialog box max width — the layout scale ships page widths (layout.max.wiki 980, layout.max.pitch 1080), and a modal box width is not a page width |
+| `design-system/components.css` | `94vw` | 1 | 1 | dialog inline cap on narrow viewports; a viewport cap has no token and shrinking it to a spacing step would break the box on phones |
+| `design-system/components.css` | `88vh` | 1 | 1 | dialog block cap so a long body scrolls inside the box instead of pushing the close control off-screen |
+| `design-system/components.css` | `92vw` | 1 | 1 | sheet variant inline cap, min(92vw, layout.max.wiki) — the viewport half of the pair is the reason it cannot be one token |
+| `design-system/components.css` | `rgb(0 0 0 / .6)` | 1 | 1 | component-local --_scrim default; the token layer ships scrims as per-theme engine roles, not as one fixed rgba, and the overlay must paint before any theme attribute exists. A page overrides it with --_scrim:var(--color-engine-scrim) |
+| `design-system/components.css` | `40rem` | 1 | 1 | table stacking threshold in the @container prelude — a custom property is invalid in a prelude, so the 639px breakpoint step cannot be spelled var(); this is the component-layer twin of T6 |
+
+| Class | Source | Now | Ceiling | Note |
+|---|---|---:|---:|---|
+| C1 | `design-system/base.css`, `design-system/components.css` | 6 | 6 | components.css 6 listed values (560px, 94vw, 88vh, 92vw, rgb(0 0 0 / .6), 40rem), each with a reason and a ceiling of 1; base.css 0 — its only literals are 0, 100%, 50%, the calc() sign multiplier and an iteration count — per file: design-system/base.css 0 · design-system/components.css 6 |
+| C2 | `index.html`, `pitch.html`, `engine.html`, `design-system/index.html` | 12 | 12 | pitch 4 + engine 8, measured on the committed HEAD blob. Engine: html,body · body · header · .dp h3 · #arrowpick button · #chapterbar select · #anchorRow code · #drawerX. Pitch: .plan-nav · .plan-nav .pill · #plan-weeks .wrow · .mrail (inside @media(max-width:900px)). Identical-declaration matching would catch 0 of these — every later block adds a declaration — per file: index.html 0 · pitch.html 4 · engine.html 8 · design-system/index.html 0 |
+| C3 | all four HTML surfaces | 0 | 0 | 2 aria-modal nodes checked (both pitch drawers: role=dialog + aria-label + hidden when closed), 0 bad |
+| C4 | both stylesheets + four pages | 0 | 0 | 0 classes defined at top level in two sources; the 14 `.spec-cell .ds-*` rules in the gallery are scoped stage overrides and do not count as definitions |
+| C5 | four pages → `icons.svg` | 0 | 0 | 48 `<use href="icons.svg#…">` references, 24 symbols, 0 unresolved |
+| C6 | `components.js`, `icons.svg` | 0 | 0 | 0 paint literals in components.js (paints through var() + currentColor) and icons.svg (currentColor only) |
+
+Counters: **2** `aria-modal` node(s) checked · **48** `svg#id` reference(s) resolved.
+
+Worktree divergence (C2 follows `HEAD`): `pitch.html` 5 in the worktree vs 4 at HEAD.
 
 ## Over-budget detail
 
@@ -74,14 +106,14 @@ _No class is over budget._
 
 The four set-level checks are budgeted at the measured post-Phase-1A value, so they document the gap without failing the build until it grows.
 
-### T8 — no consumer (11)
+### T8 — no consumer (10)
 
 A `var()` reference in `index.html`, `pitch.html` or `engine.html`, a `themes` map cell, or (from Phase 2) `components.css` counts; a gallery swatch does not. Aliases (`value: var(--other)`) and `breakpoint.*` are exempt because neither can be consumed by a page.
 
 <details><summary>Unconsumed tokens</summary>
 
 - `--color-engine-track-audio`, `--color-engine-track-fx`, `--color-engine-track-title`, `--elevation-inset`, `--elevation-ring`, `--icon-size-lg`
-- `--icon-size-md`, `--opacity-disabled`, `--radius-lg`, `--spacing-section`, `--tracking-label`
+- `--icon-size-md`, `--radius-lg`, `--spacing-section`, `--tracking-label`
 
 </details>
 
@@ -105,7 +137,7 @@ _None._
 | 63 | T6 | `@media width:800px` | 800px rail block matches the query above; 800 sits between --breakpoint-md 767.5 and --breakpoint-lg 900 |
 | 64 | V8 | `padding-bottom:5.4rem` | 5.4rem mobile step-rail clearance is layout geometry, not UI rhythm |
 
-### `pitch.html` — Exempt (6)
+### `pitch.html` — Exempt (5)
 
 | Line | Class | Found | Reason |
 |---:|---|---|---|
@@ -113,7 +145,6 @@ _None._
 | 50 | V8 | `gap:1.4rem` | 22.4px tab rhythm sits between the 20 and 24 steps; snapping moves 1.6px |
 | 91 | V8 | `padding:2.6rem 0 1.6rem` | hero section pad is layout-scale; 41.6px and 25.6px have no step within 0.9px |
 | 97 | V8 | `margin-top:1.4rem` | 22.4px CTA lift sits between the 20 and 24 steps; snapping moves 1.6px |
-| 144 | V8 | `padding:1.6rem` | 25.6px drawer pad sits between the 24 step and the 32px layout gap |
 | 203 | V8 | `padding:1.6rem 0 var(--spacing-md)` | 25.6px compact-hero pad sits between the 24 and 32 steps |
 
 ### `engine.html` — Exempt (17)
@@ -142,9 +173,9 @@ _None._
 
 | Line | Class | Found | Reason |
 |---:|---|---|---|
-| 90 | V8 | `padding-left:calc(var(--spacing-sm) - 1px)` | 1px optical offset inside calc aligns the rail rule; no 2px step |
-| 182 | V8 | `margin-top:-10px` | negative half of the 20px dot centres it against the track |
-| 416 | V8 | `padding:1px var(--spacing-xs)` | 1px badge inset is an optical hairline; no 2px step exists |
+| 93 | V8 | `padding-left:calc(var(--spacing-sm) - 1px)` | 1px optical offset inside calc aligns the rail rule; no 2px step |
+| 185 | V8 | `margin-top:-10px` | negative half of the 20px dot centres it against the track |
+| 483 | V8 | `padding:1px var(--spacing-xs)` | 1px badge inset is an optical hairline; no 2px step exists |
 
 ## How to fix
 
@@ -171,6 +202,12 @@ _None._
 | T13 | Two literal values in one `:root` (an alias `var(--other)` is skipped — it is a pointer, not a second truth) | Delete the redundant alias and keep one role name |
 | T14 | `!important` | Fix the cascade; `!important` is an escalation, not a style |
 | T15 | Inline `style=` attribute | Move to a class in `<style>`; budget is per file |
+| C1 | Raw value in `base.css` / `components.css`: a hex, `rgb()`/`hsl()`, or a number with a unit that is not structural | Use `var(--token)`. Structural literals (0, %, fr, 1× viewport, the `calc()` sign, a flex factor, an iteration count) pass; anything else must be listed in `C1_ALLOW` with a reason and a ceiling of 1 |
+| C2 | The same selector declared twice in one document in the same cascade scope (selector + `@media`/`@supports`/`@container` chain + nesting) | Merge the two blocks. Measured on the committed HEAD blob, so a sibling lane's uncommitted edit cannot move the count |
+| C3 | An element carries `aria-modal` without `role="dialog"`, or without `aria-label` / `aria-labelledby` | Give the overlay `role="dialog"`, `aria-modal="true"` and a name; `aria-label` is accepted. Closed overlays get `hidden` + `inert`, never transform alone |
+| C4 | A `.ds-*` class defined at top level in two stylesheet sources | One definition, in `components.css` (or `base.css` for a base rule). A scoped stage override such as `.spec-cell .ds-dialog` is not a definition |
+| C5 | `<use href="…svg#id">` whose fragment is not a symbol in that SVG | Add the symbol to `icons.svg` or fix the id; this is the check that keeps the anchor gate's non-HTML skip honest |
+| C6 | A hex / `rgb()` / `hsl()` literal in `components.js` or `icons.svg`, outside a comment | Paint through `var(--…)` or `currentColor`; a hex in the sprite freezes an icon to one theme |
 
 ### Exemptions (`lint-allow`)
 

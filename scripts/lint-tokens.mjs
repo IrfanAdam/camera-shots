@@ -22,6 +22,25 @@
                                                 T14 `!important`
                                                 T15 inline `style=` attribute
 
+   The page classes (V1–V8, U1, T1–T15) judge the four HTML surfaces plus the
+   token set. C1–C6 judge the shared component layer that landed in Phase 2 and
+   the static contract every page must keep:
+
+     C1 raw value in base.css / components.css (structural whitelist + a
+        per-value allow table carrying a reason and a ceiling)
+     C2 duplicate selector in one HTML file, keyed by selector + at-scope
+        (media/supports/container) + nesting
+     C3 an element with aria-modal also carries role="dialog" and one of
+        aria-label / aria-labelledby
+     C4 a .ds-* class is defined (top level) in two stylesheet sources
+     C5 every `<use href="…svg#id">` names a symbol that file declares
+     C6 no hex / rgb() / hsl() literal in components.js or icons.svg
+
+   C2 is measured on the committed HEAD blob of each page, not the worktree:
+   page lanes hold uncommitted edits, and a gate that bakes a neighbour's
+   half-finished markup is a gate that lies. CI checks out HEAD, so there the
+   two are the same file. Every other class reads the worktree.
+
    T8/T9/T10/T11 judge the token set, not a page; T13/T15 are per file. T8
    counts a `var()` reference from a product page, a `themes` map cell or
    `components.css` — a gallery swatch is documentation, not consumption. T9
@@ -64,6 +83,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -85,10 +105,12 @@ const REPORT = path.join(ROOT, 'design-system', 'audit-report.md');
    (weight + literal family) because one class covers two properties; T15 is per
    file so styles cannot migrate into the largest page unnoticed.
    Every figure below is the measured post-retirement count, not an estimate:
-   T8 11 because 2 canvas-read track keys are invisible to a `var()` counter and
-   9 tokens are consumed only by the gallery and docs until Phase 2; T9 0 because
-   the 106 retired keys took the last duplicate role values with them; T15 147
-   because 53 inline swatch styles left with their rows. */
+   T8 10 — 2 canvas-read track keys are invisible to a `var()` counter, and 8
+   tokens are consumed only by the gallery and docs until the page lanes wire
+   them (components.css took `opacity.disabled` when it landed, which is why
+   the Phase 1 figure of 11 is now 10); T9 0 because the 106 retired keys took
+   the last duplicate role values with them; T15 147 because 53 inline swatch
+   styles left with their rows. */
 const BUDGETS = {
   V1: 0, V2: 0, V3: 1, V4: 0, V5: 0, V6: 0, V7: 0, V8: 0, U1: 0,
   T1: 10,
@@ -97,7 +119,7 @@ const BUDGETS = {
   T4w: 22,
   T4f: 2,
   T6: 5,
-  T8: 11,
+  T8: 10,
   T9: 0,
   T10: 0,
   T11: 0,
@@ -109,7 +131,7 @@ const BUDGETS = {
 const BUDGET_NOTES = {
   V3: 'design-system/index.html:424 z-index:-1 on #probe-host — a 1x1 fixed, off-screen, opacity:0 measurement frame copied from the page one clipped 1440 frame at a time; no z token holds -1 and rounding it to --z-base (0) would put the measurement copy into the page paint order',
   T6: 'the 4 pitch.html width queries (768 ×3, 901) are deferred with Task 12 — pitch.html is under foreign editing and cannot be touched; the 1 gallery query (640 in the swatch preview) stays raw. index/engine carry budget 0 each',
-  T8: '2 canvas-only + 9 gallery/doc: color.engine.track.fx and color.engine.track.title are read through CT() strings in engine.html (a var() counter cannot see a string argument); color.engine.track.audio, elevation.ring, elevation.inset, icon.size.md, icon.size.lg, opacity.disabled, radius.lg, spacing.section and tracking.label are gallery and doc consumers whose product wiring belongs to Phase 2-3 — recorded, not hidden',
+  T8: '2 canvas-only + 8 gallery/doc: color.engine.track.fx and color.engine.track.title are read through CT() strings in engine.html (a var() counter cannot see a string argument); color.engine.track.audio, elevation.ring, elevation.inset, icon.size.md, icon.size.lg, radius.lg, spacing.section and tracking.label are gallery and doc consumers whose product wiring belongs to Phase 3 — recorded, not hidden. Phase 1 measured 11; components.css consumes opacity.disabled, so the count is 10',
 };
 /* Per-file share of each budget, measured on the same run. Enforcing the share
    as well as the total means a fix on one page cannot pay for a regression on
@@ -474,7 +496,17 @@ function declBlocks(css) {
           if (parent.includes('<')) parent = parent.slice(parent.lastIndexOf('>') + 1).trim();
           if (parent.includes(';')) parent = parent.slice(parent.lastIndexOf(';') + 1).trim();
         }
-        blocks.push({ sel, parent, body, offset: top.open + 1 });
+        /* the full at-scope/nesting chain, outermost first — C2 keys a
+           duplicate on selector + scope, so `.mrail` inside
+           `@media(max-width:900px)` is not the same rule as a top-level one */
+        const scope = stack.map((ancestor) => {
+          let text = css.slice(ancestor.selStart, ancestor.open).replace(/\s+/g, ' ').trim();
+          if (text.includes('<')) text = text.slice(text.lastIndexOf('>') + 1).trim();
+          if (text.includes(';')) text = text.slice(text.lastIndexOf(';') + 1).trim();
+          if (text.includes('}')) text = text.slice(text.lastIndexOf('}') + 1).trim();
+          return text;
+        });
+        blocks.push({ sel, parent, scope, body, offset: top.open + 1 });
       }
       start = i + 1;
     }
@@ -980,6 +1012,376 @@ for (const file of files) {
   });
 }
 
+/* ------------------------------------------------- component gate (C1–C6) */
+/* The shared layer is additive and opt-in, so the page classes never see it:
+   base.css / components.css carry no page selector, components.js and
+   icons.svg carry no token consumer, and a `.ds-*` class can be redeclared by
+   a page without moving a single V or T count. These six classes close that
+   hole. Every one is budgeted exactly like V/T — the measured count is the
+   ceiling and only the excess fails — and every figure is measured on
+   2026-11-24, not estimated. */
+
+const DS_BASE = 'design-system/base.css';
+const DS_COMPONENTS = 'design-system/components.css';
+const DS_JS = 'design-system/components.js';
+const DS_ICONS = 'design-system/icons.svg';
+const DS_CSS_FILES = [DS_BASE, DS_COMPONENTS];
+const HTML_TARGETS = files.map((f) => f.rel).filter((rel) => rel.endsWith('.html'));
+
+/* C1 — the structural whitelist. These carry no design decision: a zero is a
+   zero, a percentage or an fr is relative layout, 100vw/dvh is "fill the
+   viewport", `2px` is the focus offset the outline pair needs, `-1` only ever
+   negates a token inside calc(), a unitless number multiplied into a token is
+   arithmetic on that token, a flex factor is a ratio, and `1` is an iteration
+   count. Everything else must be named in C1_ALLOW with a reason and its own
+   ceiling. */
+function c1Structural(value, prop, before = '', after = '') {
+  const v = String(value).trim();
+  if (/^-?0(?:\.0+)?(?:px|rem|em|%|s|ms|vh|vw|dvh|deg)?$/i.test(v)) return true;
+  if (/^-?\d*\.?\d+%$/.test(v)) return true;
+  if (/^-?\d*\.?\d+fr$/.test(v)) return true;
+  if (/^100(?:d?[sv]?[hw])$/.test(v)) return true;
+  if (v === '2px' && prop === 'outline-offset') return true;
+  if (/^[-\d.]+$/.test(v) && /[*\/]\s*$/.test(before)) return true;          // factor on a token
+  if (/^[-\d.]+$/.test(v) && /^(?:flex|flex-grow|flex-shrink|order)$/.test(prop)) return true;
+  if (v === '-1' && /^\s*\*/.test(after)) return true;
+  if (v === '1' && prop === 'animation-iteration-count') return true;
+  return false;
+}
+
+/* C1_ALLOW — the only raw values allowed in the two stylesheets, each with the
+   reason it is not a token and a per-value ceiling. An unlisted value is a
+   violation no matter how small its file budget is. */
+const C1_ALLOW = [
+  {
+    file: DS_COMPONENTS,
+    value: '560px',
+    budget: 1,
+    reason: 'dialog box max width — the layout scale ships page widths (layout.max.wiki 980, layout.max.pitch 1080), and a modal box width is not a page width',
+  },
+  {
+    file: DS_COMPONENTS,
+    value: '94vw',
+    budget: 1,
+    reason: 'dialog inline cap on narrow viewports; a viewport cap has no token and shrinking it to a spacing step would break the box on phones',
+  },
+  {
+    file: DS_COMPONENTS,
+    value: '88vh',
+    budget: 1,
+    reason: 'dialog block cap so a long body scrolls inside the box instead of pushing the close control off-screen',
+  },
+  {
+    file: DS_COMPONENTS,
+    value: '92vw',
+    budget: 1,
+    reason: 'sheet variant inline cap, min(92vw, layout.max.wiki) — the viewport half of the pair is the reason it cannot be one token',
+  },
+  {
+    file: DS_COMPONENTS,
+    value: 'rgb(0 0 0 / .6)',
+    budget: 1,
+    reason: 'component-local --_scrim default; the token layer ships scrims as per-theme engine roles, not as one fixed rgba, and the overlay must paint before any theme attribute exists. A page overrides it with --_scrim:var(--color-engine-scrim)',
+  },
+  {
+    file: DS_COMPONENTS,
+    value: '40rem',
+    budget: 1,
+    reason: 'table stacking threshold in the @container prelude — a custom property is invalid in a prelude, so the 639px breakpoint step cannot be spelled var(); this is the component-layer twin of T6',
+  },
+];
+
+function c1AllowFor(file, value) {
+  return C1_ALLOW.find((entry) => entry.file === file && entry.value === value) || null;
+}
+
+const COLOR_CALL_RE = /#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?|oklch|color-mix)\s*\([^)]*\)/gi;
+const NUMBER_RE = /(?<![\w.#-])-?\d*\.?\d+(?:px|rem|em|vh|vw|dvh|dvw|svh|svw|%|s|ms|deg|ch|fr|pt|ex|vmin|vmax)?(?![\w-])/g;
+
+function rawValueHits(file, text) {
+  const starts = lineStarts(text);
+  const chars = text.split('');
+  maskRanges(chars, rangesOf(text, /\/\*[\s\S]*?\*\//g));
+  const masked = chars.join('');
+  const hits = [];
+  const noteHit = (offset, prop, value) => {
+    const line = lineOf(starts, offset);
+    const allow = c1AllowFor(file, value);
+    hits.push({
+      cls: 'C1',
+      file,
+      line,
+      col: offset - starts[line - 1] + 1,
+      value,
+      found: `${prop}:${short(value, 34)}`,
+      note: allow ? `listed raw value — ${short(allow.reason, 58)}` : `raw value (unlisted) — ${short(value, 30)}`,
+      unlisted: !allow,
+    });
+  };
+  for (const block of declBlocks(masked)) {
+    for (const m of block.body.matchAll(/(?<![-\w])(--[A-Za-z0-9_-]+|[A-Za-z-][A-Za-z0-9-]*)\s*:\s*([^;}]*)/g)) {
+      const prop = m[1];
+      const value = m[2];
+      const head = block.offset + m.index + m[0].indexOf(':') + 1;
+      /* var()/env() are token reads, not literals; blank them length-preserving
+         so the offsets still map to the real line */
+      let scan = value;
+      for (const [s, e] of [...callSpans(scan, 'var'), ...callSpans(scan, 'env')]) {
+        scan = scan.slice(0, s) + ' '.repeat(e - s) + scan.slice(e);
+      }
+      for (const c of scan.matchAll(COLOR_CALL_RE)) {
+        noteHit(head + c.index, prop, c[0].replace(/\s+/g, ' ').trim());
+      }
+      scan = scan.replace(COLOR_CALL_RE, (s) => ' '.repeat(s.length));
+      for (const n of scan.matchAll(NUMBER_RE)) {
+        const before = scan.slice(0, n.index);
+        if (c1Structural(n[0], prop, before, scan.slice(n.index + n[0].length))) continue;
+        noteHit(head + n.index, prop, n[0]);
+      }
+    }
+  }
+  /* a numeric threshold in an at-rule prelude is a literal by force: var() is
+     invalid there, so it is recorded like one */
+  for (const m of masked.matchAll(/@(media|container|supports)([^{]*)\{/gi)) {
+    const prelude = m[2];
+    const base = m.index + m[0].indexOf(prelude);
+    for (const n of prelude.matchAll(/(?<![\w.#-])-?\d*\.?\d+(?:px|rem|em|vh|vw|dvh|%|s|ms)?(?![\w-])/g)) {
+      if (c1Structural(n[0], `@${m[1]}`, prelude.slice(0, n.index), prelude.slice(n.index + n[0].length))) continue;
+      noteHit(base + n.index, `@${m[1]}`, n[0]);
+    }
+  }
+  return hits;
+}
+
+/* C2 — duplicate selector in one document. Keyed by the selector plus its full
+   at-scope chain (media / supports / container) and nesting, because the rule
+   that matters is "the same selector declared twice in the same cascade
+   context". Matching identical declarations was measured to catch 0 of the 8
+   engine duplicates and 0 of pitch's: every later block adds something. */
+function styleChunks(text) {
+  const out = [];
+  for (const m of text.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)) {
+    out.push({ css: m[1], offset: m.index + m[0].indexOf('>') + 1 });
+  }
+  return out;
+}
+
+function duplicateSelectorHits(file, text) {
+  const starts = lineStarts(text);
+  const hits = [];
+  const seen = new Map();
+  for (const chunk of styleChunks(text)) {
+    const css = chunk.css.replace(/\/\*[\s\S]*?\*\//g, (s) => ' '.repeat(s.length));
+    for (const b of declBlocks(css)) {
+      const key = `${b.scope.join(' > ')}||${b.sel}`;
+      const at = chunk.offset + b.offset;
+      if (!seen.has(key)) {
+        seen.set(key, at);
+        continue;
+      }
+      const line = lineOf(starts, at);
+      hits.push({
+        cls: 'C2',
+        file,
+        line,
+        col: 1,
+        found: short(`${b.sel}${b.scope.length ? ` @ ${b.scope.join(' > ')}` : ' @ top level'}`, 78),
+        note: `duplicate selector (first declared line ${lineOf(starts, seen.get(key))})`,
+      });
+    }
+  }
+  return hits;
+}
+
+/* C3 — modal semantics. aria-modal is a promise that the rest of the document
+   is inert; a node that makes it without role=dialog and an accessible name is
+   a lie to the screen reader. aria-label is accepted — Overlay.label() accepts
+   it, and pitch's drawers carry one. */
+function ariaModalHits(file, text) {
+  const starts = lineStarts(text);
+  const hits = [];
+  let seen = 0;
+  for (const m of text.matchAll(/<([a-zA-Z][\w-]*)\b[^>]*>/g)) {
+    if (!/\saria-modal\s*=/.test(m[0])) continue;
+    seen += 1;
+    const tag = m[1];
+    const hasRole = /\srole\s*=\s*["']dialog["']/.test(m[0]);
+    const hasLabel = /\saria-label(?:ledby)?\s*=\s*["'][^"']+["']/.test(m[0]);
+    const line = lineOf(starts, m.index);
+    if (!hasRole) {
+      hits.push({ cls: 'C3', file, line, col: 1, found: short(m[0], 70), note: `<${tag}> has aria-modal but no role="dialog"` });
+    } else if (!hasLabel) {
+      hits.push({ cls: 'C3', file, line, col: 1, found: short(m[0], 70), note: `<${tag}> role="dialog" with aria-modal but no aria-label / aria-labelledby` });
+    }
+  }
+  return { hits, seen };
+}
+
+/* C4 — a .ds-* class defined twice. Only a *top-level definition* counts: a
+   rule whose subject compound is the class and which has no ancestor
+   combinator. `.spec-cell .ds-dialog` is a gallery stage override (it
+   neutralises fixed positioning so a dialog can be shown inline), not a second
+   definition, and failing it would forbid the only way to photograph a fixed
+   overlay. */
+function dsDefinitions(file, text) {
+  const chunks = file.endsWith('.html') ? styleChunks(text).map((c) => c.css) : [text];
+  const classes = new Set();
+  for (const chunk of chunks) {
+    const css = chunk.replace(/\/\*[\s\S]*?\*\//g, (s) => ' '.repeat(s.length));
+    for (const b of declBlocks(css)) {
+      for (const part of b.sel.split(',')) {
+        const p = part.trim();
+        if (!p.startsWith('.ds-')) continue;
+        if (/[\s>+~]/.test(p)) continue;
+        const name = p.match(/^\.(ds-[a-zA-Z0-9_-]+)/);
+        if (name) classes.add(name[1]);
+      }
+    }
+  }
+  return classes;
+}
+
+/* C5 — an icon reference must name a real symbol. This is the check that keeps
+   the check-anchors skip honest: check-anchors no longer treats
+   `icons.svg#ds-icon-x` as a fragment link (it is not an HTML document), so
+   the sprite has to be validated here or nothing validates it. */
+function iconRefHits(file, text) {
+  const starts = lineStarts(text);
+  const hits = [];
+  const dir = path.dirname(path.join(ROOT, file));
+  for (const m of text.matchAll(/<(?:use|image)\b[^>]*?(?:href|xlink:href)\s*=\s*["']([^"']+)["']/g)) {
+    const value = m[1];
+    if (!value.includes('#') || value.startsWith('#')) continue;
+    const [target, anchor] = value.split('#');
+    if (!/\.svg$/i.test(target)) continue;
+    const line = lineOf(starts, m.index);
+    const abs = path.resolve(dir, target);
+    if (!fs.existsSync(abs)) {
+      hits.push({ cls: 'C5', file, line, col: 1, found: short(value, 60), note: 'names a missing svg file' });
+      continue;
+    }
+    const svg = fs.readFileSync(abs, 'utf8');
+    const ids = new Set([...svg.matchAll(/\sid\s*=\s*["']([^"']+)["']/g)].map((x) => x[1]));
+    if (!ids.has(anchor)) {
+      hits.push({ cls: 'C5', file, line, col: 1, found: short(value, 60), note: `${short(target, 30)} declares no id="${short(anchor, 30)}"` });
+    }
+  }
+  return hits;
+}
+
+/* C6 — the JS and the sprite paint with var() and currentColor only. A hex in
+   components.js would bypass every stylesheet check; a hex in icons.svg would
+   freeze an icon to one theme. */
+function paintLiteralHits(file, text, { js = false } = {}) {
+  const starts = lineStarts(text);
+  const chars = text.split('');
+  const maskedRanges = [...rangesOf(text, /\/\*[\s\S]*?\*\//g), ...rangesOf(text, /\burl\([^)]*\)/g)];
+  if (js) maskedRanges.push(...rangesOf(text, /^[ \t]*\/\/.*$/gm));
+  maskRanges(chars, maskedRanges);
+  const masked = chars.join('');
+  const hits = [];
+  for (const m of masked.matchAll(COLOR_CALL_RE)) {
+    const line = lineOf(starts, m.index);
+    hits.push({
+      cls: 'C6',
+      file,
+      line,
+      col: m.index - starts[line - 1] + 1,
+      found: short(m[0].replace(/\s+/g, ' ').trim(), 40),
+      note: 'raw paint literal outside a comment',
+    });
+  }
+  return hits;
+}
+
+const componentFindings = [];
+layers: {
+  for (const rel of DS_CSS_FILES) {
+    const abs = path.join(ROOT, rel);
+    if (!fs.existsSync(abs)) break layers;
+    componentFindings.push(...rawValueHits(rel, fs.readFileSync(abs, 'utf8')));
+  }
+  /* C2 reads the committed blob (see the header); the worktree copy is kept so
+     a divergence can be reported instead of silently ignored */
+  const worktreeDupCounts = new Map();
+  for (const rel of HTML_TARGETS) {
+    const abs = path.join(ROOT, rel);
+    if (!fs.existsSync(abs)) continue;
+    const worktreeText = fs.readFileSync(abs, 'utf8');
+    worktreeDupCounts.set(rel, duplicateSelectorHits(rel, worktreeText).length);
+    let committed = null;
+    try {
+      committed = execFileSync('git', ['show', `HEAD:${rel}`], {
+        cwd: ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, stdio: ['ignore', 'pipe', 'pipe'],
+      });
+    } catch {
+      committed = null;
+    }
+    componentFindings.push(...duplicateSelectorHits(rel, committed ?? worktreeText));
+    componentFindings.push(...ariaModalHits(rel, worktreeText).hits);
+    componentFindings.push(...iconRefHits(rel, worktreeText));
+  }
+  /* C3 runs on every page; count the compliant nodes too so the receipt can
+     say "N checked, 0 bad" instead of only naming failures */
+  let ariaModalSeen = 0;
+  for (const rel of HTML_TARGETS) {
+    const abs = path.join(ROOT, rel);
+    if (fs.existsSync(abs)) ariaModalSeen += ariaModalHits(rel, fs.readFileSync(abs, 'utf8')).seen;
+  }
+  const owners = new Map();
+  for (const rel of [...DS_CSS_FILES, ...HTML_TARGETS]) {
+    const abs = path.join(ROOT, rel);
+    if (!fs.existsSync(abs)) continue;
+    for (const name of dsDefinitions(rel, fs.readFileSync(abs, 'utf8'))) {
+      if (!owners.has(name)) owners.set(name, []);
+      owners.get(name).push(rel);
+    }
+  }
+  for (const [name, list] of [...owners].sort((a, b) => a[0].localeCompare(b[0]))) {
+    if (list.length < 2) continue;
+    componentFindings.push({
+      cls: 'C4',
+      file: list[1],
+      line: null,
+      col: null,
+      found: `.${name}`,
+      note: `defined in ${list.join(' and ')}`,
+    });
+  }
+  for (const rel of [DS_JS, DS_ICONS]) {
+    const abs = path.join(ROOT, rel);
+    if (!fs.existsSync(abs)) continue;
+    componentFindings.push(...paintLiteralHits(rel, fs.readFileSync(abs, 'utf8'), { js: rel.endsWith('.js') }));
+  }
+  /* stash the two "checked" counters for the receipt */
+  globalThis.__dsGateCounters = {
+    ariaModalSeen,
+    iconRefs: HTML_TARGETS.reduce((n, rel) => {
+      const abs = path.join(ROOT, rel);
+      if (!fs.existsSync(abs)) return n;
+      const text = fs.readFileSync(abs, 'utf8');
+      return n + [...text.matchAll(/<(?:use|image)\b[^>]*?(?:href|xlink:href)\s*=\s*["']([^"']*#[^"']+)["']/g)].length;
+    }, 0),
+    worktreeDupCounts,
+  };
+}
+const GATE_COUNTERS = globalThis.__dsGateCounters || { ariaModalSeen: 0, iconRefs: 0, worktreeDupCounts: new Map() };
+const COMPONENT_CLASSES = ['C1', 'C2', 'C3', 'C4', 'C5', 'C6'];
+const C_BUDGETS = { C1: 6, C2: 12, C3: 0, C4: 0, C5: 0, C6: 0 };
+/* C1 and C2 are per file: a fix on one stylesheet or page cannot pay for a
+   regression on another. C3–C6 have no seed, so any hit anywhere fails. */
+const C_SEED = {
+  C1: { [DS_BASE]: 0, [DS_COMPONENTS]: 6 },
+  C2: { 'index.html': 0, 'pitch.html': 4, 'engine.html': 8, 'design-system/index.html': 0 },
+};
+const C_NOTES = {
+  C1: `components.css ${C1_ALLOW.length} listed values (${C1_ALLOW.map((a) => a.value).join(', ')}), each with a reason and a ceiling of 1; base.css 0 — its only literals are 0, 100%, 50%, the calc() sign multiplier and an iteration count`,
+  C2: 'pitch 4 + engine 8, measured on the committed HEAD blob. Engine: html,body · body · header · .dp h3 · #arrowpick button · #chapterbar select · #anchorRow code · #drawerX. Pitch: .plan-nav · .plan-nav .pill · #plan-weeks .wrow · .mrail (inside @media(max-width:900px)). Identical-declaration matching would catch 0 of these — every later block adds a declaration',
+  C3: '2 aria-modal nodes checked (both pitch drawers: role=dialog + aria-label + hidden when closed), 0 bad',
+  C4: '0 classes defined at top level in two sources; the 14 `.spec-cell .ds-*` rules in the gallery are scoped stage overrides and do not count as definitions',
+  C5: '48 `<use href="icons.svg#…">` references, 24 symbols, 0 unresolved',
+  C6: '0 paint literals in components.js (paints through var() + currentColor) and icons.svg (currentColor only)',
+};
 /* ---------------------------------------------------------------- totals */
 
 const classes = ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'V8', 'U1'];
@@ -1245,6 +1647,47 @@ for (const cls of ALL_CLASSES) {
   }
   budgetRows.push({ cls, now: hits.length, budget, over });
 }
+
+/* C1–C6 — same contract, different sources. C1/C2 carry a per-file seed; a hit
+   in a file with no seed has a limit of 0, so a new stylesheet or page cannot
+   inherit another's allowance. C1 hits that name a value absent from
+   C1_ALLOW fail even when the file is under its total, so deleting a listed
+   literal cannot buy room for an unlisted one. */
+const unlistedC1 = [];
+for (const cls of COMPONENT_CLASSES) {
+  const hits = componentFindings
+    .filter((f) => f.cls === cls)
+    .sort((a, b) => String(a.file).localeCompare(String(b.file)) || (a.line ?? 0) - (b.line ?? 0));
+  const seed = C_SEED[cls] || {};
+  const rowsOver = [];
+  const byFile = new Map();
+  for (const h of hits) {
+    if (!byFile.has(h.file)) byFile.set(h.file, []);
+    byFile.get(h.file).push(h);
+  }
+  for (const [file, list] of [...byFile].sort((a, b) => a[0].localeCompare(b[0]))) {
+    const limit = Object.prototype.hasOwnProperty.call(seed, file) ? seed[file] : 0;
+    if (list.length > limit) {
+      rowsOver.push({ cls, file, now: list.length, limit, hits: list });
+    }
+  }
+  if (cls === 'C1') {
+    for (const h of hits) {
+      if (!h.unlisted) continue;
+      unlistedC1.push(h);
+      if (!rowsOver.some((g) => g.file === h.file)) {
+        rowsOver.push({ cls: 'C1', file: h.file, now: hits.filter((x) => x.file === h.file).length, limit: 0, hits: [h] });
+      }
+    }
+  }
+  for (const group of rowsOver) overGroups.push(group);
+  budgetRows.push({
+    cls,
+    now: hits.length,
+    budget: C_BUDGETS[cls],
+    over: rowsOver.reduce((n, g) => n + Math.max(1, g.now - g.limit), 0),
+  });
+}
 const totalExcess = budgetRows.reduce((n, r) => n + r.over, 0);
 const failed = totalExcess > 0 || totalBadAllow > 0;
 
@@ -1309,6 +1752,35 @@ for (const row of budgetRows) {
 }
 for (const [cls, note] of Object.entries(BUDGET_NOTES)) {
   console.log(`  ${cls} budget ${BUDGETS[cls]}: ${note}`);
+}
+
+/* the component gate gets its own block: its budget is a styleguide, not a
+   number, and a reviewer needs to see the allow table every run */
+console.log('');
+console.log('Component gate C1–C6');
+console.log(rule);
+for (const cls of COMPONENT_CLASSES) {
+  const row = budgetRows.find((r) => r.cls === cls);
+  const seed = C_SEED[cls];
+  const detail = seed
+    ? Object.entries(seed).map(([f, n]) => `${f} ${n}`).join(', ')
+    : cls === 'C3'
+      ? `${GATE_COUNTERS.ariaModalSeen} aria-modal node(s) checked`
+      : cls === 'C5'
+        ? `${GATE_COUNTERS.iconRefs} svg#id reference(s) resolved`
+        : 'any hit fails';
+  console.log(`${cls.padEnd(4)}${String(row.now).padStart(4)}/${row.budget}  ${detail}`);
+  console.log(`      ${C_NOTES[cls]}`);
+}
+const divergent = HTML_TARGETS.filter((rel) => {
+  const wt = GATE_COUNTERS.worktreeDupCounts.get(rel) ?? 0;
+  const committed = componentFindings.filter((f) => f.cls === 'C2' && f.file === rel).length;
+  return wt !== committed;
+});
+if (divergent.length) {
+  for (const rel of divergent) {
+    console.log(`      note: ${rel} worktree has ${GATE_COUNTERS.worktreeDupCounts.get(rel)} duplicate selector(s), committed HEAD has ${componentFindings.filter((f) => f.cls === 'C2' && f.file === rel).length} — C2 follows HEAD (a sibling lane's uncommitted edit is not this gate's); commit, then re-run`);
+  }
 }
 
 if (totalExcess) {
@@ -1378,6 +1850,12 @@ const LEGEND = [
   ['T13', 'Two literal values in one `:root` (an alias `var(--other)` is skipped — it is a pointer, not a second truth)', 'Delete the redundant alias and keep one role name'],
   ['T14', '`!important`', 'Fix the cascade; `!important` is an escalation, not a style'],
   ['T15', 'Inline `style=` attribute', 'Move to a class in `<style>`; budget is per file'],
+  ['C1', 'Raw value in `base.css` / `components.css`: a hex, `rgb()`/`hsl()`, or a number with a unit that is not structural', 'Use `var(--token)`. Structural literals (0, %, fr, 1× viewport, the `calc()` sign, a flex factor, an iteration count) pass; anything else must be listed in `C1_ALLOW` with a reason and a ceiling of 1'],
+  ['C2', 'The same selector declared twice in one document in the same cascade scope (selector + `@media`/`@supports`/`@container` chain + nesting)', 'Merge the two blocks. Measured on the committed HEAD blob, so a sibling lane\'s uncommitted edit cannot move the count'],
+  ['C3', 'An element carries `aria-modal` without `role="dialog"`, or without `aria-label` / `aria-labelledby`', 'Give the overlay `role="dialog"`, `aria-modal="true"` and a name; `aria-label` is accepted. Closed overlays get `hidden` + `inert`, never transform alone'],
+  ['C4', 'A `.ds-*` class defined at top level in two stylesheet sources', 'One definition, in `components.css` (or `base.css` for a base rule). A scoped stage override such as `.spec-cell .ds-dialog` is not a definition'],
+  ['C5', '`<use href="…svg#id">` whose fragment is not a symbol in that SVG', 'Add the symbol to `icons.svg` or fix the id; this is the check that keeps the anchor gate\'s non-HTML skip honest'],
+  ['C6', 'A hex / `rgb()` / `hsl()` literal in `components.js` or `icons.svg`, outside a comment', 'Paint through `var(--…)` or `currentColor`; a hex in the sprite freezes an icon to one theme'],
 ];
 
 function mdEscape(s) {
@@ -1418,13 +1896,52 @@ md += 'Each class carries the count measured on 2026-11-24 as a ceiling. A count
 md += '| Class | Now | Budget | Status |\n|---|---:|---:|---|\n';
 for (const row of budgetRows) {
   const status = row.over ? `OVER +${row.over}` : row.now < row.budget ? 'under' : 'ok';
-  const seed = BUDGET_SEED[row.cls];
+  const seed = BUDGET_SEED[row.cls] || C_SEED[row.cls];
   const note = seed
     ? ` (per file ${Object.entries(seed).map(([f, n]) => `${f} ${n}`).join(', ')})`
     : '';
   md += `| ${row.cls} | ${row.now} | ${row.budget}${note} | ${status} |\n`;
 }
 md += '\n';
+
+md += '## Component gate (C1–C6)\n\n';
+md += 'The shared layer (`base.css`, `components.css`, `components.js`, `icons.svg`) is additive and opt-in, so no page class sees it: a raw hex in `components.css`, a second definition of `.ds-btn`, or an unlabelled `aria-modal` changes no V or T count. These six classes close that hole. C2 is measured on the committed `HEAD` blob of each page — CI checks out `HEAD`, and a sibling lane\'s uncommitted edit must not move a budget.\n\n';
+md += '| File | Value | Count | Ceiling | Why it is not a token |\n|---|---|---:|---:|---|\n';
+for (const entry of C1_ALLOW) {
+  const count = componentFindings.filter((f) => f.cls === 'C1' && f.file === entry.file && f.value === entry.value).length;
+  md += `| \`${entry.file}\` | \`${mdEscape(entry.value)}\` | ${count} | ${entry.budget} | ${mdEscape(entry.reason)} |\n`;
+}
+md += '\n';
+md += '| Class | Source | Now | Ceiling | Note |\n|---|---|---:|---:|---|\n';
+for (const cls of COMPONENT_CLASSES) {
+  const row = budgetRows.find((r) => r.cls === cls);
+  const seed = C_SEED[cls];
+  const source = cls === 'C1'
+    ? '`design-system/base.css`, `design-system/components.css`'
+    : cls === 'C2'
+      ? '`index.html`, `pitch.html`, `engine.html`, `design-system/index.html`'
+      : cls === 'C3'
+        ? 'all four HTML surfaces'
+        : cls === 'C4'
+          ? 'both stylesheets + four pages'
+          : cls === 'C5'
+            ? 'four pages → `icons.svg`'
+            : '`components.js`, `icons.svg`';
+  const perFile = seed ? Object.entries(seed).map(([f, n]) => `${f} ${n}`).join(' · ') : '';
+  md += `| ${cls} | ${source} | ${row.now} | ${row.budget} | ${mdEscape(C_NOTES[cls])}${perFile ? ` — per file: ${mdEscape(perFile)}` : ''} |\n`;
+}
+md += '\n';
+md += `Counters: **${GATE_COUNTERS.ariaModalSeen}** \`aria-modal\` node(s) checked · **${GATE_COUNTERS.iconRefs}** \`svg#id\` reference(s) resolved.\n\n`;
+const wtDiverge = HTML_TARGETS.map((rel) => ({
+  rel,
+  wt: GATE_COUNTERS.worktreeDupCounts.get(rel) ?? 0,
+  head: componentFindings.filter((f) => f.cls === 'C2' && f.file === rel).length,
+})).filter((x) => x.wt !== x.head);
+if (wtDiverge.length) {
+  md += 'Worktree divergence (C2 follows `HEAD`): ';
+  md += wtDiverge.map((x) => `\`${x.rel}\` ${x.wt} in the worktree vs ${x.head} at HEAD`).join(' · ');
+  md += '.\n\n';
+}
 
 md += '## Over-budget detail\n\n';
 let anyDetail = false;

@@ -9,7 +9,12 @@
  *      same tag handles the click itself (`onclick="…return false"`), in which
  *      case the hash is application state, not a document anchor. Those are
  *      reported as SKIP so the exemption is visible, never silent.
- *   3. every `href="page.html#anchor"` resolves in that page.
+ *   3. every `href="page.html#anchor"` resolves in that page. A target that is
+ *      not a document — `icons.svg#ds-icon-copy`, a PDF, a zip — is not a
+ *      fragment link this check can read, so it is skipped and counted, exactly
+ *      as the markdown branch skips a non-.md/.html target. The skip is not
+ *      blind: `scripts/lint-tokens.mjs` class C5 resolves every `svg#id`
+ *      reference against the symbols that SVG actually declares.
  *   4. every `aria-labelledby` / `aria-describedby` / `aria-controls` idref
  *      resolves in the same file.
  *   5. every `[plan:<path>#<anchor>]` names a file that exists and an anchor that
@@ -180,9 +185,18 @@ for (const file of mdFiles) md.set(file, scanMarkdown(read(resolve(ROOT, file)))
 
 let localChecked = 0;
 let jsSkipped = 0;
+let foreignSkipped = 0;
 for (const [file, doc] of html) {
   for (const link of doc.links) {
     if (link.target) {
+      /* a fragment into a non-document (an SVG sprite, a PDF) is not a link
+         this check can read. The markdown branch skips these before it looks
+         for the file; do the same here, and count it so the report stays
+         honest. C5 in scripts/lint-tokens.mjs resolves the svg#id case. */
+      if (!/\.(md|html)$/i.test(link.target)) {
+        foreignSkipped += 1;
+        continue;
+      }
       const targetPath = resolve(dirname(resolve(ROOT, file)), link.target);
       const key = rel(targetPath);
       if (!existsSync(targetPath)) {
@@ -291,7 +305,7 @@ for (const [file, doc] of html) {
     `  ${file}: ${doc.ids.size} id(s) unique, ${doc.links.length - skipped} fragment link(s) checked${skipped ? `, ${skipped} JS-controlled skipped` : ''}`,
   );
 }
-console.log(`  ${localChecked} html target(s), ${mdChecked} markdown target(s), ${planRefs} plan anchor(s) resolved`);
+console.log(`  ${localChecked} html target(s), ${mdChecked} markdown target(s), ${planRefs} plan anchor(s) resolved${foreignSkipped ? `, ${foreignSkipped} non-document fragment target(s) skipped (svg#id and friends)` : ''}`);
 
 if (errors.length) {
   for (const error of errors) console.log(`FAIL  ${error.where} — ${error.message}`);
