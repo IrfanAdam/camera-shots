@@ -28,7 +28,7 @@ Read order: [README](README.md) → this file → [components](components.md) �
 
 It is a **count of occurrences**, not the gate's T8 presence test: T8 asks only whether a product page, a theme cell or `components.css` names a token at all, and excludes the gallery. So a key can be T8-unconsumed and still show a non-zero count here — read the breakdown the gate prints, not this column, when judging orphans.
 
-Totals at committed HEAD: **1485 consumer references** across 189 keys, **19** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `color.status.danger.ink.light`, `color.wiki.dark.accent.ink`, `elevation.1`, `elevation.inset`, `elevation.ring`, `focus.color`, `icon.size.lg`, `icon.size.md`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `spacing.section`, `tracking.label`).
+Totals at committed HEAD: **1481 consumer references** across 189 keys, **19** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `color.status.danger.ink.light`, `color.wiki.dark.accent.ink`, `elevation.1`, `elevation.inset`, `elevation.ring`, `focus.color`, `icon.size.lg`, `icon.size.md`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `spacing.section`, `tracking.label`).
 
 Under the gate's narrower **T8** scope — `var()` in the three product pages plus theme-map cells plus `components.css`, gallery excluded, aliases and `breakpoint.*` exempt — **10** key(s) are unconsumed: `color.engine.track.audio`, `color.engine.track.fx`, `color.engine.track.title`, `elevation.inset`, `elevation.ring`, `icon.size.lg`, `icon.size.md`, `radius.lg`, `spacing.section`, `tracking.label`. Keys that differ between the two views are canvas-only (`CT()`/`WA()` strings the gate cannot see) or gallery-only consumers; `scripts/lint-tokens.mjs` prints the authoritative list and its budget note.
 
@@ -249,7 +249,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
-| `dot.size` | `5px` | dimension | — | 6 (6/0/0) |
+| `dot.size` | `5px` | dimension | — | 4 (4/0/0) |
 
 ### elevation
 
@@ -355,7 +355,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
-| `radius.circle` | `50%` | dimension | — | 7 (7/0/0) |
+| `radius.circle` | `50%` | dimension | — | 6 (6/0/0) |
 | `radius.lg` | `14px` | dimension | — | 0 (0/0/0) |
 | `radius.md` | `10px` | dimension | — | 1 (1/0/0) |
 | `radius.none` | `0` | dimension | — | 8 (8/0/0) |
@@ -374,13 +374,13 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `spacing.18` | `18px` | dimension | — | 18 (18/0/0) |
 | `spacing.2` | `2px` | dimension | — | 22 (22/0/0) |
 | `spacing.20` | `20px` | dimension | — | 12 (12/0/0) |
-| `spacing.2xl` | `48px` | dimension | — | 6 (6/0/0) |
-| `spacing.2xs` | `4px` | dimension | — | 65 (65/0/0) |
+| `spacing.2xl` | `48px` | dimension | — | 7 (7/0/0) |
+| `spacing.2xs` | `4px` | dimension | — | 64 (64/0/0) |
 | `spacing.6` | `6px` | dimension | — | 73 (73/0/0) |
 | `spacing.base` | `var(--spacing-2xs)` | dimension | — · alias → --spacing-2xs | 0 (0/0/0) |
 | `spacing.gutter.pro` | `var(--spacing-md)` | dimension | — · alias → --spacing-md | 0 (0/0/0) |
 | `spacing.lg` | `24px` | dimension | — | 9 (9/0/0) |
-| `spacing.md` | `16px` | dimension | — | 31 (31/0/0) |
+| `spacing.md` | `16px` | dimension | — | 30 (30/0/0) |
 | `spacing.section` | `26px` | dimension | — | 0 (0/0/0) |
 | `spacing.sm` | `12px` | dimension | — | 70 (70/0/0) |
 | `spacing.xl` | `32px` | dimension | — | 7 (7/0/0) |
