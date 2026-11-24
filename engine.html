@@ -640,7 +640,7 @@ const BoardSync={
  schedule(p){if(!this.enabled||!this.validPayload(p))return;this.pending=p;
   clearTimeout(this.timer);this.timer=setTimeout(()=>this.flush(),BOARD_SAVE_DEBOUNCE_MS);},
  async boot(){const d=await this.load();if(!d)return;
-  try{Store.save(d);restore();draw()}catch(e){}}
+  try{Store.save(d);restore();draw()}catch(e){}try{fitBoardOnce()}catch(e){}}
 };
 try{window.CSE_BOARDSYNC=BoardSync}catch(e){}
 function flashHint(t){hintEl.textContent=t;clearTimeout(flashHint._t);flashHint._t=setTimeout(()=>hintEl.textContent=HINT_DEFAULT,2200)}
@@ -1113,6 +1113,31 @@ function s2w(mx,my){return{x:mx/cam.z+cam.x,y:my/cam.z+cam.y}}
 function w2s(wx,wy){return{x:(wx-cam.x)*cam.z,y:(wy-cam.y)*cam.z}}
 function applyCam(){ctx.setTransform(DPR*cam.z,0,0,DPR*cam.z,-cam.x*cam.z*DPR,-cam.y*cam.z*DPR)}
 function panBy(dx,dy){cam.x-=dx/cam.z;cam.y-=dy/cam.z}
+/* ---- first-paint fit (once per load) ----
+   The shared seed board can sit wholly outside a narrow canvas (its card starts
+   near world x 553 in a 372px stage), so first paint reads as an empty canvas.
+   Once the board has settled (local restore, then the Supabase merge) center its
+   content at a clamped zoom, padding for the floating bottom bar on phones.
+   Never runs again: a visible board is left untouched (desktop) and any pan or
+   zoom from the user cancels the late merge pass. */
+let FIT_DONE=false,FIT_TOUCHED=false;
+function fitBoardOnce(){
+ if(FIT_DONE||FIT_TOUCHED||view==='scenes'||!nodes||!nodes.length||W<=0||H<=0)return false;
+ FIT_DONE=true;let vis=false;
+ for(const n of nodes){const sx=(n.x-cam.x)*cam.z,sy=(n.y-cam.y)*cam.z;
+  if(sx+n.w*cam.z>0&&sx<W&&sy+n.h*cam.z>0&&sy<H){vis=true;break}}
+ if(vis)return false;
+ let bottom=0;try{/* phone transport bar floats over the canvas: keep cards above it */
+  const s=document.getElementById('side'),cr=cv.getBoundingClientRect(),sr=s.getBoundingClientRect();
+  if(sr.height&&sr.top>cr.top&&sr.top<cr.bottom)bottom=cr.bottom-sr.top}catch(e){}
+ let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;
+ for(const n of nodes){x0=Math.min(x0,n.x);y0=Math.min(y0,n.y);x1=Math.max(x1,n.x+n.w);y1=Math.max(y1,n.y+n.h)}
+ const bw=Math.max(1,x1-x0),bh=Math.max(1,y1-y0),availW=Math.max(1,W-PAD*4),availH=Math.max(1,H-PAD*2-bottom);
+ cam.z=Math.max(0.25,Math.min(1,availW/bw,availH/bh));
+ cam.x=x0+bw/2-W/2/cam.z;cam.y=y0+bh/2-(PAD+availH/2)/cam.z;
+ draw();return true;
+}
+['pointerdown','wheel'].forEach(t=>document.getElementById('stage').addEventListener(t,()=>{FIT_TOUCHED=true},{capture:true,passive:true}));
 function attachZoom(){if(cv._zoomOn)return;cv._zoomOn=true;
  cv.addEventListener('wheel',e=>{e.preventDefault();const[mx,my]=pos(e);
   let dy=e.deltaY,dx=e.deltaX;
@@ -1991,6 +2016,6 @@ document.addEventListener('pointerdown',e=>{if(assetDelArmedId&&!(e.target&&e.ta
  grab.addEventListener('pointercancel',()=>{gy=null;drawer.style.transform=''});
 })();
 attachZoom();
-restore();fit();
+restore();fit();try{fitBoardOnce()}catch(e){}
 try{if(typeof BoardSync!=='undefined'&&BoardSync.boot)BoardSync.boot()}catch(e){}
 </script></body></html>
