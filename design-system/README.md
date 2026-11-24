@@ -27,6 +27,7 @@ pipeline runs. Values live in the generated references, never here.
 | `design-system/tokens.json` | Token source: **189 keys, 20 groups**, 4 theme maps — the only hand-edited value source | no |
 | `design-system/tokens.css` | `:root` properties + `[data-ds-theme]` role blocks | yes |
 | `design-system/base.css` · `components.css` · `components.js` | Reset/focus/target floor · 19 blocks, `var()` only, four densities · behaviour (`DS.init/tabs/menu/overlay/toast/…`) | no |
+| `design-system/pitch-shell.css` | Page-level pitch language: pins the 17 `--ds-*` roles and the chrome aliases (`--bg --card --s1 --s2 --ink --body --mut --mut2 --rule --acc --acc2 --amb --acc-ink`) to the pitch tokens. Opt in with `<html data-ds-shell="pitch" data-ds-theme="pitch">` and load it **after** the page's own `<style>` | no |
 | `design-system/icons.svg` | 24-symbol sprite, `currentColor`, `<use href="icons.svg#ds-icon-…">` | no |
 | `design-system/index.html` | Rendered gallery: swatches, type, motion, shape, components, consistency matrix | no |
 | `scripts/build-tokens.mjs` · `build-foundations.mjs` | Source → CSS, source + CSS → docs; both deterministic, both with `--check` | no |
@@ -60,6 +61,23 @@ are mechanical: lowercase, dots → dashes, `--` prefix.
 `data-ds-theme="pitch|wiki-light|wiki-dark|engine"` declares the same 14 role
 slots (17 vars), with explicit nulls where a surface has no value. Which surface
 sets that attribute — and which one does not — is in [surfaces.md](surfaces.md).
+
+### The pitch shell
+
+A page that should read as the pitch page does not copy pitch.html's styles. It
+opts in and links the shell last:
+
+```html
+<html lang="en" data-ds-shell="pitch" data-ds-theme="pitch">
+...
+<link rel="stylesheet" href="design-system/pitch-shell.css">
+```
+
+The shell owns the mapping only — roles, chrome aliases, body type, heading
+voice, `::selection`, focus colour. It declares no layout, no size and no new
+value: the pitch surface ladder, cream ink and champagne accent are the same
+tokens `pitch.html` consumes. `index.html` is the reference adopter; a page that
+keeps its own IA keeps its own density.
 
 ## Rules
 
