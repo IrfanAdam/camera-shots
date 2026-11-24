@@ -98,7 +98,7 @@ and the shared layer, so the families are system stacks from
 
 The floor is set by two features in the shipped layer:
 
-| Feature | Where | Floor |
+| Feature | Where | Floor (published support tables, not gate-verified) |
 |---|---|---|
 | `inert` (focus containment for closed overlays) | `design-system/components.js` (17 uses), `engine.html` (6) | Chrome/Edge 102, Safari 15.5, Firefox 112 |
 | CSS container query | `components.css:548` (`container-type`), `:577` (`@container (width < 40rem)`) | Chrome/Edge 105, Safari 16, Firefox 110 |
