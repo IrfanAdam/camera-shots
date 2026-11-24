@@ -1,0 +1,143 @@
+/* ==========================================================================
+   base.css — DS base layer. Additive and opt-in: nothing here wins a tie
+   against a page rule, so linking it does not repaint an existing page.
+
+   CONTRACT
+   --------
+   Classes      .ds-sr-only  .ds-skip-link  .ds-scroll-x  .ds-scroll-y
+   Elements     reset: *, *::before, *::after, html, body + h1..dd
+                focus/floor: a, button, [role], [tabindex], input, select,
+                textarea, summary, [contenteditable]
+   Attributes   none required. Optional: [data-ds-theme] on any wrapper — the
+                role layer in tokens.css; [data-ds-density] — components.css.
+   Role vars    --ds-bg --ds-surface --ds-ink --ds-rule (read with fallbacks;
+                undefined until a wrapper carries [data-ds-theme]).
+   Tokens used  --focus-width --focus-offset --focus-color --touch-min
+                --control-height-touch --z-max --spacing-xs --spacing-sm
+                --spacing-2xs --spacing-lg --border-width-hairline --radius-xs
+                --typography-size-small --typography-family-sans
+                --typography-size-body --line-height-relaxed
+                --color-wiki-light-bg --color-wiki-light-ink
+                --color-primitive-white --color-primitive-black
+                --motion-duration-* --motion-duration-none
+   Specificity  every rule that can touch existing markup is :where() (0,0,0);
+                any page rule at 0,0,1+ still wins. No override flags, no hex,
+                no raw px (the 1px sr-only box is --border-width-hairline).
+
+   ORDER        tokens.css → base.css → components.css → page <style>.
+   ========================================================================== */
+
+/* 1 · reset — replaces the four identical `*` blocks (recon B1 #1).
+   The body baseline below is declared by all four shipped pages with equal
+   specificity and later order, so the page always wins; verified, no delta. */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body,h1,h2,h3,h4,p,figure,blockquote,dl,dd{margin:0}
+body{
+  background:var(--ds-bg,var(--color-wiki-light-bg));
+  color:var(--ds-ink,var(--color-wiki-light-ink));
+  font-family:var(--typography-family-sans);
+  font-size:var(--typography-size-body);
+  line-height:var(--line-height-relaxed);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* 2 · focus ring — the only ring in the system. :where() keeps specificity 0
+   so the three existing page rings still win; --focus-color resolves to
+   --ds-accent only under [data-ds-theme], and the currentColor fallback keeps
+   the ring visible on any page that has no theme attribute yet. */
+:where(
+  a:focus-visible,
+  button:focus-visible,
+  [role]:focus-visible,
+  [tabindex]:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  summary:focus-visible,
+  [contenteditable]:focus-visible
+){
+  outline:var(--focus-width) solid var(--focus-color,currentColor);
+  outline-offset:var(--focus-offset);
+}
+:where(:focus:not(:focus-visible)){outline:none}
+
+/* 3 · screen-reader only — 1px box via the hairline token, clipped, no paint */
+.ds-sr-only{
+  position:absolute;
+  inline-size:var(--border-width-hairline);
+  block-size:var(--border-width-hairline);
+  padding:0;
+  margin:calc(-1 * var(--border-width-hairline));
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+  border:0;
+}
+
+/* 4 · skip link — parked above the viewport, slides in on keyboard focus.
+   Call site: <a class="ds-skip-link" href="#main">Skip to content</a> as the
+   first focusable element; the target is <main id="main" tabindex="-1">. */
+.ds-skip-link{
+  position:fixed;
+  inset-block-start:var(--spacing-xs);
+  inset-inline-start:var(--spacing-xs);
+  z-index:var(--z-max);
+  transform:translateY(calc(-100% - var(--spacing-lg)));
+  background:var(--ds-surface,var(--color-primitive-white));
+  color:var(--ds-ink,var(--color-primitive-black));
+  border:var(--border-width-hairline) solid var(--ds-rule,currentColor);
+  border-radius:var(--radius-xs);
+  padding:var(--spacing-2xs) var(--spacing-sm);
+  font-size:var(--typography-size-small);
+  text-decoration:none;
+}
+.ds-skip-link:focus-visible{transform:none}
+
+/* 5 · scroll regions. .ds-scroll-x needs tabindex="0" role="region" and an
+   aria-label at the call site (a scrollable region must be keyboard reachable
+   and named); .ds-scroll-y needs it only when it scrolls vertically. */
+.ds-scroll-x{overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}
+.ds-scroll-y{overflow-y:auto;overscroll-behavior-y:contain;scrollbar-width:thin}
+
+/* 6 · target floor — one declaration for every interactive primitive.
+   :where() = 0 specificity, so a page that sets its own height still wins. */
+:where(
+  a,button,[role="button"],[role="tab"],[role="menuitem"],[role="switch"],
+  summary,input,select,textarea
+){
+  min-block-size:var(--touch-min);
+}
+
+/* 7 · reduced motion — collapse once, at the source: the shipped duration
+   tokens go to 0s and every animation/transition follows them. */
+@media (prefers-reduced-motion:reduce){
+  :root{
+    --motion-duration-fast:0s;
+    --motion-duration-base:0s;
+    --motion-duration-tab:0s;
+    --motion-duration-instant:0s;
+    --motion-duration-hover:0s;
+    --motion-duration-opacity:0s;
+    --motion-duration-slow:0s;
+    --motion-duration-tick:0s;
+    --motion-duration-pulse:0s;
+  }
+  *,*::before,*::after{
+    animation-duration:var(--motion-duration-none);
+    animation-iteration-count:1;
+    transition-duration:var(--motion-duration-none);
+    scroll-behavior:auto;
+  }
+}
+
+/* 8 · coarse pointers — the four duplicated expansion lists become one floor,
+   one step above the fine-pointer minimum. */
+@media (pointer:coarse){
+  :where(
+    a,button,[role="button"],[role="tab"],[role="menuitem"],[role="switch"],
+    summary,input,select,textarea
+  ){
+    min-block-size:var(--control-height-touch);
+  }
+}
