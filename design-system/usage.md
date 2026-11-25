@@ -14,12 +14,12 @@ Surfaces: `index.html` · `pitch.html` · `engine.html` · `design-system/index.
 | tokens defined | 188 |
 | tokens with a product ref | 158 |
 | tokens with no product ref | 30 |
-| custom-property refs | 2839 |
-| … token / role-var `--ds-*` / local / canvas read | 1979 / 172 / 626 / 62 |
-| … local split: component `--_*` / page alias | 36 / 590 |
+| custom-property refs | 2973 |
+| … token / role-var `--ds-*` / local / canvas read | 2064 / 172 / 675 / 62 |
+| … local split: component `--_*` / page alias | 37 / 638 |
 | component records | 38 (33 styled in components.css) |
-| component instances | 885 (198 product, 687 gallery) |
-| … authored in JS (flagged dynamic) | 40 |
+| component instances | 887 (198 product, 689 gallery) |
+| … authored in JS (flagged dynamic) | 42 |
 | numbered blocks | 21 (16 with a product instance) |
 
 ## Tokens with no product reference (30)
@@ -79,7 +79,7 @@ Showing 10 of 14 components.
 
 ### pitch — `pitch.html` (persuade)
 
-77 component instances, 493 custom-property refs in the page source, 88 tokens named by the page and by stylesheets only it loads (88 direct, 0 from its own sheets).
+77 component instances, 492 custom-property refs in the page source, 88 tokens named by the page and by stylesheets only it loads (88 direct, 0 from its own sheets).
 
 | component | instances | share of surface |
 |---|---|---|
@@ -110,7 +110,7 @@ Showing 10 of 13 components.
 
 ### gallery — `design-system/index.html` (docs, quarantined)
 
-687 component instances, 459 custom-property refs in the page source, 131 tokens named by the page and by stylesheets only it loads (131 direct, 10 from its own sheets).
+689 component instances, 459 custom-property refs in the page source, 135 tokens named by the page and by stylesheets only it loads (131 direct, 29 from its own sheets).
 
 | component | instances | share of surface |
 |---|---|---|
@@ -118,8 +118,8 @@ Showing 10 of 13 components.
 | `.ds-tab` | 67 | 10% |
 | `.ds-switch` | 64 | 9% |
 | `.ds-icon` | 56 | 8% |
-| `.ds-nav-item` | 36 | 5% |
-| `.ds-rail` | 36 | 5% |
+| `.ds-nav-item` | 37 | 5% |
+| `.ds-rail` | 37 | 5% |
 | `.ds-card` | 32 | 5% |
 | `.ds-badge` | 30 | 4% |
 | `.ds-dialog` | 24 | 3% |

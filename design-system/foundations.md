@@ -28,7 +28,7 @@ Read order: [README](README.md) → this file → [components](components.md) �
 
 It is a **count of occurrences**, not the gate's T8 presence test: T8 asks only whether a product page, a theme cell or `components.css` names a token at all, and excludes the gallery. So a key can be T8-unconsumed and still show a non-zero count here — read the breakdown the gate prints, not this column, when judging orphans.
 
-Totals at committed HEAD: **1331 consumer references** across 188 keys, **23** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `color.pro.tool.hover`, `color.status.danger.ink.light`, `color.wiki.dark.accent.ink`, `control.height.compact`, `dot.size`, `elevation.1`, `elevation.float`, `elevation.inset`, `elevation.ring`, `focus.color`, `hover.lift`, `icon.size.lg`, `icon.size.md`, `layout.nav.drawer.width`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `tracking.label`).
+Totals at committed HEAD: **1330 consumer references** across 188 keys, **23** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `color.pro.tool.hover`, `color.status.danger.ink.light`, `color.wiki.dark.accent.ink`, `control.height.compact`, `dot.size`, `elevation.1`, `elevation.float`, `elevation.inset`, `elevation.ring`, `focus.color`, `hover.lift`, `icon.size.lg`, `icon.size.md`, `layout.nav.drawer.width`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `tracking.label`).
 
 Under the gate's narrower **T8** scope — `var()` in the three product pages plus theme-map cells plus `components.css`, gallery excluded, aliases and `breakpoint.*` exempt — **9** key(s) are unconsumed: `color.engine.track.audio`, `color.engine.track.fx`, `color.engine.track.title`, `elevation.float`, `elevation.inset`, `elevation.ring`, `icon.size.lg`, `radius.lg`, `tracking.label`. Keys that differ between the two views are canvas-only (`CT()`/`WA()` strings the gate cannot see) or gallery-only consumers; `scripts/lint-tokens.mjs` prints the authoritative list and its budget note.
 
@@ -241,7 +241,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `control.height.compact` | `34px` | dimension | — | 0 (0/0/0) |
 | `control.height.default` | `40px` | dimension | — | 4 (4/0/0) |
 | `control.height.reading` | `46px` | dimension | — | 1 (1/0/0) |
-| `control.height.touch` | `44px` | dimension | — | 12 (12/0/0) |
+| `control.height.touch` | `44px` | dimension | — | 11 (11/0/0) |
 
 ### dot
 
