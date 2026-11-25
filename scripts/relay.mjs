@@ -8,7 +8,7 @@
 // carries ACAO:*, so key verification stays browser-direct and generation
 // goes through here, where CORS does not apply.
 //
-// Usage: npm run relay  (PORT env overrides the 8787 default)
+// Usage: npm run relay  (PORT/HOST env overrides; defaults 127.0.0.1:8787)
 //   GET  /api/oc-health  -> {ok:true, service:'oc-relay'} (no key needed)
 //   POST /api/oc-image   -> Authorization: Bearer <opencode key>,
 //                           JSON {model, prompt}; upstream status+body are
@@ -20,8 +20,43 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const HOST = process.env.HOST || '127.0.0.1';
 const PORT = Number(process.env.PORT || 8787);
-const UPSTREAM = 'https://opencode.ai/inference/v1/chat/completions';
+const UPSTREAM_CHAT = 'https://opencode.ai/inference/v1/chat/completions';
+
+// Upstream route per model family (all verified live 2026-11-25: each answers
+// a dummy-key POST with 401 Invalid credential, i.e. the route exists and the
+// auth layer runs — generation itself needs the user's real key at runtime).
+// Responses pass through verbatim; the page's extractors already parse every
+// shape (choices/message/images, candidates/content/parts, data[]/images[]).
+function upstreamFor(model, prompt, size) {
+  const m = String(model || '');
+  const s = String(size || '1024x1024').trim() || '1024x1024';
+  if (/^(gpt-|sunburst)|dall-e|gpt-image/i.test(m))
+    return [
+      'https://opencode.ai/inference/openai/v1/images/generations',
+      { model: m, prompt, size: s },
+    ];
+  if (/grok/i.test(m))
+    return [
+      'https://opencode.ai/inference/xai/v1/images/generations',
+      { model: m, prompt, size: s },
+    ];
+  if (/gemini|^google\//i.test(m))
+    return [
+      'https://opencode.ai/inference/google/v1beta/models/' +
+        encodeURIComponent(m.replace(/^google\//i, '')) +
+        ':generateContent',
+      {
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { responseModalities: ['TEXT', 'IMAGE'] },
+      },
+    ];
+  return [
+    UPSTREAM_CHAT,
+    { model: m, messages: [{ role: 'user', content: prompt }], modalities: ['image', 'text'] },
+  ];
+}
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -84,16 +119,15 @@ const server = http.createServer(async (req, res) => {
       const prompt = String((body && (body.prompt ?? body.input)) || '').trim();
       if (!model) return jerr(res, 400, 'missing "model"');
       if (!prompt) return jerr(res, 400, 'missing "prompt"');
+      // Extra body fields (key, size) are accepted and ignored where unused so
+      // older/newer page versions keep working against this relay.
+      const [url, payload] = upstreamFor(model, prompt, body && body.size);
       let up;
       try {
-        up = await fetch(UPSTREAM, {
+        up = await fetch(url, {
           method: 'POST',
           headers: { 'content-type': 'application/json', authorization: auth },
-          body: JSON.stringify({
-            model,
-            messages: [{ role: 'user', content: prompt }],
-            modalities: ['image', 'text'],
-          }),
+          body: JSON.stringify(payload),
         });
       } catch (e) {
         return jerr(res, 502, 'upstream unreachable: ' + String((e && e.message) || e));
@@ -110,6 +144,17 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, () =>
-  console.log(`oc-relay serving ${ROOT} on http://localhost:${PORT} (health /api/oc-health)`),
-);
+server.on('error', (e) => {
+  if (e && e.code === 'EADDRINUSE') {
+    console.error(
+      'port ' + PORT + ' is already in use (another relay/probe holds it) — ' +
+        'stop it or run with a free port, e.g. PORT=8788 npm run relay',
+    );
+    process.exit(1);
+  }
+  throw e;
+});
+server.listen(PORT, HOST, () => {
+  console.log('oc-relay serving ' + ROOT);
+  console.log('open http://' + HOST + ':' + PORT + '/engine.html (health /api/oc-health)');
+});
