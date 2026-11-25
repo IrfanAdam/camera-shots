@@ -12,8 +12,8 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 - Generated: 2026-11-25
 - Tokens defined: 188 (`design-system/tokens.css`)
 - Files scanned: `index.html`, `pitch.html`, `engine.html`, `design-system/index.html`
-- Result: **FAIL** — 1 over budget, 21 exempt, 0 bad-allow
-- Budgets: V1 0/0 · V2 0/0 · V3 1/1 · V4 0/0 · V5 0/0 · V6 0/0 · V7 0/0 · V8 0/0 · U1 0/0 · T1 8/10 · T2 25/32 · T3 18/21 · T4w 0/22 · T4f 2/2 · T6 2/5 · T13 0/0 · T14 8/8 · T15 141/147 · T8 10/10 · T9 0/0 · T10 0/0 · T11 0/0 · C1 6/6 · C2 5/12 · C3 0/0 · C4 0/0 · C5 0/0 · C6 0/0
+- Result: **PASS** — 0 over budget, 21 exempt, 0 bad-allow
+- Budgets: V1 0/0 · V2 0/0 · V3 1/1 · V4 0/0 · V5 0/0 · V6 0/0 · V7 0/0 · V8 0/0 · U1 0/0 · T1 8/10 · T2 25/32 · T3 18/21 · T4w 0/22 · T4f 2/2 · T6 2/5 · T13 0/0 · T14 8/8 · T15 141/147 · T8 10/10 · T9 0/0 · T10 0/0 · T11 0/0 · C1 6/6 · C2 0/12 · C3 0/0 · C4 0/0 · C5 0/0 · C6 0/0
 
 ## Per-file violations
 
@@ -21,9 +21,9 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 322 |
 | `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 | 0 | 28 | 510 |
-| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 0 | 2 | 903 |
-| `design-system/index.html` | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 95 | 452 |
-| **Total** | **0** | **0** | **1** | **0** | **0** | **0** | **0** | **0** | **0** | **21** | **0** | **141** | **2187** |
+| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 0 | 2 | 910 |
+| `design-system/index.html` | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 95 | 455 |
+| **Total** | **0** | **0** | **1** | **0** | **0** | **0** | **0** | **0** | **0** | **21** | **0** | **141** | **2197** |
 
 ## Type, consumer & theme counts
 
@@ -66,7 +66,7 @@ Each class carries the count measured on 2026-11-24 as a ceiling. A count at or 
 | T10 | 0 | 0 | ok |
 | T11 | 0 | 0 | ok |
 | C1 | 6 | 6 (per file design-system/base.css 0, design-system/components.css 6) | ok |
-| C2 | 5 | 12 (per file index.html 0, pitch.html 4, engine.html 8, design-system/index.html 0) | OVER +1 |
+| C2 | 0 | 12 (per file index.html 0, pitch.html 4, engine.html 8, design-system/index.html 0) | under |
 | C3 | 0 | 0 | ok |
 | C4 | 0 | 0 | ok |
 | C5 | 0 | 0 | ok |
@@ -88,7 +88,7 @@ The shared layer (`base.css`, `components.css`, `components.js`, `icons.svg`) is
 | Class | Source | Now | Ceiling | Note |
 |---|---|---:|---:|---|
 | C1 | `design-system/base.css`, `design-system/components.css` | 6 | 6 | components.css 6 listed values (560px, 94vw, 88vh, 92vw, rgb(0 0 0 / .6), 40rem), each with a reason and a ceiling of 1; base.css 0 — its only literals are 0, 100%, 50%, the calc() sign multiplier and an iteration count — per file: design-system/base.css 0 · design-system/components.css 6 |
-| C2 | `index.html`, `pitch.html`, `engine.html`, `design-system/index.html` | 5 | 12 | pitch 4 + engine 8, measured on the committed HEAD blob. Engine: html,body · body · header · .dp h3 · #arrowpick button · #chapterbar select · #anchorRow code · #drawerX. Pitch: .plan-nav · .plan-nav .pill · #plan-weeks .wrow · .mrail (inside @media(max-width:900px)). Identical-declaration matching would catch 0 of these — every later block adds a declaration — per file: index.html 0 · pitch.html 4 · engine.html 8 · design-system/index.html 0 |
+| C2 | `index.html`, `pitch.html`, `engine.html`, `design-system/index.html` | 0 | 12 | pitch 4 + engine 8, measured on the committed HEAD blob. Engine: html,body · body · header · .dp h3 · #arrowpick button · #chapterbar select · #anchorRow code · #drawerX. Pitch: .plan-nav · .plan-nav .pill · #plan-weeks .wrow · .mrail (inside @media(max-width:900px)). Identical-declaration matching would catch 0 of these — every later block adds a declaration — per file: index.html 0 · pitch.html 4 · engine.html 8 · design-system/index.html 0 |
 | C3 | all four HTML surfaces | 0 | 0 | 2 aria-modal nodes checked (both pitch drawers: role=dialog + aria-label + hidden when closed), 0 bad |
 | C4 | both stylesheets + four pages | 0 | 0 | 0 classes defined at top level in two sources; the 14 `.spec-cell .ds-*` rules in the gallery are scoped stage overrides and do not count as definitions |
 | C5 | four pages → `icons.svg` | 0 | 0 | 48 `<use href="icons.svg#…">` references, 24 symbols, 0 unresolved |
@@ -96,19 +96,9 @@ The shared layer (`base.css`, `components.css`, `components.js`, `icons.svg`) is
 
 Counters: **5** `aria-modal` node(s) checked · **48** `svg#id` reference(s) resolved.
 
-Worktree divergence (C2 follows `HEAD`): `pitch.html` 0 in the worktree vs 5 at HEAD.
-
 ## Over-budget detail
 
-### `pitch.html` — C2 5/4 (+1)
-
-| Line | Found | Note |
-|---:|---|---|
-| 202 | `.mrail @ @media(max-width:900px)` | duplicate selector (first declared line 199) |
-| 237 | `.plan-nav @ top level` | duplicate selector (first declared line 230) |
-| 238 | `.plan-nav .pill @ top level` | duplicate selector (first declared line 231) |
-| 239 | `#plan-weeks .wrow @ top level` | duplicate selector (first declared line 232) |
-| 245 | `#plan-weeks .wrow.gate @ top level` | duplicate selector (first declared line 241) |
+_No class is over budget._
 
 ## Token-set baseline
 
@@ -171,7 +161,7 @@ _None._
 
 | Line | Class | Found | Reason |
 |---:|---|---|---|
-| 180 | V8 | `margin-top:-10px` | negative half of the 20px dot centres it against the track |
+| 185 | V8 | `margin-top:-10px` | negative half of the 20px dot centres it against the track |
 
 ## How to fix
 

@@ -28,9 +28,9 @@ Read order: [README](README.md) → this file → [components](components.md) �
 
 It is a **count of occurrences**, not the gate's T8 presence test: T8 asks only whether a product page, a theme cell or `components.css` names a token at all, and excludes the gallery. So a key can be T8-unconsumed and still show a non-zero count here — read the breakdown the gate prints, not this column, when judging orphans.
 
-Totals at committed HEAD: **1507 consumer references** across 188 keys, **20** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `color.pro.tool.hover`, `color.status.danger.ink.light`, `color.wiki.dark.accent.ink`, `elevation.1`, `elevation.inset`, `elevation.ring`, `focus.color`, `icon.size.lg`, `icon.size.md`, `layout.rail`, `layout.rail.inset`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `tracking.label`).
+Totals at committed HEAD: **1400 consumer references** across 188 keys, **20** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `color.pro.tool.hover`, `color.status.danger.ink.light`, `color.wiki.dark.accent.ink`, `dot.size`, `elevation.1`, `elevation.float`, `elevation.inset`, `elevation.ring`, `focus.color`, `icon.size.lg`, `icon.size.md`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `tracking.label`).
 
-Under the gate's narrower **T8** scope — `var()` in the three product pages plus theme-map cells plus `components.css`, gallery excluded, aliases and `breakpoint.*` exempt — **10** key(s) are unconsumed: `color.engine.track.audio`, `color.engine.track.fx`, `color.engine.track.title`, `elevation.inset`, `elevation.ring`, `icon.size.lg`, `icon.size.md`, `layout.rail`, `radius.lg`, `tracking.label`. Keys that differ between the two views are canvas-only (`CT()`/`WA()` strings the gate cannot see) or gallery-only consumers; `scripts/lint-tokens.mjs` prints the authoritative list and its budget note.
+Under the gate's narrower **T8** scope — `var()` in the three product pages plus theme-map cells plus `components.css`, gallery excluded, aliases and `breakpoint.*` exempt — **10** key(s) are unconsumed: `color.engine.track.audio`, `color.engine.track.fx`, `color.engine.track.title`, `elevation.float`, `elevation.inset`, `elevation.ring`, `icon.size.lg`, `icon.size.md`, `radius.lg`, `tracking.label`. Keys that differ between the two views are canvas-only (`CT()`/`WA()` strings the gate cannot see) or gallery-only consumers; `scripts/lint-tokens.mjs` prints the authoritative list and its budget note.
 
 ## Theme contract
 
@@ -115,12 +115,12 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `breakpoint` | 5 | 1 | 4 |
 | `color` | 70 | 67 | 3 |
 | `control` | 4 | 4 | 0 |
-| `dot` | 1 | 1 | 0 |
-| `elevation` | 6 | 3 | 3 |
+| `dot` | 1 | 0 | 1 |
+| `elevation` | 6 | 2 | 4 |
 | `focus` | 3 | 2 | 1 |
 | `hover` | 1 | 1 | 0 |
 | `icon` | 3 | 1 | 2 |
-| `layout` | 8 | 6 | 2 |
+| `layout` | 8 | 8 | 0 |
 | `line-height` | 5 | 5 | 0 |
 | `motion` | 14 | 14 | 0 |
 | `opacity` | 2 | 1 | 1 |
@@ -140,8 +140,8 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
 | `border.width.accent` | `3px` | dimension | — | 1 (1/0/0) |
-| `border.width.hairline` | `1px` | dimension | — | 118 (118/0/0) |
-| `border.width.strong` | `2px` | dimension | — | 10 (10/0/0) |
+| `border.width.hairline` | `1px` | dimension | — | 108 (108/0/0) |
+| `border.width.strong` | `2px` | dimension | — | 9 (9/0/0) |
 
 ### breakpoint
 
@@ -164,21 +164,21 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `color.diagram.fill.wiki` | `#9FC3D8` | color | — | 5 (4/0/1) |
 | `color.diagram.scrim.wiki` | `#101828` | color | — | 2 (1/0/1) |
 | `color.engine.accent` | `#E8830C` | color | accent | 2 (0/1/1) |
-| `color.engine.accent.ink` | `#111111` | color | fg.on.accent | 6 (4/1/1) |
+| `color.engine.accent.ink` | `#111111` | color | fg.on.accent | 2 (0/1/1) |
 | `color.engine.canvas` | `#08080A` | color | — | 1 (1/0/0) |
 | `color.engine.divider` | `#2C2C2E` | color | line.default | 3 (1/1/1) |
 | `color.engine.divider.strong` | `#3A3A3C` | color | line.strong | 3 (2/1/0) |
-| `color.engine.overlay.panel` | `rgba(30,30,34,.94)` | color | — | 4 (3/0/1) |
+| `color.engine.overlay.panel` | `rgba(30,30,34,.94)` | color | — | 3 (2/0/1) |
 | `color.engine.overlay.scrim` | `rgba(0,0,0,.9)` | color | — | 7 (7/0/0) |
 | `color.engine.scrim` | `rgba(0,0,0,.45)` | color | — | 3 (2/0/1) |
 | `color.engine.scrim.strong` | `rgba(0,0,0,.55)` | color | — | 2 (1/0/1) |
 | `color.engine.selection` | `#FFD60A` | color | — | 9 (8/0/1) |
 | `color.engine.surface.0` | `#0B0B0D` | color | bg.page | 7 (5/1/1) |
 | `color.engine.surface.1` | `#1E1E22` | color | bg.surface | 7 (5/1/1) |
-| `color.engine.surface.2` | `#2A2A2E` | color | bg.surface.alt | 14 (12/1/1) |
+| `color.engine.surface.2` | `#2A2A2E` | color | bg.surface.alt | 11 (9/1/1) |
 | `color.engine.surface.deep` | `#0C0C0C` | color | — | 1 (1/0/0) |
 | `color.engine.text.primary` | `#F5F5F7` | color | fg.primary | 14 (12/1/1) |
-| `color.engine.text.secondary` | `#9A9AA0` | color | fg.muted | 35 (33/1/1) |
+| `color.engine.text.secondary` | `#9A9AA0` | color | fg.muted | 32 (30/1/1) |
 | `color.engine.tool` | `#1C1C1E` | color | bg.control | 6 (4/1/1) |
 | `color.engine.track.audio` | `#32ADE6` | color | — | 1 (0/0/1) |
 | `color.engine.track.fx` | `#5E5CE6` | color | — | 2 (1/0/1) |
@@ -200,7 +200,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `color.pitch.surface.1` | `#141416` | color | bg.surface | 5 (3/1/1) |
 | `color.pitch.surface.2` | `#1B1B1E` | color | bg.surface.alt | 5 (3/1/1) |
 | `color.pitch.switch.bg` | `#101012` | color | bg.control | 5 (3/1/1) |
-| `color.primitive.black` | `#000000` | color | — | 8 (7/0/1) |
+| `color.primitive.black` | `#000000` | color | — | 6 (5/0/1) |
 | `color.primitive.white` | `#FFFFFF` | color | fg.on.accent | 26 (24/1/1) |
 | `color.print.accent` | `#8A6D2B` | color | — | 2 (1/0/1) |
 | `color.print.body` | `#333333` | color | — | 2 (1/0/1) |
@@ -239,9 +239,9 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
 | `control.height.compact` | `34px` | dimension | — | 1 (1/0/0) |
-| `control.height.default` | `40px` | dimension | — | 5 (5/0/0) |
+| `control.height.default` | `40px` | dimension | — | 4 (4/0/0) |
 | `control.height.reading` | `46px` | dimension | — | 1 (1/0/0) |
-| `control.height.touch` | `44px` | dimension | — | 14 (14/0/0) |
+| `control.height.touch` | `44px` | dimension | — | 12 (12/0/0) |
 
 ### dot
 
@@ -249,7 +249,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
-| `dot.size` | `5px` | dimension | — | 4 (4/0/0) |
+| `dot.size` | `5px` | dimension | — | 0 (0/0/0) |
 
 ### elevation
 
@@ -258,11 +258,11 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
 | `elevation.1` | `0 1px 2px rgb(15 23 42 / 0.05)` | shadow | — | 0 (0/0/0) |
-| `elevation.float` | `0 8px 24px rgba(0,0,0,.25)` | shadow | — | 1 (1/0/0) |
+| `elevation.float` | `0 8px 24px rgba(0,0,0,.25)` | shadow | — | 0 (0/0/0) |
 | `elevation.inset` | `inset 0 0 0 1px rgba(232,131,12,.5)` | shadow | — | 0 (0/0/0) |
 | `elevation.popover` | `0 8px 24px rgba(0, 0, 0, 0.45)` | shadow | — | 6 (6/0/0) |
 | `elevation.ring` | `0 0 0 2px rgba(232,131,12,.18)` | shadow | — | 0 (0/0/0) |
-| `elevation.sheet` | `0 8px 24px rgba(0, 0, 0, 0.5)` | shadow | — | 4 (4/0/0) |
+| `elevation.sheet` | `0 8px 24px rgba(0, 0, 0, 0.5)` | shadow | — | 3 (3/0/0) |
 
 ### focus
 
@@ -271,7 +271,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
 | `focus.color` | `var(--ds-accent)` | color | — · alias → --ds-accent | 0 (0/0/0) |
-| `focus.offset` | `2px` | dimension | — | 5 (5/0/0) |
+| `focus.offset` | `2px` | dimension | — | 6 (6/0/0) |
 | `focus.width` | `2px` | dimension | — | 5 (5/0/0) |
 
 ### hover
@@ -301,11 +301,11 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `layout.bar.engine` | `62px` | dimension | — | 1 (1/0/0) |
 | `layout.drawer.engine.width` | `min(360px, 92vw)` | dimension | — | 1 (1/0/0) |
 | `layout.drawer.pitch.width` | `min(720px, 100vw)` | dimension | — | 1 (1/0/0) |
-| `layout.max.pitch` | `1080px` | dimension | — | 1 (1/0/0) |
-| `layout.max.wiki` | `980px` | dimension | — | 1 (1/0/0) |
-| `layout.rail` | `208px` | dimension | — | 0 (0/0/0) |
-| `layout.rail.inset` | `var(--spacing-20)` | dimension | — · alias → --spacing-20 | 0 (0/0/0) |
-| `layout.sidebar.engine` | `148px` | dimension | — | 2 (2/0/0) |
+| `layout.max.pitch` | `1080px` | dimension | — | 2 (2/0/0) |
+| `layout.max.wiki` | `980px` | dimension | — | 2 (2/0/0) |
+| `layout.rail` | `208px` | dimension | — | 3 (3/0/0) |
+| `layout.rail.inset` | `var(--spacing-20)` | dimension | — · alias → --spacing-20 | 4 (4/0/0) |
+| `layout.sidebar.engine` | `148px` | dimension | — | 1 (1/0/0) |
 
 ### line-height
 
@@ -325,9 +325,9 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
-| `motion.duration.base` | `0.28s` | duration | — | 3 (3/0/0) |
+| `motion.duration.base` | `0.28s` | duration | — | 2 (2/0/0) |
 | `motion.duration.fast` | `0.22s` | duration | — | 2 (2/0/0) |
-| `motion.duration.hover` | `0.2s` | duration | — | 20 (20/0/0) |
+| `motion.duration.hover` | `0.2s` | duration | — | 17 (17/0/0) |
 | `motion.duration.instant` | `0.16s` | duration | — | 7 (7/0/0) |
 | `motion.duration.none` | `0s` | duration | — | 1 (1/0/0) |
 | `motion.duration.opacity` | `0.25s` | duration | — | 1 (1/0/0) |
@@ -338,7 +338,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `motion.easing.drawer` | `cubic-bezier(0.32, 0.72, 0.24, 1)` | cubicBezier | — | 1 (1/0/0) |
 | `motion.easing.emphasized` | `cubic-bezier(0.22,1,0.36,1)` | cubicBezier | — | 7 (7/0/0) |
 | `motion.easing.out` | `ease-out` | cubicBezier | — | 11 (11/0/0) |
-| `motion.easing.standard` | `ease` | cubicBezier | — | 26 (26/0/0) |
+| `motion.easing.standard` | `ease` | cubicBezier | — | 22 (22/0/0) |
 
 ### opacity
 
@@ -355,13 +355,13 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
-| `radius.circle` | `50%` | dimension | — | 6 (6/0/0) |
+| `radius.circle` | `50%` | dimension | — | 4 (4/0/0) |
 | `radius.lg` | `14px` | dimension | — | 0 (0/0/0) |
 | `radius.md` | `10px` | dimension | — | 1 (1/0/0) |
-| `radius.none` | `0` | dimension | — | 8 (8/0/0) |
-| `radius.pill` | `9999px` | dimension | — | 12 (12/0/0) |
-| `radius.sm` | `8px` | dimension | — | 27 (27/0/0) |
-| `radius.xs` | `4px` | dimension | — | 64 (64/0/0) |
+| `radius.none` | `0` | dimension | — | 5 (5/0/0) |
+| `radius.pill` | `9999px` | dimension | — | 15 (15/0/0) |
+| `radius.sm` | `8px` | dimension | — | 24 (24/0/0) |
+| `radius.xs` | `4px` | dimension | — | 53 (53/0/0) |
 
 ### spacing
 
@@ -369,21 +369,21 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
-| `spacing.10` | `10px` | dimension | — | 45 (45/0/0) |
-| `spacing.14` | `14px` | dimension | — | 25 (25/0/0) |
-| `spacing.18` | `18px` | dimension | — | 18 (18/0/0) |
-| `spacing.2` | `2px` | dimension | — | 22 (22/0/0) |
-| `spacing.20` | `20px` | dimension | — | 12 (12/0/0) |
-| `spacing.2xl` | `48px` | dimension | — | 8 (8/0/0) |
-| `spacing.2xs` | `4px` | dimension | — | 66 (66/0/0) |
-| `spacing.6` | `6px` | dimension | — | 79 (79/0/0) |
+| `spacing.10` | `10px` | dimension | — | 42 (42/0/0) |
+| `spacing.14` | `14px` | dimension | — | 19 (19/0/0) |
+| `spacing.18` | `18px` | dimension | — | 16 (16/0/0) |
+| `spacing.2` | `2px` | dimension | — | 18 (18/0/0) |
+| `spacing.20` | `20px` | dimension | — | 15 (15/0/0) |
+| `spacing.2xl` | `48px` | dimension | — | 9 (9/0/0) |
+| `spacing.2xs` | `4px` | dimension | — | 55 (55/0/0) |
+| `spacing.6` | `6px` | dimension | — | 72 (72/0/0) |
 | `spacing.base` | `var(--spacing-2xs)` | dimension | — · alias → --spacing-2xs | 0 (0/0/0) |
 | `spacing.gutter.pro` | `var(--spacing-md)` | dimension | — · alias → --spacing-md | 0 (0/0/0) |
-| `spacing.lg` | `24px` | dimension | — | 13 (13/0/0) |
-| `spacing.md` | `16px` | dimension | — | 31 (31/0/0) |
-| `spacing.sm` | `12px` | dimension | — | 70 (70/0/0) |
+| `spacing.lg` | `24px` | dimension | — | 10 (10/0/0) |
+| `spacing.md` | `16px` | dimension | — | 32 (32/0/0) |
+| `spacing.sm` | `12px` | dimension | — | 65 (65/0/0) |
 | `spacing.xl` | `32px` | dimension | — | 7 (7/0/0) |
-| `spacing.xs` | `8px` | dimension | — | 102 (102/0/0) |
+| `spacing.xs` | `8px` | dimension | — | 86 (86/0/0) |
 
 ### touch
 
@@ -391,7 +391,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
-| `touch.min` | `40px` | dimension | — | 11 (11/0/0) |
+| `touch.min` | `40px` | dimension | — | 10 (10/0/0) |
 | `touch.preferred` | `44px` | dimension | — | 1 (1/0/0) |
 
 ### tracking
@@ -413,16 +413,16 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 |---|---|---|---|---|
 | `typography.family.mono` | `ui-monospace, Menlo, monospace` | fontFamily | — | 13 (13/0/0) |
 | `typography.family.sans` | `system-ui, -apple-system, Segoe UI, sans-serif` | fontFamily | — | 1 (1/0/0) |
-| `typography.size.body` | `0.95rem` | fontSize | — | 13 (13/0/0) |
+| `typography.size.body` | `0.95rem` | fontSize | — | 12 (12/0/0) |
 | `typography.size.display` | `clamp(2rem, 5vw, 3.1rem)` | fontSize | — | 1 (1/0/0) |
 | `typography.size.eyebrow` | `0.72rem` | fontSize | — | 25 (25/0/0) |
 | `typography.size.h1` | `1.6rem` | fontSize | — | 1 (1/0/0) |
 | `typography.size.h2` | `1.35rem` | fontSize | — | 2 (2/0/0) |
 | `typography.size.h3` | `1.25rem` | fontSize | — | 1 (1/0/0) |
 | `typography.size.lede` | `1.05rem` | fontSize | — | 3 (3/0/0) |
-| `typography.size.meta` | `0.8rem` | fontSize | — | 44 (44/0/0) |
-| `typography.size.small` | `0.85rem` | fontSize | — | 48 (48/0/0) |
-| `typography.size.timecode` | `0.75rem` | fontSize | — | 21 (21/0/0) |
+| `typography.size.meta` | `0.8rem` | fontSize | — | 42 (42/0/0) |
+| `typography.size.small` | `0.85rem` | fontSize | — | 36 (36/0/0) |
+| `typography.size.timecode` | `0.75rem` | fontSize | — | 19 (19/0/0) |
 | `typography.size.ui` | `1rem` | fontSize | — | 7 (7/0/0) |
 
 ### weight
@@ -431,11 +431,11 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
-| `weight.bold` | `700` | fontWeight | — | 11 (11/0/0) |
+| `weight.bold` | `700` | fontWeight | — | 17 (17/0/0) |
 | `weight.heavy` | `800` | fontWeight | — | 1 (1/0/0) |
-| `weight.medium` | `600` | fontWeight | — | 4 (4/0/0) |
-| `weight.regular` | `400` | fontWeight | — | 2 (2/0/0) |
-| `weight.semibold` | `650` | fontWeight | — | 11 (11/0/0) |
+| `weight.medium` | `600` | fontWeight | — | 16 (16/0/0) |
+| `weight.regular` | `400` | fontWeight | — | 1 (1/0/0) |
+| `weight.semibold` | `650` | fontWeight | — | 8 (8/0/0) |
 
 ### z
 
@@ -443,7 +443,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
-| `z.bar` | `50` | number | — | 3 (3/0/0) |
+| `z.bar` | `50` | number | — | 1 (1/0/0) |
 | `z.base` | `0` | number | — | 1 (1/0/0) |
 | `z.canvas` | `90` | number | — | 3 (3/0/0) |
 | `z.content` | `2` | number | — | 3 (3/0/0) |
@@ -455,7 +455,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `z.pinned` | `80` | number | — | 1 (1/0/0) |
 | `z.popover` | `72` | number | — | 1 (1/0/0) |
 | `z.raise` | `1` | number | — | 1 (1/0/0) |
-| `z.sheet` | `65` | number | — | 2 (2/0/0) |
+| `z.sheet` | `65` | number | — | 1 (1/0/0) |
 | `z.sticky` | `40` | number | — | 6 (6/0/0) |
 | `z.sticky.rail` | `41` | number | — | 1 (1/0/0) |
 | `z.toast` | `120` | number | — | 1 (1/0/0) |
