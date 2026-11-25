@@ -141,7 +141,7 @@ tbody td:first-child{white-space:nowrap;font-weight:var(--weight-semibold);color
 /* drawers + backdrop: direct body children */
 .backdrop{position:fixed;inset:0;background:var(--color-pitch-scrim-mid);opacity:0;pointer-events:none;transition:opacity var(--motion-duration-opacity) var(--motion-easing-standard);z-index:var(--z-overlay)}
 .backdrop.open{opacity:1;pointer-events:auto}
-.drawer{position:fixed;right:0;top:0;height:100dvh;width:var(--layout-drawer-pitch-width);background:var(--s1);border-left:var(--border-width-hairline) solid var(--rule);z-index:var(--z-sheet);transform:translateX(100%);transition:transform var(--motion-duration-slow) var(--motion-easing-drawer);overflow-y:auto;padding:1.6rem} /* lint-allow: 25.6px drawer pad sits between the 24 step and the 32px layout gap */
+.drawer{position:fixed;right:0;top:0;height:100dvh;width:var(--layout-drawer-pitch-width);background:var(--s1);border-left:var(--border-width-hairline) solid var(--rule);z-index:var(--z-sheet);transform:translateX(100%);transition:transform var(--motion-duration-slow) var(--motion-easing-drawer);overflow-y:auto;padding:var(--spacing-lg)}
 .drawer.open{transform:none}
 .drawer h2{font-size:var(--typography-size-h3)}
 .drawer .x{float:right;background:transparent;border:var(--border-width-hairline) solid var(--rule);color:var(--ink);border-radius:var(--radius-xs);padding:var(--spacing-2xs) var(--spacing-sm);cursor:pointer;font-family:inherit;font-size:var(--typography-size-meta)}
@@ -239,10 +239,12 @@ section{scroll-margin-top:9.5rem}
 #plan-weeks .wrow{background:var(--s1);border:var(--border-width-hairline) solid var(--rule);border-radius:var(--radius-sm);padding:var(--spacing-sm) var(--spacing-14);margin:0 0 var(--spacing-sm);scroll-margin-top:calc(var(--spacing-2xl) + var(--spacing-xl) + var(--spacing-lg) + var(--spacing-md))}
 #plan-weeks .wrow>b{display:block;margin-bottom:var(--spacing-2xs)}
 #plan-weeks .wrow.gate{border-color:var(--mut2)}
-#plan-weeks .plan-context{display:flex;gap:var(--spacing-sm);overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding-bottom:var(--spacing-2xs);margin-bottom:var(--spacing-sm)}
-#plan-weeks .plan-context .wrow{flex:0 0 85%;scroll-snap-align:start;margin:0}
-#plan-weeks .plan-foot{border-top:var(--border-width-hairline) solid var(--rule);margin-top:var(--spacing-sm);padding-top:var(--spacing-sm)}
-#plan-weeks .plan-foot .wrow{background:transparent;border:0;border-radius:var(--radius-none);padding:var(--spacing-2xs) 0;margin:0;font-size:var(--typography-size-meta);color:var(--mut)}
+/* plan drawer v4: quiet per-item containers + tighter gap + trailing peek fade (tokens only) */
+#plan-weeks .plan-context{display:flex;gap:var(--spacing-xs);overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scroll-behavior:smooth;margin:0 calc(-1 * var(--spacing-lg)) var(--spacing-sm);padding:0 var(--spacing-lg) var(--spacing-2xs);scroll-padding-inline:var(--spacing-lg);-webkit-mask-image:linear-gradient(90deg,var(--s1) 88%,transparent);mask-image:linear-gradient(90deg,var(--s1) 88%,transparent)}
+#plan-weeks .plan-context .wrow{flex:0 0 auto;max-width:var(--breakpoint-xs);scroll-snap-align:start;background:var(--s2);border:var(--border-width-hairline) solid var(--rule);border-radius:var(--radius-xs);padding:var(--spacing-sm) var(--spacing-sm);margin:0;font-size:var(--typography-size-meta);color:var(--mut)}
+#plan-weeks .wrow.gate{border-color:var(--rule)}
+#plan-weeks .wrow.gate .k{display:block;margin-bottom:var(--spacing-2xs)}
+#plan-weeks{padding-block-end:var(--spacing-2xl)}
 @media(prefers-reduced-motion:reduce){#plan-weeks .plan-context{scroll-snap-type:none;scroll-behavior:auto}}
 /* print: active article only */
 @media print{
@@ -708,21 +710,18 @@ html{scroll-behavior:auto}
 </div>
 <div id="plan-weeks">
 <div class="plan-context">
-<div class="wrow card" id="pw-loop"><b>Loop · v1.0 — the loop must prove this.</b><span class="pl"><span class="k">01</span><span>Learn one shot term in the wiki and copy its token.</span><span class="k">02</span><span>Name the shot's job before its look.</span><span class="k">03</span><span>Compose the shot, anchor first in preview.</span><span class="k">04</span><span>Pass the one-action check.</span><span class="k">05</span><span>Export a SHOT-XX — phrase stub.</span><span class="k">Rule</span><span>Product generates nothing — no rendering, no accounts, no model lock-in.</span></span></div>
-<div class="wrow card" id="pw-scope"><b>Scope — out of scope.</b><span class="pl"><span class="k">No</span><span>generation or rendering; accounts, billing, realtime editing; generator integrations or prompt formatting; beyond-readable phone layouts.</span><span class="k">Hold</span><span>extra wiki entries until W6 passes; launch or paid acquisition; story-copy changes beyond false-claim fixes.</span></span></div>
+<div class="wrow" id="pw-loop"><b>Loop · v1.0 — the loop must prove this.</b><span class="pl"><span class="k">01</span><span>Learn one shot term in the wiki and copy its token.</span><span class="k">02</span><span>Name the shot's job before its look.</span><span class="k">03</span><span>Compose the shot, anchor first in preview.</span><span class="k">04</span><span>Pass the one-action check.</span><span class="k">05</span><span>Export a SHOT-XX — phrase stub.</span><span class="k">Rule</span><span>Product generates nothing — no rendering, no accounts, no model lock-in.</span></span></div>
+<div class="wrow" id="pw-scope"><b>Scope — out of scope.</b><span class="pl"><span class="k">No</span><span>generation or rendering; accounts, billing, realtime editing; generator integrations or prompt formatting; beyond-readable phone layouts.</span><span class="k">Hold</span><span>extra wiki entries until W6 passes; launch or paid acquisition; story-copy changes beyond false-claim fixes.</span></span></div>
+<div class="wrow" id="pw-rules"><b>Rules — standing rules.</b><span class="pl"><span class="k">Log</span><span>weekly shipped / broke / learned / change.</span><span class="k">Claims</span><span>trace to source; loop-or-decision test for features; generates-nothing veto.</span><span class="k">Calendar</span><span>4 build days + 1 test day; review out-of-scope weekly.</span></span></div>
 </div>
 <div class="wrow" id="pw-w1"><b>W1 — Wiki depth (FR-01) → 3 seeds render.</b><span class="pl"><span class="k">Build:</span><span>field schema (name, story job, when-to-use, token); entries render from schema; video slot with empty state.</span><span class="k">Decide:</span><span>token source of truth; 3 seeds CU / DOLLY / GOLD; uppercase token + one-liner.</span><span class="k">Recruit:</span><span>12 candidates across 4 audiences, runs W1–W8.</span><span class="k">Done:</span><span class="done">✓ 3 seeds render all fields + tokens. ✓ Empty slot shows placeholder.</span><span class="k">Risk:</span><span>schema churn — freeze names by W2.</span></span></div>
 <div class="wrow" id="pw-w2"><b>W2 — Versioned token library (FR-02) → edits version, boards pin.</b><span class="pl"><span class="k">Build:</span><span>tokens with version history; boards pin versions; diff view.</span><span class="k">Test:</span><span>edit 10 tokens, pinned boards unchanged; update a token used in 3+ boards cleanly.</span><span class="k">Recruit:</span><span>book two 30-min sessions for the W6 learn-test.</span><span class="k">Done:</span><span class="done">✓ Edit creates a version. ✓ Diff shows exact text.</span><span class="k">Risk:</span><span>history growth — store diffs past 20 versions.</span></span></div>
 <div class="wrow" id="pw-w3"><b>W3 — Scene→shot templates, locked anchors (FR-03) → anchor first in preview.</b><span class="pl"><span class="k">Build:</span><span>anchors (location, time of day, positions, prop, lighting) locked per scene; templates per shot type; preview shows anchor first, then job, then look.</span><span class="k">Test:</span><span>6-shot scene by hand vs from templates; unlock affects only flagged shots.</span><span class="k">Done:</span><span class="done">✓ New shots inherit anchors. ✓ Preview order anchor → job → look.</span><span class="k">Risk:</span><span>rigidity — one-shot override with badge.</span></span></div>
 <div class="wrow" id="pw-w4"><b>W4 — Continuity ledger (FR-04) → change flags affected shots.</b><span class="pl"><span class="k">Build:</span><span>per-scene facts (wardrobe, prop, time, screen direction); change flags each affected shot with field + old/new values.</span><span class="k">Measure:</span><span>time-to-fix, false flags per scene, unedited entries.</span><span class="k">Done:</span><span class="done">✓ Prop change flags correct shots only, on one real scene.</span><span class="k">Risk:</span><span>flag noise — cap one flag per shot per change, group by scene.</span></span></div>
 <div class="wrow" id="pw-w5"><b>W5 — One-action checker (FR-05) + stub export (FR-06) → two verbs warn, stubs paste.</b><span class="pl"><span class="k">Build:</span><span>checker warns on two verbs, never rewrites; SHOT-XX — phrase stubs via clipboard + markdown.</span><span class="k">Test:</span><span>checker over W3 scene + 10 Legora shots; paste stubs into 2 generators + a doc.</span><span class="k">Done:</span><span class="done">✓ Zero false positives on 10 one-verb shots. ✓ Stubs paste cleanly.</span><span class="k">Risk:</span><span>verb gaps — weekly miss list.</span></span></div>
-<div class="wrow gate" id="pw-w6"><b>W6 — DECISION GATE → no invented fallbacks, under 45 min each.</b><span class="pl"><span class="k">Run:</span><span>3 real boards end to end (non-builder); log every invented fallback; time first-term-to-stub; fix fallbacks on 2+ boards, cut unused features.</span><span class="k">Done:</span><span class="done">✓ Proceed if 3 boards export, zero invented fallbacks, under 45 min each. ✗ Leaky if fallbacks on 2+ boards — stop, re-scope schema before W7.</span></span></div>
+<div class="wrow gate" id="pw-w6"><span class="k">Gate · proceed only if 3 boards export with zero invented fallbacks, else re-scope.</span><b>W6 — DECISION GATE → no invented fallbacks, under 45 min each.</b><span class="pl"><span class="k">Run:</span><span>3 real boards end to end (non-builder); log every invented fallback; time first-term-to-stub; fix fallbacks on 2+ boards, cut unused features.</span><span class="k">Done:</span><span class="done">✓ Proceed if 3 boards export, zero invented fallbacks, under 45 min each. ✗ Leaky if fallbacks on 2+ boards — stop, re-scope schema before W7.</span></span></div>
 <div class="wrow" id="pw-w7"><b>W7 — NFR pass + story-claim audit → four NFR gates pass, claims true.</b><span class="pl"><span class="k">Build:</span><span>anchor lookup + checker under 200 ms on a 40-shot scene; full keyboard path; reduced-motion respected; corrupt-state one-click reset with backup.</span><span class="k">Audit:</span><span>every story-tab claim marked true or corrected.</span><span class="k">Done:</span><span class="done">✓ All four NFR gates pass. ✓ Reset recovers a corrupted file in one click.</span><span class="k">Risk:</span><span>keyboard gaps — test on W5 screens first.</span></span></div>
-<div class="wrow gate" id="pw-w8"><b>W8 — DECISION GATE, 4-user trial → proceed / pause / rethink.</b><span class="pl"><span class="k">Run:</span><span>one user per audience (director, cinematographer, AI filmmaker, student), unassisted; each builds one beat + exports stubs.</span><span class="k">Measure:</span><span>activation, repeat use, output use, craft uptake.</span><span class="k">Done:</span><span class="done">✓ Proceed if 3 of 4 would use it + 2 pasted stubs into real work. ✗ Pause if none finish. ✗ Rethink if wiki read but no boards.</span></span></div>
-<div class="plan-foot">
-<div class="wrow" id="pw-gates"><b>Gates — decisions.</b><span class="pl"><span class="k">W6 proceed</span><span>loop real on 3 boards.</span><span class="k">W6 leaky</span><span>fallbacks on 2+ boards, re-scope first.</span><span class="k">W8 proceed</span><span>3 of 4 users in + 2 real pastes.</span><span class="k">W8 pause</span><span>none finish.</span><span class="k">Rethink</span><span>reads but no builds.</span></span></div>
-<div class="wrow" id="pw-rules"><b>Rules — standing rules.</b><span class="pl"><span class="k">Log</span><span>weekly shipped / broke / learned / change.</span><span class="k">Claims</span><span>trace to source; loop-or-decision test for features; generates-nothing veto.</span><span class="k">Calendar</span><span>4 build days + 1 test day; review out-of-scope weekly.</span></span></div>
-</div>
+<div class="wrow gate" id="pw-w8"><span class="k">Gate · proceed only if 3 of 4 adopt + 2 real pastes, else pause / rethink.</span><b>W8 — DECISION GATE, 4-user trial → proceed / pause / rethink.</b><span class="pl"><span class="k">Run:</span><span>one user per audience (director, cinematographer, AI filmmaker, student), unassisted; each builds one beat + exports stubs.</span><span class="k">Measure:</span><span>activation, repeat use, output use, craft uptake.</span><span class="k">Done:</span><span class="done">✓ Proceed if 3 of 4 would use it + 2 pasted stubs into real work. ✗ Pause if none finish. ✗ Rethink if wiki read but no boards.</span></span></div>
 </div>
 </aside>
 
@@ -811,14 +810,38 @@ rail.addEventListener("click",function(e){
   }
   nav.addEventListener("click",function(e){
     var a=e.target.closest("[data-psec]");if(!a)return;e.preventDefault();
-    var el=document.getElementById(a.getAttribute("data-psec"));
-    if(el)el.scrollIntoView({behavior:noMotion?"auto":"smooth",block:"start"});
+    var id=a.getAttribute("data-psec"),el=document.getElementById(id);
+    if(el){markPlan(id);el.scrollIntoView({behavior:noMotion?"auto":"smooth",block:"start"})}
   });
-  if(!("IntersectionObserver" in window))return;
-  var pspy=new IntersectionObserver(function(es){
-    es.forEach(function(en){if(en.isIntersecting)markPlan(en.target.id)});
-  },{root:drawer,rootMargin:"-35% 0px -55% 0px"});
-  ids.forEach(function(id){var el=document.getElementById(id);if(el)pspy.observe(el)});
+  /* scroll-position spy: active = last section with (top - drawerTop - fudge) <= 0,
+     the rect form of offsetTop - drawerTop - fudge <= scrollTop; fudge = sticky
+     head height + a spacing token. rAF-throttled drawer scroll; bottom pins W8. */
+  var head=drawer.querySelector(".plan-head");
+  function tokenPx(n,fb){
+    var v="";try{v=getComputedStyle(document.documentElement).getPropertyValue(n)}catch(e){}
+    var p=parseFloat(v);return isNaN(p)?fb:p;
+  }
+  function planFudge(){return (head?head.offsetHeight:0)+tokenPx("--spacing-sm",12)}
+  var tick=false;
+  function spyPlan(){
+    tick=false;
+    if(drawer.hidden)return;
+    var fudge=planFudge(),dTop=drawer.getBoundingClientRect().top,pick=ids[0];
+    ids.forEach(function(id){
+      var el=document.getElementById(id);if(!el)return;
+      if(el.getBoundingClientRect().top-dTop-fudge<=0)pick=id;
+    });
+    if(drawer.scrollTop+drawer.clientHeight>=drawer.scrollHeight-2)pick=ids[ids.length-1];
+    markPlan(pick);
+  }
+  drawer.addEventListener("scroll",function(){
+    if(tick)return;tick=true;
+    requestAnimationFrame(spyPlan);
+  },{passive:true});
+  markPlan(ids[0]);
+  if("MutationObserver" in window){
+    new MutationObserver(function(){if(!drawer.hidden)spyPlan()}).observe(drawer,{attributes:true,attributeFilter:["hidden"]});
+  }
 })();
 /* mobile rail: hide on scroll down, show on scroll up */
 var railY=window.scrollY||0,railTick=false;
