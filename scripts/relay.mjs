@@ -84,11 +84,15 @@ function serveStatic(req, res) {
   if (!file.startsWith(ROOT + path.sep) && file !== ROOT)
     return jerr(res, 403, 'forbidden');
   fs.stat(file, (e, st) => {
-    if (e || !st.isFile()) return jerr(res, 404, 'not found: ' + p);
-    res.writeHead(200, {
-      'content-type': MIME[path.extname(file).toLowerCase()] || 'application/octet-stream',
+    // Directory requests fall back to index.html (standard static behavior).
+    const target = !e && st.isDirectory() ? path.join(file, 'index.html') : file;
+    fs.stat(target, (e2, st2) => {
+      if (e2 || !st2.isFile()) return jerr(res, 404, 'not found: ' + p);
+      res.writeHead(200, {
+        'content-type': MIME[path.extname(target).toLowerCase()] || 'application/octet-stream',
+      });
+      fs.createReadStream(target).pipe(res);
     });
-    fs.createReadStream(file).pipe(res);
   });
 }
 
