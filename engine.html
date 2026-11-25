@@ -1144,7 +1144,7 @@ cardMenuBtn.addEventListener('focus',()=>{try{syncCardBtn()}catch(_e){}});
 cardMenuBtn.addEventListener('blur',()=>{setTimeout(()=>{try{syncCardBtn()}catch(_e){}},0)});
 filePick.addEventListener('change',()=>{const f=filePick.files&&filePick.files[0];filePick.value='';if(!f){pickTarget=null;return};
  if(pickTarget&&pickTarget.k==='new'){pickTarget=null;shotFromFile(f);return}
- const t=pickTarget?nodeById(pickTarget.id):null;pickTarget=null;
+ const t=pickTarget?(nodeById(pickTarget.id)||shotById(pickTarget.id)):null;pickTarget=null;
  if(!t){flashHint('hover a card first');return}attachFile(t,f)});
 document.addEventListener('paste',e=>{const items=(e.clipboardData&&e.clipboardData.items)||[];
  for(const it of items){if(it.type&&it.type.startsWith('image/')){const f=it.getAsFile();if(!f)continue;
@@ -1233,10 +1233,11 @@ function drawerDelFire(){const n=drawerSub;disarmDrawerDel();
  if(n&&n.id!=null&&view!=='scenes'&&nodeById(n.id)){selected=n;delSelected();return}
  flashHint('nothing to delete')}
 document.getElementById('drawerDel').onclick=()=>{if(!drawerDelArmed){armDrawerDel();return}drawerDelFire()};
-document.addEventListener('click',e=>{try{const t=e.target&&e.target.closest?e.target.closest('#menuDel,#delConfirm'):null;if(!t)return;if(t.id==='menuDel'){if(!drawerDelArmed){armDrawerDel()}else{drawerDelFire()}}else{disarmDrawerDel()}}catch(_e){}},true);
+document.addEventListener('click',e=>{try{if(e.target&&e.target.closest&&e.target.closest('#drawerDel,#drawerDelCancel'))return;const t=e.target&&e.target.closest?e.target.closest('#menuDel,#delConfirm'):null;if(!t)return;if(t.id==='menuDel'){if(!drawerDelArmed){armDrawerDel()}else{drawerDelFire()}}else{disarmDrawerDel()}}catch(_e){}},true);
 document.getElementById('drawerDelCancel').onclick=()=>{disarmDrawerDel()};
 function refreshDrawerMenu(){try{const r=document.getElementById('menuRem');if(r)r.hidden=!(drawerSub&&drawerSub.imgUrl)}catch(_e){}}
 function drawerLive(){return(drawerSub&&drawerSub.id!=null&&nodeById(drawerSub.id))||drawerSub}
+function drawerImgTarget(){const t=drawerLive();if(!t||t.id==null)return null;const n=nodeById(t.id);if(n)return n;if(t.slots&&view==='scenes')return null;try{const s=shotById(t.id);if(s)return s}catch(_e){}return null}
 function refreshDrawerAfterImg(){try{if(!drawerSub)return;renderAnchorRow(drawerSub);renderPromptPreview(drawerSub)}catch(_e){}
  try{syncDrawerEmpty(drawerSub)}catch(_e0){}
  try{if(drawerSub.images)return;const im=document.getElementById('drawerImg');let err=document.getElementById('drawerImgErr');
@@ -1249,12 +1250,12 @@ function syncDrawerImg(n){try{
  refreshDrawerAfterImg()}catch(_e){}}
 const drawerMenuAPI=DS.menu(document.getElementById('drawerMenuBtn'),document.getElementById('drawerMenu'));
 drawerMenuAPI.panel.addEventListener('ds:menuopen',()=>{try{refreshDrawerMenu()}catch(_e){}});
-document.getElementById('menuImg').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}try{drawerMenuAPI.close('ui',false)}catch(_e2){}const t=drawerLive();if(!t||t.id==null||!nodeById(t.id)){flashHint('open a card first');return}pickTarget={k:'n',id:t.id};filePick.click()};
+document.getElementById('menuImg').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}try{drawerMenuAPI.close('ui',false)}catch(_e2){}const t=drawerImgTarget();if(!t){flashHint('open a card first');return}pickTarget={k:'n',id:t.id};filePick.click()};
 document.getElementById('menuRename').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}try{drawerMenuAPI.close('ui',false)}catch(_e2){}const t=drawerLive();if(!t){flashHint('open a card first');return}renameAsset(t)};
 function syncDrawerEmpty(n){try{const e=document.getElementById('drawerEmpty');if(!e)return;e.hidden=!!(n&&(n.images||n.imgUrl))}catch(_e){}}
-document.getElementById('drawerAddImg').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}const t=drawerLive();if(!t||t.id==null||!nodeById(t.id)){flashHint('open a card first');return}pickTarget={k:'n',id:t.id};filePick.click()};
-document.getElementById('menuURL').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}try{drawerMenuAPI.close('ui',false)}catch(_e2){}const t=drawerLive();if(!t||t.id==null||!nodeById(t.id)){flashHint('open a card first');return}const cur=t.imgUrl&&!t.imgUrl.startsWith('data:')?t.imgUrl:'';const v=prompt('Image URL or repo path (e.g. uploads/photo.jpg) for "'+(t.label||t.title||'card')+'": (empty removes)',cur);if(v===null)return;attachURL(t,v.trim());refreshDrawerAfterImg();refreshDrawerMenu()};
-document.getElementById('menuRem').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}try{drawerMenuAPI.close('ui',false)}catch(_e2){}const t=drawerLive();if(!t||t.id==null||!nodeById(t.id)){flashHint('open a card first');return}attachURL(t,'');refreshDrawerAfterImg();refreshDrawerMenu()};
+document.getElementById('drawerAddImg').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}const t=drawerImgTarget();if(!t){flashHint('open a card first');return}pickTarget={k:'n',id:t.id};filePick.click()};
+document.getElementById('menuURL').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}try{drawerMenuAPI.close('ui',false)}catch(_e2){}const t=drawerImgTarget();if(!t){flashHint('open a card first');return}const cur=t.imgUrl&&!t.imgUrl.startsWith('data:')?t.imgUrl:'';const v=prompt('Image URL or repo path (e.g. uploads/photo.jpg) for "'+(t.label||t.title||'card')+'": (empty removes)',cur);if(v===null)return;attachURL(t,v.trim());refreshDrawerAfterImg();refreshDrawerMenu()};
+document.getElementById('menuRem').onclick=e=>{try{if(e&&e.stopPropagation)e.stopPropagation()}catch(_e){}try{drawerMenuAPI.close('ui',false)}catch(_e2){}const t=drawerImgTarget();if(!t){flashHint('open a card first');return}attachURL(t,'');refreshDrawerAfterImg();refreshDrawerMenu()};
 document.addEventListener('pointerdown',e=>{if(drawerDelArmed&&!(e.target&&e.target.closest&&e.target.closest('#drawerDel,#drawerDelCancel,#menuDel,#delConfirm')))disarmDrawerDel()},true);
 /* ---- project + prompt wiring ---- */
 document.getElementById('projBtn').onclick=()=>openProjectModal();

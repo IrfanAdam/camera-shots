@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Intent Before Pixels — A Craft-Led Engine for Cinematic AI Video</title>
-<meta name="description" content="Story, investors, wiki and MVP docs for the cinematic AI-video prompt/storyboard engine: wiki teaches shot language, engine storyboards scenes and composes reusable prompt tokens.">
+<meta name="description" content="Product, investors, wiki and MVP docs for the cinematic AI-video prompt/storyboard engine: wiki teaches shot language, engine storyboards scenes and composes reusable prompt tokens.">
 <link rel="stylesheet" href="design-system/tokens.css">
 <style>
 :root{
@@ -280,7 +280,7 @@ html{scroll-behavior:auto}
 </span></span>
 </div>
 <nav class="doctabs" role="tablist" aria-label="Company Documents">
-<button class="tab-btn tab-active" id="tab-btn-story" role="tab" data-doc="story" aria-selected="true" tabindex="0" onclick="switchTab('story')">Story</button>
+<button class="tab-btn tab-active" id="tab-btn-story" role="tab" data-doc="story" aria-selected="true" tabindex="0" onclick="switchTab('story')">Product</button>
 <button class="tab-btn" id="tab-btn-investors" role="tab" data-doc="investors" aria-selected="false" tabindex="-1" onclick="switchTab('investors')">Investors</button>
 <button class="tab-btn" id="tab-btn-wiki" role="tab" data-doc="wiki" aria-selected="false" tabindex="-1" onclick="switchTab('wiki')">Wiki</button>
 <button class="tab-btn" id="tab-btn-mvp" role="tab" data-doc="mvp" aria-selected="false" tabindex="-1" onclick="switchTab('mvp')">MVP</button>
@@ -291,7 +291,7 @@ html{scroll-behavior:auto}
 <!-- ============ SIDEBAR: TOC rail + sidenav footer export below it ============ -->
 <div class="layout">
 <aside class="side">
-<nav class="toc on" data-toc="story" aria-label="Story contents">
+<nav class="toc on" data-toc="story" aria-label="Product contents">
 <a href="#s-hero">Intro</a><a href="#s-vision">01 — Vision</a><a href="#s-problem">02 — Problem</a><a href="#s-gap">03 — Craft Gap</a><a href="#s-how">04 — How It Works</a><a href="#s-built">05 — Built For</a><a href="#s-principles">06 — Principles</a><a href="#s-next">07 — What's Next</a><a href="#s-cta">Build with Intent</a>
 </nav>
 <nav class="toc" data-toc="investors" aria-label="Investor contents">
@@ -304,7 +304,7 @@ html{scroll-behavior:auto}
 <a href="#d4-research">Research</a><a href="#d4-scope">Scope</a><a href="#d4-requirements">Requirements</a><a href="#d4-nfr">NFRs</a><a href="#d4-backlog">Backlog</a>
 </nav>
 <div class="sidexport no-print" role="group" aria-label="Export active document">
-<span class="explabel">Export: <b id="export-label">Story</b></span>
+<span class="explabel">Export: <b id="export-label">Product</b></span>
 <span class="expbtns">
 <button class="expbtn" id="exp-md" type="button" title="Download .md of this tab" aria-label="Download active tab markdown"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>.md</button>
 <button class="expbtn" id="exp-copy" type="button" title="Copy .md of this tab" aria-label="Copy active tab markdown"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button>
@@ -315,8 +315,8 @@ html{scroll-behavior:auto}
 </aside>
 <div class="panels">
 
-<!-- ============ TAB 1: STORY ============ -->
-<div class="panel on" id="panel-doc-01" data-panel="story" role="tabpanel" aria-label="Story">
+<!-- ============ TAB 1: PRODUCT ============ -->
+<div class="panel on" id="panel-doc-01" data-panel="story" role="tabpanel" aria-label="Product">
 <article>
 <section id="s-hero">
 <header class="hero">
@@ -729,7 +729,7 @@ html{scroll-behavior:auto}
 (function(){
 "use strict";
 var TABS=["story","investors","wiki","mvp"];
-var DOC_TITLES={story:"Story",investors:"Investors",wiki:"Wiki",mvp:"MVP"};
+var DOC_TITLES={story:"Product",investors:"Investors",wiki:"Wiki",mvp:"MVP"};
 var PANEL_IDS={story:"panel-doc-01",investors:"panel-doc-03",wiki:"panel-doc-02",mvp:"panel-doc-04"};
 var TOCS={
 story:[["s-hero","Intro"],["s-vision","Vision"],["s-problem","Problem"],["s-gap","Gap"],["s-how","How"],["s-built","For"],["s-principles","Rules"],["s-next","Next"],["s-cta","Start"]],
