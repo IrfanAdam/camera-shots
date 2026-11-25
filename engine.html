@@ -1358,10 +1358,30 @@ function genExtractImage(j){
    defensive fallbacks). Never surfaces the bare TypeError: a dead relay maps
    to the exact fix, and upstream failures throw real HTTP/body errors. */
 function genRelayNetErr(e){if(e&&e.name==='TypeError')return new Error('image relay unreachable at /api/oc-image — run `npm run relay` on this machine (default port 8787) and retry');return e instanceof Error?e:new Error(String((e&&e.message)||e||'image relay request failed'))}
+/* Image-model input cap: buildPrompt() embeds the card's reference image
+   (often a base64 data URL = tens of thousands of tokens), which upstream
+   rejects with 400 'input token count exceeds allowed tokens'. Strip bulky
+   image payloads and hard-cap length before anything is sent — applies to
+   every provider via genRequestImage. Map any residual upstream length
+   complaint to a friendly message. */
+function genCapPrompt(prompt){
+ let s=String(prompt||'');
+ try{const o=JSON.parse(s);
+  if(o&&typeof o==='object'&&typeof o.image==='string'&&(o.image.length>500||o.image.indexOf('data:')===0))o.image='[reference image omitted — use a short URL to include one]';
+  s=JSON.stringify(o);
+ }catch(_e){}
+ const MAX=6000;
+ if(s.length>MAX)s=s.slice(0,MAX)+'…[prompt truncated to fit the image-model input limit]';
+ return s}
+function genThrowHttp(who,model,status,body){
+ const t=genErrText(body)||'empty response';
+ if(/exceed|too long|too many|maximum|above.*limit|over.*limit/i.test(t)&&/token|length|input|context|size|content/i.test(t))
+  throw new Error(who+' HTTP '+status+' — prompt too long for '+model+': shorten the card details and retry (reference images are auto-omitted)');
+ throw new Error(who+' HTTP '+status+' — '+t.slice(0,300))}
 async function genOpenCodeImage(model,prompt,key){
  let r;try{r=await fetch('/api/oc-image',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:String(model),prompt:String(prompt),key:String(key)})})}catch(e){throw genRelayNetErr(e)}
  let body='';try{body=await r.text()}catch(_e){}
- if(!r.ok)throw new Error('OpenCode HTTP '+r.status+' — '+(genErrText(body)||'empty response').slice(0,300));
+ if(!r.ok)genThrowHttp('OpenCode',model,r.status,body);
  let j=null;try{j=JSON.parse(body)}catch(_e){throw new Error('bad JSON response — '+body.slice(0,200))}
  let found=genExtractOpenRouterImage(j)||genExtractImage(j);
  if(!found)throw new Error('no image in response — '+(body||'{}').slice(0,200));
@@ -1395,7 +1415,7 @@ function genExtractOpenRouterImage(j){
 async function genOpenRouterImage(model,prompt,key){
  const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key,'HTTP-Referer':location.origin},body:JSON.stringify({model:String(model),messages:[{role:'user',content:prompt}],modalities:['image','text']})});
  let body='';try{body=await r.text()}catch(_e){}
- if(!r.ok)throw new Error('HTTP '+r.status+' — '+body.slice(0,300));
+ if(!r.ok)genThrowHttp('OpenRouter',model,r.status,body);
  let j=null;try{j=JSON.parse(body)}catch(_e){throw new Error('bad JSON response — '+body.slice(0,200))}
  const found=genExtractOpenRouterImage(j)||genExtractImage(j);
  if(!found)throw new Error('no image in response — '+(body||'{}').slice(0,200));
@@ -1407,6 +1427,7 @@ async function genRequestImage(uid,prompt){
  const prov=entry?entry.provider:'google';
  const model=entry?entry.id:(p.id||String(uid));
  const key=entry?((genKeyById(entry.kid)||{}).key||''):'';
+ prompt=genCapPrompt(prompt);
  if(prov==='opencode')return genOpenCodeImage(model,prompt,key);
  if(prov==='openrouter')return genOpenRouterImage(model,prompt,key);
  const url='https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent';
@@ -1414,7 +1435,7 @@ async function genRequestImage(uid,prompt){
  if(String(model).indexOf('gemini-3')>=0)gc.imageConfig={imageSize:'1K'};
  const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:gc})});
  let body='';try{body=await r.text()}catch(_e){}
- if(!r.ok)throw new Error('HTTP '+r.status+' — '+body.slice(0,300));
+ if(!r.ok)genThrowHttp('Google',model,r.status,body);
  let j=null;try{j=JSON.parse(body)}catch(_e){throw new Error('bad JSON response — '+body.slice(0,200))}
  let found=genExtractImage(j);
  if(!found)throw new Error('no image in response — '+(body||'{}').slice(0,200));

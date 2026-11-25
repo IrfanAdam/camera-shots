@@ -119,9 +119,17 @@ const server = http.createServer(async (req, res) => {
       const prompt = String((body && (body.prompt ?? body.input)) || '').trim();
       if (!model) return jerr(res, 400, 'missing "model"');
       if (!prompt) return jerr(res, 400, 'missing "prompt"');
+      // Backstop: buildPrompt() embeds the card's reference image (often a
+      // base64 data URL = tens of thousands of tokens), which upstream
+      // rejects with 400 'input token count exceeds allowed tokens'. The page
+      // already strips/caps via genCapPrompt; truncate here too so stale pages
+      // and direct callers can never trip the length 400 (dummy-key probes
+      // stay 401 auth, never length-400s).
+      const MAXP = 12000;
+      const capped = prompt.length > MAXP ? prompt.slice(0, MAXP) : prompt;
       // Extra body fields (key, size) are accepted and ignored where unused so
       // older/newer page versions keep working against this relay.
-      const [url, payload] = upstreamFor(model, prompt, body && body.size);
+      const [url, payload] = upstreamFor(model, capped, body && body.size);
       let up;
       try {
         up = await fetch(url, {
