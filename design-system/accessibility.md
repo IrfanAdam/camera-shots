@@ -8,15 +8,18 @@ the eight rows that used to sit in this file were closed by the status-ink
 tokens (Phase 4 Task 27). axe measures **0 serious/critical nodes on all nine
 surface runs**.
 
-The gate added in Phase 4 Task 29 runs in `.github/workflows/ds-gate.yml`:
+The gate runs in `.github/workflows/ds-gate.yml` — **twelve blocking checks**
+([verification.md](verification.md) owns the numbered list):
 
-| job | checks | needs a browser | runtime on this machine |
-|---|---|---|---|
-| `gate` | the five original gates (byte-stability, token lint, doc counts, anchors) | no | ~1 s |
-| `a11y-static` | contrast pairs, target sizes | no | <0.2 s |
-| `a11y-browser` | axe-core 4.10.3 over 9 surface runs, keyboard smoke | yes — pinned Chrome for Testing | ~7 s after install |
+| job | checks | needs a browser |
+|---|---|---|
+| `static-docs` | 6 — tokens/foundations/usage byte-stability, token lint, doc counts, anchors, links | no |
+| `a11y-static` | 2 — contrast pairs, target sizes | no |
+| `a11y-browser` | 2 — axe-core 4.10.3 over 9 surface runs, keyboard smoke | yes — pinned Chrome for Testing |
+| `html-validate` | 1 — 16 structural rules over the four pages | yes (installed validator) |
+| `shots` | 1 — 12 captures, 0 page JS errors, 0 overflow > 1px, no blank frame | yes |
 
-All four accessibility checks are blocking. There is no `continue-on-error`.
+All twelve are blocking. There is no `continue-on-error`.
 
 ## 1 · Contrast (WCAG 1.4.3)
 
@@ -163,7 +166,17 @@ node combines them. A new component that reaches for one of them fails:
 | control floor | **40px** (`--touch-min`) | `base.css` §6 `:where(a:not([data-ds-compact]), button:…, [role="tab"], …)` with `min-block-size:var(--touch-min)`, 10 primitives, `:where()` so a page rule still wins |
 | coarse pointer | **44px** (`--control-height-touch`) | `base.css` §8 `@media (pointer:coarse)` |
 | component height | every `--_ctl-h` resolves to ≥40px | `components.css` block that binds `--_ctl-h` to `control.height.*` |
+| tab / pill coarse floor | **≥44px** on every variant | `components.css` §5 `@media (pointer:coarse)` — `min-block-size:max(var(--_ctl-h),var(--control-height-touch))`, written as `.ds-tab:not([data-ds-compact])` and `.ds-tabs .ds-tab:not([data-ds-compact])` |
 | compact step | **34px** (`--control-height-compact`) | only on `[data-ds-compact]`, `[data-size="compact"]`, `[data-ds-density="compact"]` |
+
+**Why the tab floor is repeated in components.css.** `base.css` §8's coarse rule is a
+`:where()` list (zero specificity), so a `.ds-tab` that states its own
+`min-block-size` from `--_ctl-h` outranks it — the pill variant (0,3,0) stayed
+40px on a phone. The components rule restates the floor at the tab's own
+specificity, from `control.height.touch`, once for every variant: the bare class
+covers a tab outside a `.ds-tabs` box and the descendant selector ties the pill
+variant. `max()` keeps it a floor (a 46px reading tab or 44px engine step never
+shrinks), and `[data-ds-compact]` keeps the dense-row opt-out.
 
 **The documented exemption.** `[data-ds-compact]` on the control itself opts out
 of both floors and is allowed the 34px compact step. It exists for dense,
@@ -230,7 +243,40 @@ drawer, so the axe run never sees it. It is measured by a DOM probe instead
 | `#drawerMenu #menuDel.armed` | primitive black on `--ds-danger` | 3.91 | **5.37** |
 | `#assetEditList .aeactions button.danger` | `--_danger-ink` on the row `--tool` | 5.00 | 5.57 |
 
-## 4 · Focus + target contract
+## 4 · Mobile navigation drawer
+
+The rail is one `<nav>` landmark in both modes. Below `--breakpoint-lg` (900px,
+inclusive) `DS.nav()` turns the same element into an off-canvas drawer; at 901
+and above it tears the drawer state down and the static rail returns. The
+contract below is what `components.js` `Nav()` actually enforces, and what a
+page must not re-implement.
+
+| guarantee | how it is met | WCAG |
+|---|---|---|
+| Closed drawer is out of the tree and the tab order | `[hidden]` (so `display:none`) **and** `inert`; the toggle reports `aria-expanded="false"` and "Open menu" | 2.4.3 Focus Order · 4.1.2 Name, Role, Value |
+| Open drawer keeps focus inside | focus moves to `[data-ds-autofocus]`, else the focusable `[aria-current="page"]`, else the first focusable; Tab from the last item wraps to the injected close control, Shift+Tab from it wraps back to the last; Tab arriving from outside is pulled in | 2.1.1 Keyboard · 2.1.2 No Keyboard Trap |
+| There is always a visible way out | the panel's own 44×44 `.ds-navclose` is injected **first**, so it is the trap's first stop and the first thing a screen reader meets; Escape, the scrim and the toggle also close | 2.1.2 · 2.5.8 Target Size (Minimum) |
+| The scrim is a real close surface | a `<button type="button" tabindex="-1" aria-label="Close menu">` behind the panel: pointer users can tap it, keyboard users never tab to a redundant stop | 2.1.1 · 2.5.8 |
+| Background cannot be reached | every sibling of the rail's ancestor chain (`header`, `main`, `footer`) is `inert` while open and restored on close | 2.4.3 · 1.3.1 Info and Relationships |
+| Closing returns focus | focus goes back to the toggle that opened it, unless that node is gone or inside an inert subtree | 2.4.3 |
+| Scroll lock does not shift the page | `html[data-ds-nav-lock]` sets `overflow:hidden` **and** `scrollbar-gutter:stable`, so the gutter is reserved while the bar is there and the page does not jump sideways on close | 1.4.10 Reflow |
+| Above the breakpoint nothing is left behind | `toStatic()` removes `[hidden]`/`inert`, removes `data-ds-open` and `data-ds-nav-mode`, hides the scrim, drops the injected close button and releases the scroll lock — the static rail is never inert | 2.1.2 |
+| No-JS fallback | the toggle ships `hidden` and every drawer rule is gated on `[data-ds-nav-mode="drawer"]`, which only `Nav()` stamps: without JS the rail renders as the plain sticky column, and a hamburger that cannot open anything never appears | 1.3.1 · 4.1.2 |
+| Escape yields to a menu | while a `.ds-menu` is open, Escape closes the menu and leaves the drawer open | 2.1.1 |
+
+The drawer is deliberately **not** `role="dialog"` / `aria-modal="true"`: it is
+the page's navigation landmark, moved off-canvas, so a screen-reader user keeps
+one navigation region rather than a dialog that duplicates it. That also means
+the usual dialog assertions do not apply — the things to check are the landmark
+name (`aria-label` survives both modes), `aria-expanded` on the toggle, and that
+nothing inside the closed panel is focusable.
+
+**What the gate covers.** `check-keyboard.mjs` does not instantiate `Nav()`; the
+keyboard contract above is verified by the lane that ships the pages (four page
+lanes) and by review, not by the gallery specimen run. axe still sees the
+closed/static states on all nine surfaces.
+
+## 5 · Focus + target contract
 
 | token | value | where |
 |---|---|---|
@@ -239,7 +285,7 @@ drawer, so the axe run never sees it. It is measured by a DOM probe instead
 | `--focus-color` | `var(--ds-accent)` | per theme: pitch 9.60, wiki-light 7.12, wiki-dark 9.21, engine 7.19 against `--ds-bg`; the worst on-surface value is 6.08 (engine `accent/surface`). All clear the 3.0 non-text floor |
 | `--touch-min` | `40px` | control floor, §2 |
 
-## 5 · Keyboard smoke
+## 6 · Keyboard smoke
 
 `scripts/check-keyboard.mjs` loads `design-system/index.html` and instantiates
 the **shipped** behaviours on the specimen markup (`components.js` is loaded with
@@ -266,7 +312,36 @@ Negative seams (`--break=tab-arrows|dialog-trap|menu-escape`) sabotage one
 behaviour in the page so the assertion has to fail; they exist to prove the
 check can fail and are never used in CI.
 
-## 6 · Commands
+## 7 · Token workbench keyboard model
+
+The local workbench UI (`design-system/gallery-workbench.js`, behind
+`DS_WORKBENCH=1` and a loopback bind) edits existing token values. It is a
+documentation tool, not a product surface, so it ships its own small keyboard
+contract rather than reusing the component APIs:
+
+| step | key / device | result |
+|---|---|---|
+| reach a row | Tab | each `[data-token]` row exposes its `[data-token-value]` as a `role="button"`, `tabindex="0"` stop labelled with the dotted key |
+| edit | focus the value (live mode) or Enter/Space on it | the value becomes an inline textbox labelled "Edit `<key>` value"; focusing it is enough — the row switches from read to edit on focus |
+| save | Enter in the textbox | `POST /__ds/token`; on success the row marks saved and the stylesheet hot-swaps to `tokens.css?v=<sha>` |
+| cancel | Escape in the textbox | the editor closes and the original text is restored; no request is sent |
+| commit by leaving | Tab/blur with a changed value | commits, same path as Enter |
+| undo | the toast's **Undo** button | re-posts `previous`; the same validator, writer and rebuild run in reverse |
+| read-only | `/__ds/status` not `200 {enabled:true}` | rows stay focusable but speak only on activation: the value's label says the workbench is off and activating copies the matching `node scripts/ds-set-token.mjs …` command |
+
+The undo toast is `role="status"`, `aria-live="polite"`, `aria-atomic="true"`,
+lives **8 s**, and contains a real focusable **Undo** button — focusing the
+toast pauses its timer, and focus leaving it restarts a 2 s grace. That is the
+4.1.3 Status Messages path: the save and the undo are announced without moving
+focus, and the announcement never carries the only copy of the action.
+
+Error rows set `data-token-state="error"` and keep the editor open, so a
+rejected value is visible where it was typed (3.3.1 Error Identification). The
+workbench is **not** loaded by the nine axe surface runs or by
+`check-keyboard.mjs`; this table is its contract, and the lane that wires the
+gallery verifies it in a browser.
+
+## 8 · Commands
 
 ```sh
 # static, no install
@@ -303,7 +378,7 @@ node scripts/check-keyboard.mjs --break=menu-escape               # -> 1  (menu 
 node scripts/check-axe.mjs --require-rule not-a-real-rule         # -> 1  (rule missing)
 ```
 
-## 7 · Limits (honest list)
+## 9 · Limits (honest list)
 
 - **Canvas text is unmeasurable.** Engine board labels are painted with
   `ctx.fillText`; neither the contrast check nor axe sees them. A pixel sample of
@@ -319,6 +394,11 @@ node scripts/check-axe.mjs --require-rule not-a-real-rule         # -> 1  (rule 
 - **No screen reader, no cross-browser, no 200%/320% reading order, no 2.4.11
   (focus obscured) check.** Those stay manual, as listed in the audit's
   verification plan.
+- **The mobile drawer and the token workbench are not driven by a gate.**
+  `check-keyboard.mjs` instantiates Tabs, Dialog and Menu only; `Nav()` and
+  `gallery-workbench.js` are verified by their lanes in a real browser. axe sees
+  the drawer closed/static on the nine product runs and never loads the
+  workbench.
 - **Other Phase 4 lanes share the working tree** at the time these numbers were
   taken (pitch, and the canvas prompt-generation control in engine). Every number
   above is measured on `bb88390` plus this lane's diff; a lane that darkens text

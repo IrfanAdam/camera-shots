@@ -226,7 +226,7 @@
         kind: kind,
         status: res.status,
         code: e.code || '',
-        message: e.message || ('request failed (' + res.status + ')'),
+        message: e.message || (res.status === 429 ? 'too many writes' : ('request failed (' + res.status + ')')),
         retryAfter: res.retryAfter || (e.retryAfterMs ? Math.ceil(e.retryAfterMs / 1000) : null)
       };
       cb(lastError, null);
@@ -348,7 +348,6 @@
     if (toastTimer) window.clearTimeout(toastTimer);
     toastTimer = null;
     toast.hidden = true;
-    toast.removeAttribute('data-dswb-live');
     clearChildren(toast);
   }
 
@@ -528,6 +527,9 @@
     input.setAttribute('data-dswb-input', '');
 
     info.valueEl.classList.add('dswb-editing');
+    /* the value stops being a button while a textbox lives inside it, so the
+       accessibility tree never contains a button that wraps a textbox */
+    info.valueEl.removeAttribute('role');
     setRowState(info, 'editing');
     info.row.__dswbInput = input;
     info.valueEl.appendChild(input);
@@ -577,9 +579,11 @@
     info.row.__dswbInput = null;
 
     info.valueEl.classList.remove('dswb-editing');
+    info.valueEl.setAttribute('role', 'button');
     if (typeof text === 'string') info.valueEl.textContent = text;
     info.row.removeAttribute('aria-busy');
     if (info.row.getAttribute('data-token-state') !== 'saved') setRowState(info, 'idle');
+    updateLabels();
     if (focusBack) focusValue(info);
   }
 
@@ -606,6 +610,7 @@
       if (err) {
         info.busy = false;
         input.disabled = false;
+        info.row.removeAttribute('aria-busy');
         setRowState(info, 'error');
         showError(info, describeError(err, null));
         try {
@@ -772,6 +777,7 @@
 
   function onFocusIn(ev) {
     if (suppressFocus) return;
+    if (mode !== 'live') return; /* read-only rows speak only on activation */
     var target = ev.target;
     if (!target || target.nodeType !== 1) return;
     var row = closestAttr(target, 'data-token');

@@ -79,10 +79,11 @@ code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-
 .g-rail-group{display:flex;flex-direction:column;gap:0}
 .g-rail-group > .ds-rail__label{flex:0 0 auto}
 .g-rail-list{display:flex;flex-direction:column;gap:var(--spacing-2)}
-/* the short-panel rule: the column stays (foot pinned), the list does not.
-   `data-rail` is stamped by the page JS and is the only thing that decides
-   whether the list paints — never the column, so nothing jumps. */
-.g-shell[data-rail="off"] .g-rail-group{display:none}
+/* the short-panel rule: the column stays (foot pinned) and the list does not
+   go blank. `data-rail` is stamped by the page JS; when it is "off" the rail
+   falls back to the seven categories (page JS stamps data-rail-mode), so a
+   panel with no sections still answers "where else can I go". */
+.g-rail-list[data-rail-mode="categories"]{gap:0}
 .g-main{
   grid-area:main;min-inline-size:0;
   inline-size:100%;max-inline-size:var(--layout-max-wiki);margin-inline:auto;
@@ -365,6 +366,9 @@ footer code{color:var(--g-ink)}
 </style>
 <link rel="stylesheet" href="pitch-shell.css">
 <link rel="stylesheet" href="gallery-pitch.css">
+<link rel="stylesheet" href="gallery-workbench.css">
+<script src="gallery-workbench.js" defer></script>
+<script src="gallery-specimens.js" defer></script>
 </head>
 <body>
 
@@ -440,104 +444,104 @@ footer code{color:var(--g-ink)}
       <div class="swgroup">
         <div class="swgroup-head"><h3 id="color-pitch">Pitch — warm dark</h3><span class="tag">—</span></div>
         <div class="swgrid">
-          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-bg)"></span><code>--color-pitch-bg</code><span class="sw-val" data-live="--color-pitch-bg">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-surface-1)"></span><code>--color-pitch-surface-1</code><span class="sw-val" data-live="--color-pitch-surface-1">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-surface-2)"></span><code>--color-pitch-surface-2</code><span class="sw-val" data-live="--color-pitch-surface-2">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-ink)"></span><code>--color-pitch-ink</code><span class="sw-val" data-live="--color-pitch-ink">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-body)"></span><code>--color-pitch-body</code><span class="sw-val" data-live="--color-pitch-body">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-muted)"></span><code>--color-pitch-muted</code><span class="sw-val" data-live="--color-pitch-muted">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-muted-2)"></span><code>--color-pitch-muted-2</code><span class="sw-val" data-live="--color-pitch-muted-2">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-rule)"></span><code>--color-pitch-rule</code><span class="sw-val" data-live="--color-pitch-rule">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-accent)"></span><code>--color-pitch-accent</code><span class="sw-val" data-live="--color-pitch-accent">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-accent-ink)"></span><code>--color-pitch-accent-ink</code><span class="sw-val" data-live="--color-pitch-accent-ink">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-positive)"></span><code>--color-pitch-positive</code><span class="sw-val" data-live="--color-pitch-positive">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-positive-ink)"></span><code>--color-pitch-positive-ink</code><span class="sw-val" data-live="--color-pitch-positive-ink">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-switch-bg)"></span><code>--color-pitch-switch-bg</code><span class="sw-val" data-live="--color-pitch-switch-bg">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-scrim-mid)"></span><code>--color-pitch-scrim-mid</code><span class="sw-val" data-live="--color-pitch-scrim-mid">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-overlay-surface)"></span><code>--color-pitch-overlay-surface</code><span class="sw-val" data-live="--color-pitch-overlay-surface">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-overlay-bg)"></span><code>--color-pitch-overlay-bg</code><span class="sw-val" data-live="--color-pitch-overlay-bg">—</span></div>
+          <div class="sw" data-token="color.pitch.bg"><span class="sw-chip" style="background:var(--color-pitch-bg)"></span><code>--color-pitch-bg</code><span class="sw-val" data-live="--color-pitch-bg" data-token-value>—</span></div>
+          <div class="sw" data-token="color.pitch.surface.1"><span class="sw-chip" style="background:var(--color-pitch-surface-1)"></span><code>--color-pitch-surface-1</code><span class="sw-val" data-live="--color-pitch-surface-1" data-token-value>—</span></div>
+          <div class="sw" data-token="color.pitch.surface.2"><span class="sw-chip" style="background:var(--color-pitch-surface-2)"></span><code>--color-pitch-surface-2</code><span class="sw-val" data-live="--color-pitch-surface-2" data-token-value>—</span></div>
+          <div class="sw" data-token="color.pitch.ink"><span class="sw-chip" style="background:var(--color-pitch-ink)"></span><code>--color-pitch-ink</code><span class="sw-val" data-live="--color-pitch-ink" data-token-value>—</span></div>
+          <div class="sw" data-token="color.pitch.body"><span class="sw-chip" style="background:var(--color-pitch-body)"></span><code>--color-pitch-body</code><span class="sw-val" data-live="--color-pitch-body" data-token-value>—</span></div>
+          <div class="sw" data-token="color.pitch.muted"><span class="sw-chip" style="background:var(--color-pitch-muted)"></span><code>--color-pitch-muted</code><span class="sw-val" data-live="--color-pitch-muted" data-token-value>—</span></div>
+          <div class="sw" data-token="color.pitch.muted.2"><span class="sw-chip" style="background:var(--color-pitch-muted-2)"></span><code>--color-pitch-muted-2</code><span class="sw-val" data-live="--color-pitch-muted-2" data-token-value>—</span></div>
+          <div class="sw" data-token="color.pitch.rule"><span class="sw-chip" style="background:var(--color-pitch-rule)"></span><code>--color-pitch-rule</code><span class="sw-val" data-live="--color-pitch-rule" data-token-value>—</span></div>
+          <div class="sw" data-token="color.pitch.accent"><span class="sw-chip" style="background:var(--color-pitch-accent)"></span><code>--color-pitch-accent</code><span class="sw-val" data-live="--color-pitch-accent" data-token-value>—</span></div>
+          <div class="sw" data-token="color.pitch.accent.ink"><span class="sw-chip" style="background:var(--color-pitch-accent-ink)"></span><code>--color-pitch-accent-ink</code><span class="sw-val" data-live="--color-pitch-accent-ink" data-token-value>—</span></div>
+          <div class="sw" data-token="color.pitch.positive"><span class="sw-chip" style="background:var(--color-pitch-positive)"></span><code>--color-pitch-positive</code><span class="sw-val" data-live="--color-pitch-positive" data-token-value>—</span></div>
+          <div class="sw" data-token="color.pitch.positive.ink"><span class="sw-chip" style="background:var(--color-pitch-positive-ink)"></span><code>--color-pitch-positive-ink</code><span class="sw-val" data-live="--color-pitch-positive-ink" data-token-value>—</span></div>
+          <div class="sw" data-token="color.pitch.switch.bg"><span class="sw-chip" style="background:var(--color-pitch-switch-bg)"></span><code>--color-pitch-switch-bg</code><span class="sw-val" data-live="--color-pitch-switch-bg" data-token-value>—</span></div>
+          <div class="sw" data-token="color.pitch.scrim.mid"><span class="sw-chip" style="background:var(--color-pitch-scrim-mid)"></span><code>--color-pitch-scrim-mid</code><span class="sw-val" data-live="--color-pitch-scrim-mid" data-token-value>—</span></div>
+          <div class="sw" data-token="color.pitch.overlay.surface"><span class="sw-chip" style="background:var(--color-pitch-overlay-surface)"></span><code>--color-pitch-overlay-surface</code><span class="sw-val" data-live="--color-pitch-overlay-surface" data-token-value>—</span></div>
+          <div class="sw" data-token="color.pitch.overlay.bg"><span class="sw-chip" style="background:var(--color-pitch-overlay-bg)"></span><code>--color-pitch-overlay-bg</code><span class="sw-val" data-live="--color-pitch-overlay-bg" data-token-value>—</span></div>
         </div>
       </div>
 
       <div class="swgroup">
         <div class="swgroup-head"><h3 id="color-wiki-light">Wiki — light</h3><span class="tag">—</span></div>
         <div class="swgrid">
-          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-light-bg)"></span><code>--color-wiki-light-bg</code><span class="sw-val" data-live="--color-wiki-light-bg">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-light-card)"></span><code>--color-wiki-light-card</code><span class="sw-val" data-live="--color-wiki-light-card">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-light-ink)"></span><code>--color-wiki-light-ink</code><span class="sw-val" data-live="--color-wiki-light-ink">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-light-muted)"></span><code>--color-wiki-light-muted</code><span class="sw-val" data-live="--color-wiki-light-muted">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-light-rule)"></span><code>--color-wiki-light-rule</code><span class="sw-val" data-live="--color-wiki-light-rule">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-light-accent)"></span><code>--color-wiki-light-accent</code><span class="sw-val" data-live="--color-wiki-light-accent">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-light-accent-wash)"></span><code>--color-wiki-light-accent-wash</code><span class="sw-val" data-live="--color-wiki-light-accent-wash">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-light-amber)"></span><code>--color-wiki-light-amber</code><span class="sw-val" data-live="--color-wiki-light-amber">—</span></div>
+          <div class="sw" data-token="color.wiki.light.bg"><span class="sw-chip" style="background:var(--color-wiki-light-bg)"></span><code>--color-wiki-light-bg</code><span class="sw-val" data-live="--color-wiki-light-bg" data-token-value>—</span></div>
+          <div class="sw" data-token="color.wiki.light.card"><span class="sw-chip" style="background:var(--color-wiki-light-card)"></span><code>--color-wiki-light-card</code><span class="sw-val" data-live="--color-wiki-light-card" data-token-value>—</span></div>
+          <div class="sw" data-token="color.wiki.light.ink"><span class="sw-chip" style="background:var(--color-wiki-light-ink)"></span><code>--color-wiki-light-ink</code><span class="sw-val" data-live="--color-wiki-light-ink" data-token-value>—</span></div>
+          <div class="sw" data-token="color.wiki.light.muted"><span class="sw-chip" style="background:var(--color-wiki-light-muted)"></span><code>--color-wiki-light-muted</code><span class="sw-val" data-live="--color-wiki-light-muted" data-token-value>—</span></div>
+          <div class="sw" data-token="color.wiki.light.rule"><span class="sw-chip" style="background:var(--color-wiki-light-rule)"></span><code>--color-wiki-light-rule</code><span class="sw-val" data-live="--color-wiki-light-rule" data-token-value>—</span></div>
+          <div class="sw" data-token="color.wiki.light.accent"><span class="sw-chip" style="background:var(--color-wiki-light-accent)"></span><code>--color-wiki-light-accent</code><span class="sw-val" data-live="--color-wiki-light-accent" data-token-value>—</span></div>
+          <div class="sw" data-token="color.wiki.light.accent.wash"><span class="sw-chip" style="background:var(--color-wiki-light-accent-wash)"></span><code>--color-wiki-light-accent-wash</code><span class="sw-val" data-live="--color-wiki-light-accent-wash" data-token-value>—</span></div>
+          <div class="sw" data-token="color.wiki.light.amber"><span class="sw-chip" style="background:var(--color-wiki-light-amber)"></span><code>--color-wiki-light-amber</code><span class="sw-val" data-live="--color-wiki-light-amber" data-token-value>—</span></div>
         </div>
       </div>
 
       <div class="swgroup">
         <div class="swgroup-head"><h3 id="color-wiki-dark">Wiki — dark</h3><span class="tag">—</span></div>
         <div class="swgrid">
-          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-dark-bg)"></span><code>--color-wiki-dark-bg</code><span class="sw-val" data-live="--color-wiki-dark-bg">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-dark-card)"></span><code>--color-wiki-dark-card</code><span class="sw-val" data-live="--color-wiki-dark-card">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-dark-ink)"></span><code>--color-wiki-dark-ink</code><span class="sw-val" data-live="--color-wiki-dark-ink">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-dark-muted)"></span><code>--color-wiki-dark-muted</code><span class="sw-val" data-live="--color-wiki-dark-muted">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-dark-rule)"></span><code>--color-wiki-dark-rule</code><span class="sw-val" data-live="--color-wiki-dark-rule">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-dark-accent)"></span><code>--color-wiki-dark-accent</code><span class="sw-val" data-live="--color-wiki-dark-accent">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-dark-accent-wash)"></span><code>--color-wiki-dark-accent-wash</code><span class="sw-val" data-live="--color-wiki-dark-accent-wash">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-dark-amber)"></span><code>--color-wiki-dark-amber</code><span class="sw-val" data-live="--color-wiki-dark-amber">—</span></div>
+          <div class="sw" data-token="color.wiki.dark.bg"><span class="sw-chip" style="background:var(--color-wiki-dark-bg)"></span><code>--color-wiki-dark-bg</code><span class="sw-val" data-live="--color-wiki-dark-bg" data-token-value>—</span></div>
+          <div class="sw" data-token="color.wiki.dark.card"><span class="sw-chip" style="background:var(--color-wiki-dark-card)"></span><code>--color-wiki-dark-card</code><span class="sw-val" data-live="--color-wiki-dark-card" data-token-value>—</span></div>
+          <div class="sw" data-token="color.wiki.dark.ink"><span class="sw-chip" style="background:var(--color-wiki-dark-ink)"></span><code>--color-wiki-dark-ink</code><span class="sw-val" data-live="--color-wiki-dark-ink" data-token-value>—</span></div>
+          <div class="sw" data-token="color.wiki.dark.muted"><span class="sw-chip" style="background:var(--color-wiki-dark-muted)"></span><code>--color-wiki-dark-muted</code><span class="sw-val" data-live="--color-wiki-dark-muted" data-token-value>—</span></div>
+          <div class="sw" data-token="color.wiki.dark.rule"><span class="sw-chip" style="background:var(--color-wiki-dark-rule)"></span><code>--color-wiki-dark-rule</code><span class="sw-val" data-live="--color-wiki-dark-rule" data-token-value>—</span></div>
+          <div class="sw" data-token="color.wiki.dark.accent"><span class="sw-chip" style="background:var(--color-wiki-dark-accent)"></span><code>--color-wiki-dark-accent</code><span class="sw-val" data-live="--color-wiki-dark-accent" data-token-value>—</span></div>
+          <div class="sw" data-token="color.wiki.dark.accent.wash"><span class="sw-chip" style="background:var(--color-wiki-dark-accent-wash)"></span><code>--color-wiki-dark-accent-wash</code><span class="sw-val" data-live="--color-wiki-dark-accent-wash" data-token-value>—</span></div>
+          <div class="sw" data-token="color.wiki.dark.amber"><span class="sw-chip" style="background:var(--color-wiki-dark-amber)"></span><code>--color-wiki-dark-amber</code><span class="sw-val" data-live="--color-wiki-dark-amber" data-token-value>—</span></div>
         </div>
       </div>
 
       <div class="swgroup">
         <div class="swgroup-head"><h3 id="color-engine">Engine — surface language</h3><span class="tag">—</span></div>
         <div class="swgrid">
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-tool)"></span><code>--color-engine-tool</code><span class="sw-val" data-live="--color-engine-tool">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-accent)"></span><code>--color-engine-accent</code><span class="sw-val" data-live="--color-engine-accent">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-accent-ink)"></span><code>--color-engine-accent-ink</code><span class="sw-val" data-live="--color-engine-accent-ink">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-surface-0)"></span><code>--color-engine-surface-0</code><span class="sw-val" data-live="--color-engine-surface-0">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-surface-1)"></span><code>--color-engine-surface-1</code><span class="sw-val" data-live="--color-engine-surface-1">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-surface-2)"></span><code>--color-engine-surface-2</code><span class="sw-val" data-live="--color-engine-surface-2">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-text-primary)"></span><code>--color-engine-text-primary</code><span class="sw-val" data-live="--color-engine-text-primary">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-text-secondary)"></span><code>--color-engine-text-secondary</code><span class="sw-val" data-live="--color-engine-text-secondary">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-divider)"></span><code>--color-engine-divider</code><span class="sw-val" data-live="--color-engine-divider">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-selection)"></span><code>--color-engine-selection</code><span class="sw-val" data-live="--color-engine-selection">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-track-fx)"></span><code>--color-engine-track-fx</code><span class="sw-val" data-live="--color-engine-track-fx">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-track-title)"></span><code>--color-engine-track-title</code><span class="sw-val" data-live="--color-engine-track-title">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-track-audio)"></span><code>--color-engine-track-audio</code><span class="sw-val" data-live="--color-engine-track-audio">—</span></div>
+          <div class="sw" data-token="color.engine.tool"><span class="sw-chip" style="background:var(--color-engine-tool)"></span><code>--color-engine-tool</code><span class="sw-val" data-live="--color-engine-tool" data-token-value>—</span></div>
+          <div class="sw" data-token="color.engine.accent"><span class="sw-chip" style="background:var(--color-engine-accent)"></span><code>--color-engine-accent</code><span class="sw-val" data-live="--color-engine-accent" data-token-value>—</span></div>
+          <div class="sw" data-token="color.engine.accent.ink"><span class="sw-chip" style="background:var(--color-engine-accent-ink)"></span><code>--color-engine-accent-ink</code><span class="sw-val" data-live="--color-engine-accent-ink" data-token-value>—</span></div>
+          <div class="sw" data-token="color.engine.surface.0"><span class="sw-chip" style="background:var(--color-engine-surface-0)"></span><code>--color-engine-surface-0</code><span class="sw-val" data-live="--color-engine-surface-0" data-token-value>—</span></div>
+          <div class="sw" data-token="color.engine.surface.1"><span class="sw-chip" style="background:var(--color-engine-surface-1)"></span><code>--color-engine-surface-1</code><span class="sw-val" data-live="--color-engine-surface-1" data-token-value>—</span></div>
+          <div class="sw" data-token="color.engine.surface.2"><span class="sw-chip" style="background:var(--color-engine-surface-2)"></span><code>--color-engine-surface-2</code><span class="sw-val" data-live="--color-engine-surface-2" data-token-value>—</span></div>
+          <div class="sw" data-token="color.engine.text.primary"><span class="sw-chip" style="background:var(--color-engine-text-primary)"></span><code>--color-engine-text-primary</code><span class="sw-val" data-live="--color-engine-text-primary" data-token-value>—</span></div>
+          <div class="sw" data-token="color.engine.text.secondary"><span class="sw-chip" style="background:var(--color-engine-text-secondary)"></span><code>--color-engine-text-secondary</code><span class="sw-val" data-live="--color-engine-text-secondary" data-token-value>—</span></div>
+          <div class="sw" data-token="color.engine.divider"><span class="sw-chip" style="background:var(--color-engine-divider)"></span><code>--color-engine-divider</code><span class="sw-val" data-live="--color-engine-divider" data-token-value>—</span></div>
+          <div class="sw" data-token="color.engine.selection"><span class="sw-chip" style="background:var(--color-engine-selection)"></span><code>--color-engine-selection</code><span class="sw-val" data-live="--color-engine-selection" data-token-value>—</span></div>
+          <div class="sw" data-token="color.engine.track.fx"><span class="sw-chip" style="background:var(--color-engine-track-fx)"></span><code>--color-engine-track-fx</code><span class="sw-val" data-live="--color-engine-track-fx" data-token-value>—</span></div>
+          <div class="sw" data-token="color.engine.track.title"><span class="sw-chip" style="background:var(--color-engine-track-title)"></span><code>--color-engine-track-title</code><span class="sw-val" data-live="--color-engine-track-title" data-token-value>—</span></div>
+          <div class="sw" data-token="color.engine.track.audio"><span class="sw-chip" style="background:var(--color-engine-track-audio)"></span><code>--color-engine-track-audio</code><span class="sw-val" data-live="--color-engine-track-audio" data-token-value>—</span></div>
         </div>
       </div>
 
       <div class="swgroup">
         <div class="swgroup-head"><h3 id="color-engine-overlays">Engine — scrims, washes &amp; overlays</h3><span class="tag">—</span></div>
         <div class="swgrid compact">
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-scrim)"></span><code>--color-engine-scrim</code><span class="sw-val" data-live="--color-engine-scrim">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-scrim-strong)"></span><code>--color-engine-scrim-strong</code><span class="sw-val" data-live="--color-engine-scrim-strong">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-overlay-panel)"></span><code>--color-engine-overlay-panel</code><span class="sw-val" data-live="--color-engine-overlay-panel">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-engine-wash-25)"></span><code>--color-engine-wash-25</code><span class="sw-val" data-live="--color-engine-wash-25">—</span></div>
+          <div class="sw" data-token="color.engine.scrim"><span class="sw-chip" style="background:var(--color-engine-scrim)"></span><code>--color-engine-scrim</code><span class="sw-val" data-live="--color-engine-scrim" data-token-value>—</span></div>
+          <div class="sw" data-token="color.engine.scrim.strong"><span class="sw-chip" style="background:var(--color-engine-scrim-strong)"></span><code>--color-engine-scrim-strong</code><span class="sw-val" data-live="--color-engine-scrim-strong" data-token-value>—</span></div>
+          <div class="sw" data-token="color.engine.overlay.panel"><span class="sw-chip" style="background:var(--color-engine-overlay-panel)"></span><code>--color-engine-overlay-panel</code><span class="sw-val" data-live="--color-engine-overlay-panel" data-token-value>—</span></div>
+          <div class="sw" data-token="color.engine.wash.25"><span class="sw-chip" style="background:var(--color-engine-wash-25)"></span><code>--color-engine-wash-25</code><span class="sw-val" data-live="--color-engine-wash-25" data-token-value>—</span></div>
         </div>
       </div>
 
       <div class="swgroup">
         <div class="swgroup-head"><h3 id="color-semantic">Semantic — status</h3><span class="tag">—</span></div>
         <div class="swgrid">
-          <div class="sw"><span class="sw-chip" style="background:var(--color-status-success)"></span><code>--color-status-success</code><span class="sw-val" data-live="--color-status-success">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-status-danger)"></span><code>--color-status-danger</code><span class="sw-val" data-live="--color-status-danger">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-status-warning)"></span><code>--color-status-warning</code><span class="sw-val" data-live="--color-status-warning">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-status-info)"></span><code>--color-status-info</code><span class="sw-val" data-live="--color-status-info">—</span></div>
+          <div class="sw" data-token="color.status.success"><span class="sw-chip" style="background:var(--color-status-success)"></span><code>--color-status-success</code><span class="sw-val" data-live="--color-status-success" data-token-value>—</span></div>
+          <div class="sw" data-token="color.status.danger"><span class="sw-chip" style="background:var(--color-status-danger)"></span><code>--color-status-danger</code><span class="sw-val" data-live="--color-status-danger" data-token-value>—</span></div>
+          <div class="sw" data-token="color.status.warning"><span class="sw-chip" style="background:var(--color-status-warning)"></span><code>--color-status-warning</code><span class="sw-val" data-live="--color-status-warning" data-token-value>—</span></div>
+          <div class="sw" data-token="color.status.info"><span class="sw-chip" style="background:var(--color-status-info)"></span><code>--color-status-info</code><span class="sw-val" data-live="--color-status-info" data-token-value>—</span></div>
         </div>
       </div>
 
       <div class="swgroup">
         <div class="swgroup-head"><h3 id="color-support">Support — print, neutral, diagrams</h3><span class="tag">—</span></div>
         <div class="swgrid compact">
-          <div class="sw"><span class="sw-chip" style="background:var(--color-print-rule)"></span><code>--color-print-rule</code><span class="sw-val" data-live="--color-print-rule">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-print-body)"></span><code>--color-print-body</code><span class="sw-val" data-live="--color-print-body">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-print-fine)"></span><code>--color-print-fine</code><span class="sw-val" data-live="--color-print-fine">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-print-accent)"></span><code>--color-print-accent</code><span class="sw-val" data-live="--color-print-accent">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-print-ink)"></span><code>--color-print-ink</code><span class="sw-val" data-live="--color-print-ink">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-primitive-white)"></span><code>--color-primitive-white</code><span class="sw-val" data-live="--color-primitive-white">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-primitive-black)"></span><code>--color-primitive-black</code><span class="sw-val" data-live="--color-primitive-black">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-diagram-fill-wiki)"></span><code>--color-diagram-fill-wiki</code><span class="sw-val" data-live="--color-diagram-fill-wiki">—</span></div>
-          <div class="sw"><span class="sw-chip" style="background:var(--color-diagram-scrim-wiki)"></span><code>--color-diagram-scrim-wiki</code><span class="sw-val" data-live="--color-diagram-scrim-wiki">—</span></div>
+          <div class="sw" data-token="color.print.rule"><span class="sw-chip" style="background:var(--color-print-rule)"></span><code>--color-print-rule</code><span class="sw-val" data-live="--color-print-rule" data-token-value>—</span></div>
+          <div class="sw" data-token="color.print.body"><span class="sw-chip" style="background:var(--color-print-body)"></span><code>--color-print-body</code><span class="sw-val" data-live="--color-print-body" data-token-value>—</span></div>
+          <div class="sw" data-token="color.print.fine"><span class="sw-chip" style="background:var(--color-print-fine)"></span><code>--color-print-fine</code><span class="sw-val" data-live="--color-print-fine" data-token-value>—</span></div>
+          <div class="sw" data-token="color.print.accent"><span class="sw-chip" style="background:var(--color-print-accent)"></span><code>--color-print-accent</code><span class="sw-val" data-live="--color-print-accent" data-token-value>—</span></div>
+          <div class="sw" data-token="color.print.ink"><span class="sw-chip" style="background:var(--color-print-ink)"></span><code>--color-print-ink</code><span class="sw-val" data-live="--color-print-ink" data-token-value>—</span></div>
+          <div class="sw" data-token="color.primitive.white"><span class="sw-chip" style="background:var(--color-primitive-white)"></span><code>--color-primitive-white</code><span class="sw-val" data-live="--color-primitive-white" data-token-value>—</span></div>
+          <div class="sw" data-token="color.primitive.black"><span class="sw-chip" style="background:var(--color-primitive-black)"></span><code>--color-primitive-black</code><span class="sw-val" data-live="--color-primitive-black" data-token-value>—</span></div>
+          <div class="sw" data-token="color.diagram.fill.wiki"><span class="sw-chip" style="background:var(--color-diagram-fill-wiki)"></span><code>--color-diagram-fill-wiki</code><span class="sw-val" data-live="--color-diagram-fill-wiki" data-token-value>—</span></div>
+          <div class="sw" data-token="color.diagram.scrim.wiki"><span class="sw-chip" style="background:var(--color-diagram-scrim-wiki)"></span><code>--color-diagram-scrim-wiki</code><span class="sw-val" data-live="--color-diagram-scrim-wiki" data-token-value>—</span></div>
         </div>
       </div>
     </section>
@@ -859,11 +863,39 @@ footer code{color:var(--g-ink)}
         <p><span class="js-block-count">—</span> blocks · <span class="js-theme-count">—</span> theme wrappers · <span class="js-state-count">—</span> static states</p>
       </div>
 
-      <p class="sec-intro">The shipped library, rendered rather than described. Every block is drawn once per theme map in <code>tokens.css</code>: the only thing that changes between the four cells is <code>data-ds-theme</code>, so a role token that fails to resolve shows up as a hole instead of a caption. Rest, hover, focus and disabled are static <code>[data-state]</code> cells where the CSS has that hook, and the same elements are real controls, so Tab reaches them. The page chrome is pitch-locked; only these wrappers carry a theme map. <code>components.js</code> is loaded with <code>data-ds-manual</code> so the specimens stay exactly as authored.</p>
+      <p class="sec-intro">The shipped library, drawn once per theme map in <code>tokens.css</code>: only <code>data-ds-theme</code> changes between the four cells, so a role token that fails to resolve shows as a hole. Rest, hover, focus and disabled are static <code>[data-state]</code> cells on real controls, so Tab reaches them. <code>components.js</code> is loaded with <code>data-ds-manual</code>.</p>
 
-      <article class="comp" id="spec-btn" data-specimen="btn">
-        <div class="comp-head"><h3>Button</h3><span class="comp-classes">.ds-btn · [data-variant] primary|secondary|ghost|danger · [data-size] xs|compact|tall · [data-state]</span></div>
-        <div class="spec-grid">
+      <nav class="spec-index" aria-label="Specimen index">
+        <p class="spec-index__title">Jump to</p>
+        <div class="spec-index__group"><span class="spec-index__label">Controls</span><a href="#spec-btn">Button</a><a href="#spec-icon-btn">Icon button</a><a href="#spec-tabs">Tabs</a><a href="#spec-navigation">Navigation grammar</a><a href="#spec-chip">Chip</a><a href="#spec-nav">Pager · nav item · theme toggle</a></div>
+        <div class="spec-index__group"><span class="spec-index__label">Input</span><a href="#spec-field">Field</a><a href="#spec-switch">Switch</a><a href="#spec-copy">Copy field</a></div>
+        <div class="spec-index__group"><span class="spec-index__label">Surfaces</span><a href="#spec-card">Card</a><a href="#spec-surface">Surface</a><a href="#spec-drawer">Drawer</a><a href="#spec-dialog">Dialog</a><a href="#spec-menu">Menu</a></div>
+        <div class="spec-index__group"><span class="spec-index__label">Feedback</span><a href="#spec-badge">Badge</a><a href="#spec-toast">Toast</a><a href="#spec-empty">Empty state</a><a href="#spec-progress">Progress</a><a href="#spec-tooltip">Tooltip</a></div>
+        <div class="spec-index__group"><span class="spec-index__label">Data</span><a href="#spec-table">Table</a></div>
+      </nav>
+
+      <article class="comp" id="spec-btn" data-specimen="btn" data-usage-component="btn" data-family="controls">
+        <header class="comp-head">
+          <p class="comp-eyebrow"><span class="comp-index">01</span><span class="comp-family">controls</span></p>
+          <h3>Button</h3>
+          <p class="comp-role">Action trigger — one primary per view.</p>
+          <span class="comp-status" data-status>—</span>
+          <a class="comp-anchor" href="#spec-btn" aria-label="Link to Button">#</a>
+        </header>
+        <dl class="comp-facts">
+          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">danger · ghost · primary · secondary</dd></div>
+          <div class="comp-fact"><dt>States</dt><dd data-usage="states">disabled · focus · hover · pressed</dd></div>
+          <div class="comp-fact"><dt>Sizes</dt><dd data-usage="sizes">compact · tall · xs</dd></div>
+          <div class="comp-fact comp-fact--instances"><dt>Instances</dt><dd><span data-usage="reach">—</span><span class="comp-fact-sep" aria-hidden="true">—</span><span class="comp-fact-surfaces" data-usage-surfaces><a href="../index.html">Wiki <b data-usage-count="wiki">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../pitch.html">Pitch <b data-usage-count="pitch">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../engine.html">Engine <b data-usage-count="engine">—</b></a></span></dd></div>
+        </dl>
+        <div class="comp-band comp-band--themes" data-band="themes">
+          <div class="comp-caption">
+            <h4 id="spec-btn-themes">Theme matrix</h4>
+            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
+            <span class="comp-scroll-hint">scroll</span>
+          </div>
+          <div class="comp-themes-scroll">
+<div class="spec-grid" tabindex="0" role="group" aria-label="Button — four theme maps, one per shipped theme">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="spec-row"><button class="ds-btn" data-variant="primary" type="button">Primary</button><button class="ds-btn" data-variant="secondary" type="button">Secondary</button><button class="ds-btn" data-variant="ghost" type="button">Ghost</button><button class="ds-btn" data-variant="danger" type="button">Danger</button></div>
@@ -889,10 +921,44 @@ footer code{color:var(--g-ink)}
           <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">xs</button><button class="ds-btn" data-variant="secondary" data-size="compact" type="button">compact</button><button class="ds-btn" data-variant="secondary" data-size="tall" type="button">tall</button></div>
         </div>
         </div>
+          </div>
+        </div>
+        <div class="comp-band comp-band--tokens" data-band="tokens">
+          <h4 id="spec-btn-tokens">Tokens</h4>
+          <div class="comp-tokens" data-usage-tokens tabindex="0" role="group" aria-label="Button tokens">
+          <span class="comp-token" data-usage-token="--radius-xs"><code>--radius-xs</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--touch-min"><code>--touch-min</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--hover-lift"><code>--hover-lift</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-lg"><code>--spacing-lg</code><b data-token-value>—</b></span>
+          <code class="comp-classes">.ds-btn · [data-variant] primary|secondary|ghost|danger · [data-size] xs|compact|tall · [data-state]</code>
+          </div>
+        </div>
+        <footer class="comp-foot" data-band="footer">
+          <a class="comp-source" href="components.css">components.css <span data-usage-source>§—</span></a>
+        </footer>
       </article>
-      <article class="comp" id="spec-icon-btn" data-specimen="icon-btn">
-        <div class="comp-head"><h3>Icon button</h3><span class="comp-classes">.ds-icon-btn · [data-variant=circle] · [data-state]</span></div>
-        <div class="spec-grid">
+      <article class="comp" id="spec-icon-btn" data-specimen="icon-btn" data-usage-component="icon-btn" data-family="controls">
+        <header class="comp-head">
+          <p class="comp-eyebrow"><span class="comp-index">02</span><span class="comp-family">controls</span></p>
+          <h3>Icon button</h3>
+          <p class="comp-role">Square icon-only action; the label lives in aria-label.</p>
+          <span class="comp-status" data-status>—</span>
+          <a class="comp-anchor" href="#spec-icon-btn" aria-label="Link to Icon button">#</a>
+        </header>
+        <dl class="comp-facts">
+          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">circle</dd></div>
+          <div class="comp-fact"><dt>States</dt><dd data-usage="states">disabled · focus · hover</dd></div>
+          <div class="comp-fact"><dt>Sizes</dt><dd data-usage="sizes">—</dd></div>
+          <div class="comp-fact comp-fact--instances"><dt>Instances</dt><dd><span data-usage="reach">—</span><span class="comp-fact-sep" aria-hidden="true">—</span><span class="comp-fact-surfaces" data-usage-surfaces><a href="../index.html">Wiki <b data-usage-count="wiki">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../pitch.html">Pitch <b data-usage-count="pitch">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../engine.html">Engine <b data-usage-count="engine">—</b></a></span></dd></div>
+        </dl>
+        <div class="comp-band comp-band--themes" data-band="themes">
+          <div class="comp-caption">
+            <h4 id="spec-icon-btn-themes">Theme matrix</h4>
+            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
+            <span class="comp-scroll-hint">scroll</span>
+          </div>
+          <div class="comp-themes-scroll">
+<div class="spec-grid" tabindex="0" role="group" aria-label="Icon button — four theme maps, one per shipped theme">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="spec-row"><button class="ds-icon-btn" type="button" aria-label="Close"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button><button class="ds-icon-btn" data-variant="circle" type="button" aria-label="More"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-more-h"></use></svg></button><button class="ds-icon-btn" data-variant="circle" data-state="focus" type="button" aria-label="Settings"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-gear"></use></svg></button><button class="ds-icon-btn" data-state="hover" type="button" aria-label="Search"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-search"></use></svg></button><button class="ds-icon-btn" data-state="disabled" type="button" aria-label="Delete" disabled><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-trash"></use></svg></button></div>
@@ -914,10 +980,44 @@ footer code{color:var(--g-ink)}
           <span class="spec-row"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-moon"></use></svg><svg class="ds-icon ds-icon--md" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-sun"></use></svg><svg class="ds-icon ds-icon--lg" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-play"></use></svg><span class="kicker">sm · md · lg</span></span>
         </div>
         </div>
+          </div>
+        </div>
+        <div class="comp-band comp-band--tokens" data-band="tokens">
+          <h4 id="spec-icon-btn-tokens">Tokens</h4>
+          <div class="comp-tokens" data-usage-tokens tabindex="0" role="group" aria-label="Icon button tokens">
+          <span class="comp-token" data-usage-token="--radius-xs"><code>--radius-xs</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--focus-color"><code>--focus-color</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--focus-width"><code>--focus-width</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--focus-offset"><code>--focus-offset</code><b data-token-value>—</b></span>
+          <code class="comp-classes">.ds-icon-btn · [data-variant=circle] · [data-state]</code>
+          </div>
+        </div>
+        <footer class="comp-foot" data-band="footer">
+          <a class="comp-source" href="components.css">components.css <span data-usage-source>§—</span></a>
+        </footer>
       </article>
-      <article class="comp" id="spec-field" data-specimen="field">
-        <div class="comp-head"><h3>Field</h3><span class="comp-classes">.ds-field · .ds-label · .ds-input · .ds-select · .ds-textarea · .ds-note · [data-invalid]</span></div>
-        <div class="spec-grid">
+      <article class="comp" id="spec-field" data-specimen="field" data-usage-component="field" data-family="input">
+        <header class="comp-head">
+          <p class="comp-eyebrow"><span class="comp-index">03</span><span class="comp-family">input</span></p>
+          <h3>Field</h3>
+          <p class="comp-role">Label, control and note as one compound row; invalid is a first-class state.</p>
+          <span class="comp-status" data-status>—</span>
+          <a class="comp-anchor" href="#spec-field" aria-label="Link to Field">#</a>
+        </header>
+        <dl class="comp-facts">
+          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">quiet</dd></div>
+          <div class="comp-fact"><dt>States</dt><dd data-usage="states">disabled · focus</dd></div>
+          <div class="comp-fact"><dt>Sizes</dt><dd data-usage="sizes">—</dd></div>
+          <div class="comp-fact comp-fact--instances"><dt>Instances</dt><dd><span data-usage="reach">—</span><span class="comp-fact-sep" aria-hidden="true">—</span><span class="comp-fact-surfaces" data-usage-surfaces><a href="../index.html">Wiki <b data-usage-count="wiki">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../pitch.html">Pitch <b data-usage-count="pitch">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../engine.html">Engine <b data-usage-count="engine">—</b></a></span></dd></div>
+        </dl>
+        <div class="comp-band comp-band--themes" data-band="themes">
+          <div class="comp-caption">
+            <h4 id="spec-field-themes">Theme matrix</h4>
+            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
+            <span class="comp-scroll-hint">scroll</span>
+          </div>
+          <div class="comp-themes-scroll">
+<div class="spec-grid" tabindex="0" role="group" aria-label="Field — four theme maps, one per shipped theme">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <label class="ds-field"><span class="ds-label">Shot label</span><input class="ds-input" type="text" value="Handheld — corridor"><span class="ds-note">Shown in the timeline and every prompt token.</span></label>
@@ -955,10 +1055,44 @@ footer code{color:var(--g-ink)}
           <label class="ds-field"><span class="ds-label">Disabled</span><input class="ds-input" type="text" value="Locked" disabled></label>
         </div>
         </div>
+          </div>
+        </div>
+        <div class="comp-band comp-band--tokens" data-band="tokens">
+          <h4 id="spec-field-tokens">Tokens</h4>
+          <div class="comp-tokens" data-usage-tokens tabindex="0" role="group" aria-label="Field tokens">
+          <span class="comp-token" data-usage-token="--radius-xs"><code>--radius-xs</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-sm"><code>--spacing-sm</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-xs"><code>--spacing-xs</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--focus-color"><code>--focus-color</code><b data-token-value>—</b></span>
+          <code class="comp-classes">.ds-field · .ds-label · .ds-input · .ds-select · .ds-textarea · .ds-note · [data-invalid]</code>
+          </div>
+        </div>
+        <footer class="comp-foot" data-band="footer">
+          <a class="comp-source" href="components.css">components.css <span data-usage-source>§—</span></a>
+        </footer>
       </article>
-      <article class="comp" id="spec-switch" data-specimen="switch">
-        <div class="comp-head"><h3>Switch</h3><span class="comp-classes">.ds-switch · __input · __track · __label (real checkbox)</span></div>
-        <div class="spec-grid">
+      <article class="comp" id="spec-switch" data-specimen="switch" data-usage-component="switch" data-family="input">
+        <header class="comp-head">
+          <p class="comp-eyebrow"><span class="comp-index">04</span><span class="comp-family">input</span></p>
+          <h3>Switch</h3>
+          <p class="comp-role">Binary toggle on a real checkbox — form-submittable and keyboard-native.</p>
+          <span class="comp-status" data-status>—</span>
+          <a class="comp-anchor" href="#spec-switch" aria-label="Link to Switch">#</a>
+        </header>
+        <dl class="comp-facts">
+          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">—</dd></div>
+          <div class="comp-fact"><dt>States</dt><dd data-usage="states">focus</dd></div>
+          <div class="comp-fact"><dt>Sizes</dt><dd data-usage="sizes">—</dd></div>
+          <div class="comp-fact comp-fact--instances"><dt>Instances</dt><dd><span data-usage="reach">—</span><span class="comp-fact-sep" aria-hidden="true">—</span><span class="comp-fact-surfaces" data-usage-surfaces><a href="../index.html">Wiki <b data-usage-count="wiki">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../pitch.html">Pitch <b data-usage-count="pitch">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../engine.html">Engine <b data-usage-count="engine">—</b></a></span></dd></div>
+        </dl>
+        <div class="comp-band comp-band--themes" data-band="themes">
+          <div class="comp-caption">
+            <h4 id="spec-switch-themes">Theme matrix</h4>
+            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
+            <span class="comp-scroll-hint">scroll</span>
+          </div>
+          <div class="comp-themes-scroll">
+<div class="spec-grid" tabindex="0" role="group" aria-label="Switch — four theme maps, one per shipped theme">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="spec-row"><label class="ds-switch"><input class="ds-switch__input" type="checkbox"><span class="ds-switch__track"></span><span class="ds-switch__label">Off</span></label><label class="ds-switch"><input class="ds-switch__input" type="checkbox" checked><span class="ds-switch__track"></span><span class="ds-switch__label">On</span></label></div>
@@ -980,10 +1114,44 @@ footer code{color:var(--g-ink)}
           <div class="spec-row"><label class="ds-switch" data-state="focus"><input class="ds-switch__input" type="checkbox" checked><span class="ds-switch__track"></span><span class="ds-switch__label">Focus</span></label><label class="ds-switch"><input class="ds-switch__input" type="checkbox" disabled><span class="ds-switch__track"></span><span class="ds-switch__label">Disabled</span></label></div>
         </div>
         </div>
+          </div>
+        </div>
+        <div class="comp-band comp-band--tokens" data-band="tokens">
+          <h4 id="spec-switch-tokens">Tokens</h4>
+          <div class="comp-tokens" data-usage-tokens tabindex="0" role="group" aria-label="Switch tokens">
+          <span class="comp-token" data-usage-token="--spacing-2"><code>--spacing-2</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-lg"><code>--spacing-lg</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-xs"><code>--spacing-xs</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--focus-color"><code>--focus-color</code><b data-token-value>—</b></span>
+          <code class="comp-classes">.ds-switch · __input · __track · __label (real checkbox)</code>
+          </div>
+        </div>
+        <footer class="comp-foot" data-band="footer">
+          <a class="comp-source" href="components.css">components.css <span data-usage-source>§—</span></a>
+        </footer>
       </article>
-      <article class="comp" id="spec-tabs" data-specimen="tabs">
-        <div class="comp-head"><h3>Tabs</h3><span class="comp-classes">.ds-tabs · .ds-tab · [data-variant] pill (live) · underline (legacy) · rail (legacy)</span></div>
-        <div class="spec-grid">
+      <article class="comp" id="spec-tabs" data-specimen="tabs" data-usage-component="tabs" data-family="controls" data-legacy="underline rail">
+        <header class="comp-head">
+          <p class="comp-eyebrow"><span class="comp-index">05</span><span class="comp-family">controls</span></p>
+          <h3>Tabs</h3>
+          <p class="comp-role">One visible panel at a time; pill is live, underline and rail are legacy.</p>
+          <span class="comp-status" data-status>—</span>
+          <a class="comp-anchor" href="#spec-tabs" aria-label="Link to Tabs">#</a>
+        </header>
+        <dl class="comp-facts">
+          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">pill · rail (legacy) · underline (legacy)</dd></div>
+          <div class="comp-fact"><dt>States</dt><dd data-usage="states">focus · hover · selected</dd></div>
+          <div class="comp-fact"><dt>Sizes</dt><dd data-usage="sizes">—</dd></div>
+          <div class="comp-fact comp-fact--instances"><dt>Instances</dt><dd><span data-usage="reach">—</span><span class="comp-fact-sep" aria-hidden="true">—</span><span class="comp-fact-surfaces" data-usage-surfaces><a href="../index.html">Wiki <b data-usage-count="wiki">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../pitch.html">Pitch <b data-usage-count="pitch">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../engine.html">Engine <b data-usage-count="engine">—</b></a></span></dd></div>
+        </dl>
+        <div class="comp-band comp-band--themes" data-band="themes">
+          <div class="comp-caption">
+            <h4 id="spec-tabs-themes">Theme matrix</h4>
+            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
+            <span class="comp-scroll-hint">scroll</span>
+          </div>
+          <div class="comp-themes-scroll">
+<div class="spec-grid" tabindex="0" role="group" aria-label="Tabs — four theme maps, one per shipped theme">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-tabs" data-variant="pill" role="tablist" aria-label="Pill tabs, live"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
@@ -1013,10 +1181,44 @@ footer code{color:var(--g-ink)}
           <div class="ds-tabs" data-variant="rail" role="tablist" aria-label="Rail tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Coverage</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Movement</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Focus</button></div>
         </div>
         </div>
+          </div>
+        </div>
+        <div class="comp-band comp-band--tokens" data-band="tokens">
+          <h4 id="spec-tabs-tokens">Tokens</h4>
+          <div class="comp-tokens" data-usage-tokens tabindex="0" role="group" aria-label="Tabs tokens">
+          <span class="comp-token" data-usage-token="--radius-xs"><code>--radius-xs</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-2"><code>--spacing-2</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-6"><code>--spacing-6</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-10"><code>--spacing-10</code><b data-token-value>—</b></span>
+          <code class="comp-classes">.ds-tabs · .ds-tab · [data-variant] pill (live) · underline (legacy) · rail (legacy)</code>
+          </div>
+        </div>
+        <footer class="comp-foot" data-band="footer">
+          <a class="comp-source" href="components.css">components.css <span data-usage-source>§—</span></a>
+        </footer>
       </article>
-      <article class="comp" id="spec-navigation" data-specimen="navigation">
-        <div class="comp-head"><h3>Navigation grammar</h3><span class="comp-classes">.ds-tabs[data-variant=pill] (live) · .ds-rail + .ds-nav-item.ds-rail__item (live)</span></div>
-        <div class="spec-grid">
+      <article class="comp" id="spec-navigation" data-specimen="navigation" data-usage-component="navigation" data-family="controls" data-legacy="dot">
+        <header class="comp-head">
+          <p class="comp-eyebrow"><span class="comp-index">06</span><span class="comp-family">controls</span></p>
+          <h3>Navigation grammar</h3>
+          <p class="comp-role">Pill tabs and the flat rail item are the two navigation shapes.</p>
+          <span class="comp-status" data-status>—</span>
+          <a class="comp-anchor" href="#spec-navigation" aria-label="Link to Navigation grammar">#</a>
+        </header>
+        <dl class="comp-facts">
+          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">dot · pill · rail · underline</dd></div>
+          <div class="comp-fact"><dt>States</dt><dd data-usage="states">current · focus · hover · selected</dd></div>
+          <div class="comp-fact"><dt>Sizes</dt><dd data-usage="sizes">—</dd></div>
+          <div class="comp-fact comp-fact--instances"><dt>Instances</dt><dd><span data-usage="reach">—</span><span class="comp-fact-sep" aria-hidden="true">—</span><span class="comp-fact-surfaces" data-usage-surfaces><a href="../index.html">Wiki <b data-usage-count="wiki">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../pitch.html">Pitch <b data-usage-count="pitch">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../engine.html">Engine <b data-usage-count="engine">—</b></a></span></dd></div>
+        </dl>
+        <div class="comp-band comp-band--themes" data-band="themes">
+          <div class="comp-caption">
+            <h4 id="spec-navigation-themes">Theme matrix</h4>
+            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
+            <span class="comp-scroll-hint">scroll</span>
+          </div>
+          <div class="comp-themes-scroll">
+<div class="spec-grid" tabindex="0" role="group" aria-label="Navigation grammar — four theme maps, one per shipped theme">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch · live</span>
           <div class="ds-tabs" data-variant="pill" role="tablist" aria-label="Pill tabs, live — pitch">
@@ -1074,10 +1276,44 @@ footer code{color:var(--g-ink)}
           </nav>
         </div>
         </div>
+          </div>
+        </div>
+        <div class="comp-band comp-band--tokens" data-band="tokens">
+          <h4 id="spec-navigation-tokens">Tokens</h4>
+          <div class="comp-tokens" data-usage-tokens tabindex="0" role="group" aria-label="Navigation grammar tokens">
+          <span class="comp-token" data-usage-token="--dot-size"><code>--dot-size</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--radius-xs"><code>--radius-xs</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-2"><code>--spacing-2</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-6"><code>--spacing-6</code><b data-token-value>—</b></span>
+          <code class="comp-classes">.ds-tabs[data-variant=pill] (live) · .ds-rail + .ds-nav-item.ds-rail__item (live)</code>
+          </div>
+        </div>
+        <footer class="comp-foot" data-band="footer">
+          <a class="comp-source" href="components.css">components.css <span data-usage-source>§—</span></a>
+        </footer>
       </article>
-      <article class="comp" id="spec-chip" data-specimen="chip">
-        <div class="comp-head"><h3>Chip</h3><span class="comp-classes">.ds-chip · __count · [data-variant=pill] · [aria-pressed]</span></div>
-        <div class="spec-grid">
+      <article class="comp" id="spec-chip" data-specimen="chip" data-usage-component="chip" data-family="controls">
+        <header class="comp-head">
+          <p class="comp-eyebrow"><span class="comp-index">07</span><span class="comp-family">controls</span></p>
+          <h3>Chip</h3>
+          <p class="comp-role">Compact toggle or filter with an optional count.</p>
+          <span class="comp-status" data-status>—</span>
+          <a class="comp-anchor" href="#spec-chip" aria-label="Link to Chip">#</a>
+        </header>
+        <dl class="comp-facts">
+          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">pill</dd></div>
+          <div class="comp-fact"><dt>States</dt><dd data-usage="states">disabled · focus · hover · pressed</dd></div>
+          <div class="comp-fact"><dt>Sizes</dt><dd data-usage="sizes">—</dd></div>
+          <div class="comp-fact comp-fact--instances"><dt>Instances</dt><dd><span data-usage="reach">—</span><span class="comp-fact-sep" aria-hidden="true">—</span><span class="comp-fact-surfaces" data-usage-surfaces><a href="../index.html">Wiki <b data-usage-count="wiki">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../pitch.html">Pitch <b data-usage-count="pitch">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../engine.html">Engine <b data-usage-count="engine">—</b></a></span></dd></div>
+        </dl>
+        <div class="comp-band comp-band--themes" data-band="themes">
+          <div class="comp-caption">
+            <h4 id="spec-chip-themes">Theme matrix</h4>
+            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
+            <span class="comp-scroll-hint">scroll</span>
+          </div>
+          <div class="comp-themes-scroll">
+<div class="spec-grid" tabindex="0" role="group" aria-label="Chip — four theme maps, one per shipped theme">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="spec-row"><button class="ds-chip" type="button" aria-pressed="false">All shots</button><button class="ds-chip" data-state="hover" type="button" aria-pressed="false">Hover</button></div>
@@ -1099,10 +1335,44 @@ footer code{color:var(--g-ink)}
           <div class="spec-row"><button class="ds-chip" type="button" aria-pressed="true">Coverage <span class="ds-chip__count">12</span></button><button class="ds-chip" data-variant="pill" type="button" aria-pressed="false">Pill</button></div>
         </div>
         </div>
+          </div>
+        </div>
+        <div class="comp-band comp-band--tokens" data-band="tokens">
+          <h4 id="spec-chip-tokens">Tokens</h4>
+          <div class="comp-tokens" data-usage-tokens tabindex="0" role="group" aria-label="Chip tokens">
+          <span class="comp-token" data-usage-token="--radius-xs"><code>--radius-xs</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-md"><code>--spacing-md</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-xs"><code>--spacing-xs</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--focus-color"><code>--focus-color</code><b data-token-value>—</b></span>
+          <code class="comp-classes">.ds-chip · __count · [data-variant=pill] · [aria-pressed]</code>
+          </div>
+        </div>
+        <footer class="comp-foot" data-band="footer">
+          <a class="comp-source" href="components.css">components.css <span data-usage-source>§—</span></a>
+        </footer>
       </article>
-      <article class="comp" id="spec-badge" data-specimen="badge">
-        <div class="comp-head"><h3>Badge</h3><span class="comp-classes">.ds-badge · [data-variant] success|info|warning|danger|neutral|outline</span></div>
-        <div class="spec-grid">
+      <article class="comp" id="spec-badge" data-specimen="badge" data-usage-component="badge" data-family="feedback">
+        <header class="comp-head">
+          <p class="comp-eyebrow"><span class="comp-index">08</span><span class="comp-family">feedback</span></p>
+          <h3>Badge</h3>
+          <p class="comp-role">Passive status marker; never the only signal for an action.</p>
+          <span class="comp-status" data-status>—</span>
+          <a class="comp-anchor" href="#spec-badge" aria-label="Link to Badge">#</a>
+        </header>
+        <dl class="comp-facts">
+          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">danger · info · neutral · outline · success · warning</dd></div>
+          <div class="comp-fact"><dt>States</dt><dd data-usage="states">—</dd></div>
+          <div class="comp-fact"><dt>Sizes</dt><dd data-usage="sizes">—</dd></div>
+          <div class="comp-fact comp-fact--instances"><dt>Instances</dt><dd><span data-usage="reach">—</span><span class="comp-fact-sep" aria-hidden="true">—</span><span class="comp-fact-surfaces" data-usage-surfaces><a href="../index.html">Wiki <b data-usage-count="wiki">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../pitch.html">Pitch <b data-usage-count="pitch">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../engine.html">Engine <b data-usage-count="engine">—</b></a></span></dd></div>
+        </dl>
+        <div class="comp-band comp-band--themes" data-band="themes">
+          <div class="comp-caption">
+            <h4 id="spec-badge-themes">Theme matrix</h4>
+            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
+            <span class="comp-scroll-hint">scroll</span>
+          </div>
+          <div class="comp-themes-scroll">
+<div class="spec-grid" tabindex="0" role="group" aria-label="Badge — four theme maps, one per shipped theme">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="spec-row"><span class="ds-badge" data-variant="success">Free</span><span class="ds-badge" data-variant="info">Paid</span><span class="ds-badge" data-variant="warning">Draft</span><span class="ds-badge" data-variant="danger">Flagged</span><span class="ds-badge" data-variant="neutral">Unverified</span><span class="ds-badge" data-variant="outline">Queued</span></div>
@@ -1120,10 +1390,44 @@ footer code{color:var(--g-ink)}
           <div class="spec-row"><span class="ds-badge" data-variant="success">Free</span><span class="ds-badge" data-variant="info">Paid</span><span class="ds-badge" data-variant="warning">Draft</span><span class="ds-badge" data-variant="danger">Flagged</span><span class="ds-badge" data-variant="neutral">Unverified</span><span class="ds-badge" data-variant="outline">Queued</span></div>
         </div>
         </div>
+          </div>
+        </div>
+        <div class="comp-band comp-band--tokens" data-band="tokens">
+          <h4 id="spec-badge-tokens">Tokens</h4>
+          <div class="comp-tokens" data-usage-tokens tabindex="0" role="group" aria-label="Badge tokens">
+          <span class="comp-token" data-usage-token="--spacing-2"><code>--spacing-2</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-xs"><code>--spacing-xs</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--radius-pill"><code>--radius-pill</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--weight-bold"><code>--weight-bold</code><b data-token-value>—</b></span>
+          <code class="comp-classes">.ds-badge · [data-variant] success|info|warning|danger|neutral|outline</code>
+          </div>
+        </div>
+        <footer class="comp-foot" data-band="footer">
+          <a class="comp-source" href="components.css">components.css <span data-usage-source>§—</span></a>
+        </footer>
       </article>
-      <article class="comp" id="spec-card" data-specimen="card">
-        <div class="comp-head"><h3>Card</h3><span class="comp-classes">.ds-card · __head · __eyebrow · __meta · [data-variant=accent]</span></div>
-        <div class="spec-grid">
+      <article class="comp" id="spec-card" data-specimen="card" data-usage-component="card" data-family="surfaces">
+        <header class="comp-head">
+          <p class="comp-eyebrow"><span class="comp-index">09</span><span class="comp-family">surfaces</span></p>
+          <h3>Card</h3>
+          <p class="comp-role">Hairline container for a summary; no product page renders it yet.</p>
+          <span class="comp-status" data-status>—</span>
+          <a class="comp-anchor" href="#spec-card" aria-label="Link to Card">#</a>
+        </header>
+        <dl class="comp-facts">
+          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">accent</dd></div>
+          <div class="comp-fact"><dt>States</dt><dd data-usage="states">—</dd></div>
+          <div class="comp-fact"><dt>Sizes</dt><dd data-usage="sizes">—</dd></div>
+          <div class="comp-fact comp-fact--instances"><dt>Instances</dt><dd><span data-usage="reach">—</span><span class="comp-fact-sep" aria-hidden="true">—</span><span class="comp-fact-surfaces" data-usage-surfaces><a href="../index.html">Wiki <b data-usage-count="wiki">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../pitch.html">Pitch <b data-usage-count="pitch">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../engine.html">Engine <b data-usage-count="engine">—</b></a></span></dd></div>
+        </dl>
+        <div class="comp-band comp-band--themes" data-band="themes">
+          <div class="comp-caption">
+            <h4 id="spec-card-themes">Theme matrix</h4>
+            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
+            <span class="comp-scroll-hint">scroll</span>
+          </div>
+          <div class="comp-themes-scroll">
+<div class="spec-grid" tabindex="0" role="group" aria-label="Card — four theme maps, one per shipped theme">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-card"><div class="ds-card__head"><span class="ds-card__eyebrow">Shot size · 02</span><span class="ds-badge" data-variant="success">Free</span></div><p>Medium close-up. Chest up, room still in the frame.</p><div class="ds-card__meta"><span>Coverage</span><span>4 prompts</span></div></div>
@@ -1145,10 +1449,44 @@ footer code{color:var(--g-ink)}
           <div class="ds-card" data-variant="accent"><div class="ds-card__head"><span class="ds-card__eyebrow">Gate</span></div><p>Accent bar marks the one row that changed.</p></div>
         </div>
         </div>
+          </div>
+        </div>
+        <div class="comp-band comp-band--tokens" data-band="tokens">
+          <h4 id="spec-card-tokens">Tokens</h4>
+          <div class="comp-tokens" data-usage-tokens tabindex="0" role="group" aria-label="Card tokens">
+          <span class="comp-token" data-usage-token="--radius-sm"><code>--radius-sm</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-lg"><code>--spacing-lg</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-md"><code>--spacing-md</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-sm"><code>--spacing-sm</code><b data-token-value>—</b></span>
+          <code class="comp-classes">.ds-card · __head · __eyebrow · __meta · [data-variant=accent]</code>
+          </div>
+        </div>
+        <footer class="comp-foot" data-band="footer">
+          <a class="comp-source" href="components.css">components.css <span data-usage-source>§—</span></a>
+        </footer>
       </article>
-      <article class="comp" id="spec-surface" data-specimen="surface">
-        <div class="comp-head"><h3>Surface</h3><span class="comp-classes">.ds-surface · [data-variant] raised|inset</span></div>
-        <div class="spec-grid">
+      <article class="comp" id="spec-surface" data-specimen="surface" data-usage-component="surface" data-family="surfaces">
+        <header class="comp-head">
+          <p class="comp-eyebrow"><span class="comp-index">10</span><span class="comp-family">surfaces</span></p>
+          <h3>Surface</h3>
+          <p class="comp-role">The role-mapped panel primitive behind every raised or inset block.</p>
+          <span class="comp-status" data-status>—</span>
+          <a class="comp-anchor" href="#spec-surface" aria-label="Link to Surface">#</a>
+        </header>
+        <dl class="comp-facts">
+          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">inset · raised</dd></div>
+          <div class="comp-fact"><dt>States</dt><dd data-usage="states">—</dd></div>
+          <div class="comp-fact"><dt>Sizes</dt><dd data-usage="sizes">—</dd></div>
+          <div class="comp-fact comp-fact--instances"><dt>Instances</dt><dd><span data-usage="reach">—</span><span class="comp-fact-sep" aria-hidden="true">—</span><span class="comp-fact-surfaces" data-usage-surfaces><a href="../index.html">Wiki <b data-usage-count="wiki">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../pitch.html">Pitch <b data-usage-count="pitch">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../engine.html">Engine <b data-usage-count="engine">—</b></a></span></dd></div>
+        </dl>
+        <div class="comp-band comp-band--themes" data-band="themes">
+          <div class="comp-caption">
+            <h4 id="spec-surface-themes">Theme matrix</h4>
+            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
+            <span class="comp-scroll-hint">scroll</span>
+          </div>
+          <div class="comp-themes-scroll">
+<div class="spec-grid" tabindex="0" role="group" aria-label="Surface — four theme maps, one per shipped theme">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-surface"><span class="kicker">Surface</span><p>Reader container, no elevation.</p></div>
@@ -1174,10 +1512,44 @@ footer code{color:var(--g-ink)}
           <div class="ds-surface" data-variant="inset"><span class="kicker">Inset</span><p>Sits on the page background.</p></div>
         </div>
         </div>
+          </div>
+        </div>
+        <div class="comp-band comp-band--tokens" data-band="tokens">
+          <h4 id="spec-surface-tokens">Tokens</h4>
+          <div class="comp-tokens" data-usage-tokens tabindex="0" role="group" aria-label="Surface tokens">
+          <span class="comp-token" data-usage-token="--radius-md"><code>--radius-md</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-lg"><code>--spacing-lg</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--elevation-1"><code>--elevation-1</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--border-width-hairline"><code>--border-width-hairline</code><b data-token-value>—</b></span>
+          <code class="comp-classes">.ds-surface · [data-variant] raised|inset</code>
+          </div>
+        </div>
+        <footer class="comp-foot" data-band="footer">
+          <a class="comp-source" href="components.css">components.css <span data-usage-source>§—</span></a>
+        </footer>
       </article>
-      <article class="comp" id="spec-table" data-specimen="table">
-        <div class="comp-head"><h3>Table</h3><span class="comp-classes">.ds-table-wrap · .ds-table · td[data-label] stacks under the container query</span></div>
-        <div class="spec-grid">
+      <article class="comp" id="spec-table" data-specimen="table" data-usage-component="table" data-family="data">
+        <header class="comp-head">
+          <p class="comp-eyebrow"><span class="comp-index">11</span><span class="comp-family">data</span></p>
+          <h3>Table</h3>
+          <p class="comp-role">Dense rows that stack under the container query on narrow cells.</p>
+          <span class="comp-status" data-status>—</span>
+          <a class="comp-anchor" href="#spec-table" aria-label="Link to Table">#</a>
+        </header>
+        <dl class="comp-facts">
+          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">—</dd></div>
+          <div class="comp-fact"><dt>States</dt><dd data-usage="states">—</dd></div>
+          <div class="comp-fact"><dt>Sizes</dt><dd data-usage="sizes">—</dd></div>
+          <div class="comp-fact comp-fact--instances"><dt>Instances</dt><dd><span data-usage="reach">—</span><span class="comp-fact-sep" aria-hidden="true">—</span><span class="comp-fact-surfaces" data-usage-surfaces><a href="../index.html">Wiki <b data-usage-count="wiki">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../pitch.html">Pitch <b data-usage-count="pitch">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../engine.html">Engine <b data-usage-count="engine">—</b></a></span></dd></div>
+        </dl>
+        <div class="comp-band comp-band--themes" data-band="themes">
+          <div class="comp-caption">
+            <h4 id="spec-table-themes">Theme matrix</h4>
+            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
+            <span class="comp-scroll-hint">scroll</span>
+          </div>
+          <div class="comp-themes-scroll">
+<div class="spec-grid" tabindex="0" role="group" aria-label="Table — four theme maps, one per shipped theme">
         <div class="spec-cell spec-cell--wide" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-table-wrap">
@@ -1231,10 +1603,44 @@ footer code{color:var(--g-ink)}
           </div>
         </div>
         </div>
+          </div>
+        </div>
+        <div class="comp-band comp-band--tokens" data-band="tokens">
+          <h4 id="spec-table-tokens">Tokens</h4>
+          <div class="comp-tokens" data-usage-tokens tabindex="0" role="group" aria-label="Table tokens">
+          <span class="comp-token" data-usage-token="--radius-xs"><code>--radius-xs</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-14"><code>--spacing-14</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-sm"><code>--spacing-sm</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--weight-medium"><code>--weight-medium</code><b data-token-value>—</b></span>
+          <code class="comp-classes">.ds-table-wrap · .ds-table · td[data-label] stacks under the container query</code>
+          </div>
+        </div>
+        <footer class="comp-foot" data-band="footer">
+          <a class="comp-source" href="components.css">components.css <span data-usage-source>§—</span></a>
+        </footer>
       </article>
-      <article class="comp" id="spec-drawer" data-specimen="drawer">
-        <div class="comp-head"><h3>Drawer</h3><span class="comp-classes">.ds-drawer · [data-open] · [data-variant=wide] · [hidden]</span></div>
-        <div class="spec-grid">
+      <article class="comp" id="spec-drawer" data-specimen="drawer" data-usage-component="drawer" data-family="surfaces">
+        <header class="comp-head">
+          <p class="comp-eyebrow"><span class="comp-index">12</span><span class="comp-family">surfaces</span></p>
+          <h3>Drawer</h3>
+          <p class="comp-role">Off-canvas panel for secondary work; wide variant for long forms.</p>
+          <span class="comp-status" data-status>—</span>
+          <a class="comp-anchor" href="#spec-drawer" aria-label="Link to Drawer">#</a>
+        </header>
+        <dl class="comp-facts">
+          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">wide</dd></div>
+          <div class="comp-fact"><dt>States</dt><dd data-usage="states">—</dd></div>
+          <div class="comp-fact"><dt>Sizes</dt><dd data-usage="sizes">—</dd></div>
+          <div class="comp-fact comp-fact--instances"><dt>Instances</dt><dd><span data-usage="reach">—</span><span class="comp-fact-sep" aria-hidden="true">—</span><span class="comp-fact-surfaces" data-usage-surfaces><a href="../index.html">Wiki <b data-usage-count="wiki">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../pitch.html">Pitch <b data-usage-count="pitch">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../engine.html">Engine <b data-usage-count="engine">—</b></a></span></dd></div>
+        </dl>
+        <div class="comp-band comp-band--themes" data-band="themes">
+          <div class="comp-caption">
+            <h4 id="spec-drawer-themes">Theme matrix</h4>
+            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
+            <span class="comp-scroll-hint">scroll</span>
+          </div>
+          <div class="comp-themes-scroll">
+<div class="spec-grid" tabindex="0" role="group" aria-label="Drawer — four theme maps, one per shipped theme">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-drawer" data-open>
@@ -1268,10 +1674,44 @@ footer code{color:var(--g-ink)}
           </div>
         </div>
         </div>
+          </div>
+        </div>
+        <div class="comp-band comp-band--tokens" data-band="tokens">
+          <h4 id="spec-drawer-tokens">Tokens</h4>
+          <div class="comp-tokens" data-usage-tokens tabindex="0" role="group" aria-label="Drawer tokens">
+          <span class="comp-token" data-usage-token="--z-drawer"><code>--z-drawer</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-lg"><code>--spacing-lg</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--motion-duration-slow"><code>--motion-duration-slow</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--motion-easing-drawer"><code>--motion-easing-drawer</code><b data-token-value>—</b></span>
+          <code class="comp-classes">.ds-drawer · [data-open] · [data-variant=wide] · [hidden]</code>
+          </div>
+        </div>
+        <footer class="comp-foot" data-band="footer">
+          <a class="comp-source" href="components.css">components.css <span data-usage-source>§—</span></a>
+        </footer>
       </article>
-      <article class="comp" id="spec-dialog" data-specimen="dialog">
-        <div class="comp-head"><h3>Dialog</h3><span class="comp-classes">.ds-dialog · __scrim · __box · [data-variant=sheet]</span></div>
-        <div class="spec-grid">
+      <article class="comp" id="spec-dialog" data-specimen="dialog" data-usage-component="dialog" data-family="surfaces">
+        <header class="comp-head">
+          <p class="comp-eyebrow"><span class="comp-index">13</span><span class="comp-family">surfaces</span></p>
+          <h3>Dialog</h3>
+          <p class="comp-role">Modal decision point with scrim, box and focus trap.</p>
+          <span class="comp-status" data-status>—</span>
+          <a class="comp-anchor" href="#spec-dialog" aria-label="Link to Dialog">#</a>
+        </header>
+        <dl class="comp-facts">
+          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">sheet</dd></div>
+          <div class="comp-fact"><dt>States</dt><dd data-usage="states">—</dd></div>
+          <div class="comp-fact"><dt>Sizes</dt><dd data-usage="sizes">—</dd></div>
+          <div class="comp-fact comp-fact--instances"><dt>Instances</dt><dd><span data-usage="reach">—</span><span class="comp-fact-sep" aria-hidden="true">—</span><span class="comp-fact-surfaces" data-usage-surfaces><a href="../index.html">Wiki <b data-usage-count="wiki">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../pitch.html">Pitch <b data-usage-count="pitch">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../engine.html">Engine <b data-usage-count="engine">—</b></a></span></dd></div>
+        </dl>
+        <div class="comp-band comp-band--themes" data-band="themes">
+          <div class="comp-caption">
+            <h4 id="spec-dialog-themes">Theme matrix</h4>
+            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
+            <span class="comp-scroll-hint">scroll</span>
+          </div>
+          <div class="comp-themes-scroll">
+<div class="spec-grid" tabindex="0" role="group" aria-label="Dialog — four theme maps, one per shipped theme">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-dialog">
@@ -1321,10 +1761,44 @@ footer code{color:var(--g-ink)}
           </div>
         </div>
         </div>
+          </div>
+        </div>
+        <div class="comp-band comp-band--tokens" data-band="tokens">
+          <h4 id="spec-dialog-tokens">Tokens</h4>
+          <div class="comp-tokens" data-usage-tokens tabindex="0" role="group" aria-label="Dialog tokens">
+          <span class="comp-token" data-usage-token="--radius-sm"><code>--radius-sm</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--z-overlay"><code>--z-overlay</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-20"><code>--spacing-20</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-lg"><code>--spacing-lg</code><b data-token-value>—</b></span>
+          <code class="comp-classes">.ds-dialog · __scrim · __box · [data-variant=sheet]</code>
+          </div>
+        </div>
+        <footer class="comp-foot" data-band="footer">
+          <a class="comp-source" href="components.css">components.css <span data-usage-source>§—</span></a>
+        </footer>
       </article>
-      <article class="comp" id="spec-menu" data-specimen="menu">
-        <div class="comp-head"><h3>Menu</h3><span class="comp-classes">.ds-menu · __item · [data-variant=danger] · [data-armed]</span></div>
-        <div class="spec-grid">
+      <article class="comp" id="spec-menu" data-specimen="menu" data-usage-component="menu" data-family="surfaces">
+        <header class="comp-head">
+          <p class="comp-eyebrow"><span class="comp-index">14</span><span class="comp-family">surfaces</span></p>
+          <h3>Menu</h3>
+          <p class="comp-role">Command list anchored to a trigger; danger and armed rows.</p>
+          <span class="comp-status" data-status>—</span>
+          <a class="comp-anchor" href="#spec-menu" aria-label="Link to Menu">#</a>
+        </header>
+        <dl class="comp-facts">
+          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">danger</dd></div>
+          <div class="comp-fact"><dt>States</dt><dd data-usage="states">hover</dd></div>
+          <div class="comp-fact"><dt>Sizes</dt><dd data-usage="sizes">—</dd></div>
+          <div class="comp-fact comp-fact--instances"><dt>Instances</dt><dd><span data-usage="reach">—</span><span class="comp-fact-sep" aria-hidden="true">—</span><span class="comp-fact-surfaces" data-usage-surfaces><a href="../index.html">Wiki <b data-usage-count="wiki">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../pitch.html">Pitch <b data-usage-count="pitch">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../engine.html">Engine <b data-usage-count="engine">—</b></a></span></dd></div>
+        </dl>
+        <div class="comp-band comp-band--themes" data-band="themes">
+          <div class="comp-caption">
+            <h4 id="spec-menu-themes">Theme matrix</h4>
+            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
+            <span class="comp-scroll-hint">scroll</span>
+          </div>
+          <div class="comp-themes-scroll">
+<div class="spec-grid" tabindex="0" role="group" aria-label="Menu — four theme maps, one per shipped theme">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-menu" role="menu" aria-label="Shot actions"><button class="ds-menu__item" role="menuitem" type="button">Duplicate</button><button class="ds-menu__item" role="menuitem" data-state="hover" type="button">Rename</button><button class="ds-menu__item" role="menuitem" data-variant="danger" type="button">Delete</button><button class="ds-menu__item" role="menuitem" data-variant="danger" data-armed type="button">Delete again?</button></div>
@@ -1342,10 +1816,44 @@ footer code{color:var(--g-ink)}
           <div class="ds-menu" role="menu" aria-label="Shot actions"><button class="ds-menu__item" role="menuitem" type="button">Duplicate</button><button class="ds-menu__item" role="menuitem" data-state="hover" type="button">Rename</button><button class="ds-menu__item" role="menuitem" data-variant="danger" type="button">Delete</button><button class="ds-menu__item" role="menuitem" data-variant="danger" data-armed type="button">Delete again?</button></div>
         </div>
         </div>
+          </div>
+        </div>
+        <div class="comp-band comp-band--tokens" data-band="tokens">
+          <h4 id="spec-menu-tokens">Tokens</h4>
+          <div class="comp-tokens" data-usage-tokens tabindex="0" role="group" aria-label="Menu tokens">
+          <span class="comp-token" data-usage-token="--z-menu"><code>--z-menu</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--radius-sm"><code>--radius-sm</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--radius-xs"><code>--radius-xs</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-6"><code>--spacing-6</code><b data-token-value>—</b></span>
+          <code class="comp-classes">.ds-menu · __item · [data-variant=danger] · [data-armed]</code>
+          </div>
+        </div>
+        <footer class="comp-foot" data-band="footer">
+          <a class="comp-source" href="components.css">components.css <span data-usage-source>§—</span></a>
+        </footer>
       </article>
-      <article class="comp" id="spec-toast" data-specimen="toast">
-        <div class="comp-head"><h3>Toast</h3><span class="comp-classes">.ds-toast · action button · [hidden]</span></div>
-        <div class="spec-grid">
+      <article class="comp" id="spec-toast" data-specimen="toast" data-usage-component="toast" data-family="feedback">
+        <header class="comp-head">
+          <p class="comp-eyebrow"><span class="comp-index">15</span><span class="comp-family">feedback</span></p>
+          <h3>Toast</h3>
+          <p class="comp-role">Transient confirmation with one action; never the only record.</p>
+          <span class="comp-status" data-status>—</span>
+          <a class="comp-anchor" href="#spec-toast" aria-label="Link to Toast">#</a>
+        </header>
+        <dl class="comp-facts">
+          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">—</dd></div>
+          <div class="comp-fact"><dt>States</dt><dd data-usage="states">—</dd></div>
+          <div class="comp-fact"><dt>Sizes</dt><dd data-usage="sizes">—</dd></div>
+          <div class="comp-fact comp-fact--instances"><dt>Instances</dt><dd><span data-usage="reach">—</span><span class="comp-fact-sep" aria-hidden="true">—</span><span class="comp-fact-surfaces" data-usage-surfaces><a href="../index.html">Wiki <b data-usage-count="wiki">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../pitch.html">Pitch <b data-usage-count="pitch">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../engine.html">Engine <b data-usage-count="engine">—</b></a></span></dd></div>
+        </dl>
+        <div class="comp-band comp-band--themes" data-band="themes">
+          <div class="comp-caption">
+            <h4 id="spec-toast-themes">Theme matrix</h4>
+            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
+            <span class="comp-scroll-hint">scroll</span>
+          </div>
+          <div class="comp-themes-scroll">
+<div class="spec-grid" tabindex="0" role="group" aria-label="Toast — four theme maps, one per shipped theme">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-toast" role="status"><span>Prompt copied to the clipboard</span><button class="ds-btn" data-variant="primary" data-size="xs" type="button">Undo</button></div>
@@ -1363,10 +1871,44 @@ footer code{color:var(--g-ink)}
           <div class="ds-toast" role="status"><span>Prompt copied to the clipboard</span><button class="ds-btn" data-variant="primary" data-size="xs" type="button">Undo</button></div>
         </div>
         </div>
+          </div>
+        </div>
+        <div class="comp-band comp-band--tokens" data-band="tokens">
+          <h4 id="spec-toast-tokens">Tokens</h4>
+          <div class="comp-tokens" data-usage-tokens tabindex="0" role="group" aria-label="Toast tokens">
+          <span class="comp-token" data-usage-token="--z-toast"><code>--z-toast</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--radius-sm"><code>--radius-sm</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-md"><code>--spacing-md</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-xs"><code>--spacing-xs</code><b data-token-value>—</b></span>
+          <code class="comp-classes">.ds-toast · action button · [hidden]</code>
+          </div>
+        </div>
+        <footer class="comp-foot" data-band="footer">
+          <a class="comp-source" href="components.css">components.css <span data-usage-source>§—</span></a>
+        </footer>
       </article>
-      <article class="comp" id="spec-empty" data-specimen="empty">
-        <div class="comp-head"><h3>Empty state</h3><span class="comp-classes">.ds-empty · __title · [data-variant=inline]</span></div>
-        <div class="spec-grid">
+      <article class="comp" id="spec-empty" data-specimen="empty" data-usage-component="empty" data-family="feedback">
+        <header class="comp-head">
+          <p class="comp-eyebrow"><span class="comp-index">16</span><span class="comp-family">feedback</span></p>
+          <h3>Empty state</h3>
+          <p class="comp-role">Holds the space when a collection has no rows yet.</p>
+          <span class="comp-status" data-status>—</span>
+          <a class="comp-anchor" href="#spec-empty" aria-label="Link to Empty state">#</a>
+        </header>
+        <dl class="comp-facts">
+          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">inline</dd></div>
+          <div class="comp-fact"><dt>States</dt><dd data-usage="states">—</dd></div>
+          <div class="comp-fact"><dt>Sizes</dt><dd data-usage="sizes">—</dd></div>
+          <div class="comp-fact comp-fact--instances"><dt>Instances</dt><dd><span data-usage="reach">—</span><span class="comp-fact-sep" aria-hidden="true">—</span><span class="comp-fact-surfaces" data-usage-surfaces><a href="../index.html">Wiki <b data-usage-count="wiki">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../pitch.html">Pitch <b data-usage-count="pitch">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../engine.html">Engine <b data-usage-count="engine">—</b></a></span></dd></div>
+        </dl>
+        <div class="comp-band comp-band--themes" data-band="themes">
+          <div class="comp-caption">
+            <h4 id="spec-empty-themes">Theme matrix</h4>
+            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
+            <span class="comp-scroll-hint">scroll</span>
+          </div>
+          <div class="comp-themes-scroll">
+<div class="spec-grid" tabindex="0" role="group" aria-label="Empty state — four theme maps, one per shipped theme">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-empty"><span class="ds-empty__title">No shots yet</span><span>Add a shot to start the board.</span></div>
@@ -1388,10 +1930,44 @@ footer code{color:var(--g-ink)}
           <div class="ds-empty" data-variant="inline">No matches in this tab.</div>
         </div>
         </div>
+          </div>
+        </div>
+        <div class="comp-band comp-band--tokens" data-band="tokens">
+          <h4 id="spec-empty-tokens">Tokens</h4>
+          <div class="comp-tokens" data-usage-tokens tabindex="0" role="group" aria-label="Empty state tokens">
+          <span class="comp-token" data-usage-token="--spacing-md"><code>--spacing-md</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-2xs"><code>--spacing-2xs</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--weight-medium"><code>--weight-medium</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--typography-size-meta"><code>--typography-size-meta</code><b data-token-value>—</b></span>
+          <code class="comp-classes">.ds-empty · __title · [data-variant=inline]</code>
+          </div>
+        </div>
+        <footer class="comp-foot" data-band="footer">
+          <a class="comp-source" href="components.css">components.css <span data-usage-source>§—</span></a>
+        </footer>
       </article>
-      <article class="comp" id="spec-progress" data-specimen="progress">
-        <div class="comp-head"><h3>Progress</h3><span class="comp-classes">.ds-progress · __bar · [data-variant] thick|ghost · aria-valuenow</span></div>
-        <div class="spec-grid">
+      <article class="comp" id="spec-progress" data-specimen="progress" data-usage-component="progress" data-family="feedback">
+        <header class="comp-head">
+          <p class="comp-eyebrow"><span class="comp-index">17</span><span class="comp-family">feedback</span></p>
+          <h3>Progress</h3>
+          <p class="comp-role">Determinate progress; aria-valuenow drives the bar width.</p>
+          <span class="comp-status" data-status>—</span>
+          <a class="comp-anchor" href="#spec-progress" aria-label="Link to Progress">#</a>
+        </header>
+        <dl class="comp-facts">
+          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">ghost · thick</dd></div>
+          <div class="comp-fact"><dt>States</dt><dd data-usage="states">—</dd></div>
+          <div class="comp-fact"><dt>Sizes</dt><dd data-usage="sizes">—</dd></div>
+          <div class="comp-fact comp-fact--instances"><dt>Instances</dt><dd><span data-usage="reach">—</span><span class="comp-fact-sep" aria-hidden="true">—</span><span class="comp-fact-surfaces" data-usage-surfaces><a href="../index.html">Wiki <b data-usage-count="wiki">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../pitch.html">Pitch <b data-usage-count="pitch">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../engine.html">Engine <b data-usage-count="engine">—</b></a></span></dd></div>
+        </dl>
+        <div class="comp-band comp-band--themes" data-band="themes">
+          <div class="comp-caption">
+            <h4 id="spec-progress-themes">Theme matrix</h4>
+            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
+            <span class="comp-scroll-hint">scroll</span>
+          </div>
+          <div class="comp-themes-scroll">
+<div class="spec-grid" tabindex="0" role="group" aria-label="Progress — four theme maps, one per shipped theme">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-progress" role="progressbar" aria-label="Coverage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"><div class="ds-progress__bar"></div></div>
@@ -1417,10 +1993,44 @@ footer code{color:var(--g-ink)}
           <div class="ds-progress" data-variant="ghost" role="progressbar" aria-label="Draft" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60"><div class="ds-progress__bar"></div></div>
         </div>
         </div>
+          </div>
+        </div>
+        <div class="comp-band comp-band--tokens" data-band="tokens">
+          <h4 id="spec-progress-tokens">Tokens</h4>
+          <div class="comp-tokens" data-usage-tokens tabindex="0" role="group" aria-label="Progress tokens">
+          <span class="comp-token" data-usage-token="--spacing-10"><code>--spacing-10</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-xs"><code>--spacing-xs</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--radius-pill"><code>--radius-pill</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--motion-duration-base"><code>--motion-duration-base</code><b data-token-value>—</b></span>
+          <code class="comp-classes">.ds-progress · __bar · [data-variant] thick|ghost · aria-valuenow</code>
+          </div>
+        </div>
+        <footer class="comp-foot" data-band="footer">
+          <a class="comp-source" href="components.css">components.css <span data-usage-source>§—</span></a>
+        </footer>
       </article>
-      <article class="comp" id="spec-tooltip" data-specimen="tooltip">
-        <div class="comp-head"><h3>Tooltip</h3><span class="comp-classes">.ds-tooltip · [hidden]</span></div>
-        <div class="spec-grid">
+      <article class="comp" id="spec-tooltip" data-specimen="tooltip" data-usage-component="tooltip" data-family="feedback">
+        <header class="comp-head">
+          <p class="comp-eyebrow"><span class="comp-index">18</span><span class="comp-family">feedback</span></p>
+          <h3>Tooltip</h3>
+          <p class="comp-role">Short hover or focus hint; never for essential copy.</p>
+          <span class="comp-status" data-status>—</span>
+          <a class="comp-anchor" href="#spec-tooltip" aria-label="Link to Tooltip">#</a>
+        </header>
+        <dl class="comp-facts">
+          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">—</dd></div>
+          <div class="comp-fact"><dt>States</dt><dd data-usage="states">—</dd></div>
+          <div class="comp-fact"><dt>Sizes</dt><dd data-usage="sizes">—</dd></div>
+          <div class="comp-fact comp-fact--instances"><dt>Instances</dt><dd><span data-usage="reach">—</span><span class="comp-fact-sep" aria-hidden="true">—</span><span class="comp-fact-surfaces" data-usage-surfaces><a href="../index.html">Wiki <b data-usage-count="wiki">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../pitch.html">Pitch <b data-usage-count="pitch">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../engine.html">Engine <b data-usage-count="engine">—</b></a></span></dd></div>
+        </dl>
+        <div class="comp-band comp-band--themes" data-band="themes">
+          <div class="comp-caption">
+            <h4 id="spec-tooltip-themes">Theme matrix</h4>
+            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
+            <span class="comp-scroll-hint">scroll</span>
+          </div>
+          <div class="comp-themes-scroll">
+<div class="spec-grid" tabindex="0" role="group" aria-label="Tooltip — four theme maps, one per shipped theme">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Hover target</button><span class="ds-tooltip" role="tooltip">Rack focus</span></div>
@@ -1438,10 +2048,44 @@ footer code{color:var(--g-ink)}
           <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Hover target</button><span class="ds-tooltip" role="tooltip">Rack focus</span></div>
         </div>
         </div>
+          </div>
+        </div>
+        <div class="comp-band comp-band--tokens" data-band="tokens">
+          <h4 id="spec-tooltip-tokens">Tokens</h4>
+          <div class="comp-tokens" data-usage-tokens tabindex="0" role="group" aria-label="Tooltip tokens">
+          <span class="comp-token" data-usage-token="--radius-sm"><code>--radius-sm</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--z-tooltip"><code>--z-tooltip</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-10"><code>--spacing-10</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-xs"><code>--spacing-xs</code><b data-token-value>—</b></span>
+          <code class="comp-classes">.ds-tooltip · [hidden]</code>
+          </div>
+        </div>
+        <footer class="comp-foot" data-band="footer">
+          <a class="comp-source" href="components.css">components.css <span data-usage-source>§—</span></a>
+        </footer>
       </article>
-      <article class="comp" id="spec-nav" data-specimen="nav">
-        <div class="comp-head"><h3>Pager · nav item · theme toggle</h3><span class="comp-classes">.ds-pager · .ds-nav-item[data-variant] rail (live) · dot (legacy) · .ds-theme-toggle</span></div>
-        <div class="spec-grid">
+      <article class="comp" id="spec-nav" data-specimen="nav" data-usage-component="nav" data-family="controls" data-legacy="dot">
+        <header class="comp-head">
+          <p class="comp-eyebrow"><span class="comp-index">19</span><span class="comp-family">controls</span></p>
+          <h3>Pager · nav item · theme toggle</h3>
+          <p class="comp-role">Pager, flat rail item and theme toggle in one navigation block.</p>
+          <span class="comp-status" data-status>—</span>
+          <a class="comp-anchor" href="#spec-nav" aria-label="Link to Pager · nav item · theme toggle">#</a>
+        </header>
+        <dl class="comp-facts">
+          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">dot (legacy) · rail</dd></div>
+          <div class="comp-fact"><dt>States</dt><dd data-usage="states">current · focus · hover · pressed</dd></div>
+          <div class="comp-fact"><dt>Sizes</dt><dd data-usage="sizes">—</dd></div>
+          <div class="comp-fact comp-fact--instances"><dt>Instances</dt><dd><span data-usage="reach">—</span><span class="comp-fact-sep" aria-hidden="true">—</span><span class="comp-fact-surfaces" data-usage-surfaces><a href="../index.html">Wiki <b data-usage-count="wiki">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../pitch.html">Pitch <b data-usage-count="pitch">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../engine.html">Engine <b data-usage-count="engine">—</b></a></span></dd></div>
+        </dl>
+        <div class="comp-band comp-band--themes" data-band="themes">
+          <div class="comp-caption">
+            <h4 id="spec-nav-themes">Theme matrix</h4>
+            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
+            <span class="comp-scroll-hint">scroll</span>
+          </div>
+          <div class="comp-themes-scroll">
+<div class="spec-grid" tabindex="0" role="group" aria-label="Pager · nav item · theme toggle — four theme maps, one per shipped theme">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-pager"><button class="ds-btn" data-size="xs" type="button"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-arrow-left"></use></svg> Prev</button><span class="kicker">Page 2</span><button class="ds-btn" data-size="xs" type="button">Next <svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-arrow-right"></use></svg></button></div>
@@ -1467,10 +2111,44 @@ footer code{color:var(--g-ink)}
           <div class="ds-theme-toggle" role="group" aria-label="Theme"><button class="ds-btn" data-variant="ghost" type="button" aria-pressed="true">Light</button><button class="ds-btn" data-variant="ghost" type="button" aria-pressed="false">Dark</button></div>
         </div>
         </div>
+          </div>
+        </div>
+        <div class="comp-band comp-band--tokens" data-band="tokens">
+          <h4 id="spec-nav-tokens">Tokens</h4>
+          <div class="comp-tokens" data-usage-tokens tabindex="0" role="group" aria-label="Pager · nav item · theme toggle tokens">
+          <span class="comp-token" data-usage-token="--dot-size"><code>--dot-size</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--radius-xs"><code>--radius-xs</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-2"><code>--spacing-2</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--touch-min"><code>--touch-min</code><b data-token-value>—</b></span>
+          <code class="comp-classes">.ds-pager · .ds-nav-item[data-variant] rail (live) · dot (legacy) · .ds-theme-toggle</code>
+          </div>
+        </div>
+        <footer class="comp-foot" data-band="footer">
+          <a class="comp-source" href="components.css">components.css <span data-usage-source>§—</span></a>
+        </footer>
       </article>
-      <article class="comp" id="spec-copy" data-specimen="copy">
-        <div class="comp-head"><h3>Copy field</h3><span class="comp-classes">.ds-copy · __code · .ds-btn[data-size=xs]</span></div>
-        <div class="spec-grid">
+      <article class="comp" id="spec-copy" data-specimen="copy" data-usage-component="copy" data-family="input">
+        <header class="comp-head">
+          <p class="comp-eyebrow"><span class="comp-index">20</span><span class="comp-family">input</span></p>
+          <h3>Copy field</h3>
+          <p class="comp-role">Read-only value with a one-click copy action.</p>
+          <span class="comp-status" data-status>—</span>
+          <a class="comp-anchor" href="#spec-copy" aria-label="Link to Copy field">#</a>
+        </header>
+        <dl class="comp-facts">
+          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">—</dd></div>
+          <div class="comp-fact"><dt>States</dt><dd data-usage="states">—</dd></div>
+          <div class="comp-fact"><dt>Sizes</dt><dd data-usage="sizes">—</dd></div>
+          <div class="comp-fact comp-fact--instances"><dt>Instances</dt><dd><span data-usage="reach">—</span><span class="comp-fact-sep" aria-hidden="true">—</span><span class="comp-fact-surfaces" data-usage-surfaces><a href="../index.html">Wiki <b data-usage-count="wiki">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../pitch.html">Pitch <b data-usage-count="pitch">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../engine.html">Engine <b data-usage-count="engine">—</b></a></span></dd></div>
+        </dl>
+        <div class="comp-band comp-band--themes" data-band="themes">
+          <div class="comp-caption">
+            <h4 id="spec-copy-themes">Theme matrix</h4>
+            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
+            <span class="comp-scroll-hint">scroll</span>
+          </div>
+          <div class="comp-themes-scroll">
+<div class="spec-grid" tabindex="0" role="group" aria-label="Copy field — four theme maps, one per shipped theme">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-copy"><code class="ds-copy__code">--color-pitch-accent</code><button class="ds-btn" data-size="xs" type="button"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-copy"></use></svg> Copy</button></div>
@@ -1488,7 +2166,28 @@ footer code{color:var(--g-ink)}
           <div class="ds-copy"><code class="ds-copy__code">--color-pitch-accent</code><button class="ds-btn" data-size="xs" type="button"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-copy"></use></svg> Copy</button></div>
         </div>
         </div>
+          </div>
+        </div>
+        <div class="comp-band comp-band--tokens" data-band="tokens">
+          <h4 id="spec-copy-tokens">Tokens</h4>
+          <div class="comp-tokens" data-usage-tokens tabindex="0" role="group" aria-label="Copy field tokens">
+          <span class="comp-token" data-usage-token="--radius-sm"><code>--radius-sm</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-10"><code>--spacing-10</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-sm"><code>--spacing-sm</code><b data-token-value>—</b></span>
+          <span class="comp-token" data-usage-token="--spacing-xs"><code>--spacing-xs</code><b data-token-value>—</b></span>
+          <code class="comp-classes">.ds-copy · __code · .ds-btn[data-size=xs]</code>
+          </div>
+        </div>
+        <footer class="comp-foot" data-band="footer">
+          <a class="comp-source" href="components.css">components.css <span data-usage-source>§—</span></a>
+        </footer>
       </article>
+
+
+      <section class="spec-ledger" aria-labelledby="spec-ledger-h">
+        <p class="spec-ledger__head"><span class="spec-ledger__title" id="spec-ledger-h">Zero product instances</span> <span class="spec-ledger__count" data-usage-ledger-count>—</span></p>
+        <ul class="spec-ledger__list" data-usage-ledger><li>—</li></ul>
+      </section>
     </section>
   </main>
 </div>
@@ -1951,11 +2650,42 @@ footer code{color:var(--g-ink)}
 
   function renderRail(id, sections) {
     if (!railList) return;
+    railList.setAttribute('data-rail-mode', 'sections');
     railList.innerHTML = (sections || []).map(function (s) {
       return '<a class="ds-nav-item ds-rail__item" href="#' + s.id +
         '" data-ds-key="rail-' + s.id + '">' + esc(s.label) + '</a>';
     }).join('');
     if (railLabel) railLabel.textContent = id === 'specimens' ? 'Blocks' : 'Sections';
+  }
+
+  /* ---------- short panels: the category list --------------------------
+     A panel with no sections to list (type, space, motion, touch, matrix)
+     would leave the rail blank under its label. Instead it lists the seven
+     categories: same item grammar, active category = ink + medium weight and
+     no accent bar (a destination, not a section). The Surfaces foot is a
+     separate child and stays pinned. */
+  var CAT_LABEL = {
+    color: 'Color', type: 'Type', space: 'Space & shape', motion: 'Motion',
+    touch: 'Touch', matrix: 'Consistency', specimens: 'Component specimens'
+  };
+
+  function renderCategories(id) {
+    if (!railList) return;
+    railList.setAttribute('data-rail-mode', 'categories');
+    railList.innerHTML = '';
+    CATS.forEach(function (key) {
+      var link = document.createElement('a');
+      link.className = 'ds-nav-item ds-rail__item';
+      link.setAttribute('href', '#' + key);
+      link.setAttribute('data-ds-key', 'cat-' + key);
+      /* the tabs are the one source of the category names: a relabel in the
+         tablist cannot leave the rail saying something else */
+      var tab = tablist ? tablist.querySelector('[aria-controls="' + key + '"]') : null;
+      link.textContent = (tab && tab.textContent.trim()) || CAT_LABEL[key] || key;
+      if (key === id) link.setAttribute('aria-current', 'page');
+      railList.appendChild(link);
+    });
+    if (railLabel) railLabel.textContent = 'Categories';
   }
 
   /* ---------- scrollspy over the active rail ---------- */
@@ -1967,6 +2697,9 @@ footer code{color:var(--g-ink)}
   function bindSpy() {
     spyItems = [];
     if (!railList) return;
+    /* the category fallback is a destination list, not a section scrollspy:
+       its aria-current is the active tab, set by renderCategories */
+    if (railList.getAttribute('data-rail-mode') === 'categories') return;
     Array.prototype.forEach.call(railList.querySelectorAll('.ds-rail__item'), function (link) {
       var href = link.getAttribute('href') || '';
       var target = href.charAt(0) === '#' ? document.getElementById(href.slice(1)) : null;
@@ -2010,7 +2743,8 @@ footer code{color:var(--g-ink)}
        active panel, then the nav module re-syncs so the drawer keeps its
        hidden/inert state and the toggle keeps its aria-expanded. */
     if (railGroup) railGroup.setAttribute('data-rail-for', id);
-    renderRail(id, sections);
+    if (show) renderRail(id, sections);
+    else renderCategories(id);
     if (navApi) navApi.sync();
     bindSpy();
     requestSpy();

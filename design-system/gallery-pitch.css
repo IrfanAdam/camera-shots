@@ -242,3 +242,659 @@ html[data-ds-shell="pitch"] footer {
 html[data-ds-shell="pitch"] footer code {
   color: var(--g-ink);
 }
+
+/* ==========================================================================
+   Specimen bands (hierarchy pass) — the 20 #spec-* articles
+
+   Before this pass a block was an 11.5px class string over four theme cells:
+   measured 88–95% of the block at 1440 and 91–96% at 390. It is now five bands
+   in reading order:
+
+     header   eyebrow · name · role · status chip · anchor
+     meta     variants · states · sizes · instances + per-surface counts
+     themes   the same four cells, one capped band
+     tokens   anatomy string + the tokens usedByBlocks says it consumes
+     footer   components.css source (§n) — the rail carries nothing else
+
+   The theme band is the only thing that scrolls, and only vertically — and
+   only from 641 up: at ≤640 the matrix sizes to its own 2×2 content, because
+   a cropped specimen cell is a documentation bug. The cells keep their
+   markup, data-ds-theme, data-surface and data-state exactly.
+   Everything here is page chrome; no .ds-* rule is redefined.
+   ========================================================================== */
+
+html[data-ds-shell="pitch"] .comp {
+  /* measured compression constant: the band is a comparison window, not the
+     whole specimen. Below this the four cells are taller than the chrome. */
+  --_cell-cap: 84px;
+  display: grid;
+  row-gap: var(--spacing-2);
+  border-top: var(--border-width-hairline) solid var(--g-rule);
+  padding-block-start: var(--spacing-6);
+  margin-block-start: var(--spacing-6);
+  min-inline-size: 0;
+}
+
+html[data-ds-shell="pitch"] .comp:first-of-type {
+  border-top: 0;
+  padding-block-start: 0;
+  margin-block-start: 0;
+}
+
+/* the global `section` margin belongs to page sections, not to a block band */
+html[data-ds-shell="pitch"] .comp-band {
+  margin-block: 0;
+}
+
+/* ---------- (a) header row ---------- */
+html[data-ds-shell="pitch"] .comp-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-areas:
+    "eyebrow status anchor"
+    "name    status anchor"
+    "role    status anchor";
+  column-gap: var(--spacing-sm);
+  row-gap: 1px;
+  align-items: start;
+  min-block-size: 60px;
+  margin: 0;
+}
+
+html[data-ds-shell="pitch"] .comp-eyebrow {
+  grid-area: eyebrow;
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-xs);
+  font-family: var(--typography-family-mono);
+  font-size: 10px;
+  line-height: 1.2;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--g-muted);
+}
+
+html[data-ds-shell="pitch"] .comp-index {
+  color: var(--g-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+html[data-ds-shell="pitch"] .comp-head h3 {
+  grid-area: name;
+  font-size: var(--typography-size-h3);
+  line-height: 1.15;
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--g-ink);
+}
+
+html[data-ds-shell="pitch"] .comp-role {
+  grid-area: role;
+  font-size: var(--typography-size-small);
+  line-height: 1.3;
+  color: var(--g-body);
+  max-inline-size: 74ch;
+}
+
+html[data-ds-shell="pitch"] .comp-status {
+  grid-area: status;
+  align-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2xs);
+  min-block-size: 20px;
+  padding-inline: var(--spacing-xs);
+  border: var(--border-width-hairline) solid var(--g-rule);
+  border-radius: var(--radius-pill);
+  font-family: var(--typography-family-mono);
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: var(--tracking-snug);
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--g-muted);
+}
+
+/* the status is a claim from usage.json, so it gets one tone per claim —
+   ink for a live component, muted for a documented one. No new colour. */
+html[data-ds-shell="pitch"] .comp[data-usage-status="live"] .comp-status {
+  color: var(--g-ink);
+  border-color: var(--g-muted);
+}
+
+html[data-ds-shell="pitch"] .comp[data-usage-status="reference"] .comp-status,
+html[data-ds-shell="pitch"] .comp[data-usage-status="legacy"] .comp-status {
+  color: var(--g-muted);
+}
+
+html[data-ds-shell="pitch"] .comp-anchor {
+  grid-area: anchor;
+  color: var(--g-muted);
+  font-family: var(--typography-family-mono);
+  font-size: var(--typography-size-eyebrow);
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+html[data-ds-shell="pitch"] .comp-anchor:hover {
+  color: var(--g-ink);
+}
+
+/* ---------- (b) meta strip ---------- */
+html[data-ds-shell="pitch"] .comp-facts {
+  display: grid;
+  /* the Instances cell carries the whole per-surface breakdown now that the
+     counts left the rail, so it gets the extra fraction instead of a row */
+  grid-template-columns: repeat(3, minmax(0, 0.85fr)) minmax(0, 1.45fr);
+  gap: 0 var(--spacing-md);
+  align-content: center;
+  min-block-size: 60px;
+  padding-block: var(--spacing-2xs);
+  border-block: var(--border-width-hairline) solid var(--g-rule);
+  margin: 0;
+}
+
+html[data-ds-shell="pitch"] .comp-fact {
+  min-inline-size: 0;
+}
+
+html[data-ds-shell="pitch"] .comp-fact dt {
+  font-family: var(--typography-family-mono);
+  font-size: 9px;
+  line-height: 1.3;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--g-muted);
+}
+
+html[data-ds-shell="pitch"] .comp-fact dd {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--g-body);
+  /* a fact wraps; it is never cut. A clipped value ("sec…") reads as a wrong
+     value on a documentation page, so the strip takes the extra line instead. */
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* the Instances cell: "33 instances on 2 surfaces — Wiki 4 · Engine 29" */
+html[data-ds-shell="pitch"] .comp-fact--instances dd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--spacing-2xs);
+}
+
+html[data-ds-shell="pitch"] .comp-fact-surfaces {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--spacing-2xs);
+  font-variant-numeric: tabular-nums;
+}
+
+/* the em dash is authored, not generated, so the strip's text order is
+   "33 instances on 2 surfaces — Wiki 4 · Engine 29" for AT and copy-paste; the
+   script drops it when a block has no product instance at all */
+html[data-ds-shell="pitch"] .comp-fact-sep {
+  color: var(--g-muted);
+}
+
+html[data-ds-shell="pitch"] .comp-fact-surfaces:empty {
+  display: none;
+}
+
+html[data-ds-shell="pitch"] .comp-fact-surfaces a {
+  color: var(--g-body);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
+  min-block-size: var(--spacing-lg);
+  display: inline-flex;
+  align-items: center;
+  /* inline-flex trims the authored space before <b>, so the gap is explicit:
+     "Wiki 4", never "Wiki4" */
+  gap: 0.3em;
+}
+
+html[data-ds-shell="pitch"] .comp-fact-surfaces a:hover {
+  color: var(--g-ink);
+}
+
+html[data-ds-shell="pitch"] .comp-fact-surfaces b {
+  font-weight: var(--weight-regular);
+  color: var(--g-ink);
+}
+
+/* ---------- (c) theme matrix ---------- */
+html[data-ds-shell="pitch"] .comp-band--themes {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 2px;
+  min-inline-size: 0;
+}
+
+html[data-ds-shell="pitch"] .comp-caption {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-xs);
+  min-inline-size: 0;
+}
+
+html[data-ds-shell="pitch"] .comp-caption h4 {
+  font-family: var(--typography-family-mono);
+  font-size: 9px;
+  line-height: 1.3;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--g-ink);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+}
+
+html[data-ds-shell="pitch"] .comp-legend {
+  font-family: var(--typography-family-mono);
+  font-size: 9px;
+  line-height: 1.3;
+  letter-spacing: var(--tracking-snug);
+  color: var(--g-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+html[data-ds-shell="pitch"] .comp-scroll-hint {
+  margin-inline-start: auto;
+  font-family: var(--typography-family-mono);
+  font-size: 9px;
+  line-height: 1.3;
+  color: var(--g-muted);
+  white-space: nowrap;
+}
+
+/* the one scroll region: the shipped .spec-grid is capped rather than wrapped,
+   so the measured cell band is the visible band, and the grid keeps its four
+   columns. tabindex/role/label live on the grid in markup. */
+html[data-ds-shell="pitch"] .comp-themes-scroll {
+  display: grid;
+  min-inline-size: 0;
+}
+
+/* the table block authors --wide cells; inside the matrix the four themes are
+   always four columns, so a wide cell is reset to one column here. The cell's
+   own .ds-table-wrap keeps its horizontal scroll. */
+html[data-ds-shell="pitch"] .comp-themes-scroll .spec-cell--wide {
+  grid-column: auto;
+}
+
+html[data-ds-shell="pitch"] .comp-themes-scroll > .spec-grid {
+  max-block-size: var(--_cell-cap);
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  min-inline-size: 0;
+}
+
+html[data-ds-shell="pitch"] .comp-themes-scroll > .spec-grid:focus-visible {
+  outline: var(--focus-width) solid var(--focus-color, currentColor);
+  outline-offset: var(--focus-offset);
+}
+
+/* 4-up above 900 is the shipped .spec-grid; the gallery keeps 2 columns from
+   641–900 and must be exactly 2×2 at ≤640 (never a single stacked column) */
+@media (max-width: 640px) {
+  html[data-ds-shell="pitch"] .comp .spec-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---------- (d) anatomy + tokens ---------- */
+html[data-ds-shell="pitch"] .comp-band--tokens {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--spacing-xs);
+  min-inline-size: 0;
+}
+
+html[data-ds-shell="pitch"] .comp-band--tokens > h4 {
+  font-family: var(--typography-family-mono);
+  font-size: 9px;
+  line-height: 1.3;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--g-muted);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+}
+
+html[data-ds-shell="pitch"] .comp-tokens {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  min-inline-size: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  white-space: nowrap;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+html[data-ds-shell="pitch"] .comp-tokens::-webkit-scrollbar {
+  display: none;
+}
+
+html[data-ds-shell="pitch"] .comp-classes {
+  flex: 0 0 auto;
+  font-family: var(--typography-family-mono);
+  font-size: 10px;
+  color: var(--g-muted);
+}
+
+html[data-ds-shell="pitch"] .comp-token {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--spacing-2xs);
+  padding: 1px var(--spacing-xs);
+  border: var(--border-width-hairline) solid var(--g-rule);
+  border-radius: var(--radius-pill);
+  color: var(--g-body);
+}
+
+html[data-ds-shell="pitch"] .comp-token code {
+  font-size: 10px;
+  color: var(--g-body);
+}
+
+html[data-ds-shell="pitch"] .comp-token b {
+  font-weight: var(--weight-regular);
+  font-size: 10px;
+  color: var(--g-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+html[data-ds-shell="pitch"] .comp-token-more {
+  flex: 0 0 auto;
+  font-family: var(--typography-family-mono);
+  font-size: 10px;
+  color: var(--g-muted);
+}
+
+/* ---------- (e) footer row: source only ---------- */
+html[data-ds-shell="pitch"] .comp-foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: 0;
+  border-top: 0;
+  font-size: 10px;
+  line-height: 1.4;
+  color: var(--g-muted);
+  min-inline-size: 0;
+}
+
+html[data-ds-shell="pitch"] .comp-source {
+  /* inline text links in a documentation footer: the 40px control floor in
+     base.css is for standalone controls, but WCAG 2.5.8 still wants 24×24 and
+     axe target-size enforces it — so the footer links sit on a 24px box, not
+     the 40px one, and the aside still fits beside the matrix. */
+  min-block-size: var(--spacing-lg);
+  display: inline-flex;
+  align-items: center;
+}
+
+html[data-ds-shell="pitch"] .comp-dot {
+  color: var(--g-muted);
+}
+
+html[data-ds-shell="pitch"] .comp-source {
+  color: var(--g-muted);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
+  white-space: nowrap;
+}
+
+html[data-ds-shell="pitch"] .comp-source:hover {
+  color: var(--g-ink);
+}
+
+/* ---------- specimen index ---------- */
+html[data-ds-shell="pitch"] .spec-index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2xs) var(--spacing-lg);
+  padding-block: var(--spacing-2xs);
+  border-block: var(--border-width-hairline) solid var(--g-rule);
+  margin-block-end: var(--spacing-sm);
+  font-size: var(--typography-size-eyebrow);
+  line-height: 1.4;
+}
+
+html[data-ds-shell="pitch"] .spec-index__title {
+  flex: 0 0 auto;
+  margin: 0;
+  font-family: var(--typography-family-mono);
+  font-size: 9px;
+  line-height: 1.4;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--g-ink);
+}
+
+html[data-ds-shell="pitch"] .spec-index__group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px var(--spacing-xs);
+  min-inline-size: 0;
+}
+
+html[data-ds-shell="pitch"] .spec-index__label {
+  font-family: var(--typography-family-mono);
+  font-size: 9px;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--g-muted);
+}
+
+html[data-ds-shell="pitch"] .spec-index a {
+  color: var(--g-body);
+  text-decoration: none;
+}
+
+html[data-ds-shell="pitch"] .spec-index a:hover {
+  color: var(--g-ink);
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}
+
+@media (min-width: 901px) {
+  html[data-ds-shell="pitch"] .spec-index {
+    position: sticky;
+    inset-block-start: calc(var(--g-anchor-offset) - var(--spacing-md));
+    z-index: var(--z-content);
+    background: var(--g-bg);
+  }
+
+  /* deep links land below the tab bar AND the sticky index; the script writes
+     the measured index height to --spec-index-h, 0 when it does not stick */
+  html[data-ds-shell="pitch"] #specimens article.comp {
+    scroll-margin-block-start: calc(var(--g-anchor-offset) + var(--spec-index-h, 138px));
+  }
+}
+
+@media (max-width: 640px) {
+  /* the index is a wrapped list, not a clipped strip: one labelled row per
+     band, links break to the next line instead of disappearing past the edge */
+  html[data-ds-shell="pitch"] .spec-index {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px var(--spacing-lg);
+    overflow: visible;
+    padding-block: var(--spacing-2xs);
+  }
+
+  /* label on its own line, links as one wrapped run: a continuation line can
+     never look like an unlabelled group */
+  html[data-ds-shell="pitch"] .spec-index__group {
+    display: block;
+    min-inline-size: 0;
+  }
+
+  html[data-ds-shell="pitch"] .spec-index__label {
+    display: block;
+    margin-block-end: 1px;
+    white-space: nowrap;
+  }
+
+  html[data-ds-shell="pitch"] .spec-index a {
+    display: inline;
+    white-space: normal;
+    margin-inline-end: var(--spacing-sm);
+  }
+}
+
+/* ---------- zero-product ledger ---------- */
+html[data-ds-shell="pitch"] .spec-ledger {
+  margin-block-start: var(--spacing-md);
+  border-block: var(--border-width-hairline) solid var(--g-rule);
+  padding-block: var(--spacing-2xs);
+  font-size: var(--typography-size-meta);
+  color: var(--g-muted);
+}
+
+html[data-ds-shell="pitch"] .spec-ledger__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-xs);
+  font-size: var(--typography-size-small);
+  line-height: 1.4;
+}
+
+html[data-ds-shell="pitch"] .spec-ledger__title {
+  font-weight: var(--weight-medium);
+  color: var(--g-ink);
+}
+
+html[data-ds-shell="pitch"] .spec-ledger__count {
+  font-family: var(--typography-family-mono);
+  font-size: var(--typography-size-eyebrow);
+  color: var(--g-muted);
+}
+
+html[data-ds-shell="pitch"] .spec-ledger__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--spacing-lg);
+  list-style: none;
+  font-size: var(--typography-size-eyebrow);
+  line-height: 1.5;
+}
+
+html[data-ds-shell="pitch"] .spec-ledger__list li {
+  color: var(--g-body);
+  min-inline-size: 0;
+}
+
+/* ---------- rail fallback: categories on a panel with no sections ----------
+   `data-rail="off"` keeps the column and its pinned Surfaces foot; the list is
+   the seven categories instead of blank. The active category is ink + medium
+   weight and paints no inline-start accent bar (a destination, not a section).
+   Specificity beats components.css §18's current-item rule; loaded later. */
+html[data-ds-shell="pitch"] .g-rail-list[data-rail-mode="categories"] {
+  gap: 0;
+}
+
+html[data-ds-shell="pitch"] .g-rail-list[data-rail-mode="categories"] .ds-nav-item:is([aria-current="page"], [aria-selected="true"], [data-state~="current"]) {
+  border-inline-start-color: transparent;
+  background: transparent;
+  color: var(--g-ink);
+  font-weight: var(--weight-medium);
+}
+
+/* ---------- anatomy rail beside the matrix (>=901) ----------
+   The measured constraint is horizontal, not vertical: 20 blocks with a
+   120px identity band plus a theme window cannot fit 5,200px if every band
+   takes its own full-width row. From 901 the tokens and the components.css
+   source sit in a 190px rail beside the theme matrix. Reading order stays
+   linear — header → meta (which carries the per-surface counts) → themes →
+   tokens → source — and the cells keep four columns.
+   Below 901 every band stacks again. */
+@media (min-width: 901px) {
+  html[data-ds-shell="pitch"] .comp {
+    grid-template-columns: minmax(0, 1fr) 190px;
+    grid-template-areas:
+      "head   head"
+      "facts  facts"
+      "themes tokens"
+      "themes foot";
+    column-gap: var(--spacing-md);
+  }
+
+  html[data-ds-shell="pitch"] .comp-head { grid-area: head; }
+  html[data-ds-shell="pitch"] .comp-facts { grid-area: facts; }
+  html[data-ds-shell="pitch"] .comp-band--themes { grid-area: themes; }
+  html[data-ds-shell="pitch"] .comp-band--tokens {
+    grid-area: tokens;
+    align-self: start;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+  html[data-ds-shell="pitch"] .comp-foot {
+    grid-area: foot;
+    align-self: end;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+}
+
+/* ---------- narrow bands ---------- */
+@media (max-width: 900px) {
+  html[data-ds-shell="pitch"] .comp {
+    --_cell-cap: 180px;
+  }
+}
+
+@media (max-width: 640px) {
+  /* no internal crop at phone width: the 2×2 matrix takes its natural height,
+     so every cell is completely visible and the caption stops promising a
+     scroll the block no longer has */
+  html[data-ds-shell="pitch"] .comp-themes-scroll > .spec-grid {
+    max-block-size: none;
+    overflow: visible;
+  }
+
+  html[data-ds-shell="pitch"] .comp-scroll-hint {
+    display: none;
+  }
+
+  html[data-ds-shell="pitch"] .comp-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-2xs) var(--spacing-md);
+  }
+
+  /* the breakdown gets the full strip width instead of half of it */
+  html[data-ds-shell="pitch"] .comp-fact--instances {
+    grid-column: 1 / -1;
+  }
+
+  html[data-ds-shell="pitch"] .comp-status {
+    position: static;
+  }
+
+  html[data-ds-shell="pitch"] .comp-band--tokens {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  html[data-ds-shell="pitch"] .comp-foot {
+    flex-wrap: wrap;
+    gap: var(--spacing-2xs) var(--spacing-md);
+  }
+}

@@ -225,9 +225,12 @@ footer{margin:var(--spacing-2xl) 0 var(--spacing-md);color:var(--mut);font-size:
 html{scroll-padding-top:9.5rem}
 section{scroll-margin-top:9.5rem}
 }
-/* touch targets ≥44px on coarse pointers — desktop look untouched */
+/* touch targets ≥44px on coarse pointers — desktop look untouched
+   `.ds-tab` needs no page-local lift: components.css §5 states the same floor
+   at the tab's own specificity from --_ctl-h (measured 44px coarse / 40px fine,
+   .hermes/ds-final/REPORT.md). The remaining page-local controls below have no
+   shared primitive. */
 @media(pointer:coarse){
-.doctabs[data-variant="pill"] .ds-tab{min-block-size:var(--control-height-touch);display:inline-flex;align-items:center}
 .hicon{min-width:var(--control-height-touch);min-height:var(--control-height-touch)}
 .pill{min-height:var(--control-height-touch);display:inline-flex;align-items:center}
 .expbtn,.dpill{min-height:var(--control-height-touch);display:inline-flex;align-items:center}

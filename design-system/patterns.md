@@ -3,17 +3,20 @@
 Compositions of components. Names the parts, the spacing, and when to use vs. the
 alternative. Token names only.
 
-**Read the status line first.** Three of these eight compositions are *proposed*
-(no page renders them) and three surface patterns are **blocked** behind the
-foreign `pitch.html` edit — see [surfaces.md](surfaces.md#blocked). Do not audit a
-page against a proposed pattern, and do not cite a pattern as shipped behaviour
-without checking its status line.
+**Read the status line first.** Ten compositions below: two are *proposed* (no
+page renders them), three surface patterns are **pitch-only**, and two are
+shared contracts now shipped on every surface (rail foot switcher, token
+workbench). The pitch-only three were held while a foreign edit to `pitch.html`
+was in flight; that edit landed in `2f35c25`, so the page is stable and the
+patterns can be audited against it. Do not audit a page against a proposed
+pattern, and do not cite a pattern as shipped behaviour without checking its
+status line.
 
 ## Pitch Document Shell (sticky header + top tabs + article)
 
-**Status: shipped in `pitch.html` only — BLOCKED.** The file carries a foreign
-uncommitted edit (drawer-v4, 63 lines per `git diff --stat`); Phase 5 pitch tasks
-32–35 cannot run until the owner lands it.
+**Status: shipped in `pitch.html` only.** The drawer-v4 edit that made the file
+unstable while this was written landed in `2f35c25`, so pitch tasks can be
+sequenced against it.
 
 **Combines**
 Doc Tabs + Cards + Buttons (export pill) + Drawer (plan/fund).
@@ -76,6 +79,90 @@ Spatial editing where canvas state is primary and panels are transient.
 **When NOT to use**
 Reading-heavy content — use Pitch or Wiki shells.
 
+## Surface Switcher (rail foot)
+
+**Status: shipped on all four surfaces** — `index.html`, `pitch.html`,
+`engine.html`, `design-system/index.html` all render one `.ds-rail__foot` group
+with the same roster.
+
+**Combines**
+Section rail + `.ds-rail__foot` + `.ds-nav-item.ds-rail__item` links.
+
+**Layout rules**
+One foot per rail, as the rail's last child. A hairline
+(`border-width.hairline` / `--ds-rule`) separates it from the section list; the
+group paints `--ds-bg`, takes `padding-block: spacing.sm layout.rail.inset`, and
+is `position:sticky; inset-block-end:0` so a long section list scrolls under it.
+One `SURFACES` eyebrow (`ds-rail__label`), then four rows in one fixed order:
+**Wiki · Pitch · Engine · Design System**. The current surface is a
+`<span class="ds-nav-item ds-rail__item" aria-current="page">` — never a link to
+itself — and the other three are `<a href>`. Current resolves to `--ds-ink` +
+`weight.medium` **only**: the foot keeps the 2px indicator slot transparent, so
+the accent bar remains the section indicator's alone. Rows take
+`control.height.touch` and `typography.size.meta`. At ≤`breakpoint.lg` the group
+sits in the drawer and stays pinned to the panel's bottom edge.
+
+**Dos and don'ts**
+DO ship the same four destinations in the same order on every surface — the
+roster is a site contract, not per-page IA. DO render the current surface as a
+non-link span, so it is announced (`aria-current="page"`) but not offered as a
+self-navigation. DO let the group own its bottom padding so the border box
+reaches the viewport edge.
+DON'T paint an accent bar, dot or fill on a foot item — that is the section
+indicator's shape. DON'T duplicate the roster in the header as well. DON'T add a
+fifth destination on one page only.
+
+**When to use**
+Every page that is one of the core surfaces; it is the cross-page layer of the
+rail.
+
+**When NOT to use**
+For movement *within* a page — that is the rail's section items
+([Section rail](components.md#ds-rail)), which own the accent bar.
+
+## Token Change (workbench)
+
+**Status: shipped** — backend `/__ds/*` in `scripts/relay.mjs` (only with
+`DS_WORKBENCH=1` on a loopback bind), UI in
+`design-system/gallery-workbench.{js,css}`, CLI fallback
+`scripts/ds-set-token.mjs`.
+
+**Combines**
+`[data-token]` rows + inline editor + `POST /__ds/token` +
+`scripts/build-tokens.mjs` + stylesheet hot-swap + undo toast.
+
+**Flow**
+**edit → validate → rebuild → hot-swap → undo.**
+1. **Edit** — activate a `[data-token-value]` (focus or Enter/Space) and type a
+   new value.
+2. **Validate** — the server re-validates against the key's declared `type` plus
+   the injection-safe charset; a rejected value is `422` and never touches disk.
+3. **Rebuild** — `tokens.json` is written atomically (temp file + rename), then
+   `build-tokens.mjs` runs; a failed build restores the previous bytes and
+   answers `500 build-failed` with the generator's stderr.
+4. **Hot-swap** — a `200` returns `{previous, sha256, css, revision}`; the client
+   reloads `tokens.css?v=<sha>`, so every page in the tab repaints from the new
+   sheet without a reload.
+5. **Undo** — the 8 s toast posts `previous` back through the same validator,
+   writer and rebuild; nothing is special-cased for undo.
+
+**Dos and don'ts**
+DO change the **value** of an existing key and nothing else. DO post the exact
+`previous` value for undo, and DO fall back to the printed
+`node scripts/ds-set-token.mjs …` command when the server answers `404`.
+DON'T add or delete keys here, write the `themes` tree, or edit `tokens.css` by
+hand — those are generator/contract changes. DON'T expect it in production: the
+route exists only under `DS_WORKBENCH=1` and Vercel serves the static tree.
+DON'T fire writes inside the 250 ms throttle window.
+
+**When to use**
+Trying one value change locally before opening a token PR, with the undo path
+one click away.
+
+**When NOT to use**
+Adding, retiring or renaming a token — that is `tokens.json` + both generators +
+[governance.md](governance.md), not the workbench.
+
 ## Timeline Stack (ruler + lanes + transport) — proposed
 
 **Status: proposed.** No page renders timeline lanes, chips or selection handles.
@@ -119,7 +206,7 @@ Transient canvas state that must not disturb layout.
 
 ## Section Block (pitch rhythm unit)
 
-**Status: shipped in `pitch.html` only — BLOCKED** (same foreign edit as the
+**Status: shipped in `pitch.html` only** (same edit window as the
 shell).
 
 **Combines**
@@ -135,7 +222,7 @@ minimal feel. It is not a wiki or canvas pattern.
 
 ## Metric Strip + Allocation Bars
 
-**Status: shipped in `pitch.html` only (investor thesis) — BLOCKED.**
+**Status: shipped in `pitch.html` only (investor thesis).**
 
 **Combines**
 Cards (metric) + progress fills + honesty qualifier line.

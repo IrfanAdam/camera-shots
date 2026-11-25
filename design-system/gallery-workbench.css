@@ -67,9 +67,11 @@ html[data-ds-workbench="live"] [data-token] [data-token-value]:focus-visible,
   font: inherit;
   line-height: inherit;
   letter-spacing: inherit;
+  font-variant-numeric: inherit;
+  text-align: inherit;
   color: var(--ds-ink, var(--color-pitch-ink, CanvasText));
   background: var(--ds-surface-alt, var(--color-pitch-surface-2, Canvas));
-  border: 1px solid var(--ds-accent, var(--color-pitch-accent, currentColor));
+  border: 1px solid var(--ds-rule, var(--color-pitch-rule, currentColor));
   border-radius: var(--radius-xs);
   -webkit-appearance: none;
   appearance: none;
@@ -279,9 +281,11 @@ html[data-ds-workbench="live"] [data-token] [data-token-value]:focus-visible,
     align-items: center;
   }
 
-  /* a table cell ignores min-block-size; padding is what grows the hit area */
+  /* a table cell ignores min-block-size; block-size is the CSS2.1 minimum for
+     a cell and padding grows the hit area around the value */
   [data-token] > td,
   [data-token] > th {
+    block-size: var(--control-height-touch);
     padding-block: var(--spacing-sm);
   }
 

@@ -10,11 +10,11 @@ pipeline runs. Values live in the generated references, never here.
 | Doc | Answers |
 |---|---|
 | [foundations.md](foundations.md) | every scale, value and role slot — **generated** |
-| [components.md](components.md) | 19 live specs, each linked to its gallery frame, plus the proposed appendix |
-| [patterns.md](patterns.md) | 8 compositions, each with a status line |
+| [components.md](components.md) | 21 live specs over the 21 numbered component blocks, each linked to a gallery frame, plus the proposed appendix |
+| [patterns.md](patterns.md) | 10 compositions, each with a status line |
 | [surfaces.md](surfaces.md) | per-page contract: theme, print, breakpoints, export, browser support, adoption, blocked work |
-| [accessibility.md](accessibility.md) | contrast rows per theme plus the focus, target and ARIA contract |
-| [verification.md](verification.md) | the nine gates, their classes, blind spots, CI and PR evidence |
+| [accessibility.md](accessibility.md) | contrast rows per theme, the target floor (including the coarse pill floor), the mobile-drawer and workbench keyboard contracts |
+| [verification.md](verification.md) | the twelve gates, their classes, blind spots, CI and PR evidence |
 | [governance.md](governance.md) | six change classes, semver, deprecation, review |
 | [decisions.md](decisions.md) | append-only ADRs — why the rules are what they are |
 | [references/](references/README.md) | reference intake protocol, template, intake #1 |
@@ -26,14 +26,18 @@ pipeline runs. Values live in the generated references, never here.
 |---|---|---|
 | `design-system/tokens.json` | Token source: **188 keys, 20 groups**, 4 theme maps — the only hand-edited value source | no |
 | `design-system/tokens.css` | `:root` properties + `[data-ds-theme]` role blocks | yes |
-| `design-system/base.css` · `components.css` · `components.js` | Reset/focus/target floor · 21 blocks, `var()` only, four densities · behaviour (`DS.init/tabs/menu/overlay/nav/toast/…`) | no |
+| `design-system/base.css` · `components.css` · `components.js` | Reset/focus/target floor · 21 numbered blocks (1–21, §20b the rail foot), `var()` only, four densities · behaviour (`DS.init/tabs/menu/overlay/nav/toast/…`) | no |
+| `design-system/usage.json` · `usage.md` | Who consumes each token / component: 188 tokens, 158 with a product ref; 5 of 21 blocks have no product instance | yes |
+| `design-system/gallery-workbench.js` · `gallery-workbench.css` | Workbench UI: hydrates every `[data-token]` row, inline edit, `?v=<sha256>` hot-swap, 8 s undo toast, read-only fallback | no |
 | `design-system/pitch-shell.css` | Page-level pitch language: pins the 17 `--ds-*` roles and the chrome aliases (`--bg --card --s1 --s2 --ink --body --mut --mut2 --rule --acc --acc2 --amb --acc-ink`) to the pitch tokens. Opt in with `<html data-ds-shell="pitch" data-ds-theme="pitch">` and load it **after** the page's own `<style>` | no |
 | `design-system/icons.svg` | 24-symbol sprite, `currentColor`, `<use href="icons.svg#ds-icon-…">` | no |
 | `design-system/index.html` | Rendered gallery: swatches, type, motion, shape, components, consistency matrix | no |
 | `scripts/build-tokens.mjs` · `build-foundations.mjs` | Source → CSS, source + CSS → docs; both deterministic, both with `--check` | no |
 | `scripts/lint-tokens.mjs` | Adherence gate: V/U/T on the pages, C1–C6 on the shared layer | no |
+| `scripts/build-usage.mjs` | Generates `usage.json` + `usage.md`; `--check` is the CI gate | no |
+| `scripts/ds-set-token.mjs` · `scripts/lib/token-write.mjs` | Workbench CLI fallback · the shared validator, atomic writer, rebuild and rollback library | no |
 | `scripts/check-doc-counts.mjs` · `check-anchors.mjs` | Docs may not state a stale count · every anchor resolves | no |
-| `design-system/audit/2026-11-24/` · `.github/workflows/ds-gate.yml` | Measured baseline (lanes, metrics, shots) · CI: nine blocking gates + advisory html-validate | no |
+| `design-system/audit/2026-11-24/` · `.github/workflows/ds-gate.yml` | Measured baseline (lanes, metrics, shots) · CI: twelve blocking checks | no |
 
 ## The pipeline
 
@@ -74,10 +78,22 @@ the image relay and static serving behave byte-for-byte as they do without it.
 `revision` is the sha256 of `tokens.json`. Errors are `{error: {code, message}}`
 with no stack trace: 400 malformed request, 403 (non-loopback address or `Host`,
 foreign `Origin`, missing `x-ds-workbench: 1`, wrong content type, wrong write
-token, `themes` path), 404 unknown key, 413 body over 4 KB, 422 type or alias
-validation, 429 a write inside the 250 ms window, 500 `build-failed` after
-rollback. Every `/__ds` call needs `x-ds-workbench: 1`; a write also needs
-`content-type: application/json`.
+token, `themes` path), 404 unknown key, 405 wrong method, 413 body over 4 KB, 422
+type or alias validation, 429 a write inside the 250 ms window, 500
+`build-failed` after rollback. Every `/__ds` call needs `x-ds-workbench: 1`; a
+write also needs `content-type: application/json`.
+
+**The UI.** `design-system/gallery-workbench.{js,css}` is the client for that
+backend. It hydrates every `[data-token]` row the gallery renders: each row's
+`[data-token-value]` becomes a `role="button"` stop, focusing or activating it
+opens an inline textbox (Enter saves, Esc cancels, a changed value commits on
+blur), and a successful save reloads the `tokens.css` link with `?v=<sha256>` so
+the page repaints without a reload. The undo toast lives 8 s and posts
+`previous` back through the same route. `html[data-ds-workbench="live|off|
+probing"]` is the page's mode flag. When `/__ds/status` is not a `200`, the rows
+stay read-only and activating one offers the copied CLI command — the same
+fallback as the commands below. The gallery loads the UI; this repo documents it,
+it is not itself a product surface.
 
 **What is mutable.** The *value* of a key that already exists — nothing else. No
 new keys, no deletions, no writes into `themes` (that tree is the role contract,
@@ -125,10 +141,10 @@ and the exact revert command. Exit 0 applied, 1 rejected or failed, 2 bad usage.
 ## The usage index (product → DS)
 
 `design-system/usage.json` is the machine-readable answer to "who consumes this
-token, where is this component rendered", and `design-system/usage.md` is its
-generated summary. Both come from `scripts/build-usage.mjs`, reading
-`design-system/surfaces.json` and the pages and stylesheets it names; neither
-file is hand-edited.
+token, where is this component rendered", and
+[`design-system/usage.md`](usage.md) is its generated summary. Both come from
+`scripts/build-usage.mjs`, reading `design-system/surfaces.json` and the pages
+and stylesheets it names; neither file is hand-edited.
 
 - **Quarantine.** The gallery is a surface with `docsOnly: true`. Its refs are
   counted in a separate bucket and never in `productRefCount`, and a stylesheet
@@ -192,5 +208,5 @@ keeps its own IA keeps its own density.
 - Every interactive element needs the `:focus-visible` pair: `outline:var(--focus-width) solid …` plus `outline-offset:var(--focus-offset)`.
 - When a value is within 1px of a token step, use the token, not the nearest literal.
 - To add a value: edit `tokens.json`, run both generators, consume the `var(--…)`, and name the change class from [governance.md](governance.md).
-- A page change is not done until all nine gates are green — [verification.md](verification.md) says what each proves.
+- A page change is not done until all twelve checks are green — [verification.md](verification.md) says what each proves.
 - A reference never enters through a page: it enters as an intake record and lands as a theme-map diff or a component variant ([references/README.md](references/README.md)).
