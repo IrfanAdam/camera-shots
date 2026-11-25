@@ -1,8 +1,13 @@
 {
   "private": true,
   "name": "camera-shots",
-  "description": "Static board/pitch pages. `npm run relay` serves the repo plus the same-origin OpenCode image relay (scripts/relay.mjs).",
+  "description": "Static board/pitch pages. `npm run relay` serves the repo plus the same-origin OpenCode image relay (scripts/relay.mjs); `npm run ds:workbench` adds the local token workbench.",
   "scripts": {
-    "relay": "node scripts/relay.mjs"
+    "relay": "node scripts/relay.mjs",
+    "ds:workbench": "DS_WORKBENCH=1 node scripts/relay.mjs",
+    "ds:set": "node scripts/ds-set-token.mjs",
+    "ds:list": "node scripts/ds-set-token.mjs --list",
+    "usage": "node scripts/build-usage.mjs",
+    "usage:check": "node scripts/build-usage.mjs --check"
   }
 }

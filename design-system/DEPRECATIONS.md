@@ -12,7 +12,17 @@ The four-lane rail/pill rewrite removed the three layouts that sized themselves 
 | `layout.sidebar.pitch` | `220px` | `pitch.html` replaced the centred `.w`/`.layout` shell (and its floating mobile rail) with the shared rail; the 220px column has no owner. |
 | `spacing.section` | `26px` | Raised by the same measurement rather than the rewrite: the retired fixed bottom step bar and the 18px underline rhythm were its last plausible callers, and no surface, component sheet, engine-pitch sheet or gallery row named it. |
 
-`layout.sidebar.engine`, `layout.bar.engine`, `spacing.18` and `z.bar` were reported as retired by the same lane and are **not**: `engine.html` still consumes all four (the drawer's `.pm-nav` rail, the 62px mobile status strip, the drawer's 18px gutters, and `#arrowpick`'s z-index). `elevation.float` is left in place because the gallery's elevation ladder (`design-system/index.html:634`) still renders it as a specimen — retiring it moves gallery pixels, so it waits for Phase 3 with the other gallery-only keys.
+`layout.sidebar.engine`, `spacing.18` and `z.bar` were reported as retired by the same lane and are **not**: `engine.html` still consumes all three (the drawer's `.pm-nav` rail, the drawer's 18px gutters, and `#arrowpick`'s z-index). `elevation.float` is left in place because the gallery's elevation ladder (`design-system/index.html:634`) still renders it as a specimen — retiring it moves gallery pixels, so it waits for Phase 3 with the other gallery-only keys.
+
+## Retired by the pinned surface switcher (2026-11-25)
+
+The shared rail/drawer wave replaced engine's 62px mobile status strip with the off-canvas drawer, which was `layout.bar.engine`'s **last** consumer. Measured with a case-sensitive grep across every HTML page, `design-system/*.css`, `engine-pitch.css`, `components.js` (`CT('--…')` / `WA('--…')`), the theme maps, `scripts/*.mjs` and the docs: zero `var()`, zero string lookup, zero alias value. `layout.sidebar.engine`, `spacing.18` and `z.bar` survive on the consumers named above; `dot.size` stays until the dot block itself is deleted (see the component-shape table).
+
+| Key | Was | Reason it stopped resolving | Replaced by |
+|---|---|---|---|
+| `layout.bar.engine` | `62px` | `engine.html`'s fixed mobile status strip is gone — the shared `[data-ds-nav-mode="drawer"]` rail is the mobile chrome now, so nothing sizes from a page-local bar height | nothing (the drawer's own keys: `layout.nav.drawer.width`, `z.drawer`, `z.overlay`) |
+
+The same wave added `layout.nav.drawer.width` (`min(20rem, 86vw)`) for the drawer panel, so the token set holds at **188 keys / 20 groups** with one different key. `scripts/build-tokens.mjs` (`EXPECTED_LEAVES`) and `scripts/build-foundations.mjs` were updated in the same commit.
 
 ## Alias tier still live (one release)
 
@@ -155,6 +165,10 @@ The navigation grammar (rails are flat, tabs are pills, buttons keep their geome
 | `.ds-tabs[data-variant="underline"]` | `components.css` §5 | `.ds-tabs[data-variant="pill"]` | the release after this wave |
 | `.ds-tabs[data-variant="rail"]` | `components.css` §5 | `.ds-tabs[data-variant="pill"]` for tabs; `.ds-rail` for a section nav | the release after this wave |
 | bare `.ds-tabs` (boxed, no attribute) | `components.css` §5 base block | `.ds-tabs[data-variant="pill"]` | when the pages above migrate |
+
+## Page shapes retired with the rail foot + mobile menu (no token removed, 2026-11-25)
+
+`index.html` was the only surface that turned the rail into a horizontal pill strip under the header (`@media(max-width:900px)` rules for `.rail-list`, `.rail-field`, `.rail-count` and `.ds-rail__item`). Those page-local rules are deleted: the same rail is the off-canvas menu now (`.ds-rail[data-ds-nav-mode="drawer"]`, `components.css` §21), reached from one `[data-ds-nav-toggle]` button, and no `.ds-*` block was retired to make that happen. The wiki's header cross-links (`pitch →`, `engine →`, `design system →`) moved out of `.hright` into the rail's `.ds-rail__foot`; the `.eng` / `.pitch` header-button rules and their `pointer:coarse` expansion went with them. Both are page CSS, not contract — recorded here only so a later lane does not reintroduce a second mobile nav shape.
 
 ## Renames that preceded this list
 

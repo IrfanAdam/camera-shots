@@ -1,8 +1,8 @@
 # Component Specs
 
-**Status:** **20 live sections** (19 linked to the gallery frame that renders them; the rail's frame `#spec-rail` is reserved and not rendered yet) · **3 proposed** (not built — appendix) · **3 page patterns** (spec'd, not shipped — appendix) · **10 specs new in the previous revision**.
+**Status:** **21 live sections** (19 linked to the gallery frame that renders them; the rail's frame `#spec-rail` — which now also documents the rail foot and the drawer — is reserved and not rendered yet) · **3 proposed** (not built — appendix) · **3 page patterns** (spec'd, not shipped — appendix) · **10 specs new in the previous revision**.
 
-Everything below is verified against the shipped layer: `design-system/base.css` (reset, focus ring, skip link, scroll regions, target floor), `design-system/components.css` (20 numbered blocks), `design-system/components.js` (Overlay, Tabs, MenuButton, Toast/announce, copy, focus-preserve) and `design-system/icons.svg` (24 symbols). Values are named by token; the gallery at [`design-system/index.html`](index.html) renders every state in four theme cells (pitch, wiki-light, wiki-dark, engine), so a claim here can be checked by eye in one frame.
+Everything below is verified against the shipped layer: `design-system/base.css` (reset, focus ring, skip link, scroll regions, target floor), `design-system/components.css` (21 numbered blocks), `design-system/components.js` (Overlay, Nav, Tabs, MenuButton, Toast/announce, copy, focus-preserve) and `design-system/icons.svg` (24 symbols). Values are named by token; the gallery at [`design-system/index.html`](index.html) renders every state in four theme cells (pitch, wiki-light, wiki-dark, engine), so a claim here can be checked by eye in one frame.
 
 **Read order:** [README](README.md) → [foundations](foundations.md) → this file → [patterns](patterns.md).
 
@@ -28,6 +28,7 @@ Three rules are the owner's contract, and every navigation surface in the system
 | **Vertical section nav** | FLAT. No background, no border-radius, no card, no shadow, no dots. Inactive items are muted; the current item is ink + medium weight + a 2px `--ds-accent` bar on the inline-start edge, and every item keeps that 2px as a transparent slot so the text never shifts. One text axis, left-aligned. Edge-flush, sticky, full height, one hairline against the content column. | [Section rail](#ds-rail) — `.ds-rail` + `.ds-nav-item.ds-rail__item` |
 | **Content switching** | PILLS. One shape: rounded-full quiet surface, accent fill when selected, `--ds-on-accent` ink, no underline, no boxy control, left-aligned, wrapping instead of horizontal scroll, never stretched to fill the row. `underline` and `rail` tab variants are legacy for one release. | [Tabs](#ds-tabs) — `.ds-tabs[data-variant="pill"]` |
 | **Buttons in page chrome** | `.ds-btn` keeps its geometry — `padding-inline: spacing.lg`, `radius.xs`, `control.height.*` — even inside compact toolbars and dense grids. The only sanctioned shrink is `data-size="xs"`; never `padding:0`, never a hand-set radius. §1 carries a geometry guard so an ordinary page selector cannot strip it. | [Button](#ds-btn) — `.ds-btn.ds-btn` |
+| **Cross-page links** | PULLED BOTTOM. Links between the core units (wiki, pitch, engine, design system) are one `.ds-rail__foot` group pinned to the bottom of the sidebar — site chrome with a `SURFACES` label, not a section. Its current item is ink + `weight.medium` **only**: the accent bar belongs to the section indicator. Under `breakpoint.lg` the same rail is the off-canvas menu, opened from one `[data-ds-nav-toggle]` button. | [Rail foot & mobile menu](#ds-nav) — `.ds-rail__foot` + `DS.nav()` |
 
 Anything that used to be a dot, a card-y rail, or an underline is a legacy shape: it still renders this wave (pages consume it), it is annotated `LEGACY`/`DEPRECATED` in `components.css`, and it is not extended.
 
@@ -681,7 +682,7 @@ Anything that used to be a dot, a card-y rail, or an underline is a legacy shape
             padding-inline:var(--spacing-2xl)}
 ```
 
-`<body>` and the grid row carry **no** horizontal padding — the rail supplies its own inset, and its hairline is the only edge it draws. `position:sticky` needs a row taller than the rail, which is why the rail is `align-self:start` and `block-size:100dvh`; no ancestor may declare `overflow`, or that ancestor becomes the sticky container and the rail scrolls away with the content. On a narrow viewport the page drops the rail cell (`grid-template-columns:minmax(0,1fr)`) and the same markup becomes a horizontal strip or a disclosure — the rail itself is desktop chrome and has no mobile behaviour of its own.
+`<body>` and the grid row carry **no** horizontal padding — the rail supplies its own inset, and its hairline is the only edge it draws. `position:sticky` needs a row taller than the rail, which is why the rail is `align-self:start` and `block-size:100dvh`; no ancestor may declare `overflow`, or that ancestor becomes the sticky container and the rail scrolls away with the content. On a narrow viewport the page drops the rail cell (`grid-template-columns:minmax(0,1fr)`) and the same element becomes the off-canvas menu described in [Rail foot & mobile menu](#ds-nav) — one rail element, two modes, no duplicate nav markup.
 
 **States**
 
@@ -708,11 +709,76 @@ The 2px slot is present on **every** item, current or not, which is why the text
 | Height | `control.height.*` through `--_ctl-h` and `data-ds-density`, i.e. the item is a control, the rail is not |
 | Motion | `motion.duration.hover`, `motion.easing.standard` (inherited from the item) |
 
-**Dos and don'ts** — DO keep the rail flat and edge-flush, DO mark the live section with `aria-current="page"`, DO let the content column carry the max-width. DON'T put a background, border-radius, card, shadow or dot on the rail or its items, DON'T nest the rail inside the max-width wrapper (it must be the first grid cell), DON'T give it a second indicator (an icon *and* a bar, a dot *and* a bar), and DON'T rebuild it out of `.ds-tabs[data-variant="rail"]` — that is a legacy tablist, not a section nav.
+**Dos and don'ts** — DO keep the rail flat and edge-flush, DO mark the live section with `aria-current="page"`, DO let the content column carry the max-width, DO put cross-page links in a `.ds-rail__foot` (below). DON'T put a background, border-radius, card, shadow or dot on the rail or its items, DON'T nest the rail inside the max-width wrapper (it must be the first grid cell), DON'T give it a second indicator (an icon *and* a bar, a dot *and* a bar), and DON'T rebuild it out of `.ds-tabs[data-variant="rail"]` — that is a legacy tablist, not a section nav.
 
 **Accessibility** — a landmark `<nav>` with `aria-label`; items are links (`<a href>`), not buttons, and the current one carries `aria-current="page"` so the state is announced rather than coloured. The rail is in normal document order before the content, so the tab sequence matches reading order; the focus ring is the shared `base.css` ring. Because the rail is sticky and full height, it must not trap scrolling: it scrolls its own overflow only when the sections exceed the viewport.
 
 **Gallery** — anchor reserved: `index.html#spec-rail`. The frame is not rendered yet (the gallery is owned by another lane this wave); this section is the contract that frame must render — three densities, four theme cells, one current item.
+
+---
+
+### Rail foot & mobile menu {#ds-nav}
+
+**Purpose** — two things the owner asked for in one contract: the cross-page links ("design system, pitch etc") live in a group **pulled to the bottom** of the sidebar instead of scattered in the header, and the same rail is the **menu on a phone** (`data-ds-nav-mode="drawer"` at ≤`breakpoint.lg`). One rail element serves both, so a page never ships duplicate nav markup.
+
+**Anatomy**
+
+```html
+<header class="top">
+  <div class="hright"><span class="by">by irfan</span>
+    <button type="button" class="ds-navtoggle" data-ds-nav-toggle="nav-drawer"
+            aria-controls="nav-drawer" aria-expanded="false"
+            aria-label="Open menu" hidden>
+      <svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-menu"></use></svg>
+    </button>
+  </div>
+</header>
+
+<nav class="ds-rail" id="nav-drawer" data-ds-nav aria-label="Entries">
+  <p class="ds-rail__label">Entries</p>
+  <!-- …the section list… -->
+  <div class="ds-rail__foot">
+    <p class="ds-rail__label">Surfaces</p>
+    <span class="ds-nav-item ds-rail__item" aria-current="page">Wiki</span>
+    <a class="ds-nav-item ds-rail__item" href="pitch.html">Pitch</a>
+    <a class="ds-nav-item ds-rail__item" href="engine.html">Engine</a>
+    <a class="ds-nav-item ds-rail__item" href="design-system/index.html">Design System</a>
+  </div>
+</nav>
+```
+
+**The foot** — `.ds-rail__foot` is the browser's last flex item with `margin-block-start:auto` inside the 100dvh rail column, so it sits on the viewport bottom; it is `position:sticky` on the block-end edge, so a section list longer than the rail scrolls **under** it instead of carrying it away. A hairline (`border.width.hairline` + `--ds-rule`) is the only separator, and the group paints `--ds-bg` so items never show through. It is **site chrome, not a section**: its items are ordinary `.ds-nav-item.ds-rail__item`s (same 2px transparent slot, same `layout.rail.inset` text axis) one type step down (`typography.size.meta`, `tracking.snug`) at the touch height, and `aria-current="page"` on one is **ink + `weight.medium` only** — never the accent bar, so the section indicator stays the only bar in the rail. A rail with no foot keeps the old 20px of air under its last item.
+
+**The drawer** — `DS.nav(railEl)` (or `DS.init()`) binds it and returns `{open, close, toggle, sync, isOpen, el, breakpoint, destroy}`; `sync()` re-runs the mode check after a page renders or moves its toggle. The module reads the breakpoint from `--breakpoint-lg` at runtime, so the CSS and the JS cannot drift, and it stamps `data-ds-nav-mode="drawer"` on the rail while the query matches. Every drawer rule is gated on that attribute: no JS, no attribute, static rail — and a rail with **no** `[data-ds-nav-toggle]` also stays static, so a page can never hide its navigation behind a menu that nothing opens.
+
+| Piece | Contract |
+|---|---|
+| Toggle | `[data-ds-nav-toggle="<rail-id>"]` + `aria-controls` + `aria-expanded` + `aria-label="Open menu"`, `min 44×44`, `icons.svg#ds-icon-menu`. Ships **`hidden`**; JS reveals it only while the mobile query matches, so a hamburger never appears where it cannot open anything |
+| Rail | `data-ds-nav` + a stable `id`; `[data-ds-nav-ready]` and `[data-ds-nav-mode="drawer"]` are JS-owned state attributes |
+| Open / closed | open = `[data-ds-open]` + `aria-expanded="true"`; closed = `[hidden]` + `inert` (**not** transform-only) + `aria-expanded="false"` |
+| Scrim | `.ds-navscrim`, injected by JS: a real `<button tabindex="-1" aria-label="Close menu">`, `position:fixed`, `--z-overlay`, `--color-engine-overlay-scrim` (`rgba(0,0,0,.9)` — the strongest scrim role, so the exposed strip of page reads as covered, overridable per page with `--_scrim`) |
+| Close control | `.ds-navclose`, injected by JS as the drawer's **first child**: a 44×44 `<button type="button" aria-label="Close menu">` with an inline `currentColor` X, styled from `control.height.touch` / `icon.size.md` / `radius.xs`. First stop in the focus trap; removed from the DOM when the rail returns to a static column |
+| Scroll lock | `html[data-ds-nav-lock]` → `overflow:hidden` + `scrollbar-gutter:stable` (no sideways shift) |
+| Close paths | Escape · scrim click · the drawer's close button · any `.ds-rail__item` or in-page `a[href^="#"]` inside the rail (`data-ds-nav-keep-open` opts one out) · a click on the toggle · resize above the breakpoint |
+| Focus | opens on `[data-ds-autofocus]`, else the focusable `[aria-current="page"]`, else the first focusable; Tab/Shift+Tab are trapped inside the rail; every close returns focus to the toggle; background siblings (`header`, `main`, `footer`) are `inert` while open |
+| Motion | `motion.duration.slow` + `motion.easing.drawer`; `prefers-reduced-motion` zeroes the token in `base.css`, which makes open/close synchronous |
+
+**Token map**
+
+| Property | Token |
+|---|---|
+| Drawer width | `layout.nav.drawer.width` (`min(20rem, 86vw)` — 320px at 390, leaving ~70px of page visible behind the panel; the engine asset drawer keeps its wider `layout.drawer.engine.width`) |
+| Foot rhythm | `spacing.sm` (top pad), `layout.rail.inset` (bottom pad, so the foot's border box reaches the viewport edge), `spacing.2` (row gap), `spacing.md` (label offset) |
+| Type | `typography.size.meta` (items), `typography.size.eyebrow` + `tracking.eyebrow` (label), `weight.medium` (current) |
+| Target | `control.height.touch` (44px) for foot rows and every control in the drawer |
+| Stacking | `z.drawer` (rail), `z.overlay` (scrim) |
+| Motion | `motion.duration.slow`, `motion.easing.drawer` |
+
+**Dos and don'ts** — DO keep one rail for both modes, DO let the page's ≤900 layout drop the rail's grid cell, DO give the foot a `SURFACES` label so it reads as chrome. DON'T paint the accent bar on a foot item, DON'T add a close button of your own — `DS.nav` injects the panel's 44×44 control as the first child and the scrim behind it, DON'T hide the drawer with `transform` alone (a closed drawer that is still focusable is a tab trap with no escape), and DON'T hand-write `data-ds-nav-mode`, `data-ds-nav-ready` or `data-ds-open` — they are module state.
+
+**Accessibility** — a closed drawer is `display:none` (via `[hidden]`) **and** `inert`, so it is out of the accessibility tree and the tab order; open, it is still the `<nav>` landmark (a drawer is not a dialog, so no `role="dialog"`), Tab is trapped, Escape closes, the background is `inert`, focus returns to the 44×44 toggle whose `aria-label` flips to "Close menu", and crossing the breakpoint upward tears every bit of drawer state down so the static rail is never left inert. The rail keeps its own vertical scroll, so an open drawer never traps page scrolling.
+
+**Gallery** — none yet; `#spec-rail` is the frame that should render the foot and one open drawer cell.
 
 ---
 

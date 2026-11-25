@@ -281,8 +281,8 @@
   --layout-drawer-engine-width: min(360px, 92vw);
   --layout-drawer-pitch-width: min(720px, 100vw);
 
-  /* layout.bar */
-  --layout-bar-engine: 62px;
+  /* layout.nav */
+  --layout-nav-drawer-width: min(20rem, 86vw);
 
   /* breakpoint.xl */
   --breakpoint-xl: 1023.5px;

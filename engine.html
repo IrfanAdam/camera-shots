@@ -44,8 +44,6 @@ body{background:var(--bg);color:var(--ink);font:var(--typography-size-body)/1.6 
 header{display:flex;align-items:center;gap:var(--spacing-sm);padding:var(--spacing-sm) var(--spacing-md);padding-top:calc(var(--spacing-sm) + env(safe-area-inset-top,0px));padding-left:calc(var(--spacing-md) + env(safe-area-inset-left,0px));padding-right:calc(var(--spacing-md) + env(safe-area-inset-right,0px));background:var(--panel);border-bottom:var(--border-width-hairline) solid var(--border);flex-wrap:wrap}
 header h1{font-size:var(--typography-size-lede);letter-spacing:-.01em}
 header .by{color:var(--mut);font-size:var(--typography-size-meta)}
-.back{color:var(--mut);text-decoration:none;font-size:var(--typography-size-small);display:inline-flex;align-items:center;min-height:var(--touch-min)}
-.back:hover{color:var(--ink)}
 .tools{margin-left:auto;display:flex;gap:var(--spacing-xs);flex-wrap:wrap}
 .tools button{font:inherit;font-size:var(--typography-size-small);font-weight:var(--weight-medium);color:var(--ink);background:var(--tool);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);padding:var(--spacing-6) var(--spacing-sm);cursor:pointer;min-height:var(--tap-min)}
 .tools button:hover{border-color:var(--color-engine-text-secondary)}
@@ -110,19 +108,22 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 #drawerEmpty[hidden]{display:none}
 #drawerEmpty p{margin:0 0 var(--spacing-10)}
 #main{flex:1;display:flex;min-height:0}
-/* views rail — the shipped flat rail (§20 .ds-rail): no fill, no radius, no
-   card. Only the current item carries the 2px inline-start accent; every item
+/* views rail — the contract rail (§20 .ds-rail): no fill, no radius, no card.
+   Only the current section carries the 2px inline-start accent; every item
    keeps the same 2px transparent slot so the text axis never moves. The
    hairline sits on the rail's right edge (inline-end) and the rail is flush to
    the viewport's left edge — padding-inline:0, so the item's slot starts at
    x=0 and the item's own inset (layout.rail.inset) is what moves the text in.
    Width is the grammar token --layout-rail (208px): measured at 1440 it leaves
-   the canvas 1232×819 and the tool row untouched; at 390 the rail is the
-   horizontal strip below, so the inline size is moot there.
-   The item box is NOT restated here — there is no `#side button` rule, so
-   .ds-nav-item[data-variant="rail"] alone decides radius (0), padding, ink and
-   the state set. */
-#side{width:var(--layout-rail);flex:none;background:transparent;border-right:var(--border-width-hairline) solid var(--border);border-radius:var(--radius-none);padding:var(--layout-rail-inset) 0;display:flex;flex-direction:column;gap:var(--spacing-2)}
+   the canvas 1232×819 and the tool row untouched.
+   The box, the padding, the hairline and the 2px slot are the component's own
+   (§20), so nothing here restates them — this id rule keeps only the one
+   property the in-flow flex row needs. It must NOT redeclare width/position:
+   the drawer at ≤900 is the same element and an id would outrank §21.
+   #nav-drawer is also the drawer id the header toggle controls; --_rail-top is
+   measured from the header at runtime (the header wraps), so the rail ends on
+   the viewport bottom and its foot can pin there. */
+#nav-drawer{flex:none}
 .side-div{height:1px;background:var(--border);margin:var(--spacing-6) var(--spacing-2xs)}
 #stage{flex:1;display:flex;flex-direction:column;min-width:0;position:relative;background:var(--panel)}
 #cardMenuBtn{position:absolute;z-index:var(--z-sticky);min-width:var(--tap-min);min-height:var(--tap-min);width:var(--tap-min);height:var(--tap-min);padding:0;border-radius:var(--radius-xs);border:var(--border-width-hairline) solid var(--color-engine-wash-25);background:var(--color-engine-overlay-scrim);color:var(--ink);font-size:var(--typography-size-body);line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
@@ -367,7 +368,7 @@ input.tin.tin-pilled{color:transparent !important}
 /* ---- touch layer (lane Engine-Mobile; visual language only, IA unchanged) ----
    Tokens: --tap 44px min touch target. */
 /* desktop + mobile: 44px minimum touch targets on all primary controls */
-.tools button,#chapterbar button,#chapterbar select,#side button{min-height:var(--tap)}
+.tools button,#chapterbar button,#chapterbar select,#nav-drawer .ds-nav-item{min-height:var(--tap)}
 #drawerMenu button,#cardMenu button,#assetPanel .ajump{min-height:var(--tap)}
 /* canvas zoom controls: transport-style cluster, mobile only */
 #zoomCtl{position:absolute;z-index:var(--z-sticky-rail);right:10px;bottom:10px;display:none;flex-direction:column;gap:var(--spacing-6)}
@@ -375,28 +376,19 @@ input.tin.tin-pilled{color:transparent !important}
 #zoomCtl button:hover{border-color:var(--color-engine-text-secondary)}
 #sheetGrab{display:none}
 /* ---- phone / narrow nav (<=900, the --breakpoint-lg step) ----
-   The section nav stops being a column and becomes a left-aligned horizontal
-   strip of pill items under the header: same views, same order, one row that
-   scrolls sideways. The selected item is an accent FILL — never a bottom
-   underline, never a 4px box, and the rail's 2px inline-start slot is dropped
-   because a pill has no edge line. The page never drops to "no navigation". */
+   There is exactly ONE mobile nav mechanism: the same #nav-drawer rail is an
+   off-canvas drawer driven by DS.nav (§21 in components.css). The previous
+   lane's pill strip is gone — it restated the rail as a second, page-local
+   horizontal nav and outranked §21 by id. #main still stacks here so the stage
+   owns the full width; the rail leaves the flow by the component's own fixed
+   positioning, so nothing below may give it `position`/`width` again. */
 @media (max-width:900px){/* 900px is --breakpoint-lg exactly; T6-clean */
   #main{flex-direction:column}
-  /* the strip keeps the retired transport bar's height (--layout-bar-engine, 62px)
-     so the stage — and therefore the canvas — keeps exactly the block size it had
-     when the nav sat at the bottom. */
-  #side{position:static;width:auto;flex:none;flex-direction:row;align-items:center;gap:var(--spacing-6);min-height:var(--layout-bar-engine);overflow-x:auto;overscroll-behavior-x:contain;padding:var(--spacing-xs) var(--spacing-sm);border-right:0;border-bottom:var(--border-width-hairline) solid var(--border);scrollbar-width:none}
-  #side::-webkit-scrollbar{display:none}
-  #side .ds-nav-item{flex:0 0 auto;white-space:nowrap;background:var(--panel);border:var(--border-width-hairline) solid var(--border);border-radius:var(--radius-pill);padding-inline:var(--spacing-sm);justify-content:center;text-align:center;color:var(--mut)}
-  #side .ds-nav-item:is(:hover,[data-state~="hover"]){background:var(--panel);border-color:var(--ink);color:var(--ink)}
-  #side .ds-nav-item:is([aria-current="page"],[data-state~="current"]){background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
-  .side-div{display:none}
 }
 @media (max-width:860px){/* lint-allow: 860px collapses the engine header; --breakpoint-lg 900 would hide the tool row 40px later */
   header{gap:var(--spacing-xs);padding:var(--spacing-xs) var(--spacing-sm);padding-top:calc(var(--spacing-xs) + env(safe-area-inset-top,0px))}
   header h1{font-size:var(--typography-size-body)}
   header .by{display:none}
-  .back{padding:var(--spacing-xs) var(--spacing-2xs)}
   .tools{flex-wrap:nowrap;overflow-x:auto;max-width:100%;scrollbar-width:none}
   .tools::-webkit-scrollbar{display:none}
   .tools button{flex:none;min-height:var(--tap)}
@@ -486,7 +478,7 @@ input.tin.tin-pilled{color:transparent !important}
 </style></head><body>
 <a class="ds-skip-link" href="#main">Skip to content</a>
 <header>
-<a class="back" href="index.html">← wiki</a><a class="back" href="pitch.html">pitch →</a><a class="back" href="design-system/index.html">design system →</a>
+<button class="ds-navtoggle" data-ds-nav-toggle="nav-drawer" aria-controls="nav-drawer" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-menu"></use></svg></button>
 <h1>Prompt Engine</h1><span class="by">storyboard the beats, not the pixels</span>
 <div class="tools">
 <button id="histUndoBtn" class="hist ds-btn" title="Undo (Ctrl+Z)" aria-label="Undo" disabled><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3 2.5 6.5 6 10"/><path d="M3 6.5h5.5a4.5 4.5 0 0 1 0 9H7"/></svg></button>
@@ -496,13 +488,20 @@ input.tin.tin-pilled{color:transparent !important}
 <div class="menu"><button id="dots" class="ds-btn" title="more" aria-label="More actions" aria-haspopup="menu" aria-controls="menuDrop" aria-expanded="false" data-ds-menu-trigger>⋯</button><div id="menuDrop" class="ds-menu" role="menu" aria-label="Canvas actions" hidden><button id="undoBtn" class="ds-menu__item" role="menuitem">undo</button><button id="clear" class="ds-menu__item" role="menuitem">clear canvas</button><div id="assetList" role="group" aria-label="Assets"></div></div></div>
 </div>
 </header>
-<main id="main" tabindex="-1"><nav id="side" aria-label="Views">
-<button data-view="scenes" class="ds-nav-item on" data-variant="rail" aria-current="page">Scenes</button>
-<button data-view="shots" class="ds-nav-item" data-variant="rail">Shots Composer</button>
+<main id="main" tabindex="-1"><nav class="ds-rail" id="nav-drawer" data-ds-nav aria-label="Views">
+<button data-view="scenes" class="ds-nav-item ds-rail__item on" data-variant="rail" aria-current="page">Scenes</button>
+<button data-view="shots" class="ds-nav-item ds-rail__item" data-variant="rail">Shots Composer</button>
 <div class="side-div"></div>
-<button data-view="locations" class="ds-nav-item" data-variant="rail">Locations</button>
-<button data-view="props" class="ds-nav-item" data-variant="rail">Props</button>
-<button data-view="cast" class="ds-nav-item" data-variant="rail">Cast</button>
+<button data-view="locations" class="ds-nav-item ds-rail__item" data-variant="rail">Locations</button>
+<button data-view="props" class="ds-nav-item ds-rail__item" data-variant="rail">Props</button>
+<button data-view="cast" class="ds-nav-item ds-rail__item" data-variant="rail">Cast</button>
+<div class="ds-rail__foot">
+<p class="ds-rail__label">Surfaces</p>
+<a class="ds-nav-item ds-rail__item" href="index.html">Wiki</a>
+<a class="ds-nav-item ds-rail__item" href="pitch.html">Pitch</a>
+<span class="ds-nav-item ds-rail__item" aria-current="page">Engine</span>
+<a class="ds-nav-item ds-rail__item" href="design-system/index.html">Design System</a>
+</div>
 </nav><div id="stage"><div id="chapterbar" hidden><span>Chapter</span><select id="chapterSel" aria-label="Chapter"></select><button id="addChapter" class="ds-btn">+ chapter</button><span class="sp"></span><button id="addLane" class="ds-btn">+ lane</button><button id="addScene" class="ds-btn">+ scene</button></div><canvas id="cv" tabindex="0" role="application" aria-label="Storyboard canvas" aria-describedby="cvHelp"></canvas><p id="cvHelp" class="ds-sr-only">Canvas keyboard: arrow keys move the selection between cards; Enter opens the selected card; N adds a card; Delete removes it after a second press; C starts a link, then arrow keys choose the target and Enter links it; Escape cancels. Every card is also in the assets list for this tab, which opens it.</p><button id="assetBtn" title="List assets in this tab" aria-haspopup="menu" aria-controls="assetPanel" aria-expanded="false" data-ds-menu-trigger>☰</button><div id="assetPanel" class="ds-menu" role="menu" aria-label="Assets in this tab" hidden></div><button id="cardMenuBtn" title="Image and link options" aria-label="Card image and link options" aria-haspopup="menu" aria-controls="cardMenu" aria-expanded="false" data-ds-menu-trigger hidden>⋯</button><div id="cardMenu" class="ds-menu" role="menu" aria-label="Card options" hidden></div></div></main>
 <input type="file" id="filePick" accept="image/*" class="filehide" tabindex="-1" aria-hidden="true">
 <input type="file" id="assetImportPick" accept=".json,application/json,image/*" class="filehide" tabindex="-1" aria-hidden="true">
@@ -795,6 +794,16 @@ function loadImage(n,silent){if(!n.imgUrl){n.img=null;if(n)n.imgErr='';return}co
 /* ---- canvas ---- */
 function fit(){DPR=Math.min(2,devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);try{if(view==='scenes')rebuildChapters()}catch(e){}try{/* phone: the asset chip docks under the chapter bar instead of over it */const ab=document.getElementById('assetBtn'),cb=document.getElementById('chapterbar');if(ab){const nt=narrowBoard()?((cb&&!cb.hidden?cb.offsetHeight:0)+8)+'px':'';if(ab.style.top!==nt)ab.style.top=nt}}catch(e){}draw()}
 addEventListener('resize',fit);
+/* the bitmap must match the CSS box. Under --breakpoint-lg the rail becomes a
+   drawer and DS.nav hides it after this script's one-shot fit(), so the stage
+   grows a moment later and the canvas would keep a stale backing store; a
+   ResizeObserver refits whenever the stage actually changes size (drawer
+   open/close does not, so this costs nothing while the menu toggles). */
+(function(){
+ const st=document.getElementById('stage');if(!window.ResizeObserver||!st)return;
+ let w=0,h=0;
+ new ResizeObserver((es)=>{const r=es[0].contentRect;if(r.width===w&&r.height===h)return;w=r.width;h=r.height;fit()}).observe(st);
+})();
 function addNode(){const m=VIEW_META[view]||VIEW_META.locations;const w=200,h=190;
  const n={id:nextId++,kind:'beat',label:m.one+' '+seq,note:'',anchor:'',promptState:null,x:40+Math.random()*Math.max(40,W-w-80),y:40+Math.random()*Math.max(40,H-h-80),w,h,imgUrl:'',img:null};
  n.anchor=mintAnchor(KIND_PREFIX[view]||'AST',n.label);
@@ -1694,8 +1703,9 @@ function fitBoardOnce(){
  for(const n of nodes){const sx=(n.x-cam.x)*cam.z,sy=(n.y-cam.y)*cam.z;
   if(sx+n.w*cam.z>0&&sx<W&&sy+n.h*cam.z>0&&sy<H){vis=true;break}}
  if(vis)return false;
- let bottom=0;try{/* phone transport bar floats over the canvas: keep cards above it */
-  const s=document.getElementById('side'),cr=cv.getBoundingClientRect(),sr=s.getBoundingClientRect();
+ let bottom=0;try{/* the rail is an off-canvas drawer on a phone (hidden when closed), so this
+  only sees a box when the desktop rail is in flow; keep the guard cheap */
+  const s=document.getElementById('nav-drawer'),cr=cv.getBoundingClientRect(),sr=s.getBoundingClientRect();
   if(sr.height&&sr.top>cr.top&&sr.top<cr.bottom)bottom=cr.bottom-sr.top}catch(e){}
  let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;
  for(const n of nodes){x0=Math.min(x0,n.x);y0=Math.min(y0,n.y);x1=Math.max(x1,n.x+n.w);y1=Math.max(y1,n.y+n.h)}
@@ -1943,7 +1953,7 @@ function rebuildChapters(){const c=activeChapter(),sel=document.getElementById('
  for(const ch of SCENES.chapters){const o=document.createElement('option');o.value=ch.id;o.textContent=(ch.chAnchor&&!nb?ch.chAnchor+' · ':'')+(ch.name||('Chapter '+ch.id));if(ch.id===SCENES.active)o.selected=true;sel.appendChild(o)}
  document.getElementById('addLane').textContent='+ lane ('+((selStrip&&selStrip.lanes)||'—')+')'}
 function syncUI(){
- document.querySelectorAll('#side button').forEach(b=>{const on=b.dataset.view===view;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+ document.querySelectorAll('#nav-drawer button').forEach(b=>{const on=b.dataset.view===view;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
  document.getElementById('chapterbar').hidden=view!=='scenes';
  const an=document.getElementById('addNode');
  if(view==='scenes')an.style.display='none';
@@ -1953,7 +1963,7 @@ function syncUI(){
  hintEl.textContent=view==='scenes'?'wheel zooms · drag background pans · drag scene · resize corner · + fills lane slot · hover for dots · drag dot-to-dot to link · click still opens Shots':HINT_DEFAULT}
 function setView(v){if(v!==view){if(view==='scenes'){const oc=activeChapter();if(oc)oc.conns=conns}saveView();view=v;selStrip=null;selConn=null;pending=null;selected=null;hidePicker();closeShotPicker();closeCardMenu();
  if(v==='scenes'){const nc=activeChapter();conns=(nc&&nc.conns)||[]}else if(VIEW_META[v])loadView(v)}syncUI();persist();draw()}
-document.querySelectorAll('#side button').forEach(b=>{b.onclick=()=>setView(b.dataset.view)});
+document.querySelectorAll('#nav-drawer button').forEach(b=>{b.onclick=()=>setView(b.dataset.view)});
 document.getElementById('chapterSel').onchange=e=>{const oc=activeChapter();if(oc)oc.conns=conns;SCENES.active=+e.target.value;selStrip=null;selConn=null;const nc=activeChapter();conns=(nc&&nc.conns)||[];persist();syncUI();draw()};
 document.getElementById('addChapter').onclick=()=>{
  const name=prompt('Chapter name:','Chapter '+(SCENES.chapters.length+1));if(name===null)return;
@@ -2604,6 +2614,16 @@ document.addEventListener('pointerdown',e=>{if(assetDelArmedId&&!(e.target&&e.ta
  const gEnd=e=>{if(gy==null)return;const dy=e.clientY-gy;gy=null;drawer.style.transform='';if(dy>96){try{closeDrawer()}catch(_){drawer.classList.remove('open')}}};
  grab.addEventListener('pointerup',gEnd);
  grab.addEventListener('pointercancel',()=>{gy=null;drawer.style.transform=''});
+})();
+/* the rail is a viewport-height column that starts below the flow header, so
+   hand the contract's --_rail-top the header's measured height (it wraps at
+   narrow widths — a token cannot know it). The rail is then exactly the
+   viewport remainder and its Surfaces foot pins to the viewport bottom. In
+   drawer mode §21 owns inset/block-size and ignores this value. */
+(function(){
+ const hd=document.querySelector('header'),nv=document.getElementById('nav-drawer');
+ function syncRailTop(){if(hd&&nv)nv.style.setProperty('--_rail-top',hd.offsetHeight+'px')}
+ syncRailTop();addEventListener('resize',syncRailTop);
 })();
 attachZoom();
 restore();fit();try{fitBoardOnce()}catch(e){}

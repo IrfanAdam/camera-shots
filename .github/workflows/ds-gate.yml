@@ -62,6 +62,15 @@ jobs:
       - name: Generated foundations match tokens.json
         run: node scripts/build-foundations.mjs --check
 
+      # usage.json/usage.md are the product→DS index: which token each surface
+      # consumes, where each component renders, and the zero-product ledgers.
+      # The gallery is quarantined (docsOnly) so its refs never count as product
+      # usage. Scanned sources come from HEAD, so a lane mid-edit cannot drift
+      # it; a committed page/CSS change must regenerate the index and fails here
+      # with a per-surface/per-component diff summary when it does not.
+      - name: Usage index matches the pages
+        run: node scripts/build-usage.mjs --check
+
       # V1–V8/U1/T1–T15 judge the four pages and the token set; C1–C6 judge the
       # shared layer (raw values in base.css/components.css, duplicate selectors
       # keyed by cascade scope, aria-modal semantics, a .ds-* class defined

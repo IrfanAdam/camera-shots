@@ -17,6 +17,8 @@
      tabs     .ds-tabs[role=tablist] > [role=tab]  +  [role=tabpanel]
      menu     [data-ds-menu-trigger][aria-expanded] + [role=menu]
      dialog   <dialog class="ds-dialog"> or [data-ds-overlay]
+     nav      [data-ds-nav] rail + [data-ds-nav-toggle="<rail-id>"]
+              (one rail serves desktop and the ≤breakpoint-lg drawer)
      toast    [data-ds-toast][role=status|alert]
      copy     [data-ds-copy]
      switch   role=switch + aria-checked   (pure CSS, no JS needed)
@@ -39,7 +41,9 @@
   if (typeof window === 'undefined' || typeof document === 'undefined') return;
   if (window.DS && window.DS.__ds) return;
 
-  var VERSION = '2.0.0';
+  /* 2.1.0 adds DS.nav (the media-aware rail drawer); everything in 2.0.0 is
+     unchanged, so a page that never opts in behaves exactly as before. */
+  var VERSION = '2.1.0';
 
   /* ---------------------------------------------------------------- tokens */
   /* Durations are read from CSS so the design layer owns the number. The
@@ -912,6 +916,354 @@
     return api;
   }
 
+  /* =============================================================== NAV ====
+     The rail as an off-canvas menu at --breakpoint-lg and below. ONE rail
+     element serves both desktop and the drawer, so a page never duplicates
+     nav markup.
+
+     Markup (the only contract a page owes):
+       <header>
+         <button class="ds-navtoggle" data-ds-nav-toggle="nav-drawer"
+                 aria-controls="nav-drawer" aria-expanded="false"
+                 aria-label="Open menu" hidden>☰</button>
+       </header>
+       <nav class="ds-rail" id="nav-drawer" data-ds-nav aria-label="Sections">…
+         <div class="ds-rail__foot">…cross-page links…</div>
+       </nav>
+
+     The toggle ships `hidden`: JS reveals it only while the mobile query
+     matches, so a no-JS page keeps the visible static rail and never shows a
+     hamburger that does nothing. Everything else is injected or attribute
+     state — `.ds-navscrim` (a real close button, tabindex -1), `[data-ds-nav
+     -ready]` on the rail, `[data-ds-open]` while open, `[hidden]`+`inert` when
+     closed, `aria-expanded` on every toggle, `html[data-ds-nav-lock]` for the
+     scroll lock.
+
+     Why not Overlay()? A drawer is not a dialog: the rail is a <nav> landmark,
+     and Overlay would stamp role="dialog" + aria-modal on it. Nav reuses the
+     same primitives (focusables/focusEl/on/attr/emit/reducedMotion) and the
+     same rules — closed is hidden + inert, Escape closes, focus returns to the
+     invoker, Tab is trapped, background is inert — while staying media-aware:
+     crossing back above the breakpoint tears every bit of drawer state down so
+     the static rail is never left inert. */
+  var NAV_LABEL_OPEN = 'Open menu';
+  var NAV_LABEL_CLOSE = 'Close menu';
+
+  /* the breakpoint lives in tokens.css (breakpoint.lg) so the CSS media query
+     and the JS media query cannot drift; 900 is the documented fallback */
+  function navBreakpointPx() {
+    var raw = '';
+    try {
+      raw = window.getComputedStyle(document.documentElement).getPropertyValue('--breakpoint-lg');
+    } catch (err) { raw = ''; }
+    var m = /([0-9]*\.?[0-9]+)\s*px/.exec(raw || '');
+    return m ? parseFloat(m[1]) : 900;
+  }
+
+  function Nav(el, options) {
+    if (!isEl(el)) throw new Error('DS.nav: rail element required');
+    if (byElement.has(el)) return byElement.get(el);
+
+    var opts = options || {};
+    var offs = [];
+    var isOpen = false;
+    var invoker = null;
+    var inerted = [];
+    var scrim = null;
+    var closeBtn = null;
+    var mq = null;
+    var timer = 0;
+    var api;
+
+    if (!el.id) el.id = uid('nav-drawer');
+    var bp = parseFloat(opts.breakpoint) || navBreakpointPx();
+
+    scrim = document.createElement('button');
+    scrim.type = 'button';
+    scrim.className = 'ds-navscrim';
+    scrim.setAttribute('tabindex', '-1');
+    scrim.setAttribute('aria-label', NAV_LABEL_CLOSE);
+    scrim.setAttribute('hidden', '');
+
+    /* The drawer's own close control. A panel pinned to the inline-start edge
+       has no visible way out: the opener is behind it and the scrim is a
+       full-bleed dim, not a cue. Nav() therefore owns a 44×44 close button and
+       puts it first in the panel, so it is the trap's first stop and the first
+       thing a screen reader meets. Geometry and paint live in components.css
+       §21 (`.ds-navclose`); the X is drawn with `currentColor`, never a literal. */
+    closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'ds-navclose';
+    closeBtn.setAttribute('aria-label', NAV_LABEL_CLOSE);
+    closeBtn.innerHTML = '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24">'
+      + '<path d="M6 6 18 18M18 6 6 18"/></svg>';
+
+    function toggles() {
+      var nodes = document.querySelectorAll('[data-ds-nav-toggle]');
+      var out = [];
+      for (var i = 0; i < nodes.length; i += 1) {
+        var v = attr(nodes[i], 'data-ds-nav-toggle');
+        if (v === el.id || v === '#' + el.id) out.push(nodes[i]);
+      }
+      return out;
+    }
+
+    function mobile() {
+      return !!(mq && mq.matches);
+    }
+
+    function syncToggles() {
+      var isMobile = mobile();
+      toggles().forEach(function (t) {
+        attr(t, 'aria-controls', el.id);
+        attr(t, 'aria-expanded', isOpen ? 'true' : 'false');
+        attr(t, 'aria-label', isOpen ? NAV_LABEL_CLOSE : (attr(t, 'data-ds-label-open') || NAV_LABEL_OPEN));
+        if (isMobile) t.removeAttribute('hidden');
+        else t.setAttribute('hidden', '');
+      });
+    }
+
+    function lockScroll(lock) {
+      var root = document.documentElement;
+      if (lock) root.setAttribute('data-ds-nav-lock', '');
+      else root.removeAttribute('data-ds-nav-lock');
+    }
+
+    /* inert every sibling of the rail's ancestor chain: header, main, footer —
+       everything except the drawer and its own ancestors. */
+    function inertOutside() {
+      releaseOutside();
+      var node = el;
+      while (node && node !== document.body && node.parentElement) {
+        var parent = node.parentElement;
+        var kids = parent.children;
+        for (var i = 0; i < kids.length; i += 1) {
+          var kid = kids[i];
+          if (kid === node || kid === scrim) continue;
+          if (kid.tagName === 'SCRIPT' || kid.tagName === 'STYLE' || kid.tagName === 'LINK') continue;
+          inerted.push({ el: kid, had: kid.hasAttribute('inert') });
+          kid.setAttribute('inert', '');
+        }
+        node = parent;
+      }
+    }
+
+    function releaseOutside() {
+      inerted.forEach(function (rec) {
+        if (!rec.had) rec.el.removeAttribute('inert');
+      });
+      inerted = [];
+    }
+
+    /* Motion: the slide is CSS, so the duration is the token's. Reduced motion
+       zeroes --motion-duration-slow in base.css, which makes this synchronous
+       and keeps the gate deterministic. */
+    function settleMs() {
+      try {
+        var ms = parseMs(window.getComputedStyle(el).getPropertyValue('--motion-duration-slow'));
+        return ms === null ? 0 : ms;
+      } catch (err) { return 0; }
+    }
+
+    function afterMove(fn) {
+      if (timer) { window.clearTimeout(timer); timer = 0; }
+      var ms = reducedMotion() ? 0 : settleMs();
+      if (!ms) { fn(); return; }
+      timer = window.setTimeout(function () { timer = 0; fn(); }, ms + 30);
+    }
+
+    function trap(ev) {
+      var list = focusables(el);
+      if (!list.length) { ev.preventDefault(); focusEl(el); return; }
+      var first = list[0];
+      var last = list[list.length - 1];
+      var active = document.activeElement;
+      if (!el.contains(active)) {
+        ev.preventDefault();
+        focusEl(ev.shiftKey ? last : first);
+        return;
+      }
+      if (ev.shiftKey && (active === first || active === el)) {
+        ev.preventDefault();
+        focusEl(last);
+      } else if (!ev.shiftKey && active === last) {
+        ev.preventDefault();
+        focusEl(first);
+      }
+    }
+
+    function onKey(ev) {
+      if (!isOpen || !mobile()) return;
+      if (ev.key === 'Escape' || ev.key === 'Esc') {
+        if (openMenus.length) return;
+        ev.preventDefault();
+        close('escape');
+      } else if (ev.key === 'Tab') {
+        trap(ev);
+      }
+    }
+
+    function open(openOpts) {
+      if (isOpen || !mobile()) return api;
+      var cfg = openOpts || {};
+      invoker = cfg.invoker || document.activeElement;
+      el.removeAttribute('hidden');
+      el.removeAttribute('inert');
+      scrim.removeAttribute('hidden');
+      if (scrim.parentNode !== document.body) document.body.appendChild(scrim);
+      isOpen = true;
+      lockScroll(true);
+      inertOutside();
+      syncToggles();
+      /* the open transform is painted a frame after `hidden` is dropped, so the
+         slide actually runs instead of snapping (reduced motion skips both) */
+      window.requestAnimationFrame(function () { if (isOpen) attr(el, 'data-ds-open', ''); });
+      var target = el.querySelector('[data-ds-autofocus]');
+      if (!target) {
+        /* prefer the current section item — but only one that is actually
+           focusable (a foot's current surface may be a plain span) */
+        var currents = el.querySelectorAll('[aria-current="page"]');
+        for (var i = 0; i < currents.length && !target; i += 1) {
+          if (currents[i].matches(FOCUSABLE)) target = currents[i];
+        }
+      }
+      if (!target) target = focusables(el)[0] || el;
+      if (target === el && el.tabIndex < 0) attr(el, 'tabindex', '-1');
+      focusEl(target);
+      emit(el, 'ds:navopen', { invoker: invoker, id: el.id });
+      return api;
+    }
+
+    function close(reason) {
+      if (!isOpen) return api;
+      var proceed = emit(el, 'ds:beforeclose', { reason: reason || 'api' });
+      if (proceed === false) return api;
+      isOpen = false;
+      attr(el, 'data-ds-open', null);
+      if (scrim) scrim.setAttribute('hidden', '');
+      releaseOutside();
+      lockScroll(false);
+      syncToggles();
+      var back = invoker;
+      invoker = null;
+      if (back && isEl(back) && document.contains(back) && !back.closest('[inert]')) focusEl(back);
+      afterMove(function () {
+        if (isOpen) return;
+        el.setAttribute('hidden', '');
+        el.setAttribute('inert', '');
+      });
+      emit(el, 'ds:close', { reason: reason || 'api' });
+      return api;
+    }
+
+    function toggle(cfg) {
+      return isOpen ? close('toggle') : open(cfg);
+    }
+
+    /* crossing back above the breakpoint: destroy the drawer state, keep the
+       static rail — never leave it hidden or inert on desktop */
+    function toStatic() {
+      if (timer) { window.clearTimeout(timer); timer = 0; }
+      isOpen = false;
+      attr(el, 'data-ds-nav-mode', null);
+      el.removeAttribute('data-ds-open');
+      el.removeAttribute('hidden');
+      el.removeAttribute('inert');
+      releaseOutside();
+      lockScroll(false);
+      if (scrim) scrim.setAttribute('hidden', '');
+      /* the close control belongs to the drawer only: a static rail has no
+         overlay to dismiss, so the button leaves the DOM with the mode */
+      if (closeBtn && closeBtn.parentNode === el) el.removeChild(closeBtn);
+      syncToggles();
+    }
+
+    function toMobile() {
+      /* no opener in the DOM yet: keep the rail static rather than hide it
+         behind a menu nothing can open. api.sync() re-checks after a render. */
+      if (!toggles().length) return;
+      if (!isOpen) {
+        el.setAttribute('hidden', '');
+        el.setAttribute('inert', '');
+      }
+      /* first child on purpose: the trap starts here and so does the panel */
+      if (closeBtn && closeBtn.parentNode !== el) el.insertBefore(closeBtn, el.firstElementChild);
+      /* the mode attribute is what turns the shared CSS into a drawer (§21) */
+      attr(el, 'data-ds-nav-mode', 'drawer');
+      syncToggles();
+    }
+
+    function onMedia() {
+      if (mobile()) toMobile();
+      else toStatic();
+    }
+
+    try {
+      if (window.matchMedia) mq = window.matchMedia('(max-width:' + bp + 'px)');
+    } catch (err) { mq = null; }
+    if (!mq) throw new Error('DS.nav: matchMedia required');
+
+    attr(el, 'data-ds-nav', '');
+    document.body.appendChild(scrim);
+    /* ready first: the drawer rules require it, so no mobile styling can apply
+       before the module owns the rail */
+    attr(el, 'data-ds-nav-ready', '');
+    attr(el, 'data-ds-ready', '');
+    if (mobile()) toMobile();
+    syncToggles();
+    offs.push(mq.addEventListener
+      ? on(mq, 'change', onMedia)
+      : on(mq, 'addListener', onMedia));
+
+    toggles().forEach(function (t) {
+      attr(t, 'aria-controls', el.id);
+      offs.push(on(t, 'click', function (ev) {
+        ev.preventDefault();
+        if (!mobile()) return;
+        toggle({ invoker: t });
+      }));
+    });
+
+    offs.push(on(scrim, 'click', function () { close('scrim'); }));
+    /* same close path as Escape and the scrim: focus returns to the toggle */
+    offs.push(on(closeBtn, 'click', function () { close('close-button'); }));
+    offs.push(on(document, 'keydown', onKey, true));
+    offs.push(on(el, 'click', function (ev) {
+      if (!isOpen) return;
+      var hit = ev.target && ev.target.closest ? ev.target.closest('a[href],.ds-rail__item') : null;
+      if (!hit || !el.contains(hit)) return;
+      if (hit.hasAttribute('data-ds-nav-keep-open')) return;
+      /* a rail item IS navigation — an in-page anchor, a section switch, a
+         cross-page link — so the drawer gets out of the way */
+      close('navigate');
+    }));
+
+    api = {
+      el: el,
+      open: open,
+      close: close,
+      toggle: toggle,
+      sync: onMedia,
+      breakpoint: bp,
+      get isOpen() { return isOpen; },
+      destroy: function () {
+        close('destroy');
+        offs.forEach(function (off) { off(); });
+        offs = [];
+        if (timer) { window.clearTimeout(timer); timer = 0; }
+        toStatic();
+        attr(el, 'data-ds-nav-ready', null);
+        el.removeAttribute('data-ds-ready');
+        if (scrim && scrim.parentNode) scrim.parentNode.removeChild(scrim);
+        byElement.delete(el);
+      }
+    };
+
+    byElement.set(el, api);
+    instances += 1;
+    return api;
+  }
+
   /* ========================================================= FOCUS PRESERVE ==
      For renderers that rewrite innerHTML (wiki draw(), pitch setRail(),
      engine's field painters). Snapshot the focused node by key, then by
@@ -1048,6 +1400,16 @@
       try { fresh.push(MenuButton(trigger, panel, { anchor: true, typeahead: attr(trigger, 'data-ds-typeahead') !== 'off' })); } catch (err) { /* no-op */ }
     });
 
+    /* nav drawer — the media-aware rail (§21) */
+    var navRoots = scope.querySelectorAll('[data-ds-nav]');
+    Array.prototype.forEach.call(navRoots, function (el) {
+      if (ready(el)) return;
+      try {
+        Nav(el, { breakpoint: attr(el, 'data-ds-breakpoint') });
+        fresh.push(el);
+      } catch (err) { /* one malformed rail must not stop the rest */ }
+    });
+
     /* overlays / dialogs */
     var overlays = scope.querySelectorAll('[data-ds-dialog],[data-ds-overlay],dialog.ds-dialog,.ds-dialog');
     Array.prototype.forEach.call(overlays, function (el) {
@@ -1127,6 +1489,7 @@
     },
     overlay: Overlay,
     dialog: Overlay,
+    nav: Nav,
     toast: function (target, options) {
       if (isEl(target)) return Toast(target, options);
       var cfg = options || {};

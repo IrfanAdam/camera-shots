@@ -184,6 +184,10 @@ const ROLE_VAR_COUNT = 17;
  * the navigation-grammar pair consumed by `.ds-rail` in components.css.
  * The navigation rewrite retired `layout.sidebar.wiki`, `layout.sidebar.pitch`
  * and `spacing.section` (191 → 188); see design-system/DEPRECATIONS.md.
+ * The pinned-surface-switcher wave then traded `layout.bar.engine` (its last
+ * consumer, engine's 62px mobile strip, became the shared drawer) for
+ * `layout.nav.drawer.width` (min(20rem, 86vw), the drawer panel), so the count
+ * holds at 188 with one different key.
  */
 const EXPECTED_LEAVES = 188;
 

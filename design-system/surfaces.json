@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "tokenSource": "design-system/tokens.json",
+  "tokenCss": "design-system/tokens.css",
+  "componentSource": "design-system/components.css",
+  "surfaces": [
+    {
+      "id": "wiki",
+      "page": "index.html",
+      "role": "read",
+      "css": [
+        "design-system/base.css",
+        "design-system/components.css",
+        "design-system/pitch-shell.css"
+      ]
+    },
+    {
+      "id": "pitch",
+      "page": "pitch.html",
+      "role": "persuade",
+      "css": ["design-system/components.css"]
+    },
+    {
+      "id": "engine",
+      "page": "engine.html",
+      "role": "operate",
+      "css": [
+        "design-system/base.css",
+        "design-system/components.css",
+        "engine-pitch.css"
+      ]
+    },
+    {
+      "id": "gallery",
+      "page": "design-system/index.html",
+      "role": "docs",
+      "docsOnly": true,
+      "css": [
+        "design-system/base.css",
+        "design-system/components.css",
+        "design-system/pitch-shell.css",
+        "design-system/gallery-pitch.css"
+      ]
+    }
+  ],
+  "manifest": {
+    "roots": ["*.html", "design-system/*.html"],
+    "ignore": [".hermes/**", "artifacts/**", "uploads/**", "scripts/a11y/node_modules/**"],
+    "requireTokenCssLink": true
+  }
+}

@@ -31,11 +31,10 @@ a:hover{color:var(--ink);text-decoration-color:var(--acc)}
 .top__in{display:flex;justify-content:space-between;align-items:baseline;gap:var(--spacing-md);flex-wrap:wrap;max-inline-size:var(--layout-max-wiki);margin-inline:auto;padding-inline:var(--spacing-2xl)}
 .page__main{grid-area:body;min-inline-size:0;max-inline-size:var(--layout-max-wiki);margin-inline:auto;padding-inline:var(--spacing-2xl);padding-block-end:var(--spacing-xl)}
 .by{font-family:var(--typography-family-mono);letter-spacing:var(--tracking-eyebrow);color:var(--mut);font-size:var(--typography-size-small);white-space:nowrap}
-.hright{display:flex;align-items:center;gap:var(--spacing-10)}
-.eng{font-size:var(--typography-size-small);font-weight:var(--weight-semibold);color:var(--acc-ink);background:var(--acc);border:var(--border-width-hairline) solid var(--acc);min-height:var(--control-height-compact);padding:var(--spacing-6) var(--spacing-sm);border-radius:var(--radius-xs);text-decoration:none;transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard), filter var(--motion-duration-hover) var(--motion-easing-standard)}
-.eng:hover{filter:brightness(var(--hover-lift))}
-.pitch{font-size:var(--typography-size-small);font-weight:var(--weight-semibold);color:var(--ink);background:transparent;border:var(--border-width-hairline) solid var(--rule);padding:var(--spacing-6) var(--spacing-sm);border-radius:var(--radius-xs);text-decoration:none;transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}
-.pitch:hover{border-color:var(--ink);background:var(--card)}
+/* `margin-inline-start:auto` keeps the byline + menu button on the end edge
+   even when the title wraps the row (mobile), so the hamburger stays under the
+   thumb instead of drifting to the middle of a second row. */
+.hright{display:flex;align-items:center;gap:var(--spacing-10);margin-inline-start:auto}
 h1{font-size:var(--typography-size-h1);letter-spacing:var(--tracking-tight)}.sub{color:var(--mut);font-size:var(--typography-size-body);margin:var(--spacing-2xs) 0 0}
 .sub a{color:var(--acc);transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}
 /* rail chrome: the field and the count carry the item's 2px transparent slot and
@@ -85,24 +84,14 @@ p{font-size:var(--typography-size-body);color:var(--body)}.ad{margin-top:var(--s
 .yt span{position:absolute;inset:0;margin:auto;width:60px;height:60px;border-radius:var(--radius-circle);background:var(--acc);color:var(--acc-ink);display:flex;align-items:center;justify-content:center;font-size:22px}
 .yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 footer{margin:var(--spacing-xl) 0 var(--spacing-md);color:var(--mut);font-size:var(--typography-size-meta)}
-/* ≤--breakpoint-lg: the rail stops being a column and becomes a left-aligned,
-   horizontally scrolling strip of pill items directly under the header — the
-   search field and the count sit in the same band, above the strip. Steps and
-   tabs stay pills and wrap; nothing keeps a bottom underline. */
+/* ≤--breakpoint-lg: the rail leaves the grid and becomes the off-canvas menu
+   (components.css §21) reached from the header's menu button, so the page only
+   has to stop reserving a rail column — the drawer, its scrim, the scroll lock
+   and the pinned foot are the shared layer's job. */
 @media(max-width:900px){
 .page{display:flex;flex-direction:column}
+.top__in{align-items:center}
 .top__in,.page__main{max-inline-size:none;padding-inline:var(--spacing-20)}
-.page>.ds-rail{position:static;align-self:stretch;inline-size:auto;block-size:auto;gap:0;padding-block:var(--spacing-sm);overflow:visible;border-inline-end:0;border-block-end:var(--border-width-hairline) solid var(--rule)}
-.ds-rail .ds-rail__label{display:none}
-.rail-field{border-inline-start:0;padding-inline:var(--spacing-20);margin-block-end:var(--spacing-xs)}
-.rail-count{border-inline-start:0;padding-inline:var(--spacing-20);margin-block-end:var(--spacing-2xs)}
-/* the strip is a scroller, so its end fades: the 48px mask is the affordance and
-   the same 48px of end padding lets the last pill scroll clear of it
-   (revealCurrent() reads that padding to keep the current pill fully visible) */
-.rail-list{flex-direction:row;overflow-x:auto;overflow-y:hidden;gap:var(--spacing-xs);padding-inline:var(--spacing-20) var(--spacing-2xl);scrollbar-width:thin;scrollbar-color:var(--rule) transparent;mask-image:linear-gradient(to right,currentColor calc(100% - var(--spacing-2xl)),transparent)}
-.ds-rail .ds-rail__item{flex:0 0 auto;padding-inline:var(--spacing-md);border:var(--border-width-hairline) solid var(--rule);border-radius:var(--radius-pill);color:var(--mut);white-space:nowrap}
-.ds-rail .ds-rail__item:is(:hover,[data-state~="hover"]){border-color:var(--ink);color:var(--ink)}
-.ds-rail .ds-rail__item:is([aria-current="page"],[aria-selected="true"]){background:var(--acc);border-color:var(--acc);color:var(--acc-ink);font-weight:var(--weight-medium)}
 }
 
 /* compact grouped map, ≤--breakpoint-sm 639: the DS table stacks into labelled
@@ -124,7 +113,7 @@ footer{margin:var(--spacing-xl) 0 var(--spacing-md);color:var(--mut);font-size:v
 .mapacts{gap:var(--spacing-xs)}
 }
 @media(pointer:coarse){
-.eng,.pitch,.go{min-height:var(--control-height-touch);display:inline-flex;align-items:center}
+.go{min-height:var(--control-height-touch);display:inline-flex;align-items:center}
 #search,.panel .ds-pager button,.panel .ds-copy button{min-height:var(--control-height-touch)}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
@@ -136,12 +125,19 @@ footer{margin:var(--spacing-xl) 0 var(--spacing-md);color:var(--mut);font-size:v
 <link rel="stylesheet" href="design-system/pitch-shell.css"></head><body>
 <a class="ds-skip-link" href="#main">Skip to content</a>
 <div class="page">
-<header class="top"><div class="top__in"><h1>Cinematography and Direction Wiki</h1><nav class="hright" aria-label="Other pages"><span class="by">by irfan</span><a class="pitch" href="pitch.html">pitch →</a><a class="eng" href="engine.html">engine →</a><a class="eng" href="design-system/index.html">design system →</a></nav></div></header>
-<nav class="ds-rail" aria-label="Entries">
+<header class="top"><div class="top__in"><h1>Cinematography and Direction Wiki</h1><div class="hright"><span class="by">by irfan</span><button type="button" class="ds-navtoggle" data-ds-nav-toggle="nav-drawer" aria-controls="nav-drawer" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-menu"></use></svg></button></div></div></header>
+<nav class="ds-rail" id="nav-drawer" data-ds-nav aria-label="Entries">
 <p class="ds-rail__label">Entries</p>
 <div class="rail-field"><label class="ds-sr-only" for="search">Filter cards in this tab</label><input id="search" class="ds-input" type="search" placeholder="Filter this tab…" aria-describedby="search-hint" autocomplete="off"><span class="ds-sr-only" id="search-hint">Examples: rack, golden, 180.</span></div>
 <p class="rail-count" id="count"></p>
 <div class="rail-list" id="list"></div>
+<div class="ds-rail__foot">
+<p class="ds-rail__label">Surfaces</p>
+<span class="ds-nav-item ds-rail__item" aria-current="page">Wiki</span>
+<a class="ds-nav-item ds-rail__item" href="pitch.html">Pitch</a>
+<a class="ds-nav-item ds-rail__item" href="engine.html">Engine</a>
+<a class="ds-nav-item ds-rail__item" href="design-system/index.html">Design System</a>
+</div>
 </nav>
 <div class="page__main">
 <main id="main" tabindex="-1">
@@ -383,9 +379,9 @@ return `<div class="k" style="margin-top:0">Every token in one table — copy a 
 <div class="ds-table-wrap"><table class="ds-table map"><caption class="ds-sr-only">Every prompt token with its group, code and phrase, plus a copy action</caption><thead><tr><th scope="col">Group</th><th scope="col">Token</th><th scope="col">Prompt phrase</th><th scope="col"><span class="ds-sr-only">Actions</span></th></tr></thead>
 ${rows.length?mapGroups(rows).map(g=>`<tbody class="map-group" data-group="${g.g}"><tr class="map-grouphead"><th colspan="4" scope="colgroup">${g.g}</th></tr>${g.rows.map(mapRow).join('')}</tbody>`).join(''):'<tbody><tr><td colspan="4">No matches.</td></tr></tbody>'}</table></div>
 <div class="ds-pager"><span>${rows.length} tokens</span><button type="button" class="ds-btn" data-variant="ghost" data-copyall="1" data-ds-copy-message="Copied all ${rows.length} prompt phrases">Copy all (${mapGroup})</button></div>`}
-/* keep the current entry fully in view when the rail list is the mobile scroll
-   strip: arrow keys move the selection, and without this the new item can sit
-   half under the strip's end edge. */
+/* keep the current entry in view when the rail list is itself a scroller. The
+   drawer's list scrolls vertically and the desktop rail fits, so this is a
+   no-op in both shipped modes; it still covers a page that narrows the list. */
 function revealCurrent(){const l=$('list');if(!l||l.scrollWidth<=l.clientWidth)return;const c=l.querySelector('[aria-current="page"]');if(!c)return;
 const lb=l.getBoundingClientRect(),cb=c.getBoundingClientRect(),pad=parseFloat(getComputedStyle(l).paddingInlineEnd)||0;
 if(cb.left<lb.left)l.scrollLeft-=lb.left-cb.left;
@@ -441,9 +437,15 @@ let n=i;if(e.key=='ArrowRight')n=(i+1)%tabs.length;else if(e.key=='ArrowLeft')n=
 tab=tabs[n].dataset.t;idx=0;draw();
 const nx=$('tabs').querySelector('[role="tab"][aria-selected="true"]');if(nx)nx.focus()});
 document.addEventListener('keydown',e=>{const ae=document.activeElement;const typing=ae&&/INPUT|TEXTAREA/.test(ae.tagName||'');
-if(e.key=='/'&&!typing){e.preventDefault();$('search').focus();return}
-if(typing||tab=='Prompt map')return;
+const nv=document.getElementById('nav-drawer');const inNav=!!nv&&nv.contains(ae);
+/* "/" only jumps to the filter when the rail is on screen — on a phone the
+   filter lives in the closed drawer, where focusing it would do nothing */
+if(e.key=='/'&&!typing){const s=$('search');if(!s||!s.getClientRects().length)return;e.preventDefault();s.focus();return}
+if(typing||inNav||tab=='Prompt map')return;
 if(e.target.closest&&e.target.closest('[role="tablist"]'))return;
 if(e.key=='ArrowRight'||e.key=='ArrowLeft'){const n=(D[tab].items||[]).length;idx=(idx+(e.key=='ArrowRight'?1:-1)+n)%n;render()}});
 draw();
+/* the rail IS the mobile menu (components.css §21): bind the drawer. Above
+   900px DS.nav leaves the static rail alone, incl. after a resize. */
+try{DS.nav(document.getElementById('nav-drawer'))}catch(err){}
 </script></body></html>

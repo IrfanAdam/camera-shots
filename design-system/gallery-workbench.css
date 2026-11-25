@@ -1,0 +1,310 @@
+/* ==========================================================================
+   gallery-workbench.css — visual layer for gallery-workbench.js.
+
+   Owns only two surfaces:
+     · the token-row affordances, always scoped under [data-token] so no
+       element outside a workbench row can inherit a rule
+     · the workbench toast/input chrome, always scoped under .dswb-*
+
+   Everything is token-fed: colours, spacing, radii, type, motion, elevation
+   and the toast's z-index all come from tokens.css custom properties. The only
+   literal lengths are 1px used for hairline borders and outlines, plus
+   unitless 0. Theme maps are honoured when a token row lives inside a
+   [data-ds-theme] cell: the row chrome asks for --ds-* roles first and falls
+   back to the pitch page tokens when no theme map is in scope.
+
+   Mode is read from <html data-ds-workbench="probing|live|off">, set by the
+   script after its 1.5s status probe:
+     probing  no affordance at all (the probe window)
+     live     pointer + underline on hover, inline editing on click/focus
+     off      read-only value, no hover underline, toast on activation
+   ========================================================================== */
+
+/* ------------------------------------------------------------ row affordance */
+
+[data-token] [data-token-value] {
+  position: relative;
+  cursor: default;
+}
+
+html[data-ds-workbench="live"] [data-token] [data-token-value] {
+  cursor: text;
+}
+
+html[data-ds-workbench="live"] [data-token] [data-token-value]:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: var(--ds-muted, var(--color-pitch-muted, currentColor));
+}
+
+html[data-ds-workbench="live"] [data-token] [data-token-value]:focus-visible,
+[data-token] .dswb-input:focus-visible {
+  outline: var(--focus-width, 1px) solid var(--focus-color, var(--ds-accent, var(--color-pitch-accent, currentColor)));
+  outline-offset: var(--focus-offset, 0);
+}
+
+/* the text stays in the box (invisible) while the input covers it: entering
+   and leaving edit mode therefore cannot shift a single pixel */
+[data-token] [data-token-value].dswb-editing {
+  color: transparent;
+}
+
+[data-token] [data-token-value].dswb-editing:not(td):not(th) {
+  display: inline-block;
+}
+
+/* ---------------------------------------------------------------- the input */
+
+[data-token] .dswb-input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  box-sizing: border-box;
+  inline-size: auto;
+  block-size: auto;
+  padding: inherit;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  color: var(--ds-ink, var(--color-pitch-ink, CanvasText));
+  background: var(--ds-surface-alt, var(--color-pitch-surface-2, Canvas));
+  border: 1px solid var(--ds-accent, var(--color-pitch-accent, currentColor));
+  border-radius: var(--radius-xs);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+[data-token] .dswb-input:disabled {
+  opacity: var(--opacity-media, 0.6);
+}
+
+[data-token] [data-token-value].dswb-editing > .dswb-input {
+  z-index: 1;
+}
+
+/* saved flash: a hairline, then it goes away */
+[data-token][data-token-state="saved"] [data-token-value] {
+  outline: 1px solid var(--ds-success, var(--color-pitch-positive, currentColor));
+  outline-offset: var(--focus-offset, 0);
+}
+
+/* --------------------------------------------------- saving / error / spinner */
+
+[data-token] .dswb-spin {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: var(--spacing-xs);
+  z-index: 2;
+  inline-size: var(--icon-size-sm);
+  block-size: var(--icon-size-sm);
+  margin-block-start: calc(var(--icon-size-sm) / -2);
+  border: 1px solid var(--ds-accent, var(--color-pitch-accent, currentColor));
+  border-inline-end-color: transparent;
+  border-radius: var(--radius-circle);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-token] .dswb-spin {
+    animation: dswb-spin var(--motion-duration-base) var(--motion-easing-standard, linear) infinite;
+  }
+}
+
+@keyframes dswb-spin {
+  to { transform: rotate(360deg); }
+}
+
+[data-token] .dswb-error {
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline-start: 0;
+  z-index: var(--z-menu, var(--z-toast));
+  inline-size: max-content;
+  max-inline-size: min(32rem, 80vw);
+  margin-block-start: var(--spacing-2xs);
+  padding: var(--spacing-2xs) var(--spacing-xs);
+  border: 1px solid var(--ds-danger, var(--color-status-danger, currentColor));
+  border-radius: var(--radius-xs);
+  background: var(--ds-surface-alt, var(--color-pitch-surface-2, Canvas));
+  color: var(--ds-danger, var(--color-status-danger, currentColor));
+  font-family: var(--typography-family-sans, system-ui);
+  font-size: var(--typography-size-eyebrow);
+  line-height: var(--line-height-normal);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* -------------------------------------------------------------------- toast */
+
+.dswb-toast {
+  position: fixed;
+  inset-inline: var(--spacing-sm);
+  inset-block-end: var(--spacing-sm);
+  z-index: var(--z-toast);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-xs);
+  inline-size: max-content;
+  max-inline-size: min(calc(100vw - (var(--spacing-sm) * 2)), 46rem);
+  margin-inline: auto;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--color-pitch-rule, currentColor);
+  border-radius: var(--radius-sm);
+  background: var(--color-pitch-surface-2, Canvas);
+  color: var(--color-pitch-ink, CanvasText);
+  box-shadow: var(--elevation-popover, none);
+  font-family: var(--typography-family-sans, system-ui);
+  font-size: var(--typography-size-small);
+  line-height: var(--line-height-normal);
+}
+
+.dswb-toast[hidden] {
+  display: none;
+}
+
+.dswb-toast__msg {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.dswb-toast__action {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-pitch-accent, currentColor);
+  font: inherit;
+  font-weight: var(--weight-semibold);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.dswb-toast__action:focus-visible,
+.dswb-toast__close:focus-visible,
+.dswb-cmd:focus-visible {
+  outline: var(--focus-width, 1px) solid var(--focus-color, var(--color-pitch-accent, currentColor));
+  outline-offset: var(--focus-offset, 0);
+}
+
+/* read-only variant: a small card with the start command and a copy button */
+.dswb-toast--off {
+  display: grid;
+  justify-items: start;
+  gap: var(--spacing-2xs);
+  inline-size: auto;
+  padding: var(--spacing-sm);
+}
+
+.dswb-toast__title {
+  margin: 0;
+  font-weight: var(--weight-semibold);
+}
+
+.dswb-start {
+  display: block;
+  inline-size: 100%;
+  box-sizing: border-box;
+  padding: var(--spacing-2xs) var(--spacing-xs);
+  border: 1px solid var(--color-pitch-rule, currentColor);
+  border-radius: var(--radius-xs);
+  background: var(--color-pitch-surface-1, Canvas);
+  color: var(--color-pitch-body, CanvasText);
+  font-family: var(--typography-family-mono, monospace);
+  font-size: var(--typography-size-eyebrow);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.dswb-cmd {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-pitch-accent, currentColor);
+  font-family: var(--typography-family-mono, monospace);
+  font-size: var(--typography-size-meta);
+  text-align: start;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: copy;
+}
+
+.dswb-toast__hint {
+  margin: 0;
+  color: var(--color-pitch-muted, currentColor);
+  font-size: var(--typography-size-eyebrow);
+  overflow-wrap: anywhere;
+}
+
+.dswb-toast__close {
+  justify-self: end;
+  margin: 0;
+  padding: var(--spacing-2xs) var(--spacing-xs);
+  border: 1px solid var(--color-pitch-rule, currentColor);
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--color-pitch-muted, currentColor);
+  font: inherit;
+  font-size: var(--typography-size-eyebrow);
+  cursor: pointer;
+}
+
+/* offscreen source for the execCommand clipboard fallback */
+.dswb-copy-src {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 0;
+  block-size: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------- coarse-pointer targets */
+
+@media (pointer: coarse) {
+  [data-token] [data-token-value] {
+    min-block-size: var(--control-height-touch);
+  }
+
+  [data-token] [data-token-value]:not(td):not(th) {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* a table cell ignores min-block-size; padding is what grows the hit area */
+  [data-token] > td,
+  [data-token] > th {
+    padding-block: var(--spacing-sm);
+  }
+
+  .dswb-toast__action,
+  .dswb-toast__close,
+  .dswb-cmd {
+    min-block-size: var(--control-height-touch);
+  }
+}
+
+/* ---------------------------------------------------------------- narrow phones */
+
+@media (max-width: 30rem) {
+  .dswb-toast {
+    inset-inline: var(--spacing-xs);
+    max-inline-size: calc(100vw - (var(--spacing-xs) * 2));
+  }
+
+  .dswb-toast--off {
+    inline-size: auto;
+  }
+
+  [data-token] .dswb-error {
+    max-inline-size: 88vw;
+  }
+}

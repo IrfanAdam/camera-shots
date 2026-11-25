@@ -5,7 +5,7 @@
 
    CONTRACT
    --------
-   Blocks (20; 18 from recon D2 + ds-copy + ds-rail)
+   Blocks (21; 18 from recon D2 + ds-copy + ds-rail + ds-nav)
      .ds-btn                    [data-variant=primary|ghost|danger]
                                 [data-size=xs|tall|compact] [data-armed]
                                 [data-loading] .ds-btn__label
@@ -32,9 +32,13 @@
                                 .ds-nav-item[data-variant=rail|dot]
                                 (dot = deprecated, rail = flat: §18)
      .ds-copy   .ds-copy__code
-     .ds-rail   .ds-rail__label  .ds-rail__item
+     .ds-rail   .ds-rail__label  .ds-rail__item  .ds-rail__foot
                                 (vertical section nav; item carries
                                  .ds-nav-item too — two class names, no attribute)
+     .ds-navtoggle  .ds-navscrim [data-ds-nav-toggle="<rail-id>"]
+                                [data-ds-nav] on the rail + [data-ds-nav-ready]
+                                [data-ds-nav-mode=drawer] [data-ds-open] [hidden]
+                                html[data-ds-nav-lock]
 
    NAVIGATION GRAMMAR (owner contract, this wave)
      vertical section nav  → .ds-rail, FLAT: no fill, no radius, no card; the
@@ -51,6 +55,12 @@
                              (padding-inline spacing.lg, radius.xs, control
                              height); the only sanctioned shrink is
                              [data-size=xs] — never `padding:0` (§1 guard).
+     cross-page links      → the rail's `.ds-rail__foot`, pinned to the bottom
+                             of the sidebar: it is site chrome, not a section,
+                             so its current item is ink + medium weight and
+                             never paints the accent bar. Under 900px the same
+                             rail is the menu: one element, off-canvas, reached
+                             from one `[data-ds-nav-toggle]` button (§21).
 
    Attributes
      data-ds-theme on any wrapper    → role layer from tokens.css (required for
@@ -492,6 +502,24 @@
   color:var(--ds-ink);
 }
 .ds-tabpanel[hidden]{display:none}
+/* COARSE POINTER FLOOR — a tab takes the touch step from the same ladder.
+   base.css §8's 44px floor is a `:where()` list (zero specificity), so any
+   `.ds-tab` that states its own `min-block-size` from `--_ctl-h` outranks it:
+   the pill variant (0,2,0) stayed 40px on a phone, which is why a page-local
+   override existed in the gallery. This restates the floor at the tab's own
+   specificity, from the token, once — every variant inherits it and no page
+   needs its own lift. `max()` keeps it a floor: a 46px reading-density tab
+   (gallery specimens) or the 44px engine step never shrinks, and
+   `[data-ds-compact]` keeps the dense-row opt-out from base.css §6/§8. */
+@media (pointer:coarse){
+  /* two selectors on purpose: `.ds-tabs .ds-tab` ties the pill variant's own
+     (0,3,0) `min-block-size` and wins by source order, and the bare class still
+     covers a tab rendered outside a `.ds-tabs` box. */
+  .ds-tab:not([data-ds-compact]),
+  .ds-tabs .ds-tab:not([data-ds-compact]){
+    min-block-size:max(var(--_ctl-h),var(--control-height-touch));
+  }
+}
 
 /* 6 · chip --------------------------------------------------------------- */
 .ds-chip{
@@ -1027,15 +1055,24 @@
    flush with the SCREEN edge; the text is what is inset, by
    `layout.rail.inset`. */
 .ds-rail{
+  /* --_rail-top is the distance from the viewport top to the rail's own top
+     edge: 0 when the rail starts at the viewport, or the height of a sticky
+     header above it. The rail's block-size is the viewport minus that offset,
+     so its last child can sit exactly on the viewport bottom. */
+  --_rail-top:0px;
   position:sticky;
-  inset-block-start:0;
+  inset-block-start:var(--_rail-top);
   align-self:start;
   display:flex;
   flex-direction:column;
   gap:var(--spacing-2);
-  block-size:100dvh;
+  block-size:calc(100dvh - var(--_rail-top));
   inline-size:var(--layout-rail);
-  padding-block:var(--layout-rail-inset);
+  /* block padding only: the inline inset lives on the items and the label, so
+     the item's 2px indicator slot starts at the rail's left edge. The block-end
+     padding is 0 so a `.ds-rail__foot` group can own the last 20px and sit on
+     the viewport bottom instead of 20px above it. */
+  padding-block:var(--layout-rail-inset) 0;
   padding-inline:0;
   overflow-y:auto;
   overscroll-behavior-y:contain;
@@ -1071,3 +1108,211 @@
    rule set is shared, so the rail never re-declares an item's box. A page that
    renders a rail needs exactly `class="ds-nav-item ds-rail__item"` plus
    aria-current on the live one. */
+/* A rail with no foot keeps the old 20px of air under its last item; the foot
+   below owns that space itself when it is present. */
+.ds-rail > :last-child:not(.ds-rail__foot){margin-block-end:var(--layout-rail-inset)}
+/* Children keep their content size. A shrunk child would overflow out of the
+   flex flow and leave a following child (the foot) above the content it is
+   supposed to sit below — the rail is the scroller, never a child. */
+.ds-rail > *{flex:0 0 auto}
+
+/* 20b · rail foot — the site's cross-links, pinned to the viewport bottom ----
+   The owner's rule: "the cross page linking of core discrete units like design
+   system, pitch etc reside in the bottom of the sidebar, pulled bottom". So a
+   rail may end in ONE `.ds-rail__foot` group that is site chrome, not a
+   section: the browser's last flex item, pushed down by `margin-block-start:
+   auto` (the rail is a 100dvh column), and `position:sticky` on the block-end
+   edge so a long section list scrolls under it instead of carrying it away.
+   The hairline is the separator; the group paints the page background so
+   scrolling items never show through it.
+
+   Text axis: the foot adds NO inline padding — its items are ordinary
+   `.ds-rail__item`s, which already carry the 2px transparent indicator slot
+   and `padding-inline-start: layout.rail.inset`. That is what keeps the 2px
+   slot reserved here while painting no bar: a foot item is a destination, not
+   a section, so `aria-current="page"` on one is ink + medium weight only and
+   the accent bar stays the section indicator's alone (see the override below).
+
+     <div class="ds-rail__foot"><p class="ds-rail__label">Surfaces</p>
+       <span class="ds-nav-item ds-rail__item" aria-current="page">Wiki</span>
+       <a class="ds-nav-item ds-rail__item" href="pitch.html">Pitch</a>
+     </div>
+*/
+.ds-rail__foot{
+  position:sticky;
+  inset-block-end:0;
+  display:flex;
+  flex-direction:column;
+  gap:var(--spacing-2);
+  margin-block-start:auto;
+  border-block-start:var(--border-width-hairline) solid var(--ds-rule);
+  padding-block:var(--spacing-sm) var(--layout-rail-inset);
+  padding-inline:0;
+  background:var(--ds-bg);
+}
+.ds-rail__foot > .ds-rail__label{
+  /* the group's `gap` owns the spacing; the base label rule's 8px would double it */
+  margin-block:0;
+}
+/* one type step down from the section list; the geometry (control height, the
+   2px slot, the inset axis) is the item's own and is not restated */
+.ds-rail__foot .ds-rail__item{
+  min-block-size:var(--control-height-touch);
+  font-size:var(--typography-size-meta);
+  letter-spacing:var(--tracking-snug);
+}
+/* ink + medium weight ONLY — no accent bar. Higher specificity than §18's
+   current-item rule and declared later, so it wins without `!important`. */
+.ds-rail__foot .ds-rail__item:is([aria-current="page"],[aria-selected="true"],[data-state~="current"]){
+  border-inline-start-color:transparent;
+  background:transparent;
+  color:var(--ds-ink);
+  font-weight:var(--weight-medium);
+}
+.ds-rail__foot .ds-rail__item:is(:focus-visible,[data-state~="focus"]){
+  outline-style:solid;
+  outline-width:var(--focus-width);
+  outline-color:var(--focus-color,currentColor);
+  outline-offset:var(--focus-offset);
+}
+
+/* 21 · nav drawer — the same rail, off-canvas on a small viewport -----------
+   ONE rail element serves desktop and mobile: no duplicate nav markup. The
+   behaviour is `Nav()` in components.js; this block is presentation only.
+
+   MODE COMES FROM THE MODULE, not from a media query. Nav() reads the
+   breakpoint from `--breakpoint-lg` (tokens.css) at runtime and stamps
+   `data-ds-nav-mode="drawer"` on the rail while the query matches, so the CSS
+   and the JS cannot disagree about where mobile starts, and there is no second
+   raw breakpoint to keep in sync. It also means every rule here is inert
+   unless JS is running: without it the rail has no mode attribute and the
+   desktop column above is what renders — the documented progressive-
+   enhancement path (a page's own ≤900 layout then shows the plain rail).
+
+   State is attributes, never classes: `[data-ds-open]` on the rail, `[hidden]`
+   + `inert` when closed, `aria-expanded` on the toggle,
+   `[data-ds-nav-mode="drawer"]` while the media query matches, and
+   `html[data-ds-nav-lock]` for the scroll lock. Closed is `display:none` (via
+   `[hidden]`) — never transform-only — so a closed drawer is out of the
+   accessibility tree and out of the tab order before `inert` is even honoured.
+
+   The foot keeps its `margin-block-start:auto` pin inside the drawer: the rail
+   is still a 100dvh column and still scrolls, and the foot's sticky block-end
+   edge holds it on the drawer's bottom while the section list moves under it.
+   A page's mobile rules must let the rail leave its grid/flex flow. */
+.ds-navtoggle{
+  display:inline-grid;
+  place-items:center;
+  min-inline-size:var(--control-height-touch);
+  min-block-size:var(--control-height-touch);
+  padding:0;
+  border:var(--border-width-hairline) solid var(--ds-rule);
+  border-radius:var(--radius-xs);
+  background:transparent;
+  color:var(--ds-ink);
+  cursor:pointer;
+}
+/* ships `hidden` in markup and is un-hidden only by Nav() on a small viewport,
+   so a hamburger never appears where it cannot open anything */
+.ds-navtoggle[hidden]{display:none}
+.ds-navtoggle svg{
+  inline-size:var(--icon-size-md);
+  block-size:var(--icon-size-md);
+}
+.ds-navtoggle:is(:hover,[data-state~="hover"]){
+  border-color:var(--ds-ink);
+  background:var(--ds-surface-alt);
+}
+.ds-navtoggle:is(:focus-visible,[data-state~="focus"]){
+  outline-style:solid;
+  outline-width:var(--focus-width);
+  outline-color:var(--focus-color,currentColor);
+  outline-offset:var(--focus-offset);
+}
+.ds-rail[data-ds-nav-ready][data-ds-nav-mode="drawer"]{
+  position:fixed;
+  inset-block:0;
+  inset-inline-start:0;
+  z-index:var(--z-drawer);
+  align-self:auto;
+  /* a thumb panel, not a page-width sheet: 20rem (320px) capped at 86vw, so the
+     page stays visibly behind the panel (~70px at 390) and reads as covered.
+     Its own key — the engine asset drawer keeps its wider 92vw step. */
+  inline-size:var(--layout-nav-drawer-width);
+  block-size:100dvh;
+  padding-block:var(--layout-rail-inset) 0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  border-inline-end:var(--border-width-hairline) solid var(--ds-rule-strong);
+  background:var(--ds-bg);
+  /* inline-start drawer: it leaves toward the screen edge it is pinned to */
+  transform:translateX(-100%);
+  transition:transform var(--motion-duration-slow) var(--motion-easing-drawer);
+}
+.ds-rail[data-ds-nav-ready][data-ds-nav-mode="drawer"][data-ds-open]{transform:none}
+.ds-rail[data-ds-nav-ready][data-ds-nav-mode="drawer"][hidden]{display:none}
+/* a menu row is a thumb target: the drawer takes the 44px step on every
+   pointer, because a 40px row that only grows under `pointer:coarse` is a
+   target the CSS cannot prove — the list is short and vertical, so the extra
+   4px costs nothing. Same step for the controls a rail hosts (the wiki's
+   filter field), so no drawer control is under the touch minimum. */
+.ds-rail[data-ds-nav-mode="drawer"] .ds-rail__item{min-block-size:var(--control-height-touch)}
+.ds-rail[data-ds-nav-mode="drawer"] :is(.ds-input,.ds-select,.ds-textarea,.ds-btn,.ds-icon-btn){min-block-size:var(--control-height-touch)}
+/* the close surface JS injects when a rail becomes a drawer */
+.ds-navscrim{
+  /* the strongest scrim role in the contract: at 0.6 over the pitch ground the
+     covered page still read as un-dimmed (a 48px sliver of near-black looks
+     like no overlay at all), so the click-to-close surface takes the 0.9 role. */
+  --_scrim:var(--color-engine-overlay-scrim);
+  position:fixed;
+  inset:0;
+  z-index:var(--z-overlay);
+  padding:0;
+  border:0;
+  background:var(--_scrim);
+  cursor:pointer;
+}
+.ds-navscrim[hidden]{display:none}
+/* the drawer's own close control — injected by Nav() as the panel's first child
+   (so it is the first stop in the focus trap) and pulled out again when the rail
+   goes back to a static column. 44×44 on every pointer, same as the toggle. */
+.ds-navclose{display:none}
+.ds-rail[data-ds-nav-mode="drawer"] .ds-navclose{
+  display:inline-grid;
+  place-items:center;
+  align-self:flex-end;
+  inline-size:var(--control-height-touch);
+  min-block-size:var(--control-height-touch);
+  margin-block-end:var(--spacing-sm);
+  margin-inline-end:var(--layout-rail-inset);
+  padding:0;
+  border:var(--border-width-hairline) solid var(--ds-rule);
+  border-radius:var(--radius-xs);
+  background:transparent;
+  color:var(--ds-ink);
+  cursor:pointer;
+}
+.ds-rail[data-ds-nav-mode="drawer"] .ds-navclose svg{
+  inline-size:var(--icon-size-md);
+  block-size:var(--icon-size-md);
+  fill:none;
+  stroke:currentColor;
+  stroke-width:var(--border-width-strong);
+  stroke-linecap:round;
+}
+.ds-rail[data-ds-nav-mode="drawer"] .ds-navclose:is(:hover,[data-state~="hover"]){
+  border-color:var(--ds-ink);
+  background:var(--ds-surface-alt);
+}
+.ds-rail[data-ds-nav-mode="drawer"] .ds-navclose:is(:focus-visible,[data-state~="focus"]){
+  outline-style:solid;
+  outline-width:var(--focus-width);
+  outline-color:var(--focus-color,currentColor);
+  outline-offset:var(--focus-offset);
+}
+/* body scroll lock; `scrollbar-gutter:stable` keeps the gutter reserved so the
+   page does not shift sideways the moment the bar is removed */
+html[data-ds-nav-lock]{
+  overflow:hidden;
+  scrollbar-gutter:stable;
+}

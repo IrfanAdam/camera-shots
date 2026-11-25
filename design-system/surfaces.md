@@ -71,7 +71,9 @@ done
   including the null slots that fall through (`--ds-accent-soft`, `--ds-ink-2`,
   `--ds-faint`).
 - **Layout.** Rail `var(--layout-sidebar-engine)` (`:113`, `:258`), drawer
-  `var(--layout-drawer-engine-width)` (`:95`), bar `layout.bar.engine`.
+  `var(--layout-drawer-engine-width)` (`:95`). The 62px mobile status strip
+  (`layout.bar.engine`) left with the navigation rewrite — the shared drawer is
+  the mobile chrome now (see `DEPRECATIONS.md`).
 - **Adoption.** 11 `ds-` names — `ds-btn ds-dialog ds-dialog__box ds-drawer
   ds-icon-btn ds-menu ds-menu__item ds-nav-item ds-skip-link ds-sr-only ds-toast`
   — the deepest component adoption of any page.
