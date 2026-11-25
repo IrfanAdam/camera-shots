@@ -28,9 +28,9 @@ Read order: [README](README.md) → this file → [components](components.md) �
 
 It is a **count of occurrences**, not the gate's T8 presence test: T8 asks only whether a product page, a theme cell or `components.css` names a token at all, and excludes the gallery. So a key can be T8-unconsumed and still show a non-zero count here — read the breakdown the gate prints, not this column, when judging orphans.
 
-Totals at committed HEAD: **1400 consumer references** across 188 keys, **20** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `color.pro.tool.hover`, `color.status.danger.ink.light`, `color.wiki.dark.accent.ink`, `dot.size`, `elevation.1`, `elevation.float`, `elevation.inset`, `elevation.ring`, `focus.color`, `icon.size.lg`, `icon.size.md`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `tracking.label`).
+Totals at committed HEAD: **1331 consumer references** across 188 keys, **23** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `color.pro.tool.hover`, `color.status.danger.ink.light`, `color.wiki.dark.accent.ink`, `control.height.compact`, `dot.size`, `elevation.1`, `elevation.float`, `elevation.inset`, `elevation.ring`, `focus.color`, `hover.lift`, `icon.size.lg`, `icon.size.md`, `layout.nav.drawer.width`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `tracking.label`).
 
-Under the gate's narrower **T8** scope — `var()` in the three product pages plus theme-map cells plus `components.css`, gallery excluded, aliases and `breakpoint.*` exempt — **10** key(s) are unconsumed: `color.engine.track.audio`, `color.engine.track.fx`, `color.engine.track.title`, `elevation.float`, `elevation.inset`, `elevation.ring`, `icon.size.lg`, `icon.size.md`, `radius.lg`, `tracking.label`. Keys that differ between the two views are canvas-only (`CT()`/`WA()` strings the gate cannot see) or gallery-only consumers; `scripts/lint-tokens.mjs` prints the authoritative list and its budget note.
+Under the gate's narrower **T8** scope — `var()` in the three product pages plus theme-map cells plus `components.css`, gallery excluded, aliases and `breakpoint.*` exempt — **9** key(s) are unconsumed: `color.engine.track.audio`, `color.engine.track.fx`, `color.engine.track.title`, `elevation.float`, `elevation.inset`, `elevation.ring`, `icon.size.lg`, `radius.lg`, `tracking.label`. Keys that differ between the two views are canvas-only (`CT()`/`WA()` strings the gate cannot see) or gallery-only consumers; `scripts/lint-tokens.mjs` prints the authoritative list and its budget note.
 
 ## Theme contract
 
@@ -114,13 +114,13 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `border` | 3 | 3 | 0 |
 | `breakpoint` | 5 | 1 | 4 |
 | `color` | 70 | 67 | 3 |
-| `control` | 4 | 4 | 0 |
+| `control` | 4 | 3 | 1 |
 | `dot` | 1 | 0 | 1 |
 | `elevation` | 6 | 2 | 4 |
 | `focus` | 3 | 2 | 1 |
-| `hover` | 1 | 1 | 0 |
+| `hover` | 1 | 0 | 1 |
 | `icon` | 3 | 1 | 2 |
-| `layout` | 8 | 8 | 0 |
+| `layout` | 8 | 7 | 1 |
 | `line-height` | 5 | 5 | 0 |
 | `motion` | 14 | 14 | 0 |
 | `opacity` | 2 | 1 | 1 |
@@ -131,7 +131,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `typography` | 13 | 13 | 0 |
 | `weight` | 5 | 5 | 0 |
 | `z` | 17 | 17 | 0 |
-| **total** | **188** | **168** | **20** |
+| **total** | **188** | **165** | **23** |
 
 ### border
 
@@ -140,7 +140,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
 | `border.width.accent` | `3px` | dimension | — | 1 (1/0/0) |
-| `border.width.hairline` | `1px` | dimension | — | 108 (108/0/0) |
+| `border.width.hairline` | `1px` | dimension | — | 100 (100/0/0) |
 | `border.width.strong` | `2px` | dimension | — | 9 (9/0/0) |
 
 ### breakpoint
@@ -238,7 +238,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
-| `control.height.compact` | `34px` | dimension | — | 1 (1/0/0) |
+| `control.height.compact` | `34px` | dimension | — | 0 (0/0/0) |
 | `control.height.default` | `40px` | dimension | — | 4 (4/0/0) |
 | `control.height.reading` | `46px` | dimension | — | 1 (1/0/0) |
 | `control.height.touch` | `44px` | dimension | — | 12 (12/0/0) |
@@ -280,7 +280,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
-| `hover.lift` | `1.06` | number | — | 1 (1/0/0) |
+| `hover.lift` | `1.06` | number | — | 0 (0/0/0) |
 
 ### icon
 
@@ -298,13 +298,13 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
-| `layout.bar.engine` | `62px` | dimension | — | 1 (1/0/0) |
 | `layout.drawer.engine.width` | `min(360px, 92vw)` | dimension | — | 1 (1/0/0) |
 | `layout.drawer.pitch.width` | `min(720px, 100vw)` | dimension | — | 1 (1/0/0) |
 | `layout.max.pitch` | `1080px` | dimension | — | 2 (2/0/0) |
 | `layout.max.wiki` | `980px` | dimension | — | 2 (2/0/0) |
-| `layout.rail` | `208px` | dimension | — | 3 (3/0/0) |
-| `layout.rail.inset` | `var(--spacing-20)` | dimension | — · alias → --spacing-20 | 4 (4/0/0) |
+| `layout.nav.drawer.width` | `min(20rem, 86vw)` | dimension | — | 0 (0/0/0) |
+| `layout.rail` | `208px` | dimension | — | 2 (2/0/0) |
+| `layout.rail.inset` | `var(--spacing-20)` | dimension | — · alias → --spacing-20 | 3 (3/0/0) |
 | `layout.sidebar.engine` | `148px` | dimension | — | 1 (1/0/0) |
 
 ### line-height
@@ -327,7 +327,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 |---|---|---|---|---|
 | `motion.duration.base` | `0.28s` | duration | — | 2 (2/0/0) |
 | `motion.duration.fast` | `0.22s` | duration | — | 2 (2/0/0) |
-| `motion.duration.hover` | `0.2s` | duration | — | 17 (17/0/0) |
+| `motion.duration.hover` | `0.2s` | duration | — | 10 (10/0/0) |
 | `motion.duration.instant` | `0.16s` | duration | — | 7 (7/0/0) |
 | `motion.duration.none` | `0s` | duration | — | 1 (1/0/0) |
 | `motion.duration.opacity` | `0.25s` | duration | — | 1 (1/0/0) |
@@ -338,7 +338,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `motion.easing.drawer` | `cubic-bezier(0.32, 0.72, 0.24, 1)` | cubicBezier | — | 1 (1/0/0) |
 | `motion.easing.emphasized` | `cubic-bezier(0.22,1,0.36,1)` | cubicBezier | — | 7 (7/0/0) |
 | `motion.easing.out` | `ease-out` | cubicBezier | — | 11 (11/0/0) |
-| `motion.easing.standard` | `ease` | cubicBezier | — | 22 (22/0/0) |
+| `motion.easing.standard` | `ease` | cubicBezier | — | 15 (15/0/0) |
 
 ### opacity
 
@@ -358,10 +358,10 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `radius.circle` | `50%` | dimension | — | 4 (4/0/0) |
 | `radius.lg` | `14px` | dimension | — | 0 (0/0/0) |
 | `radius.md` | `10px` | dimension | — | 1 (1/0/0) |
-| `radius.none` | `0` | dimension | — | 5 (5/0/0) |
-| `radius.pill` | `9999px` | dimension | — | 15 (15/0/0) |
+| `radius.none` | `0` | dimension | — | 4 (4/0/0) |
+| `radius.pill` | `9999px` | dimension | — | 12 (12/0/0) |
 | `radius.sm` | `8px` | dimension | — | 24 (24/0/0) |
-| `radius.xs` | `4px` | dimension | — | 53 (53/0/0) |
+| `radius.xs` | `4px` | dimension | — | 51 (51/0/0) |
 
 ### spacing
 
@@ -370,20 +370,20 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
 | `spacing.10` | `10px` | dimension | — | 42 (42/0/0) |
-| `spacing.14` | `14px` | dimension | — | 19 (19/0/0) |
+| `spacing.14` | `14px` | dimension | — | 18 (18/0/0) |
 | `spacing.18` | `18px` | dimension | — | 16 (16/0/0) |
-| `spacing.2` | `2px` | dimension | — | 18 (18/0/0) |
-| `spacing.20` | `20px` | dimension | — | 15 (15/0/0) |
-| `spacing.2xl` | `48px` | dimension | — | 9 (9/0/0) |
-| `spacing.2xs` | `4px` | dimension | — | 55 (55/0/0) |
-| `spacing.6` | `6px` | dimension | — | 72 (72/0/0) |
+| `spacing.2` | `2px` | dimension | — | 17 (17/0/0) |
+| `spacing.20` | `20px` | dimension | — | 11 (11/0/0) |
+| `spacing.2xl` | `48px` | dimension | — | 7 (7/0/0) |
+| `spacing.2xs` | `4px` | dimension | — | 51 (51/0/0) |
+| `spacing.6` | `6px` | dimension | — | 69 (69/0/0) |
 | `spacing.base` | `var(--spacing-2xs)` | dimension | — · alias → --spacing-2xs | 0 (0/0/0) |
 | `spacing.gutter.pro` | `var(--spacing-md)` | dimension | — · alias → --spacing-md | 0 (0/0/0) |
 | `spacing.lg` | `24px` | dimension | — | 10 (10/0/0) |
-| `spacing.md` | `16px` | dimension | — | 32 (32/0/0) |
-| `spacing.sm` | `12px` | dimension | — | 65 (65/0/0) |
+| `spacing.md` | `16px` | dimension | — | 29 (29/0/0) |
+| `spacing.sm` | `12px` | dimension | — | 60 (60/0/0) |
 | `spacing.xl` | `32px` | dimension | — | 7 (7/0/0) |
-| `spacing.xs` | `8px` | dimension | — | 86 (86/0/0) |
+| `spacing.xs` | `8px` | dimension | — | 82 (82/0/0) |
 
 ### touch
 
@@ -391,7 +391,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
-| `touch.min` | `40px` | dimension | — | 10 (10/0/0) |
+| `touch.min` | `40px` | dimension | — | 9 (9/0/0) |
 | `touch.preferred` | `44px` | dimension | — | 1 (1/0/0) |
 
 ### tracking
@@ -420,8 +420,8 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `typography.size.h2` | `1.35rem` | fontSize | — | 2 (2/0/0) |
 | `typography.size.h3` | `1.25rem` | fontSize | — | 1 (1/0/0) |
 | `typography.size.lede` | `1.05rem` | fontSize | — | 3 (3/0/0) |
-| `typography.size.meta` | `0.8rem` | fontSize | — | 42 (42/0/0) |
-| `typography.size.small` | `0.85rem` | fontSize | — | 36 (36/0/0) |
+| `typography.size.meta` | `0.8rem` | fontSize | — | 41 (41/0/0) |
+| `typography.size.small` | `0.85rem` | fontSize | — | 33 (33/0/0) |
 | `typography.size.timecode` | `0.75rem` | fontSize | — | 19 (19/0/0) |
 | `typography.size.ui` | `1rem` | fontSize | — | 7 (7/0/0) |
 
@@ -433,9 +433,9 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 |---|---|---|---|---|
 | `weight.bold` | `700` | fontWeight | — | 17 (17/0/0) |
 | `weight.heavy` | `800` | fontWeight | — | 1 (1/0/0) |
-| `weight.medium` | `600` | fontWeight | — | 16 (16/0/0) |
+| `weight.medium` | `600` | fontWeight | — | 14 (14/0/0) |
 | `weight.regular` | `400` | fontWeight | — | 1 (1/0/0) |
-| `weight.semibold` | `650` | fontWeight | — | 8 (8/0/0) |
+| `weight.semibold` | `650` | fontWeight | — | 6 (6/0/0) |
 
 ### z
 
