@@ -24,9 +24,9 @@ pipeline runs. Values live in the generated references, never here.
 
 | Path | What it is | Generated |
 |---|---|---|
-| `design-system/tokens.json` | Token source: **189 keys, 20 groups**, 4 theme maps — the only hand-edited value source | no |
+| `design-system/tokens.json` | Token source: **188 keys, 20 groups**, 4 theme maps — the only hand-edited value source | no |
 | `design-system/tokens.css` | `:root` properties + `[data-ds-theme]` role blocks | yes |
-| `design-system/base.css` · `components.css` · `components.js` | Reset/focus/target floor · 19 blocks, `var()` only, four densities · behaviour (`DS.init/tabs/menu/overlay/toast/…`) | no |
+| `design-system/base.css` · `components.css` · `components.js` | Reset/focus/target floor · 20 blocks, `var()` only, four densities · behaviour (`DS.init/tabs/menu/overlay/toast/…`) | no |
 | `design-system/pitch-shell.css` | Page-level pitch language: pins the 17 `--ds-*` roles and the chrome aliases (`--bg --card --s1 --s2 --ink --body --mut --mut2 --rule --acc --acc2 --amb --acc-ink`) to the pitch tokens. Opt in with `<html data-ds-shell="pitch" data-ds-theme="pitch">` and load it **after** the page's own `<style>` | no |
 | `design-system/icons.svg` | 24-symbol sprite, `currentColor`, `<use href="icons.svg#ds-icon-…">` | no |
 | `design-system/index.html` | Rendered gallery: swatches, type, motion, shape, components, consistency matrix | no |

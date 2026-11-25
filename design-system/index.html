@@ -26,6 +26,8 @@
   --g-accent: var(--color-pitch-accent);
   --g-accent-ink: var(--color-pitch-accent-ink);
   --g-swatch-edge: color-mix(in srgb, var(--color-pitch-muted-2) 42%, transparent);
+  /* anchor landing distance under the sticky category bar */
+  --g-anchor-offset: calc(var(--control-height-default) + var(--spacing-2xl));
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -54,19 +56,45 @@ code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-
 .stats dt{font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--g-muted)}
 .stats dd{margin-top:var(--spacing-2xs);font-size:var(--typography-size-small);font-weight:var(--weight-medium)}
 
-/* ---------- shell + nav ---------- */
-.shell{display:grid;grid-template-columns:190px minmax(0,1fr);gap:var(--spacing-2xl);max-width:1100px;margin:0 auto;padding:var(--spacing-xl) var(--spacing-lg) var(--spacing-2xl)}
-.side{position:sticky;top:var(--spacing-lg);align-self:start;display:flex;flex-direction:column;gap:var(--spacing-2xs);font-size:var(--typography-size-small)}
-.side a{
-  text-decoration:none;color:var(--g-muted);padding:var(--spacing-xs) 0 var(--spacing-xs) var(--spacing-sm);
-  border-left:var(--border-width-hairline) solid var(--g-rule);line-height:1.4;
+/* ---------- shell: full-bleed rail cell + content column ----------
+   The section rail is the FIRST cell of a full-bleed grid and sits at x=0 —
+   no centred wrapper around it (shipped rail grammar, components.css §20).
+   The content column owns the max-width, its padding and the sticky category
+   bar. `data-rail="off"` collapses the grid to one column, so a short
+   category reads full width instead of sitting behind an empty rail. */
+.g-shell{display:grid;grid-template-columns:minmax(0,1fr)}
+.g-shell[data-rail="on"]{grid-template-columns:var(--layout-rail) minmax(0,1fr)}
+.g-shell[data-rail="off"] .g-railcell{display:none}
+.g-railcell{grid-column:1;min-inline-size:0}
+.g-railcell .ds-rail[hidden]{display:none}
+.g-main{
+  grid-column:2;min-inline-size:0;
+  inline-size:100%;max-inline-size:var(--layout-max-wiki);margin-inline:auto;
+  padding:var(--spacing-xl) var(--spacing-2xl) var(--spacing-2xl);
 }
-.side a:hover{color:var(--g-ink)}
-.side a.on{color:var(--g-ink);font-weight:var(--weight-medium);border-left:var(--border-width-strong) solid var(--g-ink);padding-left:calc(var(--spacing-sm) - 1px)} /* lint-allow: 1px optical offset inside calc aligns the rail rule; no 2px step */
-.side .side-label{font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--g-muted);padding-bottom:var(--spacing-xs);border-bottom:var(--border-width-hairline) solid var(--g-rule);margin-bottom:var(--spacing-xs)}
-.side .side-foot{margin-top:var(--spacing-md);font-size:var(--typography-size-eyebrow);color:var(--g-muted);line-height:1.6}
+.g-shell[data-rail="off"] .g-main{grid-column:1}
 
-main{min-width:0}
+/* sticky category bar — one pill tablist, left-aligned to the content axis.
+   The negative inline margin bleeds its ground to the column edge, but the
+   hairline rides the text axis: it starts at the first pill's left edge and
+   stops at the row's right edge, so the rule never overhangs the pills. */
+.g-tabbar{
+  --_pad-x:var(--spacing-2xl);
+  position:sticky;inset-block-start:0;z-index:var(--z-sticky);
+  margin:0 calc(var(--_pad-x) * -1) var(--spacing-lg);
+  padding:var(--spacing-md) var(--_pad-x);
+  background:var(--g-bg);
+}
+.g-tabbar::after{
+  content:"";position:absolute;inset-block-end:0;inset-inline:var(--_pad-x);
+  block-size:var(--border-width-hairline);background:var(--g-rule);
+}
+
+/* one panel at a time (the shipped .ds-tabpanel[hidden] hides the rest);
+   a panel or sub-anchor lands below the sticky bar instead of under it */
+section.ds-tabpanel,
+.ds-tabpanel [id]{scroll-margin-block-start:var(--g-anchor-offset)}
+
 section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
 .sec-head{display:flex;align-items:baseline;gap:var(--spacing-sm);flex-wrap:wrap;border-bottom:var(--border-width-hairline) solid var(--g-rule);padding-bottom:var(--spacing-sm);margin-bottom:var(--spacing-lg)}
 .sec-num{font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);font-weight:var(--weight-medium);color:var(--g-muted);font-variant-numeric:tabular-nums}
@@ -216,6 +244,13 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
 .spec-cell .ds-card p{margin-block:var(--spacing-2xs)}
 .spec-cell .ds-pager{flex-wrap:wrap}
 .spec-cell .ds-tabs{flex-wrap:wrap;overflow:visible}
+/* the rail ships sticky at 100dvh; in a specimen it sits in the flow of its
+   cell like the other overlay blocks below, and keeps its inline-edge hairline
+   because that edge is part of what the rail is */
+.spec-cell .ds-rail{
+  position:static;inset:auto;block-size:auto;inline-size:100%;
+  padding-block:0;overflow:visible;
+}
 .spec-cell .ds-table-wrap{max-inline-size:100%}
 /* the four overlay blocks ship position:fixed / absolute; a specimen has to sit
    in the flow of its cell, so the placement is reset here and only here */
@@ -277,17 +312,20 @@ footer code{color:var(--g-ink)}
 
 /* ---------- responsive ---------- */
 @media (max-width:900px){
-  .shell{grid-template-columns:1fr;gap:var(--spacing-lg);padding-top:0}
-  .side{
-    position:sticky;top:0;z-index:var(--z-sticky);flex-direction:row;overflow-x:auto;gap:var(--spacing-md);
-    background:var(--g-bg);padding:var(--spacing-sm) 0;border-bottom:var(--border-width-hairline) solid var(--g-rule);
-    scrollbar-width:none;margin:0 calc(var(--spacing-lg) * -1);padding-left:var(--spacing-lg);padding-right:var(--spacing-lg);
+  /* no side rail on a phone: the category pills are the only nav, and the
+     panel reads full width under the masthead */
+  .g-shell[data-rail="on"]{grid-template-columns:minmax(0,1fr)}
+  .g-railcell{display:none}
+  .g-main{grid-column:1;padding:0 var(--spacing-lg) var(--spacing-2xl)}
+  .g-tabbar{
+    --_pad-x:var(--spacing-lg);
+    margin:0 calc(var(--_pad-x) * -1) var(--spacing-md);
+    padding:var(--spacing-sm) var(--_pad-x);
   }
-  .side::-webkit-scrollbar{display:none}
-  .side .side-label,.side .side-foot{display:none}
-  .side a{white-space:nowrap;border-left:0;border-bottom:var(--border-width-strong) solid transparent;padding:var(--spacing-xs) 0}
-  .side a.on{border-left:0;border-bottom-color:var(--g-ink);padding-left:0}
-  section{scroll-margin-top:64px}
+  /* one scrollable pill strip, left-aligned; the pill shape never changes */
+  .g-tabbar .ds-tabs{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}
+  .g-tabbar .ds-tabs::-webkit-scrollbar{display:none}
+  .g-tabbar .ds-tab{flex:0 0 auto}
   .sec-head p{margin-left:0;text-align:left}
   .spec-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
@@ -331,23 +369,60 @@ footer code{color:var(--g-ink)}
   </div>
 </header>
 
-<div class="shell">
-  <nav class="side" aria-label="Sections">
-    <span class="side-label">Sections</span>
-    <a href="#color">01 · Color</a>
-    <a href="#type">02 · Type</a>
-    <a href="#space">03 · Space &amp; shape</a>
-    <a href="#motion">04 · Motion</a>
-    <a href="#touch">05 · Touch</a>
-    <a href="#matrix">06 · Consistency</a>
-    <a href="#specimens">07 · Component specimens</a>
-    <span class="side-foot">Swatch values are read live from the computed custom properties.</span>
-  </nav>
+<div class="g-shell" data-rail="off">
+  <!-- rail cell: full-bleed column at x=0, one quick-nav per panel that is
+       long enough to earn one. JS shows the rail for the active panel. -->
+  <div class="g-railcell">
+    <nav class="ds-rail" data-rail-for="color" aria-label="Color groups" hidden>
+      <p class="ds-rail__label">Sections</p>
+      <a class="ds-nav-item ds-rail__item" href="#color-pitch">Pitch</a>
+      <a class="ds-nav-item ds-rail__item" href="#color-wiki-light">Wiki light</a>
+      <a class="ds-nav-item ds-rail__item" href="#color-wiki-dark">Wiki dark</a>
+      <a class="ds-nav-item ds-rail__item" href="#color-engine">Engine surfaces</a>
+      <a class="ds-nav-item ds-rail__item" href="#color-engine-overlays">Engine overlays</a>
+      <a class="ds-nav-item ds-rail__item" href="#color-semantic">Semantic status</a>
+      <a class="ds-nav-item ds-rail__item" href="#color-support">Support</a>
+    </nav>
+    <nav class="ds-rail" data-rail-for="specimens" aria-label="Specimen blocks" hidden>
+      <p class="ds-rail__label">Blocks</p>
+      <a class="ds-nav-item ds-rail__item" href="#spec-btn">Button</a>
+      <a class="ds-nav-item ds-rail__item" href="#spec-icon-btn">Icon button</a>
+      <a class="ds-nav-item ds-rail__item" href="#spec-field">Field</a>
+      <a class="ds-nav-item ds-rail__item" href="#spec-switch">Switch</a>
+      <a class="ds-nav-item ds-rail__item" href="#spec-tabs">Tabs</a>
+      <a class="ds-nav-item ds-rail__item" href="#spec-navigation">Navigation</a>
+      <a class="ds-nav-item ds-rail__item" href="#spec-chip">Chip</a>
+      <a class="ds-nav-item ds-rail__item" href="#spec-badge">Badge</a>
+      <a class="ds-nav-item ds-rail__item" href="#spec-card">Card</a>
+      <a class="ds-nav-item ds-rail__item" href="#spec-surface">Surface</a>
+      <a class="ds-nav-item ds-rail__item" href="#spec-table">Table</a>
+      <a class="ds-nav-item ds-rail__item" href="#spec-drawer">Drawer</a>
+      <a class="ds-nav-item ds-rail__item" href="#spec-dialog">Dialog</a>
+      <a class="ds-nav-item ds-rail__item" href="#spec-menu">Menu</a>
+      <a class="ds-nav-item ds-rail__item" href="#spec-toast">Toast</a>
+      <a class="ds-nav-item ds-rail__item" href="#spec-empty">Empty state</a>
+      <a class="ds-nav-item ds-rail__item" href="#spec-progress">Progress</a>
+      <a class="ds-nav-item ds-rail__item" href="#spec-tooltip">Tooltip</a>
+      <a class="ds-nav-item ds-rail__item" href="#spec-nav">Pager · nav · toggle</a>
+      <a class="ds-nav-item ds-rail__item" href="#spec-copy">Copy field</a>
+    </nav>
+  </div>
 
-  <main id="main" tabindex="-1">
+  <main id="main" class="g-main" tabindex="-1">
+    <div class="g-tabbar">
+      <div class="ds-tabs" id="ds-cats" data-variant="pill" role="tablist" aria-label="Design system categories" data-ds-panel-scope="#main">
+        <button class="ds-tab" type="button" role="tab" id="tab-color" aria-controls="color" aria-selected="true" tabindex="0">Color</button>
+        <button class="ds-tab" type="button" role="tab" id="tab-type" aria-controls="type" aria-selected="false" tabindex="-1">Type</button>
+        <button class="ds-tab" type="button" role="tab" id="tab-space" aria-controls="space" aria-selected="false" tabindex="-1">Space &amp; shape</button>
+        <button class="ds-tab" type="button" role="tab" id="tab-motion" aria-controls="motion" aria-selected="false" tabindex="-1">Motion</button>
+        <button class="ds-tab" type="button" role="tab" id="tab-touch" aria-controls="touch" aria-selected="false" tabindex="-1">Touch</button>
+        <button class="ds-tab" type="button" role="tab" id="tab-matrix" aria-controls="matrix" aria-selected="false" tabindex="-1">Consistency</button>
+        <button class="ds-tab" type="button" role="tab" id="tab-specimens" aria-controls="specimens" aria-selected="false" tabindex="-1">Component specimens</button>
+      </div>
+    </div>
 
     <!-- ============ 01 COLOR ============ -->
-    <section id="color" aria-labelledby="color-h">
+    <section class="ds-tabpanel" id="color" role="tabpanel" aria-labelledby="tab-color" tabindex="0">
       <div class="sec-head">
         <span class="sec-num">01</span>
         <h2 id="color-h">Color</h2>
@@ -355,7 +430,7 @@ footer code{color:var(--g-ink)}
       </div>
 
       <div class="swgroup">
-        <div class="swgroup-head"><h3>Pitch — warm dark</h3><span class="tag">—</span></div>
+        <div class="swgroup-head"><h3 id="color-pitch">Pitch — warm dark</h3><span class="tag">—</span></div>
         <div class="swgrid">
           <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-bg)"></span><code>--color-pitch-bg</code><span class="sw-val" data-live="--color-pitch-bg">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-pitch-surface-1)"></span><code>--color-pitch-surface-1</code><span class="sw-val" data-live="--color-pitch-surface-1">—</span></div>
@@ -377,7 +452,7 @@ footer code{color:var(--g-ink)}
       </div>
 
       <div class="swgroup">
-        <div class="swgroup-head"><h3>Wiki — light</h3><span class="tag">—</span></div>
+        <div class="swgroup-head"><h3 id="color-wiki-light">Wiki — light</h3><span class="tag">—</span></div>
         <div class="swgrid">
           <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-light-bg)"></span><code>--color-wiki-light-bg</code><span class="sw-val" data-live="--color-wiki-light-bg">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-light-card)"></span><code>--color-wiki-light-card</code><span class="sw-val" data-live="--color-wiki-light-card">—</span></div>
@@ -391,7 +466,7 @@ footer code{color:var(--g-ink)}
       </div>
 
       <div class="swgroup">
-        <div class="swgroup-head"><h3>Wiki — dark</h3><span class="tag">—</span></div>
+        <div class="swgroup-head"><h3 id="color-wiki-dark">Wiki — dark</h3><span class="tag">—</span></div>
         <div class="swgrid">
           <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-dark-bg)"></span><code>--color-wiki-dark-bg</code><span class="sw-val" data-live="--color-wiki-dark-bg">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-wiki-dark-card)"></span><code>--color-wiki-dark-card</code><span class="sw-val" data-live="--color-wiki-dark-card">—</span></div>
@@ -405,7 +480,7 @@ footer code{color:var(--g-ink)}
       </div>
 
       <div class="swgroup">
-        <div class="swgroup-head"><h3>Engine — surface language</h3><span class="tag">—</span></div>
+        <div class="swgroup-head"><h3 id="color-engine">Engine — surface language</h3><span class="tag">—</span></div>
         <div class="swgrid">
           <div class="sw"><span class="sw-chip" style="background:var(--color-engine-tool)"></span><code>--color-engine-tool</code><span class="sw-val" data-live="--color-engine-tool">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-engine-accent)"></span><code>--color-engine-accent</code><span class="sw-val" data-live="--color-engine-accent">—</span></div>
@@ -424,7 +499,7 @@ footer code{color:var(--g-ink)}
       </div>
 
       <div class="swgroup">
-        <div class="swgroup-head"><h3>Engine — scrims, washes &amp; overlays</h3><span class="tag">—</span></div>
+        <div class="swgroup-head"><h3 id="color-engine-overlays">Engine — scrims, washes &amp; overlays</h3><span class="tag">—</span></div>
         <div class="swgrid compact">
           <div class="sw"><span class="sw-chip" style="background:var(--color-engine-scrim)"></span><code>--color-engine-scrim</code><span class="sw-val" data-live="--color-engine-scrim">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-engine-scrim-strong)"></span><code>--color-engine-scrim-strong</code><span class="sw-val" data-live="--color-engine-scrim-strong">—</span></div>
@@ -434,7 +509,7 @@ footer code{color:var(--g-ink)}
       </div>
 
       <div class="swgroup">
-        <div class="swgroup-head"><h3>Semantic — status</h3><span class="tag">—</span></div>
+        <div class="swgroup-head"><h3 id="color-semantic">Semantic — status</h3><span class="tag">—</span></div>
         <div class="swgrid">
           <div class="sw"><span class="sw-chip" style="background:var(--color-status-success)"></span><code>--color-status-success</code><span class="sw-val" data-live="--color-status-success">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-status-danger)"></span><code>--color-status-danger</code><span class="sw-val" data-live="--color-status-danger">—</span></div>
@@ -444,7 +519,7 @@ footer code{color:var(--g-ink)}
       </div>
 
       <div class="swgroup">
-        <div class="swgroup-head"><h3>Support — print, neutral, diagrams</h3><span class="tag">—</span></div>
+        <div class="swgroup-head"><h3 id="color-support">Support — print, neutral, diagrams</h3><span class="tag">—</span></div>
         <div class="swgrid compact">
           <div class="sw"><span class="sw-chip" style="background:var(--color-print-rule)"></span><code>--color-print-rule</code><span class="sw-val" data-live="--color-print-rule">—</span></div>
           <div class="sw"><span class="sw-chip" style="background:var(--color-print-body)"></span><code>--color-print-body</code><span class="sw-val" data-live="--color-print-body">—</span></div>
@@ -460,7 +535,7 @@ footer code{color:var(--g-ink)}
     </section>
 
     <!-- ============ 02 TYPE ============ -->
-    <section id="type" aria-labelledby="type-h">
+    <section class="ds-tabpanel" id="type" role="tabpanel" aria-labelledby="tab-type" tabindex="0" hidden>
       <div class="sec-head">
         <span class="sec-num">02</span>
         <h2 id="type-h">Type</h2>
@@ -529,7 +604,7 @@ footer code{color:var(--g-ink)}
     </section>
 
     <!-- ============ 03 SPACE & SHAPE ============ -->
-    <section id="space" aria-labelledby="space-h">
+    <section class="ds-tabpanel" id="space" role="tabpanel" aria-labelledby="tab-space" tabindex="0" hidden>
       <div class="sec-head">
         <span class="sec-num">03</span>
         <h2 id="space-h">Space &amp; shape</h2>
@@ -591,7 +666,7 @@ footer code{color:var(--g-ink)}
     </section>
 
     <!-- ============ 04 MOTION ============ -->
-    <section id="motion" aria-labelledby="motion-h">
+    <section class="ds-tabpanel" id="motion" role="tabpanel" aria-labelledby="tab-motion" tabindex="0" hidden>
       <div class="sec-head">
         <span class="sec-num">04</span>
         <h2 id="motion-h">Motion</h2>
@@ -675,7 +750,7 @@ footer code{color:var(--g-ink)}
     </section>
 
     <!-- ============ 05 TOUCH ============ -->
-    <section id="touch" aria-labelledby="touch-h">
+    <section class="ds-tabpanel" id="touch" role="tabpanel" aria-labelledby="tab-touch" tabindex="0" hidden>
       <div class="sec-head">
         <span class="sec-num">05</span>
         <h2 id="touch-h">Touch</h2>
@@ -696,7 +771,7 @@ footer code{color:var(--g-ink)}
     <!-- ============ 06 MATRIX ============ -->
     <!-- the deviation flag is the one ds- component on page chrome; the light
          map resolves --ds-badge-ink to the measured 5.37:1 pair -->
-    <section id="matrix" aria-labelledby="matrix-h" data-ds-theme="wiki-light">
+    <section class="ds-tabpanel" id="matrix" role="tabpanel" aria-labelledby="tab-matrix" data-ds-theme="wiki-light" tabindex="0" hidden>
       <div class="sec-head">
         <span class="sec-num">06</span>
         <h2 id="matrix-h">Consistency matrix</h2>
@@ -769,7 +844,7 @@ footer code{color:var(--g-ink)}
     </section>
 
     <!-- ============ 07 COMPONENT SPECIMENS ============ -->
-    <section id="specimens" aria-labelledby="specimens-h">
+    <section class="ds-tabpanel" id="specimens" role="tabpanel" aria-labelledby="tab-specimens" tabindex="0" hidden>
       <div class="sec-head">
         <span class="sec-num">07</span>
         <h2 id="specimens-h">Component specimens</h2>
@@ -899,31 +974,96 @@ footer code{color:var(--g-ink)}
         </div>
       </article>
       <article class="comp" id="spec-tabs" data-specimen="tabs">
-        <div class="comp-head"><h3>Tabs</h3><span class="comp-classes">.ds-tabs · .ds-tab · [data-variant] underline|rail</span></div>
+        <div class="comp-head"><h3>Tabs</h3><span class="comp-classes">.ds-tabs · .ds-tab · [data-variant] pill (live) · underline (legacy) · rail (legacy)</span></div>
         <div class="spec-grid">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
-          <div class="ds-tabs" role="tablist" aria-label="Tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
+          <div class="ds-tabs" data-variant="pill" role="tablist" aria-label="Pill tabs, live"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
+          <div class="ds-tabs" role="tablist" aria-label="Tabs (boxed, no attribute — legacy default)"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
           <div class="ds-tabs" data-variant="underline" role="tablist" aria-label="Underline tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
           <div class="ds-tabs" data-variant="rail" role="tablist" aria-label="Rail tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Coverage</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Movement</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Focus</button></div>
         </div>
         <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
-          <div class="ds-tabs" role="tablist" aria-label="Tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
+          <div class="ds-tabs" data-variant="pill" role="tablist" aria-label="Pill tabs, live"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
+          <div class="ds-tabs" role="tablist" aria-label="Tabs (boxed, no attribute — legacy default)"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
           <div class="ds-tabs" data-variant="underline" role="tablist" aria-label="Underline tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
           <div class="ds-tabs" data-variant="rail" role="tablist" aria-label="Rail tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Coverage</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Movement</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Focus</button></div>
         </div>
         <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
-          <div class="ds-tabs" role="tablist" aria-label="Tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
+          <div class="ds-tabs" data-variant="pill" role="tablist" aria-label="Pill tabs, live"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
+          <div class="ds-tabs" role="tablist" aria-label="Tabs (boxed, no attribute — legacy default)"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
           <div class="ds-tabs" data-variant="underline" role="tablist" aria-label="Underline tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
           <div class="ds-tabs" data-variant="rail" role="tablist" aria-label="Rail tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Coverage</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Movement</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Focus</button></div>
         </div>
         <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
-          <div class="ds-tabs" role="tablist" aria-label="Tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
+          <div class="ds-tabs" data-variant="pill" role="tablist" aria-label="Pill tabs, live"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
+          <div class="ds-tabs" role="tablist" aria-label="Tabs (boxed, no attribute — legacy default)"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
           <div class="ds-tabs" data-variant="underline" role="tablist" aria-label="Underline tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
           <div class="ds-tabs" data-variant="rail" role="tablist" aria-label="Rail tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Coverage</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Movement</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Focus</button></div>
+        </div>
+        </div>
+      </article>
+      <article class="comp" id="spec-navigation" data-specimen="navigation">
+        <div class="comp-head"><h3>Navigation grammar</h3><span class="comp-classes">.ds-tabs[data-variant=pill] (live) · .ds-rail + .ds-nav-item.ds-rail__item (live)</span></div>
+        <div class="spec-grid">
+        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <span class="kicker">pitch · live</span>
+          <div class="ds-tabs" data-variant="pill" role="tablist" aria-label="Pill tabs, live — pitch">
+            <button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button>
+            <button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button>
+            <button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button>
+          </div>
+          <nav class="ds-rail" aria-label="Rail, live — pitch">
+            <p class="ds-rail__label">Sections</p>
+            <a class="ds-nav-item ds-rail__item" href="#spec-navigation" aria-current="page">Coverage</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-navigation">Movement</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-navigation">Focus</a>
+          </nav>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+          <span class="kicker">wiki-light · live</span>
+          <div class="ds-tabs" data-variant="pill" role="tablist" aria-label="Pill tabs, live — wiki-light">
+            <button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button>
+            <button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button>
+            <button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button>
+          </div>
+          <nav class="ds-rail" aria-label="Rail, live — wiki-light">
+            <p class="ds-rail__label">Sections</p>
+            <a class="ds-nav-item ds-rail__item" href="#spec-navigation" aria-current="page">Coverage</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-navigation">Movement</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-navigation">Focus</a>
+          </nav>
+        </div>
+        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+          <span class="kicker">wiki-dark · live</span>
+          <div class="ds-tabs" data-variant="pill" role="tablist" aria-label="Pill tabs, live — wiki-dark">
+            <button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button>
+            <button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button>
+            <button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button>
+          </div>
+          <nav class="ds-rail" aria-label="Rail, live — wiki-dark">
+            <p class="ds-rail__label">Sections</p>
+            <a class="ds-nav-item ds-rail__item" href="#spec-navigation" aria-current="page">Coverage</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-navigation">Movement</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-navigation">Focus</a>
+          </nav>
+        </div>
+        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+          <span class="kicker">engine · live</span>
+          <div class="ds-tabs" data-variant="pill" role="tablist" aria-label="Pill tabs, live — engine">
+            <button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button>
+            <button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button>
+            <button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button>
+          </div>
+          <nav class="ds-rail" aria-label="Rail, live — engine">
+            <p class="ds-rail__label">Sections</p>
+            <a class="ds-nav-item ds-rail__item" href="#spec-navigation" aria-current="page">Coverage</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-navigation">Movement</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-navigation">Focus</a>
+          </nav>
         </div>
         </div>
       </article>
@@ -1292,7 +1432,7 @@ footer code{color:var(--g-ink)}
         </div>
       </article>
       <article class="comp" id="spec-nav" data-specimen="nav">
-        <div class="comp-head"><h3>Pager · nav item · theme toggle</h3><span class="comp-classes">.ds-pager · .ds-nav-item[data-variant] rail|dot · .ds-theme-toggle</span></div>
+        <div class="comp-head"><h3>Pager · nav item · theme toggle</h3><span class="comp-classes">.ds-pager · .ds-nav-item[data-variant] rail (live) · dot (legacy) · .ds-theme-toggle</span></div>
         <div class="spec-grid">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
@@ -1730,32 +1870,230 @@ footer code{color:var(--g-ink)}
   window.addEventListener('load', function () { paintCount(); paint(); paintProgress(); });
   window.addEventListener('resize', paint);
 
-  /* scrollspy — deterministic, section whose top passed 30% of viewport */
-  var links = Array.prototype.slice.call(document.querySelectorAll('.side a'));
-  var secs = links.map(function (a) { return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+  /* ============================================================ CATEGORIES ==
+     One panel per main category, switched by the shipped pill tablist.
+     DS.tabs owns the ARIA wiring, roving tabindex and ←/→/Home/End; this block
+     adds the three page-level concerns on top of it:
+       · the hash route — #color … #specimens and every sub-anchor inside a
+         panel, in both directions (tab → pushState, URL → tab), including
+         back/forward, with no scroll jump when the tab changes;
+       · the rail decision — a panel earns the left rail only when it has at
+         least three subheadings AND more than ~1.6 screens of content;
+       · the scrollspy — aria-current="page" on the active panel's rail item.
+     ======================================================================= */
+
+  var CATS = ['color', 'type', 'space', 'motion', 'touch', 'matrix', 'specimens'];
+  var shell = document.querySelector('.g-shell');
+  var tabbar = document.querySelector('.g-tabbar');
+  var tablist = document.getElementById('ds-cats');
+  var panelOf = {}, railOf = {};
+  CATS.forEach(function (id) {
+    panelOf[id] = document.getElementById(id);
+    railOf[id] = document.querySelector('.ds-rail[data-rail-for="' + id + '"]');
+  });
+
+  function panelIdOf(tab) {
+    return tab ? tab.getAttribute('aria-controls') : null;
+  }
+
+  function activePanelId() {
+    var tab = tablist ? tablist.querySelector('[role="tab"][aria-selected="true"]') : null;
+    return panelIdOf(tab) || CATS[0];
+  }
+
+  /* a rail earns its column only on a panel that is subdivided and long;
+     under 900px the rail cell is dropped entirely (the pills are the nav) */
+  function railWanted(id) {
+    var panel = panelOf[id], rail = railOf[id];
+    if (!rail || !panel || window.innerWidth <= 900) return false;
+    if (panel.querySelectorAll('h3').length < 3) return false;
+    return panel.scrollHeight > window.innerHeight * 1.6;
+  }
+
+  /* ---------- scrollspy over the active rail ---------- */
+  var spyItems = [];
   var ticking = false;
-  function spy() {
-    ticking = false;
-    var line = window.innerHeight * 0.3;
-    var current = secs[0] ? secs[0].id : null;
-    secs.forEach(function (s) {
-      if (s.getBoundingClientRect().top <= line) current = s.id;
-    });
-    /* the final section may never reach the 30% line — claim it at page bottom */
-    var atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4;
-    if (atBottom && secs.length) current = secs[secs.length - 1].id;
-    links.forEach(function (l) {
-      l.classList.toggle('on', l.getAttribute('href') === '#' + current);
+
+  function bindSpy(id) {
+    var rail = railOf[id];
+    spyItems = [];
+    if (!rail || rail.hidden) return;
+    Array.prototype.forEach.call(rail.querySelectorAll('.ds-rail__item'), function (link) {
+      var href = link.getAttribute('href') || '';
+      var target = href.charAt(0) === '#' ? document.getElementById(href.slice(1)) : null;
+      if (target) spyItems.push({ link: link, target: target });
     });
   }
+
+  function spy() {
+    ticking = false;
+    if (!spyItems.length) return;
+    var line = window.innerHeight * 0.3;
+    var current = spyItems[0].target;
+    spyItems.forEach(function (it) {
+      if (it.target.getBoundingClientRect().top <= line) current = it.target;
+    });
+    /* the last sub-group may never reach the 30% line — claim it at the bottom */
+    if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4) {
+      current = spyItems[spyItems.length - 1].target;
+    }
+    spyItems.forEach(function (it) {
+      if (it.target === current) it.link.setAttribute('aria-current', 'page');
+      else it.link.removeAttribute('aria-current');
+    });
+  }
+
   function requestSpy() {
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(spy);
   }
+
+  function paintRail(id) {
+    var show = railWanted(id);
+    CATS.forEach(function (k) {
+      var rail = railOf[k];
+      if (rail) rail.hidden = !(show && k === id);
+    });
+    if (shell) shell.setAttribute('data-rail', show ? 'on' : 'off');
+    bindSpy(id);
+    requestSpy();
+    revealTab();
+    syncAnchorOffset();
+  }
+
+  /* the bar's height is the one measurement CSS cannot know: the pills wrap to
+     a second row between 901 and ~1100. Write the landing distance as the
+     measured bar plus one spacing step, so a deep link lands under the bar at
+     every width (the CSS value stays as the no-JS fallback). */
+  function syncAnchorOffset() {
+    if (!tabbar) return;
+    var barH = tabbar.getBoundingClientRect().height;
+    var gap = parseFloat(getComputedStyle(root).getPropertyValue('--spacing-md')) || 16;
+    if (barH) root.style.setProperty('--g-anchor-offset', Math.ceil(barH + gap) + 'px');
+  }
+
+  /* on a phone the pill strip scrolls sideways; keep the live tab in view
+     without touching the page's own scroll position */
+  function revealTab() {
+    if (!tablist || tablist.scrollWidth <= tablist.clientWidth) return;
+    var tab = tablist.querySelector('[role="tab"][aria-selected="true"]');
+    if (!tab) return;
+    var gap = parseFloat(getComputedStyle(root).getPropertyValue('--spacing-xs')) || 8;
+    var t = tab.getBoundingClientRect(), s = tablist.getBoundingClientRect();
+    if (t.left < s.left) tablist.scrollLeft -= s.left - t.left + gap;
+    else if (t.right > s.right) tablist.scrollLeft += t.right - s.right + gap;
+  }
+
+  /* ---------- panel alignment + hash route ---------- */
+  function alignToPanel(panel) {
+    if (!panel) return;
+    var barH = tabbar ? tabbar.getBoundingClientRect().height : 0;
+    /* only when the panel start has scrolled past the sticky bar, so a tab
+       change near the top of the page does not jump the reader upward */
+    if (panel.getBoundingClientRect().top >= barH) return;
+    try { panel.scrollIntoView({ block: 'start', behavior: 'instant' }); }
+    catch (err) { panel.scrollIntoView(); }
+  }
+
+  function selectPanel(id, quiet) {
+    var i = CATS.indexOf(id);
+    if (i < 0) return;
+    if (tabsApi) {
+      hashQuiet = !!quiet;
+      tabsApi.select(i);
+      hashQuiet = false;
+    } else {
+      CATS.forEach(function (k, n) {
+        var tab = tablist ? tablist.querySelector('[aria-controls="' + k + '"]') : null;
+        if (tab) {
+          tab.setAttribute('aria-selected', n === i ? 'true' : 'false');
+          tab.setAttribute('tabindex', n === i ? '0' : '-1');
+        }
+        if (panelOf[k]) panelOf[k].hidden = n !== i;
+      });
+      paintRail(id);
+    }
+  }
+
+  /* resolve a fragment to the panel that owns it, select it, and (optionally)
+     land on the target — a sub-anchor or the panel itself */
+  function routeFromHash(scroll) {
+    var id = location.hash.slice(1);
+    var target = id ? document.getElementById(id) : null;
+    var panel = target ? target.closest('.ds-tabpanel') : null;
+    var panelId = panel ? panel.id : (panelOf[id] ? id : null);
+    if (!panelId) { selectPanel(CATS[0], true); return; }
+    selectPanel(panelId, true);
+    if (!scroll || !target) return;
+    /* scroll-margin-block-start on the panel and on every sub-anchor puts the
+       landing line under the sticky bar; instant, so a deep link is exact
+       instead of mid-animation when the URL is opened cold */
+    requestAnimationFrame(function () {
+      try { target.scrollIntoView({ block: 'start', behavior: 'instant' }); }
+      catch (err) { target.scrollIntoView(); }
+    });
+  }
+
+  var hashQuiet = false;
+  var tabsApi = null;
+
+  if (window.DS && typeof DS.tabs === 'function' && tablist) {
+    tabsApi = DS.tabs(tablist, { panelScope: '#main' });
+  }
+
+  if (tablist) {
+    tablist.addEventListener('ds:tabchange', function (ev) {
+      var detail = ev.detail || {};
+      var id = panelIdOf(detail.tab) || activePanelId();
+      paintRail(id);
+      if (hashQuiet) return;
+      var hash = '#' + id;
+      if (location.hash !== hash) {
+        try { history.pushState(null, '', hash); }
+        catch (err) { location.hash = hash; }
+      }
+      if (detail.source === 'pointer' || detail.source === 'keyboard') alignToPanel(panelOf[id]);
+    });
+
+    /* no components.js: keep the tabs operable rather than dead */
+    if (!tabsApi) {
+      tablist.addEventListener('click', function (ev) {
+        var tab = ev.target.closest ? ev.target.closest('[role="tab"]') : null;
+        if (!tab || !tablist.contains(tab)) return;
+        selectPanel(panelIdOf(tab));
+      });
+      tablist.addEventListener('keydown', function (ev) {
+        var tab = ev.target.closest ? ev.target.closest('[role="tab"]') : null;
+        if (!tab || !tablist.contains(tab)) return;
+        var all = Array.prototype.slice.call(tablist.querySelectorAll('[role="tab"]'));
+        var i = all.indexOf(tab), next = i;
+        if (ev.key === 'ArrowRight') next = (i + 1) % all.length;
+        else if (ev.key === 'ArrowLeft') next = (i - 1 + all.length) % all.length;
+        else if (ev.key === 'Home') next = 0;
+        else if (ev.key === 'End') next = all.length - 1;
+        else return;
+        ev.preventDefault();
+        all[next].focus();
+        selectPanel(panelIdOf(all[next]));
+      });
+    }
+  }
+
+  window.addEventListener('hashchange', function () { routeFromHash(true); });
+  window.addEventListener('popstate', function () { routeFromHash(true); });
   window.addEventListener('scroll', requestSpy, { passive: true });
-  window.addEventListener('resize', requestSpy);
-  spy();
+  window.addEventListener('resize', function () {
+    paintRail(activePanelId());
+  });
+
+  /* initial route: select the panel the URL names before anything paints, then
+     land on the deep target once the layout (and the fonts) have settled */
+  routeFromHash(false);
+  paintRail(activePanelId());
+  if (location.hash) {
+    window.addEventListener('load', function () { routeFromHash(true); });
+  }
 
   /* motion specimen: click/tap also plays once */
   document.querySelectorAll('.mplay').forEach(function (btn) {

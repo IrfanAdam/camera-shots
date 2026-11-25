@@ -36,28 +36,18 @@ html[data-ds-shell="pitch"]{
   --color-engine-wash-25:color-mix(in srgb,var(--color-pitch-ink) 25%,transparent);
 }
 
-/* 2 · primary actions: cream surface, dark ink ---------------------------- */
-html[data-ds-shell="pitch"] #toastBtn,
-html[data-ds-shell="pitch"] #goShot,
-html[data-ds-shell="pitch"] #drawerAddImg,
-html[data-ds-shell="pitch"] #projClose{
-  background:var(--color-pitch-accent);
-  border-color:var(--color-pitch-accent);
-  color:var(--color-pitch-accent-ink);
-}
-html[data-ds-shell="pitch"] #toastBtn:hover,
-html[data-ds-shell="pitch"] #goShot:hover,
-html[data-ds-shell="pitch"] #drawerAddImg:hover,
-html[data-ds-shell="pitch"] #projClose:hover{filter:brightness(1.06)}
+/* 2 · primary actions: cream surface, dark ink ----------------------------
+   The page marks its primary buttons with data-variant="primary", so the
+   component's accent role (--ds-accent / --ds-on-accent) already resolves to
+   the pitch cream. Nothing is restated here. */
 
-/* 3 · chrome active state: cream, not the canvas selection yellow --------- */
-html[data-ds-shell="pitch"] #side button.on,
-html[data-ds-shell="pitch"] #projNav button.on,
-html[data-ds-shell="pitch"] #pmNav button.on{border-left-color:var(--color-pitch-accent)}
+/* 3 · chrome active state: cream, not the canvas selection yellow ---------
+   The flat rail's current item takes its 2px indicator from --ds-accent, which
+   is --color-pitch-accent in this shell — so the rail needs no page override.
+   The remaining selects/menus below still paint the engine selection token. */
 html[data-ds-shell="pitch"] #chapterbar select{border-left-color:var(--color-pitch-accent)}
 html[data-ds-shell="pitch"] #menDrop button.on{box-shadow:inset var(--border-width-strong) 0 0 var(--color-pitch-accent)}
 html[data-ds-shell="pitch"] #arrowpick button.on,
-html[data-ds-shell="pitch"] .modal .tabs button.on,
 html[data-ds-shell="pitch"] #assetBtn[aria-expanded="true"]{
   border-color:var(--color-pitch-accent);
   color:var(--color-pitch-accent);
@@ -76,12 +66,7 @@ html[data-ds-shell="pitch"] .tin-pilled::selection{
   color:var(--color-pitch-accent-ink);
 }
 
-/* 6 · phone nav: the bottom transport bar reads left-to-right, so the rail's
-   left edge becomes a top rule. Inset shadow keeps the bar height unchanged
-   (the canvas bottom pad is pinned to --bar-h). */
-@media (max-width:860px){/* lint-allow: 860px matches the engine's header/sidebar collapse query */
-  html[data-ds-shell="pitch"] #side button.on{
-    border-left-color:transparent;
-    box-shadow:inset 0 2px 0 var(--color-pitch-accent);
-  }
-}
+/* 6 · phone nav: the rail turns into the horizontal pill strip at <=900
+   (engine.html), whose selected pill is an accent fill declared in the page.
+   A bottom underline on a pill would be the banned second indicator, so the
+   old transport-bar inset rule is gone. */

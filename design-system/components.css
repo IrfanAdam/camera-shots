@@ -5,7 +5,7 @@
 
    CONTRACT
    --------
-   Blocks (19; 18 from recon D2 + ds-copy)
+   Blocks (20; 18 from recon D2 + ds-copy + ds-rail)
      .ds-btn                    [data-variant=primary|ghost|danger]
                                 [data-size=xs|tall|compact] [data-armed]
                                 [data-loading] .ds-btn__label
@@ -13,7 +13,8 @@
      .ds-field  .ds-label  .ds-input  .ds-select  .ds-textarea  .ds-note
                                 [data-variant=quiet] on the control
      .ds-switch  __input  __track  __label      (real <input type=checkbox>)
-     .ds-tabs   .ds-tab  .ds-tabpanel           [data-variant=underline|rail]
+     .ds-tabs   .ds-tab  .ds-tabpanel           [data-variant=pill|underline|rail]
+                                                pill = default; underline/rail = legacy
      .ds-chip                   [data-variant=pill] .ds-chip__count
      .ds-badge                  [data-variant=success|info|warning|danger|neutral|outline]
      .ds-card   .ds-card__head  .ds-card__meta  .ds-card__eyebrow
@@ -29,7 +30,27 @@
      .ds-tooltip                [hidden]
      .ds-pager  .ds-nav-item  .ds-theme-toggle
                                 .ds-nav-item[data-variant=rail|dot]
+                                (dot = deprecated, rail = flat: §18)
      .ds-copy   .ds-copy__code
+     .ds-rail   .ds-rail__label  .ds-rail__item
+                                (vertical section nav; item carries
+                                 .ds-nav-item too — two class names, no attribute)
+
+   NAVIGATION GRAMMAR (owner contract, this wave)
+     vertical section nav  → .ds-rail, FLAT: no fill, no radius, no card; the
+                             current item is ink + medium weight + a 2px accent
+                             bar on the inline-start edge, with that 2px kept
+                             transparent on every item so text never shifts.
+                             Edge-flush, sticky, full height, one hairline on
+                             the inline-end side. No dots anywhere.
+     content switching     → .ds-tabs[data-variant=pill]: rounded-full quiet
+                             surface, accent fill when selected, on-accent ink,
+                             wraps, never stretched. underline/rail stay for
+                             this wave and are retired by a later lane.
+     buttons               → .ds-btn geometry is not negotiable in page chrome
+                             (padding-inline spacing.lg, radius.xs, control
+                             height); the only sanctioned shrink is
+                             [data-size=xs] — never `padding:0` (§1 guard).
 
    Attributes
      data-ds-theme on any wrapper    → role layer from tokens.css (required for
@@ -47,11 +68,11 @@
      --ds-accent-soft --ds-ink --ds-ink-2 --ds-muted --ds-faint --ds-on-accent
      --ds-rule --ds-rule-strong --ds-accent --ds-success --ds-warning
      --ds-danger --ds-info   (all 17 shipped slots; see tokens.css:380-470)
-   Private vars: --_ctl-h (control height), --_z (overlay stacking),
-     --_scrim (dialog scrim), --_badge-ink (badge ink per tone/theme),
-     --_alert-ink (invalid field label/note ink) — component-local, never
-     tokens, overridable per surface (engine may set --_z to its canvas z and
-     --_scrim to its scrim).
+   Private vars: --_ctl-h (control height), --_pad-x (button inline padding
+     step), --_z (overlay stacking), --_scrim (dialog scrim), --_badge-ink
+     (badge ink per tone/theme), --_alert-ink (invalid field label/note ink) —
+     component-local, never tokens, overridable per surface (engine may set
+     --_z to its canvas z and --_scrim to its scrim).
 
    Naming note: this file uses the SHIPPED role names. The plan's
    `--ds-accent-ink` is `--ds-on-accent`; `--ds-surface-1/2` are
@@ -78,6 +99,7 @@
 
 /* 1 · button ------------------------------------------------------------- */
 .ds-btn{
+  --_pad-x:var(--spacing-lg);
   display:inline-flex;
   align-items:center;
   justify-content:center;
@@ -149,12 +171,32 @@
 .ds-chip[data-ds-compact],.ds-tab[data-ds-compact],
 .ds-nav-item[data-ds-compact]{--_ctl-h:var(--control-height-compact)}
 .ds-btn[data-size="xs"]{
+  --_pad-x:var(--spacing-md);
   --_ctl-h:var(--touch-min);
   padding:0 var(--spacing-md);
   font-size:var(--typography-size-meta);
 }
 .ds-btn[data-size="tall"]{--_ctl-h:var(--control-height-reading)}
 .ds-btn[data-size="compact"]{--_ctl-h:var(--control-height-compact)}
+/* GEOMETRY GUARD — a .ds-btn keeps §1's box inside compact page chrome.
+   The shared layer ships no !important on purpose, and components.css lands
+   before the page's <style>, so a page rule such as `.toolbar button{padding:0}`
+   (0,1,1) or `.plan-nav .pill{padding:0 10px}` (0,2,0) wins a tie and strips the
+   component's padding, radius or height — the exact regression the owner's
+   grammar forbids. Repeating the class reads (0,3,0) and restates §1's box, so
+   an ordinary page selector cannot strip it without targeting .ds-btn twice on
+   purpose. It adds no new geometry and cannot shrink a button: the horizontal
+   padding comes from the component-local --_pad-x, which the size ladder and
+   the copy field re-point (`[data-size="xs"]` → spacing.md, `.ds-copy` →
+   spacing.10), so the sanctioned steps still win. The height floor is --_ctl-h,
+   so `data-ds-density` and `[data-ds-compact]` keep working. A page that wants
+   a smaller button passes `data-size="xs"`; it never writes `padding:0`. */
+.ds-btn.ds-btn{
+  padding-block:0;
+  padding-inline:var(--_pad-x);
+  border-radius:var(--radius-xs);
+  min-block-size:var(--_ctl-h);
+}
 .ds-btn:is(:focus-visible,[data-state~="focus"]){
   outline-style:solid;
   outline-width:var(--focus-width);
@@ -318,7 +360,12 @@
   color:var(--ds-muted);
 }
 
-/* 5 · tabs --------------------------------------------------------------- */
+/* 5 · tabs ---------------------------------------------------------------
+   THE SHAPE IS THE PILL. A page switching content passes
+   `data-variant="pill"`; the bare `.ds-tabs` box below is the pre-grammar
+   rendering kept for this wave (marked legacy in DEPRECATIONS.md), and the
+   underline/rail variants are legacy too. All three still render, none is
+   extended, and the pill block is the one the docs point at. */
 .ds-tabs{
   display:flex;
   gap:var(--spacing-6);
@@ -353,6 +400,51 @@
   outline-color:var(--focus-color,currentColor);
   outline-offset:var(--focus-offset);
 }
+/* PILL — the documented default for content-switching (owner grammar, this
+   wave). One shape for every tab: a rounded-full quiet surface that only takes
+   the accent fill when selected. Left-aligned and wrapping: each tab is sized
+   by its label (`flex:0 0 auto`), so a two-word tab never claims a third of the
+   row, and the row never scrolls sideways on desktop (a wrapped second line
+   keeps every tab reachable; the overflow:auto inherited from .ds-tabs is
+   switched off here). Inactive tabs are transparent with the hairline rule as
+   their only boundary; selected drops the rule for the accent fill + role ink,
+   so the mark is the fill, not an underline or a second border. Height and the
+   focus ring come from the shared ladder and §5's base rule — the variant
+   changes shape, not size or focus. */
+.ds-tabs[data-variant="pill"]{
+  flex-wrap:wrap;
+  justify-content:flex-start;
+  gap:var(--spacing-2xs);
+  overflow:visible;
+}
+.ds-tabs[data-variant="pill"] .ds-tab{
+  flex:0 0 auto;
+  min-block-size:var(--_ctl-h);
+  padding-block:0;
+  padding-inline:var(--spacing-md);
+  border:var(--border-width-hairline) solid var(--ds-rule);
+  border-radius:var(--radius-pill);
+  background:transparent;
+  color:var(--ds-muted);
+  font-weight:var(--weight-medium);
+  text-align:start;
+}
+.ds-tabs[data-variant="pill"] .ds-tab:is(:hover,[data-state~="hover"]){
+  background:var(--ds-surface-alt);
+  border-color:var(--ds-rule-strong);
+  color:var(--ds-ink);
+}
+.ds-tabs[data-variant="pill"] .ds-tab:is([aria-selected="true"],[data-state~="selected"]){
+  border-color:var(--ds-accent);
+  background:var(--ds-accent);
+  color:var(--ds-on-accent);
+}
+/* LEGACY (one release) — underline tabs. Content-switching moved to
+   [data-variant="pill"]; this block keeps rendering because pages still consume
+   it this wave. A later lane migrates those call sites and deletes it. Do not
+   extend: no new page may pass data-variant="underline".
+   Note the 2px slot: the underline is border-block-end, so it lives inside the
+   tab and does not shift the row. */
 .ds-tabs[data-variant="underline"]{
   gap:var(--spacing-md);
   border-block-end:var(--border-width-hairline) solid var(--ds-rule);
@@ -372,6 +464,12 @@
   font-weight:var(--weight-semibold);
   border-block-end-color:var(--ds-accent);
 }
+/* LEGACY (one release) — vertical rail TABS. This is a tablist stacked in a
+   column inside a dialog or panel; it is NOT the section rail. A page's section
+   navigation is `.ds-rail` + `.ds-rail__item` (§20), which is flat and
+   edge-flush; this variant keeps its surface step only because pages still
+   render it this wave, and it retires with the underline variant. Do not
+   extend, and do not reach for it to build a section nav. */
 .ds-tabs[data-variant="rail"]{
   flex-direction:column;
   gap:var(--spacing-2);
@@ -796,10 +894,43 @@
   color:var(--ds-ink);
   font-weight:var(--weight-medium);
 }
-.ds-nav-item[data-variant="rail"]{border-inline-start:var(--border-width-strong) solid transparent}
-.ds-nav-item[data-variant="rail"]:is([aria-current="page"],[aria-selected="true"],[data-state~="current"]){
+/* FLAT rail item — the only section-nav item shape the grammar allows.
+   Two ways in, one rule set: `.ds-nav-item[data-variant="rail"]` (existing
+   callers) and `.ds-rail .ds-rail__item` (a page writes
+   `<a class="ds-nav-item ds-rail__item">` — two class names, no attribute).
+   No card, no radius, no fill: hover is ink text only, and the current item is
+   ink + medium weight + the 2px accent bar on the inline-start edge. Every
+   item keeps that 2px transparent so the text axis never moves between
+   states, and both selectors carry the same three-state set the base item
+   uses (aria-current / aria-selected / data-state~=current). */
+.ds-nav-item[data-variant="rail"],
+.ds-rail .ds-rail__item{
+  border:0;
+  border-inline-start:var(--border-width-strong) solid transparent;
+  border-radius:var(--radius-none);
+  background:transparent;
+  padding-inline:var(--layout-rail-inset) var(--spacing-md);
+  font-weight:var(--weight-regular);
+  text-align:start;
+}
+.ds-nav-item[data-variant="rail"]:is(:hover,[data-state~="hover"]),
+.ds-rail .ds-rail__item:is(:hover,[data-state~="hover"]){
+  background:transparent;
+  color:var(--ds-ink);
+}
+.ds-nav-item[data-variant="rail"]:is([aria-current="page"],[aria-selected="true"],[data-state~="current"]),
+.ds-rail .ds-rail__item:is([aria-current="page"],[aria-selected="true"],[data-state~="current"]){
+  background:transparent;
+  color:var(--ds-ink);
+  font-weight:var(--weight-medium);
   border-inline-start-color:var(--ds-accent);
 }
+/* DEPRECATED (one release) — the dot variant. The owner's grammar has no dots
+   anywhere: a flat rail marks the current item with the inline-start accent bar
+   above, so a dot is a second indicator for the same state. Kept verbatim
+   because pages still render it this wave; a later lane migrates those call
+   sites and deletes this block and `dot.size` with it. Do not add a dot to any
+   new surface, and do not combine it with the rail variant. */
 .ds-nav-item[data-variant="dot"]{
   position:relative;
   padding-inline-start:var(--spacing-md);
@@ -857,4 +988,86 @@
   font-size:var(--typography-size-timecode);
   overflow-wrap:anywhere;
 }
-.ds-copy .ds-btn{padding:0 var(--spacing-10);font-size:var(--typography-size-meta)}
+.ds-copy .ds-btn{--_pad-x:var(--spacing-10);padding:0 var(--spacing-10);font-size:var(--typography-size-meta)}
+/* the copy field re-points --_pad-x, so §1's geometry guard keeps the tighter
+   spacing.10 step instead of forcing spacing.lg back onto this button */
+
+/* 20 · rail — flat vertical section nav ----------------------------------
+   A page places `.ds-rail` in the FIRST cell of a full-bleed grid whose row
+   carries no horizontal padding, so the rail's inset and the hairline on its
+   inline-end edge sit against the viewport rather than inside a centred
+   max-width wrapper. The max-width belongs to the content column only:
+
+     <body data-ds-theme="wiki-light">
+       <div class="page">
+         <nav class="ds-rail" aria-label="Sections">
+           <p class="ds-rail__label">Brief</p>
+           <a class="ds-nav-item ds-rail__item" href="#brief" aria-current="page">The brief</a>
+           <a class="ds-nav-item ds-rail__item" href="#shots">Shots</a>
+         </nav>
+         <main class="page__main">…</main>
+       </div>
+     </body>
+
+     .page{display:grid;grid-template-columns:var(--layout-rail) minmax(0,1fr)}
+     .page__main{max-inline-size:var(--layout-max-wiki);margin-inline:auto;
+                 padding-inline:var(--spacing-2xl)}
+
+   Sticky needs a row taller than the rail: `align-self:start` keeps the rail
+   from stretching, `block-size:100dvh` makes it full height, and no ancestor
+   may declare overflow (a scrolling ancestor becomes the sticky container and
+   the rail scrolls away with the content). The rail is deliberately flat — no
+   background, no radius, no shadow, no card: the one edge is the hairline
+   against the content column, and the only state mark is the item's accent
+   bar. Width and inset are tokens, so a page never restates a number.
+
+   PADDING: the rail declares BLOCK padding only (`padding-inline:0`). The
+   inline inset lives on the items and the label, so the item's 2px
+   indicator slot starts at the rail's left edge (x=0) and the accent bar is
+   flush with the SCREEN edge; the text is what is inset, by
+   `layout.rail.inset`. */
+.ds-rail{
+  position:sticky;
+  inset-block-start:0;
+  align-self:start;
+  display:flex;
+  flex-direction:column;
+  gap:var(--spacing-2);
+  block-size:100dvh;
+  inline-size:var(--layout-rail);
+  padding-block:var(--layout-rail-inset);
+  padding-inline:0;
+  overflow-y:auto;
+  overscroll-behavior-y:contain;
+  scrollbar-width:thin;
+  border:0;
+  border-inline-end:var(--border-width-hairline) solid var(--ds-rule);
+  border-radius:var(--radius-none);
+  background:transparent;
+  color:var(--ds-muted);
+  font-family:var(--typography-family-sans);
+  font-size:var(--typography-size-small);
+}
+/* eyebrow label — carries the same 2px transparent slot and the same
+   `padding-inline-start: layout.rail.inset` as the items, so its text lands on
+   the items' text axis exactly (both start at inset + 2px). The label owns the
+   offset itself rather than a wrapper, so a rail stays a flat list of
+   children. */
+.ds-rail__label{
+  margin:0;
+  margin-block-end:var(--spacing-xs);
+  border-inline-start:var(--border-width-strong) solid transparent;
+  padding-inline:var(--layout-rail-inset) var(--spacing-md);
+  color:var(--ds-faint);
+  font-family:var(--typography-family-mono);
+  font-size:var(--typography-size-eyebrow);
+  font-weight:var(--weight-medium);
+  letter-spacing:var(--tracking-eyebrow);
+  line-height:var(--line-height-tight);
+  text-transform:uppercase;
+}
+.ds-rail__label:not(:first-child){margin-block-start:var(--spacing-lg)}
+/* `.ds-rail__item` itself is declared with the nav item above (§18): the item
+   rule set is shared, so the rail never re-declares an item's box. A page that
+   renders a rail needs exactly `class="ds-nav-item ds-rail__item"` plus
+   aria-current on the live one. */

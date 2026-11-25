@@ -2,7 +2,7 @@
    tokens.css — GENERATED FILE, DO NOT EDIT BY HAND.
    Source:     design-system/tokens.json
    Regenerate: node scripts/build-tokens.mjs
-   Tokens:     189
+   Tokens:     188
    Themes:     4 · role slots: 14 · role vars: 17
    ========================================================================== */
 
@@ -197,9 +197,6 @@
   /* spacing.gutter */
   --spacing-gutter-pro: var(--spacing-md);
 
-  /* spacing.section */
-  --spacing-section: 26px;
-
   /* radius.none */
   --radius-none: 0;
 
@@ -274,9 +271,11 @@
   --layout-max-pitch: 1080px;
 
   /* layout.sidebar */
-  --layout-sidebar-wiki: 230px;
-  --layout-sidebar-pitch: 220px;
   --layout-sidebar-engine: 148px;
+
+  /* layout.rail */
+  --layout-rail: 208px;
+  --layout-rail-inset: var(--spacing-20);
 
   /* layout.drawer */
   --layout-drawer-engine-width: min(360px, 92vw);

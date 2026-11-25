@@ -107,8 +107,11 @@ const REPORT = path.join(ROOT, 'design-system', 'audit-report.md');
    Every figure below is the measured post-retirement count, not an estimate:
    T8 10 — 2 canvas-read track keys are invisible to a `var()` counter, and 8
    tokens are consumed only by the gallery and docs until the page lanes wire
-   them (components.css took `opacity.disabled` when it landed, which is why
-   the Phase 1 figure of 11 is now 10); T9 0 because the 106 retired keys took
+   them (components.css took `opacity.disabled` when it landed, and the
+   navigation rewrite retired `layout.sidebar.wiki`, `layout.sidebar.pitch` and
+   `spacing.section`, which is why the Phase 1 figure of 11 is now 10; the
+   rewrite also grew it to 13 first, adding `elevation.float` and the two
+   sidebar widths); T9 0 because the 106 retired keys took
    the last duplicate role values with them; T15 147 because 53 inline swatch
    styles left with their rows. */
 const BUDGETS = {
@@ -131,7 +134,7 @@ const BUDGETS = {
 const BUDGET_NOTES = {
   V3: 'design-system/index.html:424 z-index:-1 on #probe-host — a 1x1 fixed, off-screen, opacity:0 measurement frame copied from the page one clipped 1440 frame at a time; no z token holds -1 and rounding it to --z-base (0) would put the measurement copy into the page paint order',
   T6: 'the 4 pitch.html width queries (768 ×3, 901) are deferred with Task 12 — pitch.html is under foreign editing and cannot be touched; the 1 gallery query (640 in the swatch preview) stays raw. index/engine carry budget 0 each',
-  T8: '2 canvas-only + 8 gallery/doc: color.engine.track.fx and color.engine.track.title are read through CT() strings in engine.html (a var() counter cannot see a string argument); color.engine.track.audio, elevation.ring, elevation.inset, icon.size.md, icon.size.lg, radius.lg, spacing.section and tracking.label are gallery and doc consumers whose product wiring belongs to Phase 3 — recorded, not hidden. Phase 1 measured 11; components.css consumes opacity.disabled, so the count is 10',
+  T8: '2 canvas-only + 8 gallery/doc: color.engine.track.fx and color.engine.track.title are read through CT() strings in engine.html (a var() counter cannot see a string argument); color.engine.track.audio, elevation.float, elevation.inset, elevation.ring, icon.size.md, icon.size.lg, radius.lg and tracking.label are rendered only by the gallery ladder or named only in docs, and their product wiring belongs to Phase 3 — recorded, not hidden. The navigation rewrite retired layout.sidebar.wiki, layout.sidebar.pitch and spacing.section (zero consumers anywhere), taking the count from 13 back to 10',
 };
 /* Per-file share of each budget, measured on the same run. Enforcing the share
    as well as the total means a fix on one page cannot pay for a regression on

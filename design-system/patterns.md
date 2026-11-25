@@ -41,9 +41,10 @@ Dense canvas tools or dashboards — use Engine Canvas Shell instead.
 Search/Filter Input + chip tabs + list rows + panel Cards.
 
 **Layout rules**
-Two-column at `var(--layout-sidebar-wiki)` 230px (`index.html:28`) collapsing to
-stacked filter-chips below a raw `800px` query (`index.html:69`, reason on the
-line: 800 sits between `--breakpoint-md` 767.5 and `--breakpoint-lg` 900). The
+Two-column at `var(--layout-rail)` 208px (`index.html:28`, the shared
+components.css rail) collapsing to a left-aligned, horizontally scrolling pill
+strip at `@media(max-width:900px)` (`index.html:92`, i.e. `--breakpoint-lg`).
+The
 list scrolls independently; the panel carries one concept at a time with the
 token copy row. This is **not** a `breakpoint.md` collapse — no shipped wiki
 query uses the token.

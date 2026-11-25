@@ -33,9 +33,9 @@ done
   page drives its own scheme; the dark `:root` override at `:11` re-points the
   local aliases at `color.wiki.dark.*`.
 - **Layout contract.** Two columns from tokens: `grid-template-columns:
-  var(--layout-sidebar-wiki) 1fr` (`:28`). The mobile rail collapse uses a raw
-  `800px` query, not `breakpoint.md`, with its reason on the line (`:69`) —
-  800 sits between `--breakpoint-md` 767.5 and `--breakpoint-lg` 900.
+  var(--layout-rail) minmax(0,1fr)` (`:28`, the shared components.css rail).
+  The mobile collapse (a horizontal pill strip at `:92`) is the
+  `@media(max-width:900px)` step — `--breakpoint-lg`, no raw pixel width.
 - **Adoption.** 14 `ds-` names: `ds-badge ds-btn ds-chip ds-copy ds-copy__code
   ds-input ds-pager ds-skip-link ds-sr-only ds-tab ds-table ds-table-wrap ds-tabs
   ds-theme-toggle`. No drawer, dialog, toast or menu — the wiki has no overlay

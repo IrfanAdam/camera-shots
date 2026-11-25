@@ -2,6 +2,18 @@
 
 Every token that leaves the contract is recorded here: what it was, what replaced it, and when the name stops resolving. The gate is the enforcement (a `var()` naming a retired key is a U1 failure), this file is the memory. Policy from `audit/2026-11-24/docs.md:88`: **deprecate one release, remove the next** — no exemption may keep a deprecated token alive.
 
+## Retired by the navigation rewrite (2026-11-25)
+
+The four-lane rail/pill rewrite removed the three layouts that sized themselves from these keys. Each was measured with a case-sensitive grep across `index.html`, `pitch.html`, `engine.html`, `design-system/{base,components,pitch-shell,gallery-pitch}.css`, `engine-pitch.css`, the theme maps and every gallery swatch row before deletion: zero `var()`, zero `eval()`-style `CT('--…')` / `WA('--…')` lookup, zero alias value, zero gallery specimen. The token set went 191 → 188 keys (20 groups unchanged).
+
+| Key | Was | Reason it stopped resolving |
+|---|---|---|
+| `layout.sidebar.wiki` | `230px` | `index.html` no longer has the `.main` two-column grid; the wiki surface takes `layout.rail` (208px) from `components.css`. Nothing else ever sized from it. |
+| `layout.sidebar.pitch` | `220px` | `pitch.html` replaced the centred `.w`/`.layout` shell (and its floating mobile rail) with the shared rail; the 220px column has no owner. |
+| `spacing.section` | `26px` | Raised by the same measurement rather than the rewrite: the retired fixed bottom step bar and the 18px underline rhythm were its last plausible callers, and no surface, component sheet, engine-pitch sheet or gallery row named it. |
+
+`layout.sidebar.engine`, `layout.bar.engine`, `spacing.18` and `z.bar` were reported as retired by the same lane and are **not**: `engine.html` still consumes all four (the drawer's `.pm-nav` rail, the 62px mobile status strip, the drawer's 18px gutters, and `#arrowpick`'s z-index). `elevation.float` is left in place because the gallery's elevation ladder (`design-system/index.html:634`) still renders it as a specimen — retiring it moves gallery pixels, so it waits for Phase 3 with the other gallery-only keys.
+
 ## Alias tier still live (one release)
 
 These six keys keep their names for one release; their values are pointers, so a consumer that still names them resolves through the target. `focus.color` is not an alias in this sense — it is the role pointer the re-pointed focus rings consume.
@@ -132,6 +144,17 @@ These six keys keep their names for one release; their values are pointers, so a
 - `radius.card` = `12px`
 - `radius.xl` = `18px`
 - `color.pitch.scrim.soft` = `rgba(0,0,0,.5)`
+
+## Component shapes deprecated (one release, no token removed)
+
+The navigation grammar (rails are flat, tabs are pills, buttons keep their geometry) retires three *shapes*, not names. Each still renders in `components.css`, annotated `LEGACY`/`DEPRECATED` in place, because pages still consume it this wave; a later lane migrates the call sites and only then deletes the block (and, for the dot, `dot.size` with it).
+
+| Shape | Where it lives | Replaced by | Retires |
+|---|---|---|---|
+| `.ds-nav-item[data-variant="dot"]` | `components.css` §18 | the flat rail item's inline-start accent bar — `class="ds-nav-item ds-rail__item"` | the release after this wave |
+| `.ds-tabs[data-variant="underline"]` | `components.css` §5 | `.ds-tabs[data-variant="pill"]` | the release after this wave |
+| `.ds-tabs[data-variant="rail"]` | `components.css` §5 | `.ds-tabs[data-variant="pill"]` for tabs; `.ds-rail` for a section nav | the release after this wave |
+| bare `.ds-tabs` (boxed, no attribute) | `components.css` §5 base block | `.ds-tabs[data-variant="pill"]` | when the pages above migrate |
 
 ## Renames that preceded this list
 

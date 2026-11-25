@@ -1,8 +1,8 @@
 # Component Specs
 
-**Status:** **19 live sections** (each linked to the gallery frame that renders it) · **3 proposed** (not built — appendix) · **3 page patterns** (spec'd, not shipped — appendix) · **10 specs new in this revision**.
+**Status:** **20 live sections** (19 linked to the gallery frame that renders them; the rail's frame `#spec-rail` is reserved and not rendered yet) · **3 proposed** (not built — appendix) · **3 page patterns** (spec'd, not shipped — appendix) · **10 specs new in the previous revision**.
 
-Everything below is verified against the shipped layer: `design-system/base.css` (reset, focus ring, skip link, scroll regions, target floor), `design-system/components.css` (19 numbered blocks), `design-system/components.js` (Overlay, Tabs, MenuButton, Toast/announce, copy, focus-preserve) and `design-system/icons.svg` (24 symbols). Values are named by token; the gallery at [`design-system/index.html`](index.html) renders every state in four theme cells (pitch, wiki-light, wiki-dark, engine), so a claim here can be checked by eye in one frame.
+Everything below is verified against the shipped layer: `design-system/base.css` (reset, focus ring, skip link, scroll regions, target floor), `design-system/components.css` (20 numbered blocks), `design-system/components.js` (Overlay, Tabs, MenuButton, Toast/announce, copy, focus-preserve) and `design-system/icons.svg` (24 symbols). Values are named by token; the gallery at [`design-system/index.html`](index.html) renders every state in four theme cells (pitch, wiki-light, wiki-dark, engine), so a claim here can be checked by eye in one frame.
 
 **Read order:** [README](README.md) → [foundations](foundations.md) → this file → [patterns](patterns.md).
 
@@ -18,6 +18,18 @@ Everything below is verified against the shipped layer: `design-system/base.css`
 | Focus | `outline-style:solid` + `--focus-width` / `--focus-color` / `--focus-offset`, longhands only | `base.css` §2 |
 | Theming | every colour is a `--ds-*` role; **nothing paints without `[data-ds-theme]` on an ancestor** | `tokens.css` role maps |
 | State | a real attribute (`aria-pressed`, `aria-selected`, `aria-expanded`, `aria-disabled`, `[hidden]`, `[data-armed]`, `[data-loading]`, `:disabled`, `:focus-visible`). `data-state~=…` exists only so the gallery can pin a state in a still frame | `components.css` header |
+
+## Navigation grammar — rails, pills, buttons
+
+Three rules are the owner's contract, and every navigation surface in the system follows them. A page that breaks one is off-grammar regardless of how it looks in isolation.
+
+| Surface | Rule | Component |
+|---|---|---|
+| **Vertical section nav** | FLAT. No background, no border-radius, no card, no shadow, no dots. Inactive items are muted; the current item is ink + medium weight + a 2px `--ds-accent` bar on the inline-start edge, and every item keeps that 2px as a transparent slot so the text never shifts. One text axis, left-aligned. Edge-flush, sticky, full height, one hairline against the content column. | [Section rail](#ds-rail) — `.ds-rail` + `.ds-nav-item.ds-rail__item` |
+| **Content switching** | PILLS. One shape: rounded-full quiet surface, accent fill when selected, `--ds-on-accent` ink, no underline, no boxy control, left-aligned, wrapping instead of horizontal scroll, never stretched to fill the row. `underline` and `rail` tab variants are legacy for one release. | [Tabs](#ds-tabs) — `.ds-tabs[data-variant="pill"]` |
+| **Buttons in page chrome** | `.ds-btn` keeps its geometry — `padding-inline: spacing.lg`, `radius.xs`, `control.height.*` — even inside compact toolbars and dense grids. The only sanctioned shrink is `data-size="xs"`; never `padding:0`, never a hand-set radius. §1 carries a geometry guard so an ordinary page selector cannot strip it. | [Button](#ds-btn) — `.ds-btn.ds-btn` |
+
+Anything that used to be a dot, a card-y rail, or an underline is a legacy shape: it still renders this wave (pages consume it), it is annotated `LEGACY`/`DEPRECATED` in `components.css`, and it is not extended.
 
 ## Spec register — the 10 specs added in this revision
 
@@ -54,7 +66,9 @@ Everything below is verified against the shipped layer: `design-system/base.css`
 | Secondary (default) | — / `data-variant="secondary"` | transparent fill, `--ds-rule` border, `--ds-ink` text |
 | Ghost | `data-variant="ghost"` | no border, ink → `--ds-accent-soft` on hover |
 | Danger | `data-variant="danger"` | `--ds-danger` ink/border; `[data-armed]` fills |
-| Compact / tall | `data-size="xs"｜"compact"｜"tall"` | height from `--_ctl-h`, padding `spacing.xs`…`spacing.md` |
+| Compact / tall | `data-size="xs"｜"compact"｜"tall"` | height from `--_ctl-h`; `xs` is the **only sanctioned shrink** (padding narrows to `spacing.md`, type to `typography.size.meta`) |
+
+**Geometry guard** — `.ds-btn.ds-btn` restates §1's box (block padding 0, `padding-inline: var(--_pad-x)`, `radius.xs`, `min-block-size: var(--_ctl-h)`) at (0,3,0), so compact page chrome — a toolbar, a dense grid, a page rule like `.plan-nav .pill{padding:0 10px}` — cannot strip the component's padding, radius or height. The shared layer ships no `!important` and `components.css` loads before the page's `<style>`, so without the guard a page selector at (0,1,1) or (0,2,0) wins the tie; repeating the class is what makes the declaration survive. It adds no geometry and cannot shrink a button: the horizontal padding is the component-local `--_pad-x`, which the size ladder re-points (`[data-size="xs"]` → `spacing.md`) and the copy field re-points to `spacing.10`, so the sanctioned steps still win; the height floor is `--_ctl-h`, so `data-ds-density` and `[data-ds-compact]` keep working. A page that wants a smaller button passes `data-size="xs"`; it never writes `padding`.
 
 **States** — default · hover (`--hover-lift` 1.06 + surface step) · focus-visible (ring) · disabled (`opacity.disabled`, `:disabled` **and** `aria-disabled="true"`) · armed (`[data-armed]`, two-tap destroy) · loading (`[data-loading]`, label at `opacity.media`, `cursor:progress`).
 
@@ -70,7 +84,7 @@ Everything below is verified against the shipped layer: `design-system/base.css`
 | Motion | `motion.duration.hover`, `motion.easing.standard`, `hover.lift` |
 | Disabled / focus | `opacity.disabled`, `focus.width`, `focus.color`, `focus.offset` |
 
-**Dos and don'ts** — DO keep one `primary` per view; DO require `[data-armed]` for anything destructive. DON'T put two primaries side by side; DON'T fake a disabled button with `opacity` alone (it stays focusable and clickable).
+**Dos and don'ts** — DO keep one `primary` per view; DO require `[data-armed]` for anything destructive; DO pass `data-size="xs"` when chrome needs a smaller button. DON'T put two primaries side by side; DON'T fake a disabled button with `opacity` alone (it stays focusable and clickable); DON'T strip a button's geometry in compact chrome (`padding:0`, a hand-set radius, a 28px height) — the guard will fight you, and the design system has one button shape.
 
 **Accessibility** — real `<button>` or `<a href>`; the label is the accessible name (an icon-only action is an `.ds-icon-btn` with `aria-label`); `:disabled` for inert, `aria-disabled="true"` when the control must stay focusable; focus ring comes from `base.css` §2 and cannot be removed per page.
 
@@ -211,34 +225,36 @@ Everything below is verified against the shipped layer: `design-system/base.css`
 
 ### Tabs {#ds-tabs}
 
-**Purpose** — switch between sibling panels in place, without a page load.
+**Purpose** — switch between sibling panels in place, without a page load. **Pills are the documented default for content-switching** (navigation grammar); the underline and rail variants are legacy for one release and are not extended.
 
-**Anatomy** — `<div class="ds-tabs" role="tablist">` of `.ds-tab[role="tab"]`, each with `aria-controls`; panels are `.ds-tabpanel` and are `hidden` when not selected. `DS.tabs(root)` supplies roving tabindex, ←/→/Home/End and the panel swap.
+**Anatomy** — `<div class="ds-tabs" data-variant="pill" role="tablist">` of `.ds-tab[role="tab"]`, each with `aria-controls`; panels are `.ds-tabpanel` and are `hidden` when not selected. `DS.tabs(root)` supplies roving tabindex, ←/→/Home/End and the panel swap.
 
 **Variants**
 
-| Variant | Attribute | What changes |
-|---|---|---|
-| Boxed (default) | — | bordered pills, `radius.xs`, selected = `--ds-accent-soft` |
-| Underline | `data-variant="underline"` | no boxes; 2px `border-width.strong` rule under the selected tab |
-| Rail | `data-variant="rail"` | vertical stack for a modal's left rail |
+| Variant | Attribute | What changes | Status |
+|---|---|---|---|
+| **Pill** | `data-variant="pill"` | rounded-full quiet surface (`radius.pill`), `border-width.hairline` `--ds-rule` boundary, transparent until selected, accent fill + `--ds-on-accent` ink when selected, left-aligned, wraps, each tab sized by its label | **live — use this for content-switching** |
+| Boxed | — (no attribute) | bordered tabs at `radius.xs`; the shape a `.ds-tabs` still renders with no attribute | legacy default, kept for this wave — pass `pill` |
+| Underline | `data-variant="underline"` | no boxes; 2px `border-width.strong` rule under the selected tab | **legacy — retires next release** |
+| Rail | `data-variant="rail"` | vertical stack of tabs (a tablist, not a section nav) | **legacy — retires next release** |
 
-**States** — default · hover (`--ds-rule-strong` border) · selected (`aria-selected="true"`) · focus-visible · panel hidden/shown.
+**States** — default (`--ds-muted` ink, hairline boundary) · hover (`--ds-surface-alt` fill, `--ds-rule-strong` boundary, ink text) · selected (`aria-selected="true"` → accent fill, accent border, `--ds-on-accent` ink, no underline) · focus-visible (the shared ring) · panel hidden/shown.
 
 **Token map**
 
 | Property | Token |
 |---|---|
-| Ink / surface | `--ds-ink`, `--ds-muted`, `--ds-surface`, `--ds-surface-alt`, `--ds-accent-soft` |
-| Rule | `--ds-rule`, `--ds-rule-strong`, `border-width.hairline`, `border-width.strong` |
-| Geometry | `radius.xs` (boxed), `radius.none` (underline), `spacing.6`, `spacing.10`, `spacing.sm` |
+| Ink / surface | `--ds-ink`, `--ds-muted`, `--ds-on-accent`, `--ds-surface-alt`, `--ds-accent`, `--ds-accent-soft` (legacy boxed) |
+| Rule | `--ds-rule`, `--ds-rule-strong`, `border-width.hairline`, `border-width.strong` (legacy underline) |
+| Geometry | `radius.pill` (pill), `radius.xs` (legacy boxed), `radius.none` (legacy underline), `spacing.2xs`, `spacing.6`, `spacing.10`, `spacing.md`, `spacing.sm`, `control.height.*` via `--_ctl-h` |
+| Type | `typography.size.small`, `typography.family.sans`, `weight.medium` |
 | Motion | `motion.duration.hover`, `motion.easing.standard` |
 
-**Dos and don'ts** — DO give every tab `aria-controls` pointing at a real panel id. DON'T wire `DS.tabs` onto a page that re-renders one shared panel — `apply()` hides every non-selected panel, which would hide the only one (wiki's exact blocker; it adopts `.ds-tab` CSS + manual ARIA in Phase 3 and defers the JS).
+**Dos and don'ts** — DO pass `data-variant="pill"` on every new tablist and let the row wrap. DO give every tab `aria-controls` pointing at a real panel id. DON'T reach for `underline` or `rail` (legacy), DON'T stretch tabs to equal widths — the pill is sized by its label — and DON'T add a horizontal scrollbar: a wrapped second row is the intended behaviour on desktop. DON'T wire `DS.tabs` onto a page that re-renders one shared panel — `apply()` hides every non-selected panel, which would hide the only one (wiki's exact blocker; it adopts `.ds-tab` CSS + manual ARIA in Phase 3 and defers the JS).
 
-**Accessibility** — `role="tablist"` / `role="tab"` / `role="tabpanel"`; exactly one tab in the tab order; `aria-selected` on the tab, `aria-labelledby` on the panel; panels get `hidden` (not `display:none` by hand).
+**Accessibility** — `role="tablist"` / `role="tab"` / `role="tabpanel"`; exactly one tab in the tab order; `aria-selected` on the tab, `aria-labelledby` on the panel; panels get `hidden` (not `display:none` by hand). The pill's selected state is carried by fill + ink, not by an underline alone, and the focus ring is unchanged from the other controls.
 
-**Gallery** — [Tabs frame](index.html#spec-tabs) · `#spec-tabs`
+**Gallery** — [Tabs frame](index.html#spec-tabs) · `#spec-tabs` (renders the boxed, underline and rail specimens; the pill cell lands with the gallery lane)
 
 ---
 
@@ -616,20 +632,20 @@ Everything below is verified against the shipped layer: `design-system/base.css`
 
 | Variant | Attribute | What changes |
 |---|---|---|
-| Rail item | `.ds-nav-item[data-variant="rail"]` | full-width row, `--ds-surface` on current |
-| Dot item | `.ds-nav-item[data-variant="dot"]` | `::before` `dot.size` marker, 2px inset rail |
+| Rail item — **flat** | `.ds-rail .ds-rail__item` (or `.ds-nav-item[data-variant="rail"]`) | full-width row, **no radius, no fill**: hover is ink text only, current is ink + `weight.medium` + a 2px `--ds-accent` inline-start bar that every item reserves as a transparent slot. See [Section rail](#ds-rail) |
+| Dot item — **deprecated** | `.ds-nav-item[data-variant="dot"]` | `::before` `dot.size` marker; the grammar has no dots (the accent bar is the one indicator). Renders this wave, retires next release — do not add it to new markup |
 | Pager | `.ds-pager` | flex row, `spacing.md` gap |
 | Theme toggle | `.ds-theme-toggle` | `role="group"`, two pressed buttons |
 
-**States** — default · hover (`--ds-rule-strong`) · current (`aria-current="page"`, `--ds-accent`) · focus-visible · theme button pressed (`aria-pressed="true"` → accent fill).
+**States** — default (`--ds-muted`, transparent 2px slot) · hover (rail: ink text, no fill) · current (`aria-current="page"` → ink + `weight.medium`, `--ds-accent` bar on the inline-start edge) · focus-visible · theme button pressed (`aria-pressed="true"` → accent fill).
 
 **Token map**
 
 | Property | Token |
 |---|---|
 | Ink / surface | `--ds-ink`, `--ds-muted`, `--ds-accent`, `--ds-surface`, `--ds-surface-alt`, `--ds-bg` |
-| Rule / marker | `--ds-rule`, `--ds-rule-strong`, `border-width.strong`, `dot.size` |
-| Geometry | `spacing.2`, `spacing.sm`, `spacing.md`, `spacing.10`, `radius.xs` |
+| Rule / marker | `--ds-rule`, `--ds-rule-strong`, `border-width.strong`, `dot.size` (deprecated variant only) |
+| Geometry | `radius.none` (rail item), `radius.xs` (pager/toggle), `spacing.2`, `spacing.sm`, `spacing.md`, `spacing.10` |
 | Target | `touch.min` |
 
 **Dos and don'ts** — DO mark the current item with `aria-current`, not a class; DO keep the theme toggle to two states and write `data-ds-theme` and `data-theme` in **one** function (two writers half-apply dark mode). DON'T add a dot to the underline tab style — pick one indicator.
@@ -637,6 +653,66 @@ Everything below is verified against the shipped layer: `design-system/base.css`
 **Accessibility** — nav items are links with `aria-current="page"`; the pager's two buttons have text, not glyphs alone; the theme toggle is a labelled group of toggle buttons (`aria-pressed`), so the state is announced without a live region.
 
 **Gallery** — [Pager · nav item · theme toggle frame](index.html#spec-nav) · `#spec-nav`
+
+---
+
+### Section rail {#ds-rail}
+
+**Purpose** — the vertical section navigation for a page: one flat column of section links pinned to the left edge of the viewport. It is a scaffold, not a card — the flatness is the grammar. A page adds no background, no radius, no shadow, no dot; the only mark is the accent bar on the current item.
+
+**Anatomy** — `<nav class="ds-rail" aria-label="Sections">` holding at most a few `.ds-rail__label` eyebrows and one `.ds-nav-item.ds-rail__item` per section. Two class names per item and **no attribute**: `.ds-rail__item` carries the item's rule set (declared with §18's nav item), `.ds-nav-item` brings the type, height and focus behaviour.
+
+```html
+<nav class="ds-rail" aria-label="Sections">
+  <p class="ds-rail__label">Brief</p>
+  <a class="ds-nav-item ds-rail__item" href="#brief" aria-current="page">The brief</a>
+  <a class="ds-nav-item ds-rail__item" href="#shots">Shots</a>
+  <a class="ds-nav-item ds-rail__item" href="#notes">Notes</a>
+</nav>
+```
+
+`data-variant="rail"` on a `.ds-nav-item` is the equivalent older spelling and renders identically; new markup uses the two-class form. The rail styles only the items it contains — a `<ul>`/`<li>` wrapper is allowed but not required.
+
+**Slotting it into a full-bleed grid** — the rail must sit against the viewport's left edge, so it can never live inside a centred max-width wrapper. The page grid owns the split, and the content column owns the max-width and its own gutter:
+
+```css
+.page{display:grid;grid-template-columns:var(--layout-rail) minmax(0,1fr)}
+.page__main{max-inline-size:var(--layout-max-wiki);margin-inline:auto;
+            padding-inline:var(--spacing-2xl)}
+```
+
+`<body>` and the grid row carry **no** horizontal padding — the rail supplies its own inset, and its hairline is the only edge it draws. `position:sticky` needs a row taller than the rail, which is why the rail is `align-self:start` and `block-size:100dvh`; no ancestor may declare `overflow`, or that ancestor becomes the sticky container and the rail scrolls away with the content. On a narrow viewport the page drops the rail cell (`grid-template-columns:minmax(0,1fr)`) and the same markup becomes a horizontal strip or a disclosure — the rail itself is desktop chrome and has no mobile behaviour of its own.
+
+**States**
+
+| State | Mark | Selector |
+|---|---|---|
+| default | `--ds-muted` text, 2px transparent inline-start slot, `weight.regular` | `.ds-rail .ds-rail__item` |
+| hover | `--ds-ink` text only — no fill, no border change | `:hover`, `[data-state~="hover"]` |
+| current | `--ds-ink` + `weight.medium` + 2px `--ds-accent` bar on the inline-start edge | `[aria-current="page"]`, `[aria-selected="true"]`, `[data-state~="current"]` |
+| focus-visible | the shared ring (`focus.width` / `focus.offset` / `focus.color`) | `.ds-nav-item:is(:focus-visible)` |
+
+The 2px slot is present on **every** item, current or not, which is why the text never shifts when the current item changes. The label sits on the same text axis (slot + `spacing.md`), so the eyebrow and the items share one left edge.
+
+**Token map**
+
+| Property | Token |
+|---|---|
+| Width | `layout.rail` (208px) — a rail is narrower than a card sidebar; the per-surface `layout.sidebar.*` widths it replaced were retired with the navigation rewrite (see `DEPRECATIONS.md`) |
+| Inset | `layout.rail.inset` → `spacing.20`: the **rail** takes it as `padding-block` only (`padding-inline:0`), so the 2px indicator sits flush at x=0 and the hairline is the edge; the **items and the label** carry it as `padding-inline-start` (inline-end `spacing.md`) |
+| Edge | `border.width.hairline` + `--ds-rule`, inline-end only; `radius.none`; `background:transparent` |
+| Indicator | `border.width.strong` (2px), `--ds-accent`, transparent when idle |
+| Ink | `--ds-muted` (idle), `--ds-ink` (hover/current), `--ds-faint` (label) |
+| Type | `typography.size.small` (items), `typography.size.eyebrow` + `typography.family.mono` + `tracking.eyebrow` (label), `weight.regular` / `weight.medium`, `line-height.tight` |
+| Rhythm | `spacing.2` (item gap), `spacing.xs` (label → items), `spacing.md` (item padding / label offset), `spacing.lg` (second label) |
+| Height | `control.height.*` through `--_ctl-h` and `data-ds-density`, i.e. the item is a control, the rail is not |
+| Motion | `motion.duration.hover`, `motion.easing.standard` (inherited from the item) |
+
+**Dos and don'ts** — DO keep the rail flat and edge-flush, DO mark the live section with `aria-current="page"`, DO let the content column carry the max-width. DON'T put a background, border-radius, card, shadow or dot on the rail or its items, DON'T nest the rail inside the max-width wrapper (it must be the first grid cell), DON'T give it a second indicator (an icon *and* a bar, a dot *and* a bar), and DON'T rebuild it out of `.ds-tabs[data-variant="rail"]` — that is a legacy tablist, not a section nav.
+
+**Accessibility** — a landmark `<nav>` with `aria-label`; items are links (`<a href>`), not buttons, and the current one carries `aria-current="page"` so the state is announced rather than coloured. The rail is in normal document order before the content, so the tab sequence matches reading order; the focus ring is the shared `base.css` ring. Because the rail is sticky and full height, it must not trap scrolling: it scrolls its own overflow only when the sections exceed the viewport.
+
+**Gallery** — anchor reserved: `index.html#spec-rail`. The frame is not rendered yet (the gallery is owned by another lane this wave); this section is the contract that frame must render — three densities, four theme cells, one current item.
 
 ---
 

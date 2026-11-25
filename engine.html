@@ -33,7 +33,6 @@
   --_danger-ink:var(--color-status-danger-ink-dark);
   --tap:var(--touch-preferred);
   --tap-min:var(--touch-min);
-  --bar-h:var(--layout-bar-engine);
   /* one ring for the whole surface: components paint :focus-visible at 0,2,0,
      which beats the page ring below; re-point --focus-color at the pitch accent
      so every control, canvas included, takes the cream ring */
@@ -48,7 +47,7 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 .back{color:var(--mut);text-decoration:none;font-size:var(--typography-size-small);display:inline-flex;align-items:center;min-height:var(--touch-min)}
 .back:hover{color:var(--ink)}
 .tools{margin-left:auto;display:flex;gap:var(--spacing-xs);flex-wrap:wrap}
-.tools button{font:inherit;font-size:var(--typography-size-small);font-weight:600;color:var(--ink);background:var(--tool);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);padding:var(--spacing-6) var(--spacing-sm);cursor:pointer;min-height:var(--tap-min)}
+.tools button{font:inherit;font-size:var(--typography-size-small);font-weight:var(--weight-medium);color:var(--ink);background:var(--tool);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);padding:var(--spacing-6) var(--spacing-sm);cursor:pointer;min-height:var(--tap-min)}
 .tools button:hover{border-color:var(--color-engine-text-secondary)}
 .tools button.warn:hover{border-color:var(--danger)}
 .tools button:disabled{opacity:.35;cursor:default}
@@ -79,22 +78,20 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
    from 56px to --spacing-2xl 48px — the declared delta); this page keeps its own
    inset, gap and elevation so the message box does not grow. */
 #toast{padding:var(--spacing-xs) var(--spacing-xs) var(--spacing-xs) var(--spacing-14);gap:var(--spacing-sm);box-shadow:var(--elevation-sheet);max-inline-size:none;z-index:var(--z-max)}
-#toastBtn{background:var(--acc);border:0;border-radius:var(--radius-xs);color:var(--color-engine-accent-ink);font-weight:700;padding:var(--spacing-6) var(--spacing-sm);cursor:pointer;font-size:var(--typography-size-small)}
-#drawerDel{background:transparent;border:var(--border-width-hairline) solid var(--danger);color:var(--_danger-ink);border-radius:var(--radius-xs);padding:var(--spacing-2xs) var(--spacing-sm);cursor:pointer;font-size:var(--typography-size-meta);margin-top:var(--spacing-10)}
-#drawerDel:hover{background:var(--danger);color:var(--color-primitive-black)}
-#drawerDel.armed{background:var(--danger);border-color:var(--danger);color:var(--color-primitive-black);font-weight:700}
-#drawerDelCancel{background:transparent;border:var(--border-width-hairline) solid var(--border-strong);color:var(--mut);border-radius:var(--radius-xs);padding:var(--spacing-2xs) var(--spacing-sm);cursor:pointer;font-size:var(--typography-size-meta);margin-top:var(--spacing-10);margin-left:var(--spacing-xs)}
-#drawerDelCancel:hover{background:var(--tool-hover);color:var(--ink);border-color:var(--color-engine-text-secondary)}
+/* delete pair: plain .ds-btn (data-variant="danger" / default, data-size="xs").
+   Only the row placement and the armed state stay page-local. */
+#drawerDel{margin-top:var(--spacing-10)}
+#drawerDel.armed{background:var(--danger);border-color:var(--danger);color:var(--color-primitive-black)}
+#drawerDelCancel{margin-top:var(--spacing-10);margin-left:var(--spacing-xs)}
 #shotProps{display:flex;gap:var(--spacing-sm);align-items:center;font-size:var(--typography-size-meta);color:var(--mut2);margin:var(--spacing-xs) 0;flex-wrap:wrap}
 #shotProps[hidden]{display:none}
 #shotProps select{background:var(--tool);color:var(--ink);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);padding:var(--spacing-2xs) var(--spacing-6);font-size:var(--typography-size-meta);max-width:130px}
 #shotProps b{color:var(--ink)}
 #slotBtns{display:flex;gap:var(--spacing-10);margin-top:var(--spacing-sm)}
 #slotBtns[hidden]{display:none}
-#slotBtns button{border-radius:var(--radius-xs);padding:var(--spacing-6) var(--spacing-14);cursor:pointer;font-size:var(--typography-size-small)}
-#goShot{background:var(--acc);border:0;color:var(--color-engine-accent-ink);font-weight:700}
-#removeSlot{background:transparent;border:var(--border-width-hairline) solid var(--danger);color:var(--_danger-ink)}
-#removeSlot:hover{background:var(--danger);color:var(--color-primitive-black)}
+/* drawer actions are plain .ds-btn: `go to shot` is [data-variant="primary"],
+   `remove` is [data-variant="danger"], so neither needs an id rule restating
+   padding, radius or paint — the component's 24px inline box stands. */
 #scrim{position:fixed;inset:0;background:var(--color-engine-scrim);opacity:0;pointer-events:none;transition:opacity var(--motion-duration-fast);z-index:var(--z-drawer)}
 #scrim.open{opacity:1}
 #drawer{position:fixed;top:0;right:0;bottom:0;width:var(--layout-drawer-engine-width);padding:0;block-size:auto;overflow:visible;background:var(--panel);border-left:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-none);z-index:var(--z-drawer-child);transform:translateX(105%);transition:transform var(--motion-duration-base) var(--motion-easing-standard);display:flex;flex-direction:column}
@@ -112,13 +109,20 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 #drawerEmpty{margin:var(--spacing-6) var(--spacing-18) 0;border:var(--border-width-hairline) dashed var(--border-strong);border-radius:var(--radius-xs);padding:var(--spacing-14) var(--spacing-sm);text-align:center;color:var(--mut);font-size:var(--typography-size-small)}
 #drawerEmpty[hidden]{display:none}
 #drawerEmpty p{margin:0 0 var(--spacing-10)}
-#drawerAddImg{background:var(--acc);border:0;border-radius:var(--radius-xs);color:var(--color-engine-accent-ink);font-weight:700;padding:var(--spacing-6) var(--spacing-14);cursor:pointer;font-size:var(--typography-size-small)}
-#drawerAddImg:hover{filter:brightness(1.1)}
 #main{flex:1;display:flex;min-height:0}
-#side{width:var(--layout-sidebar-engine);flex:none;background:var(--panel);border-right:var(--border-width-hairline) solid var(--border);padding:var(--spacing-sm) var(--spacing-xs);display:flex;flex-direction:column;gap:var(--spacing-6)}
-#side button{font:inherit;font-size:var(--typography-size-small);font-weight:600;color:var(--mut);background:transparent;border:var(--border-width-hairline) solid transparent;border-left:var(--border-width-strong) solid transparent;border-radius:var(--radius-xs);padding:var(--spacing-xs) var(--spacing-10);text-align:left;cursor:pointer}
-#side button:hover{color:var(--ink);background:var(--tool-hover)}
-#side button.on{color:var(--ink);background:var(--color-engine-surface-2);border-color:transparent;border-left-color:var(--sel)}
+/* views rail — the shipped flat rail (§20 .ds-rail): no fill, no radius, no
+   card. Only the current item carries the 2px inline-start accent; every item
+   keeps the same 2px transparent slot so the text axis never moves. The
+   hairline sits on the rail's right edge (inline-end) and the rail is flush to
+   the viewport's left edge — padding-inline:0, so the item's slot starts at
+   x=0 and the item's own inset (layout.rail.inset) is what moves the text in.
+   Width is the grammar token --layout-rail (208px): measured at 1440 it leaves
+   the canvas 1232×819 and the tool row untouched; at 390 the rail is the
+   horizontal strip below, so the inline size is moot there.
+   The item box is NOT restated here — there is no `#side button` rule, so
+   .ds-nav-item[data-variant="rail"] alone decides radius (0), padding, ink and
+   the state set. */
+#side{width:var(--layout-rail);flex:none;background:transparent;border-right:var(--border-width-hairline) solid var(--border);border-radius:var(--radius-none);padding:var(--layout-rail-inset) 0;display:flex;flex-direction:column;gap:var(--spacing-2)}
 .side-div{height:1px;background:var(--border);margin:var(--spacing-6) var(--spacing-2xs)}
 #stage{flex:1;display:flex;flex-direction:column;min-width:0;position:relative;background:var(--panel)}
 #cardMenuBtn{position:absolute;z-index:var(--z-sticky);min-width:var(--tap-min);min-height:var(--tap-min);width:var(--tap-min);height:var(--tap-min);padding:0;border-radius:var(--radius-xs);border:var(--border-width-hairline) solid var(--color-engine-wash-25);background:var(--color-engine-overlay-scrim);color:var(--ink);font-size:var(--typography-size-body);line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
@@ -128,7 +132,7 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 #cardMenu button{background:transparent;border:0;color:var(--ink);font:inherit;font-size:var(--typography-size-small);text-align:left;padding:var(--spacing-xs) var(--spacing-10);border-radius:var(--radius-xs);cursor:pointer}
 #cardMenu button:hover,#cardMenu button:focus-visible{background:var(--tool)}
 #cardMenu[hidden]{display:none}
-#assetBtn{position:absolute;z-index:var(--z-sticky);top:10px;left:10px;display:inline-flex;align-items:center;justify-content:center;min-height:var(--touch-min);font:inherit;font-size:var(--typography-size-meta);font-weight:600;color:var(--mut);background:var(--color-engine-overlay-panel);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);padding:var(--spacing-6) var(--spacing-10);cursor:pointer;backdrop-filter:blur(4px)}
+#assetBtn{position:absolute;z-index:var(--z-sticky);top:10px;left:10px;display:inline-flex;align-items:center;justify-content:center;min-height:var(--touch-min);font:inherit;font-size:var(--typography-size-meta);font-weight:var(--weight-medium);color:var(--mut);background:var(--color-engine-overlay-panel);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);padding:var(--spacing-6) var(--spacing-10);cursor:pointer;backdrop-filter:blur(4px)}
 #assetBtn:hover,#assetBtn:focus-visible{color:var(--ink);border-color:var(--color-engine-text-secondary)}
 #assetBtn[aria-expanded="true"]{color:var(--sel);border-color:var(--sel)}
 #assetPanel{position:absolute;z-index:var(--z-overlay);top:48px;left:10px;width:min(260px,70vw);min-inline-size:0;max-height:min(320px,60vh);overflow:auto;background:var(--panel);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-sm);box-shadow:var(--elevation-sheet);padding:5px} /* lint-allow: 5px panel inset sits between 4 and 6; snapping reflows the asset rows */
@@ -139,7 +143,7 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 #assetPanel .aedit:hover{color:var(--ink);border-color:var(--color-engine-text-secondary)}
 #assetPanel .ajump{display:flex;gap:var(--spacing-xs);align-items:center;width:100%;text-align:left;font:inherit;font-size:var(--typography-size-small);color:var(--ink);background:transparent;border:0;border-radius:var(--radius-xs);padding:var(--spacing-2xs);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #assetPanel .ajump:hover,#assetPanel .ajump:focus-visible{background:var(--tool)}
-#assetPanel .ajump b{color:var(--teal-bright);font-weight:600;margin-right:var(--spacing-6)}
+#assetPanel .ajump b{color:var(--teal-bright);font-weight:var(--weight-medium);margin-right:var(--spacing-6)}
 #assetPanel .athumb{width:28px;height:28px;flex:none;border-radius:var(--radius-xs);object-fit:cover;background:var(--panel-deep);border:var(--border-width-hairline) solid var(--border)}
 #assetPanel .athumb.none{display:inline-flex;align-items:center;justify-content:center;color:var(--mut);font-size:var(--typography-size-small)}
 #assetPanel .atxt{min-width:0;overflow:hidden;text-overflow:ellipsis}
@@ -147,21 +151,21 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 #chapterbar{display:flex;align-items:center;gap:var(--spacing-xs);padding:var(--spacing-xs) var(--spacing-sm);background:var(--panel);border-bottom:var(--border-width-hairline) solid var(--border);font-size:var(--typography-size-small);color:var(--mut)}
 #chapterbar[hidden]{display:none}
 #chapterbar select{font:inherit;font-size:var(--typography-size-small);color:var(--ink);background:var(--tool);border:var(--border-width-hairline) solid var(--border-strong);border-left:var(--border-width-strong) solid var(--color-engine-selection);border-radius:var(--radius-xs);padding:var(--spacing-2xs) var(--spacing-xs)}
-#chapterbar button{font:inherit;font-size:var(--typography-size-meta);font-weight:600;color:var(--ink);background:var(--tool);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);padding:var(--spacing-2xs) var(--spacing-10);cursor:pointer}
+#chapterbar button{font:inherit;font-size:var(--typography-size-meta);font-weight:var(--weight-medium);color:var(--ink);background:var(--tool);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);padding:var(--spacing-2xs) var(--spacing-10);cursor:pointer}
 #chapterbar button:hover{border-color:var(--color-engine-text-secondary)}
 #chapterbar .sp{flex:1}
 /* state: the visible chapter is the active one — selection colour marks it (declared on the base rule above) */
 /* primary affordance: one cream control per view (+ scene, or + shot/prop/cast/location) */
-#chapterbar #addScene,#addNode{background:var(--acc);border-color:var(--acc);color:var(--acc-ink);font-weight:700}
+#chapterbar #addScene,#addNode{background:var(--acc);border-color:var(--acc);color:var(--acc-ink);font-weight:var(--weight-bold)}
 #chapterbar #addScene:hover,#addNode:hover{background:var(--acc);border-color:var(--acc);color:var(--acc-ink);filter:brightness(1.06)}
 #projBtn{border-color:var(--border-strong)}
 #anchorRow{display:flex;gap:var(--spacing-xs);align-items:center;font-size:var(--typography-size-meta);margin:var(--spacing-6) 0;flex-wrap:nowrap}
-#anchorRow code,#anchorRow button{min-height:var(--touch-min);display:inline-flex;align-items:center;padding:0 var(--spacing-10);font-size:var(--typography-size-meta);line-height:1;border-radius:var(--radius-xs);white-space:nowrap;margin:0;box-sizing:border-box}
-#anchorRow code{background:var(--panel-deep);border:var(--border-width-hairline) solid var(--teal);color:var(--teal-bright);cursor:pointer}
-#anchorRow button{background:transparent;border:var(--border-width-hairline) solid var(--border-strong);color:var(--mut2);cursor:pointer}
-#anchorRow button:hover{border-color:var(--color-engine-text-secondary);color:var(--ink)}
-#copyStub{display:inline-flex;align-items:center;justify-content:center;min-height:var(--touch-min);background:transparent;border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);color:var(--ink);padding:var(--spacing-6) var(--spacing-14);cursor:pointer;font-size:var(--typography-size-small);margin:var(--spacing-6) 0}
-#copyStub:hover{border-color:var(--color-engine-text-secondary)}
+/* anchor row: the controls are .ds-btn[data-size="xs"]; only the row spacing and
+   the quieter ink the drawer uses beside the anchor chip stay page-local. */
+#anchorRow .ds-btn{white-space:nowrap;margin:0;border-color:var(--border-strong);color:var(--mut2)}
+#anchorRow .ds-btn:hover{border-color:var(--color-engine-text-secondary);color:var(--ink)}
+#anchorRow code{min-height:var(--touch-min);display:inline-flex;align-items:center;padding:0 var(--spacing-10);font-size:var(--typography-size-meta);line-height:1;border-radius:var(--radius-xs);white-space:nowrap;margin:0;box-sizing:border-box;background:var(--panel-deep);border:var(--border-width-hairline) solid var(--teal);color:var(--teal-bright);cursor:pointer}
+#copyPrompt{margin:var(--spacing-6) 0}
 #promptPrev{background:var(--panel-deep);border:var(--border-width-hairline) solid var(--border);border-radius:var(--radius-xs);padding:var(--spacing-10) var(--spacing-sm);padding-top:2.3rem;font-size:var(--typography-size-eyebrow);line-height:1.5;font-family:var(--typography-family-mono);color:var(--code);white-space:pre;margin:var(--spacing-6) 0 0;overflow:auto;flex:1;min-height:0} /* lint-allow: 2.3rem prompt-label clearance is layout-scale, beyond the 32px step */
 #promptWrap{position:relative;flex:1;display:flex;flex-direction:column;min-height:0}
 #anchorRow #drawerMenuBtn{position:static;margin-left:auto}
@@ -172,12 +176,12 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 #drawerMenu button:hover{background:var(--tool)}
 #drawerMenu button[hidden]{display:none}
 #drawerMenu #menuDel:hover{background:var(--tool);color:var(--_danger-ink)}
-#drawerMenu #menuDel.armed{background:var(--danger);border-color:var(--danger);color:var(--color-primitive-black);font-weight:700}
+#drawerMenu #menuDel.armed{background:var(--danger);border-color:var(--danger);color:var(--color-primitive-black);font-weight:var(--weight-bold)}
 #delConfirm{display:flex;gap:var(--spacing-xs);margin:var(--spacing-6) 0}
 #delConfirm[hidden]{display:none}
 #delConfirm #drawerDel,#delConfirm #drawerDelCancel{margin-top:0}
 #promptBtnRow{position:absolute;top:.45rem;right:.55rem;display:flex;gap:var(--spacing-6);margin:0;align-items:center}
-#promptBtnRow #copyStub,#promptBtnRow #genGenBtn{margin:0}
+#promptBtnRow #copyPrompt,#promptBtnRow #genGenBtn{margin:0}
 #promptBtnRow #genModelSel{margin:0;max-width:11rem;text-overflow:ellipsis}
 #genKeyRow{display:flex;gap:var(--spacing-6);align-items:center;flex-wrap:wrap}
 #genKeyRow #genKeyInput{flex:1;min-width:12rem;min-height:var(--touch-min);background:transparent;border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);color:var(--ink);padding:var(--spacing-6) var(--spacing-10);font-size:var(--typography-size-small)}
@@ -187,7 +191,7 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 #genListRow #genAll,#genListRow #genNone{margin:0}
 #genModels{display:flex;flex-direction:column;gap:var(--spacing-2xs);margin-top:var(--spacing-xs);max-height:11rem;overflow:auto}
 .gen-keyhead{display:flex;gap:var(--spacing-6);align-items:center;flex-wrap:wrap;margin-top:var(--spacing-6)}
-.gen-keyname{font-weight:600}
+.gen-keyname{font-weight:var(--weight-medium)}
 .gen-keybadge{font-size:var(--typography-size-meta);color:var(--mut);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);padding:0 var(--spacing-6)}
 .gen-keycount{font-size:var(--typography-size-meta);color:var(--mut)}
 .gen-keyhead .ds-btn{margin:0}
@@ -218,18 +222,18 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 .proj-wrap{display:flex;border:var(--border-width-hairline) solid var(--border);border-radius:var(--radius-sm);overflow:hidden;min-height:380px;max-height:62vh;background:var(--color-engine-surface-0)}
 .proj-wrap .pm-nav{width:150px;flex:none;background:var(--bg);border-right:var(--border-width-hairline) solid var(--border);padding:var(--spacing-sm) 0;display:flex;flex-direction:column;gap:var(--spacing-2xs);overflow:auto}
 #projNav{display:flex;flex-direction:column;gap:var(--spacing-2xs)}
-#projNav button{background:transparent;border:0;border-left:var(--border-width-strong) solid transparent;border-radius:var(--radius-none);color:var(--mut);font-size:var(--typography-size-small);line-height:1.5;text-align:left;padding:var(--spacing-xs) var(--spacing-20);cursor:pointer;width:100%;box-sizing:border-box}
-#projNav button:hover{color:var(--ink);background:var(--tool-hover)}
-#projNav button.on{border-left-color:var(--sel);color:var(--ink);background:var(--color-engine-surface-2);font-weight:600}
+/* nav items are .ds-nav-item[data-variant="rail"] built in renderProjectModal():
+   the flat rail rule set owns radius (0), the 2px indicator slot, the padding and
+   the muted/ink colour pair, so the page keeps only the disabled-domain state. */
 #projNav button.off{opacity:.55}
 .proj-wrap .pm-mid{flex:1;min-width:0;padding:var(--spacing-14) var(--spacing-md);overflow:auto}
 .proj-codes{width:270px;flex:none;border-left:var(--border-width-hairline) solid var(--border);padding:var(--spacing-sm) var(--spacing-14);overflow:auto;background:var(--color-engine-surface-0)}
 .proj-codes-h{font-size:var(--typography-size-eyebrow);text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:0 0 var(--spacing-xs)}
-.proj-dom-h{display:flex;align-items:center;gap:var(--spacing-10);font-weight:700;font-size:var(--typography-size-body);margin-bottom:var(--spacing-2)}
+.proj-dom-h{display:flex;align-items:center;gap:var(--spacing-10);font-weight:var(--weight-bold);font-size:var(--typography-size-body);margin-bottom:var(--spacing-2)}
 .proj-ddesc{color:var(--mut);font-size:.78rem;margin:var(--spacing-2xs) 0 var(--spacing-sm)}/* type-scale exception: on the named scale .8rem this row wraps to 2 lines in the project modal at 1440px; .78rem holds one line */
 .proj-tok{border:var(--border-width-hairline) solid var(--border);border-radius:var(--radius-sm);padding:var(--spacing-xs) var(--spacing-10);margin-bottom:var(--spacing-xs)}
 .proj-tok.off{opacity:.6}
-.proj-tok-h{display:flex;align-items:center;gap:var(--spacing-xs);font-size:var(--typography-size-small);font-weight:600}
+.proj-tok-h{display:flex;align-items:center;gap:var(--spacing-xs);font-size:var(--typography-size-small);font-weight:var(--weight-medium)}
 .proj-tok-h .tname{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .proj-tok-h select{flex:none;max-width:190px;background:var(--tool);color:var(--ink);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);padding:var(--spacing-2xs) var(--spacing-6);font-size:var(--typography-size-timecode);cursor:pointer}
 .proj-tok-h select:hover{border-color:var(--color-engine-text-secondary)}
@@ -257,14 +261,8 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 @media (max-width:760px){.proj-wrap{flex-direction:column;max-height:none}.proj-wrap .pm-nav{width:auto;border-right:0;border-bottom:var(--border-width-hairline) solid var(--border);padding:var(--spacing-xs)}#projNav{flex-direction:row;flex-wrap:wrap}.proj-codes{width:auto;border-left:0;border-top:var(--border-width-hairline) solid var(--border)}}/* lint-allow: 760px predates the breakpoint scale; --breakpoint-md 767.5 would reflow the projection rail 7.5px earlier */
 .modal .row{display:flex;gap:var(--spacing-10);margin:var(--spacing-xs) 0}
 .modal .row input,.modal .row select{flex:1;background:var(--tool);color:var(--ink);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);padding:var(--spacing-6) var(--spacing-xs);font:inherit;font-size:var(--typography-size-small);min-width:0}
-.modal .tabs{display:flex;gap:var(--spacing-6);flex-wrap:wrap;margin:var(--spacing-xs) 0}
-.modal .tabs button{background:var(--tool);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);color:var(--mut2);font-size:var(--typography-size-timecode);padding:var(--spacing-2xs) var(--spacing-10);cursor:pointer}
-.modal .tabs button.on{border-color:var(--sel);color:var(--ink)}
 .modal .out{background:var(--panel-deep);border:var(--border-width-hairline) solid var(--border);border-radius:var(--radius-xs);padding:var(--spacing-10) var(--spacing-sm);font-size:var(--typography-size-meta);color:var(--code);white-space:pre-wrap;min-height:4rem}
 .modal .frow{display:flex;gap:var(--spacing-10);align-items:center;margin:var(--spacing-10) 0 var(--spacing-2xs)}
-.modal .frow button{background:var(--tool);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);color:var(--ink);padding:var(--spacing-6) var(--spacing-14);cursor:pointer;font-size:var(--typography-size-small)}
-.modal .frow button:hover{border-color:var(--color-engine-text-secondary)}
-#projClose{background:var(--acc);border:0;color:var(--color-engine-accent-ink);font-weight:700;padding:0}
 #editPanel{position:fixed;top:0;bottom:0;right:360px;width:min(560px,calc(100vw - 360px));background:var(--panel);border-left:var(--border-width-hairline) solid var(--border);border-right:0;z-index:var(--z-drawer);transform:translateX(40px);opacity:0;pointer-events:none;visibility:hidden;transition:transform var(--motion-duration-slow) var(--motion-easing-emphasized),opacity var(--motion-duration-tab) var(--motion-easing-out),visibility var(--motion-duration-none) var(--motion-duration-slow);display:flex;flex-direction:column}
 #drawer.editing ~ #editPanel{transform:none;opacity:1;pointer-events:auto;visibility:visible;transition:transform var(--motion-duration-slow) var(--motion-easing-emphasized),opacity var(--motion-duration-tab) var(--motion-easing-out)}
 #drawerEdit{display:flex;flex-direction:column;min-height:0;flex:1;min-width:0}
@@ -272,15 +270,16 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 .edithead{display:flex;align-items:center;gap:var(--spacing-sm);padding:var(--spacing-md) var(--spacing-20) var(--spacing-sm);min-height:52px}
 .edithead .pmtitle{font-size:var(--typography-size-eyebrow);text-transform:uppercase;letter-spacing:.06em;color:var(--mut);line-height:1.5}
 .editbody{display:flex;gap:0;min-height:0;flex:1;overflow:hidden}
-#pmBack{align-self:center;margin:0;background:transparent;border:0;color:var(--mut);font-size:var(--typography-size-small);line-height:1.5;cursor:pointer;padding:var(--spacing-xs) 0;text-align:left;width:auto}
-#pmBack:hover{color:var(--ink)}
+/* `close` is a plain .ds-btn[data-variant="ghost"]; only its placement is local */
+#pmBack{align-self:center;margin:0}
 .pm-nav{width:var(--layout-sidebar-engine);flex:none;background:var(--bg);border-right:var(--border-width-hairline) solid var(--border);padding:var(--spacing-sm) 0;display:flex;flex-direction:column;gap:var(--spacing-2xs);overflow:auto}
 .pm-nav .pmtitle{font-size:var(--typography-size-eyebrow);text-transform:uppercase;letter-spacing:.06em;color:var(--mut);line-height:1.5;margin:0 var(--spacing-20) var(--spacing-xs)}
 #pmNav{display:flex;flex-direction:column;gap:var(--spacing-2xs)}
-#pmNav button{background:transparent;border:0;border-left:var(--border-width-strong) solid transparent;border-radius:var(--radius-none);color:var(--mut);font-size:var(--typography-size-small);line-height:1.5;text-align:left;padding:var(--spacing-xs) var(--spacing-20);cursor:pointer;width:100%;box-sizing:border-box;transition:transform var(--motion-duration-slow) var(--motion-easing-emphasized),opacity var(--motion-duration-tab) var(--motion-easing-out);transition-delay:calc(.10s + var(--i,0)*16ms)}
-#drawer:not(.editing) ~ #editPanel #pmNav button{transform:translateX(-8px);opacity:0;transition-delay:0s}
-#pmNav button:hover{color:var(--ink);background:var(--tool-hover)}
-#pmNav button.on{border-left-color:var(--sel);color:var(--ink);background:var(--color-engine-surface-2);font-weight:600}
+/* the drawer's reveal animation only — the item box belongs to the flat rail
+   rule set (.ds-nav-item[data-variant="rail"]), which sets radius 0, the 2px
+   indicator slot, padding and the muted/ink colour pair. */
+#pmNav .ds-nav-item{transition:transform var(--motion-duration-slow) var(--motion-easing-emphasized),opacity var(--motion-duration-tab) var(--motion-easing-out);transition-delay:calc(.10s + var(--i,0)*16ms)}
+#drawer:not(.editing) ~ #editPanel #pmNav .ds-nav-item{transform:translateX(-8px);opacity:0;transition-delay:0s}
 .pm-mid{flex:1;min-width:0;padding:var(--spacing-20);overflow:auto;transition:transform var(--motion-duration-slow) var(--motion-easing-emphasized),opacity var(--motion-duration-tab) var(--motion-easing-out)}
 #drawer:not(.editing) ~ #editPanel #pmMid{transform:translateX(12px);opacity:0;transition-delay:0s}
 #drawer.editing ~ #editPanel #pmMid{transform:none;opacity:1}
@@ -291,7 +290,7 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 #editPanel .tok select:hover{border-color:var(--color-engine-text-secondary);cursor:pointer}
 #editPanel .tok select:focus{border-color:var(--ink)}
 #editPanel .tdesc{color:var(--mut);font-size:var(--typography-size-timecode);line-height:var(--line-height-normal);margin:0 0 var(--spacing-2xs) 118px} /* lint-allow: 118px label indent aligns to the field column, not the rhythm */
-#editPanel .tchip{flex:none;align-self:center;font-size:var(--typography-size-eyebrow);font-weight:700;letter-spacing:.04em;color:var(--ink);background:var(--color-engine-surface-2);border:var(--border-width-hairline) solid var(--border);border-radius:var(--radius-pill);padding:1px var(--spacing-xs);line-height:1.6;white-space:nowrap;cursor:default} /* lint-allow: 1px chip inset is an optical hairline; no 2px step exists */
+#editPanel .tchip{flex:none;align-self:center;font-size:var(--typography-size-eyebrow);font-weight:var(--weight-bold);letter-spacing:.04em;color:var(--ink);background:var(--color-engine-surface-2);border:var(--border-width-hairline) solid var(--border);border-radius:var(--radius-pill);padding:1px var(--spacing-xs);line-height:1.6;white-space:nowrap;cursor:default} /* lint-allow: 1px chip inset is an optical hairline; no 2px step exists */
 #editPanel .tchip[hidden]{display:none}
 #editPanel .flab{display:block;font-size:var(--typography-size-meta);color:var(--mut);line-height:1.5;margin:0}
 #editPanel .subh{font-size:var(--typography-size-timecode);text-transform:uppercase;letter-spacing:.05em;color:var(--mut);line-height:1.5;margin:var(--spacing-sm) 0 var(--spacing-2xs)}
@@ -303,7 +302,7 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 #menDrop{position:fixed;z-index:var(--z-toast);min-width:220px;max-width:320px;max-height:240px;overflow:auto;background:var(--panel);color:var(--ink);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-sm);box-shadow:var(--elevation-popover);padding:var(--spacing-2xs)}
 #menDrop[hidden]{display:none}
 #menDrop button{display:flex;gap:var(--spacing-xs);align-items:baseline;width:100%;box-sizing:border-box;background:transparent;border:0;border-radius:var(--radius-xs);color:var(--ink);font:inherit;font-size:var(--typography-size-small);text-align:left;padding:var(--spacing-6) var(--spacing-xs);cursor:pointer}
-#menDrop button b{color:var(--mut);font-weight:600;white-space:nowrap}
+#menDrop button b{color:var(--mut);font-weight:var(--weight-medium);white-space:nowrap}
 #menDrop button:hover{background:var(--tool-hover)}#menDrop button.on{background:var(--color-engine-surface-2);box-shadow:inset var(--border-width-strong) 0 0 var(--sel)}
 #menDrop .men-no{color:var(--mut);font-size:var(--typography-size-meta);font-style:italic;padding:var(--spacing-6) var(--spacing-xs)}
 #menDrop #menFilter{width:100%;box-sizing:border-box;background:var(--tool);color:var(--ink);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);padding:var(--spacing-6) var(--spacing-xs);font:inherit;font-size:var(--typography-size-small);margin-bottom:var(--spacing-2xs)}
@@ -315,7 +314,7 @@ input.tin.tin-pilled{color:transparent !important}
 .tinmirror{position:absolute;overflow:hidden;white-space:pre;pointer-events:none;background:transparent;z-index:var(--z-content)}
 .tinmirror-in{white-space:pre;width:max-content;box-sizing:border-box}
 .tinmirror-in .atin{background:var(--color-engine-surface-2);border:0;border-radius:var(--radius-pill);padding:0 0 0 3px;margin:0 0 0 -3px;white-space:nowrap;color:var(--ink);text-shadow:0 0 .5px currentColor} /* lint-allow: 3px chip inset cancels the -3px gutter so the token stays flush */
-#promptPrev .jval.men{color:var(--ink);font-weight:600;text-decoration:underline;cursor:pointer}
+#promptPrev .jval.men{color:var(--ink);font-weight:var(--weight-medium);text-decoration:underline;cursor:pointer}
 .jkey{color:var(--mut)}.jpunc{color:var(--mut)}
 .jval{cursor:pointer;border-radius:var(--radius-xs);padding:0 var(--spacing-2)}
 .jval:hover{background:var(--tool-hover)}
@@ -335,7 +334,7 @@ input.tin.tin-pilled{color:transparent !important}
 #assetList{border-top:var(--border-width-hairline) solid var(--border);margin-top:var(--spacing-2xs);padding-top:var(--spacing-2xs);max-height:220px;overflow:auto}
 #assetList .ah{color:var(--mut);font-size:var(--typography-size-eyebrow);padding:var(--spacing-2xs) var(--spacing-10) var(--spacing-2);text-transform:uppercase;letter-spacing:.04em}
 #assetList button{white-space:normal;text-align:left}
-#assetList button b{color:var(--teal-bright);font-weight:600}
+#assetList button b{color:var(--teal-bright);font-weight:var(--weight-medium)}
 #assetPanel .ah{color:var(--mut);font-size:var(--typography-size-eyebrow);text-transform:uppercase;letter-spacing:.04em}
 #assetModal .asset-box{width:min(600px,94vw)}
 #assetEditList{display:flex;flex-direction:column;gap:var(--spacing-xs);max-height:56vh;overflow:auto;margin:var(--spacing-6) 0}
@@ -350,13 +349,13 @@ input.tin.tin-pilled{color:transparent !important}
 #assetEditList .aeactions button{background:var(--tool);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);color:var(--ink);font-size:var(--typography-size-timecode);padding:var(--spacing-2xs) var(--spacing-xs);cursor:pointer;white-space:nowrap}
 #assetEditList .aeactions button:hover{border-color:var(--color-engine-text-secondary)}
 #assetEditList .aeactions button.danger{color:var(--_danger-ink);border-color:var(--danger);background:transparent}
-#assetEditList .aeactions button.danger.armed{background:var(--danger);color:var(--color-primitive-black);font-weight:700}
+#assetEditList .aeactions button.danger.armed{background:var(--danger);color:var(--color-primitive-black);font-weight:var(--weight-bold)}
 #assetEditList .aeempty{color:var(--mut);font-size:var(--typography-size-small);font-style:italic;padding:var(--spacing-xs) var(--spacing-2xs)}
 #refPop{position:fixed;z-index:var(--z-menu);width:240px;background:var(--panel);color:var(--ink);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-md);box-shadow:var(--elevation-popover);padding:var(--spacing-10)}
 #refPop[hidden]{display:none}
 #refPop img{width:100%;max-height:150px;object-fit:cover;border-radius:var(--radius-xs);display:block;background:var(--panel-deep)}
 #refPop .rp-noimg{color:var(--mut);font-size:var(--typography-size-meta);font-style:italic;padding:var(--spacing-6) 0}
-#refPop .rp-t{font-size:var(--typography-size-small);font-weight:600;margin:var(--spacing-xs) 0 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#refPop .rp-t{font-size:var(--typography-size-small);font-weight:var(--weight-medium);margin:var(--spacing-xs) 0 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #refPop .rp-a{font-size:var(--typography-size-timecode);color:var(--mut);margin:var(--spacing-2) 0 var(--spacing-xs);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #refPop .rp-row{display:flex;gap:var(--spacing-6);align-items:center}
 #refPop #refOpen{background:var(--tool);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);color:var(--ink);padding:var(--spacing-6) var(--spacing-sm);cursor:pointer;font-size:var(--typography-size-meta)}
@@ -365,17 +364,34 @@ input.tin.tin-pilled{color:transparent !important}
 #drawerBack{position:absolute;top:.6rem;left:.6rem;z-index:var(--z-content);background:var(--color-engine-overlay-scrim);color:var(--color-primitive-white);border:var(--border-width-hairline) solid var(--color-engine-wash-25);border-radius:var(--radius-xs);padding:var(--spacing-2xs) var(--spacing-10);font-size:var(--typography-size-meta);cursor:pointer;backdrop-filter:blur(4px)}
 #drawerBack[hidden]{display:none}
 #drawerBack:hover{border-color:var(--color-engine-text-secondary)}
-/* ---- mobile-first touch layer (lane Engine-Mobile; visual language only, IA unchanged) ----
-   Tokens: --tap 44px min touch target; --bar-h bottom transport bar height. */
-/* transport-bar metrics live on the token scale (aliased above) */
+/* ---- touch layer (lane Engine-Mobile; visual language only, IA unchanged) ----
+   Tokens: --tap 44px min touch target. */
 /* desktop + mobile: 44px minimum touch targets on all primary controls */
 .tools button,#chapterbar button,#chapterbar select,#side button{min-height:var(--tap)}
-#drawerMenu button,#cardMenu button,#assetPanel .ajump,.modal .frow button{min-height:var(--tap)}
+#drawerMenu button,#cardMenu button,#assetPanel .ajump{min-height:var(--tap)}
 /* canvas zoom controls: transport-style cluster, mobile only */
 #zoomCtl{position:absolute;z-index:var(--z-sticky-rail);right:10px;bottom:10px;display:none;flex-direction:column;gap:var(--spacing-6)}
-#zoomCtl button{width:var(--tap);height:var(--tap);border-radius:var(--radius-xs);border:var(--border-width-hairline) solid var(--border-strong);background:var(--color-engine-overlay-panel);color:var(--ink);font-size:18px;font-weight:700;cursor:pointer;backdrop-filter:blur(4px)}
+#zoomCtl button{width:var(--tap);height:var(--tap);border-radius:var(--radius-xs);border:var(--border-width-hairline) solid var(--border-strong);background:var(--color-engine-overlay-panel);color:var(--ink);font-size:18px;font-weight:var(--weight-bold);cursor:pointer;backdrop-filter:blur(4px)}
 #zoomCtl button:hover{border-color:var(--color-engine-text-secondary)}
 #sheetGrab{display:none}
+/* ---- phone / narrow nav (<=900, the --breakpoint-lg step) ----
+   The section nav stops being a column and becomes a left-aligned horizontal
+   strip of pill items under the header: same views, same order, one row that
+   scrolls sideways. The selected item is an accent FILL — never a bottom
+   underline, never a 4px box, and the rail's 2px inline-start slot is dropped
+   because a pill has no edge line. The page never drops to "no navigation". */
+@media (max-width:900px){/* 900px is --breakpoint-lg exactly; T6-clean */
+  #main{flex-direction:column}
+  /* the strip keeps the retired transport bar's height (--layout-bar-engine, 62px)
+     so the stage — and therefore the canvas — keeps exactly the block size it had
+     when the nav sat at the bottom. */
+  #side{position:static;width:auto;flex:none;flex-direction:row;align-items:center;gap:var(--spacing-6);min-height:var(--layout-bar-engine);overflow-x:auto;overscroll-behavior-x:contain;padding:var(--spacing-xs) var(--spacing-sm);border-right:0;border-bottom:var(--border-width-hairline) solid var(--border);scrollbar-width:none}
+  #side::-webkit-scrollbar{display:none}
+  #side .ds-nav-item{flex:0 0 auto;white-space:nowrap;background:var(--panel);border:var(--border-width-hairline) solid var(--border);border-radius:var(--radius-pill);padding-inline:var(--spacing-sm);justify-content:center;text-align:center;color:var(--mut)}
+  #side .ds-nav-item:is(:hover,[data-state~="hover"]){background:var(--panel);border-color:var(--ink);color:var(--ink)}
+  #side .ds-nav-item:is([aria-current="page"],[data-state~="current"]){background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
+  .side-div{display:none}
+}
 @media (max-width:860px){/* lint-allow: 860px collapses the engine header; --breakpoint-lg 900 would hide the tool row 40px later */
   header{gap:var(--spacing-xs);padding:var(--spacing-xs) var(--spacing-sm);padding-top:calc(var(--spacing-xs) + env(safe-area-inset-top,0px))}
   header h1{font-size:var(--typography-size-body)}
@@ -384,12 +400,6 @@ input.tin.tin-pilled{color:transparent !important}
   .tools{flex-wrap:nowrap;overflow-x:auto;max-width:100%;scrollbar-width:none}
   .tools::-webkit-scrollbar{display:none}
   .tools button{flex:none;min-height:var(--tap)}
-  #main{flex-direction:column;padding-bottom:calc(var(--bar-h) + env(safe-area-inset-bottom,0px))}
-  /* side rail -> bottom transport bar (same views, same order: chip language) */
-  #side{position:fixed;left:0;right:0;bottom:0;z-index:var(--z-sheet);width:auto;flex-direction:row;align-items:stretch;gap:var(--spacing-2xs);overflow-x:auto;padding:var(--spacing-xs) var(--spacing-10) calc(var(--spacing-xs) + env(safe-area-inset-bottom,0px));border-right:0;border-top:var(--border-width-hairline) solid var(--border);background:var(--color-engine-overlay-panel);backdrop-filter:blur(10px);scrollbar-width:none}
-  #side::-webkit-scrollbar{display:none}
-  #side button{flex:1 0 auto;text-align:center;white-space:nowrap;padding:var(--spacing-xs) var(--spacing-sm);border-radius:var(--radius-xs)}
-  .side-div{display:none}
   .hint{display:none}
   #stage{min-height:0}
   #chapterbar{overflow-x:auto;scrollbar-width:none}
@@ -403,7 +413,7 @@ input.tin.tin-pilled{color:transparent !important}
   #editPanel{right:0;width:100vw;border-left:0}
   #projModal .proj-box{width:100vw;height:100dvh;max-height:100dvh;border-left:0}
   .modal .asset-box{width:min(560px,calc(100vw - 2rem))}
-  #toast{bottom:calc(var(--bar-h) + env(safe-area-inset-bottom,0px) + 12px);max-width:calc(100vw - 2rem)}
+  #toast{bottom:calc(env(safe-area-inset-bottom,0px) + 12px);max-width:calc(100vw - 2rem)}
   #assetPanel{max-width:calc(100vw - 20px)}
   #arrowpick{max-width:calc(100vw - 16px)}
   #cardMenu{min-width:min(220px,78vw);max-width:calc(100vw - 16px)}
@@ -441,10 +451,11 @@ input.tin.tin-pilled{color:transparent !important}
    inspector form grid (selects / code inputs / token rows) keeps its own
    density and is excluded deliberately — see engine audit notes.
    -------------------------------------------------------------------------- */
-#drawerDel,#drawerDelCancel,#drawerAddImg,#goShot,#removeSlot,#slotBtns button,
+/* Only non-.ds- controls need this floor now: every `.ds-btn` carries its own
+   40px min-block-size from §1, and #projNav/#pmNav items are .ds-nav-item
+   (40px) whose start alignment must NOT be re-centred by this rule. */
 #toastBtn,#assetPanel .aedit,#assetEditList .aeactions button,#refPop #refOpen,
-#refPop #refX,.modal .tabs button,.modal .frow button,#projClose,#projNav button,
-#pmNav button,#pmBack,#drawerBack{min-height:var(--touch-min);display:inline-flex;align-items:center;justify-content:center}
+#refPop #refX,#drawerBack{min-height:var(--touch-min);display:inline-flex;align-items:center;justify-content:center}
 @media (prefers-reduced-motion:reduce){
   #drawer,#scrim,#editPanel,#projModal .proj-box{transition:none;animation:none}
 }
@@ -505,20 +516,20 @@ input.tin.tin-pilled{color:transparent !important}
 <aside id="drawer" class="ds-drawer" hidden inert>
 <button id="drawerX" class="ds-icon-btn" title="close" aria-label="Close card detail">×</button>
 <img id="drawerImg" alt="">
-<div id="drawerEmpty" hidden><p>No image yet — add one to set the look.</p><button id="drawerAddImg" class="ds-btn" type="button">Add image</button></div>
+<div id="drawerEmpty" hidden><p>No image yet — add one to set the look.</p><button id="drawerAddImg" class="ds-btn" data-variant="primary" type="button">Add image</button></div>
 <div id="drawerStills"></div>
-<div class="dp"><div id="drawerMenu" class="ds-menu" role="menu" aria-label="Card actions" data-ds-esc="off" hidden><button id="menuRename" class="ds-menu__item" role="menuitem">Rename asset…</button><button id="menuImg" class="ds-menu__item" role="menuitem">Change image…</button><button id="menuURL" class="ds-menu__item" role="menuitem">Set/Edit URL…</button><button id="menuRem" class="ds-menu__item" role="menuitem">Remove image</button><button id="menuDel" class="ds-menu__item" role="menuitem">delete</button></div><div id="delConfirm" hidden><button id="drawerDel" class="ds-btn">delete</button><button id="drawerDelCancel" class="ds-btn" hidden>cancel</button></div><h3 id="drawerTitle"></h3>
-<div id="anchorRow" hidden><code id="anchorCode" title="copy anchor id"></code><button id="anchorVariant" class="ds-btn" title="Create variant (next letter)">+ variant</button><button id="anchorAssign" class="ds-btn" title="Assign a different anchor">assign</button><button id="drawerMenuBtn" class="ds-btn" title="more" aria-label="Card actions" aria-haspopup="menu" aria-controls="drawerMenu" aria-expanded="false" data-ds-menu-trigger>⋯</button></div>
+<div class="dp"><div id="drawerMenu" class="ds-menu" role="menu" aria-label="Card actions" data-ds-esc="off" hidden><button id="menuRename" class="ds-menu__item" role="menuitem">Rename asset…</button><button id="menuImg" class="ds-menu__item" role="menuitem">Change image…</button><button id="menuURL" class="ds-menu__item" role="menuitem">Set/Edit URL…</button><button id="menuRem" class="ds-menu__item" role="menuitem">Remove image</button><button id="menuDel" class="ds-menu__item" role="menuitem">delete</button></div><div id="delConfirm" hidden><button id="drawerDel" class="ds-btn" data-variant="danger" data-size="xs">delete</button><button id="drawerDelCancel" class="ds-btn" data-size="xs" hidden>cancel</button></div><h3 id="drawerTitle"></h3>
+<div id="anchorRow" hidden><code id="anchorCode" title="copy anchor id"></code><button id="anchorVariant" class="ds-btn" data-size="xs" title="Create variant (next letter)">+ variant</button><button id="anchorAssign" class="ds-btn" data-size="xs" title="Assign a different anchor">assign</button><button id="drawerMenuBtn" class="ds-btn" data-size="xs" title="more" aria-label="Card actions" aria-haspopup="menu" aria-controls="drawerMenu" aria-expanded="false" data-ds-menu-trigger>⋯</button></div>
 <div id="shotProps" hidden><label>chapter <select id="shotCh" data-ds-compact></select></label><label>scene <select id="shotSc" data-ds-compact></select></label><span>lane <b id="shotLane">—</b></span></div>
-<div id="slotBtns" hidden><button id="goShot" class="ds-btn">go to shot</button><button id="removeSlot" class="ds-btn">remove</button></div>
+<div id="slotBtns" hidden><button id="goShot" class="ds-btn" data-variant="primary">go to shot</button><button id="removeSlot" class="ds-btn" data-variant="danger">remove</button></div>
 <div id="promptWrap"><div id="promptPrev" title="Live prompt preview"></div>
-<div id="promptBtnRow"><select id="genModelSel" class="ds-btn" title="image model"></select><button id="genGenBtn" class="ds-btn" type="button" title="generate image">generate</button><button id="copyStub" class="ds-btn">copy</button></div></div>
+<div id="promptBtnRow"><select id="genModelSel" class="ds-btn" title="image model"></select><button id="genGenBtn" class="ds-btn" type="button" title="generate image">generate</button><button id="copyPrompt" class="ds-btn" data-size="xs">copy</button></div></div>
 </div>
 </aside>
-<aside id="editPanel" aria-label="prompt editor"><div id="drawerEdit"><div class="edithead"><button id="pmBack" class="ds-btn" title="dismiss">close</button><div class="pmtitle">prompt</div></div><div class="editbody"><nav class="pm-nav" aria-label="Prompt sections"><div id="pmNav"></div></nav><div id="pmMid" class="pm-mid"><div id="pmFields"></div></div></div></div></aside>
+<aside id="editPanel" aria-label="prompt editor"><div id="drawerEdit"><div class="edithead"><button id="pmBack" class="ds-btn" data-variant="ghost" title="dismiss">close</button><div class="pmtitle">prompt</div></div><div class="editbody"><nav class="pm-nav" aria-label="Prompt sections"><div id="pmNav"></div></nav><div id="pmMid" class="pm-mid"><div id="pmFields"></div></div></div></div></aside>
 </div>
-<div id="toast" class="ds-toast" data-ds-toast role="status" aria-live="polite" aria-atomic="true" hidden><span id="toastMsg" data-ds-toast-message></span><button id="toastBtn" class="ds-btn" type="button">Undo</button></div>
-<div id="projModal" class="modal ds-dialog" role="dialog" aria-modal="true" aria-label="Project tokens" data-ds-esc="off" hidden><div class="ds-dialog__box proj-box"><div class="proj-head"><h2>⚙ Project tokens</h2><button id="projClose" class="ds-btn modalClose">done</button></div>
+<div id="toast" class="ds-toast" data-ds-toast role="status" aria-live="polite" aria-atomic="true" hidden><span id="toastMsg" data-ds-toast-message></span><button id="toastBtn" class="ds-btn" data-variant="primary" type="button">Undo</button></div>
+<div id="projModal" class="modal ds-dialog" role="dialog" aria-modal="true" aria-label="Project tokens" data-ds-esc="off" hidden><div class="ds-dialog__box proj-box"><div class="proj-head"><h2>⚙ Project tokens</h2><button id="projClose" class="ds-btn modalClose" data-variant="primary">done</button></div>
 <div class="sub">Frames only — video/motion is deferred. Enable a domain, token, or value to include it in prompts. Disabled = zero words, no fallbacks.</div>
 <div class="proj-wrap"><nav class="pm-nav" aria-label="Project domains"><div id="projNav"></div></nav><div class="pm-mid"><div id="projToks"></div></div><div class="proj-codes"><div class="proj-codes-h">custom codes</div><div id="projCodes"></div></div></div>
 <div class="frow"><span class="note" id="projNote"></span></div>
@@ -1260,7 +1271,7 @@ document.addEventListener('pointerdown',e=>{if(drawerDelArmed&&!(e.target&&e.tar
 /* ---- project + prompt wiring ---- */
 document.getElementById('projBtn').onclick=()=>openProjectModal();
 document.getElementById('projClose').onclick=()=>closeProjectModal();
-document.getElementById('copyStub').onclick=()=>{if(!drawerSub){flashHint('open a card first');return}const p=buildPrompt(drawerSub);if(buildPromptJSON(drawerSub)==null){flashHint(p);return}copyText(p,'prompt copied')};
+document.getElementById('copyPrompt').onclick=()=>{if(!drawerSub){flashHint('open a card first');return}const p=buildPrompt(drawerSub);if(buildPromptJSON(drawerSub)==null){flashHint(p);return}copyText(p,'prompt copied')};
 /* ---- Image generation: multi-key wallet (Google, OpenRouter, OpenCode — all
    direct from this page) ----
    Keys live in localStorage['cse-img-keys'] only, as [{kid,label,provider,key}],
@@ -2053,7 +2064,7 @@ function buildPromptJSON(n){const t=targetOf(n);if(!t.anchor)return null;
  o.negative=(D('neg')||((ps&&ps.neg!=null)?ps.neg:NEG_DEFAULT)).trim();
  return o}
 function buildPrompt(n){const o=buildPromptJSON(n);if(!o)return'⚠ assign an anchor first (drawer → assign).';return JSON.stringify(o,null,2)}
-function stubFor(n){const t=targetOf(n);if(!t.anchor)return'⚠ no anchor';
+function tokenPromptFor(n){const t=targetOf(n);if(!t.anchor)return'⚠ no anchor';
  if(n&&n.slots){const slots=(n.slots||[]).map(q=>{const sh=shotById(q.shot);return(sh&&sh.anchor?sh.anchor:'?shot')+'@L'+(q.lane+1)});return t.anchor+' — '+String(n.title||'Scene')+(slots.length?' — '+slots.join(', '):'')}
  return t.anchor+' — '+t.entity}
 function copyText(s,okMsg){const done=()=>flashHint(okMsg||'copied');try{if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(s).then(done,()=>{prompt('Copy:',s);done()})}catch(e){}prompt('Copy:',s);done()}
@@ -2065,8 +2076,8 @@ function projCodeRow(tid,i){const T=tokVal(tid).tok;const cr=document.createElem
 const PROJ_EXTRA_TABS=[['gen','Generate']];
 function renderProjectModal(){if(!PROJECT||!PROJECT.domains)return;if(projTab!=='gen'&&!PROJECT.domains[projTab])projTab=DOMAIN_ORDER[0];
  const nav=document.getElementById('projNav'),mid=document.getElementById('projToks'),codeHost=document.getElementById('projCodes');nav.innerHTML='';mid.innerHTML='';codeHost.innerHTML='';
- DOMAIN_ORDER.forEach((d,i)=>{const D=PROJECT.domains[d];if(!D)return;const b=document.createElement('button');b.className='ds-nav-item';b.textContent=D.label;b.style.setProperty('--i',i);if(d===projTab){b.classList.add('on');b.setAttribute('aria-current','true')}if(!D.enabled)b.classList.add('off');b.title=D.enabled?D.label+' — enabled':D.label+' — disabled';b.onclick=()=>{projTab=d;renderProjectModal()};nav.appendChild(b)});
- PROJ_EXTRA_TABS.forEach(([id,label],k)=>{const b=document.createElement('button');b.className='ds-nav-item';b.textContent=label;b.style.setProperty('--i',DOMAIN_ORDER.length+k);if(id===projTab){b.classList.add('on');b.setAttribute('aria-current','true')}b.title=label;b.onclick=()=>{projTab=id;renderProjectModal()};nav.appendChild(b)});
+ DOMAIN_ORDER.forEach((d,i)=>{const D=PROJECT.domains[d];if(!D)return;const b=document.createElement('button');b.className='ds-nav-item';b.dataset.variant='rail';b.textContent=D.label;b.style.setProperty('--i',i);if(d===projTab){b.classList.add('on');b.setAttribute('aria-current','page')}if(!D.enabled)b.classList.add('off');b.title=D.enabled?D.label+' — enabled':D.label+' — disabled';b.onclick=()=>{projTab=d;renderProjectModal()};nav.appendChild(b)});
+ PROJ_EXTRA_TABS.forEach(([id,label],k)=>{const b=document.createElement('button');b.className='ds-nav-item';b.dataset.variant='rail';b.textContent=label;b.style.setProperty('--i',DOMAIN_ORDER.length+k);if(id===projTab){b.classList.add('on');b.setAttribute('aria-current','page')}b.title=label;b.onclick=()=>{projTab=id;renderProjectModal()};nav.appendChild(b)});
  if(projTab==='gen'){genRenderProjTab(mid,codeHost);const _c=projCounts();document.getElementById('projNote').textContent=_c.d+' of '+_c.dt+' domains · '+_c.t+' of '+_c.tt+' tokens · '+_c.v+' of '+_c.vt+' values enabled';return}
  const D=PROJECT.domains[projTab];
  const dh=document.createElement('div');dh.className='proj-dom-h';const dt=document.createElement('span');dt.textContent=D.label;dt.style.flex='1';dh.appendChild(dt);dh.appendChild(swEl(!!D.enabled,v=>{D.enabled=v},D.label+' domain'));mid.appendChild(dh);
@@ -2155,7 +2166,7 @@ function pmDiv(host){const h=document.createElement('hr');h.className='pmdiv';ho
 function pmSub(host,t){const d=document.createElement('div');d.className='subh';d.textContent=t;host.appendChild(d)}
 function renderPmFields(){const host=document.getElementById('pmFields');host.innerHTML='';if(!pmTarget)return;
  const nav=document.getElementById('pmNav');nav.innerHTML='';
- PM_TABS.forEach(([id,lab],i)=>{const b=document.createElement('button');b.className='ds-nav-item';b.textContent=lab;b.style.setProperty('--i',i);if(pmTab===id){b.classList.add('on');b.setAttribute('aria-current','true')}b.onclick=()=>{pmTab=id;renderPmFields()};nav.appendChild(b)});
+ PM_TABS.forEach(([id,lab],i)=>{const b=document.createElement('button');b.className='ds-nav-item';b.dataset.variant='rail';b.textContent=lab;b.style.setProperty('--i',i);if(pmTab===id){b.classList.add('on');b.setAttribute('aria-current','page')}b.onclick=()=>{pmTab=id;renderPmFields()};nav.appendChild(b)});
  const g=document.createElement('div');host.appendChild(g);
  if(pmTab==='subject'){pmFieldText(g,'descriptor','subject descriptor','East Asian woman, Tibetan highland features…');pmFieldText(g,'expression','expression','quiet confidence');pmDiv(g);pmSub(g,'wardrobe');pmFieldText(g,'wardrobe_top','top','oversized sage cashmere sweater');pmFieldText(g,'wardrobe_bottom','bottom','charcoal wide-leg trousers');pmFieldText(g,'wardrobe_feet','footwear','natural understated footwear');pmDiv(g);pmSub(g,'pose');pmFieldText(g,'action','action','one hand in pocket, body slightly turned');pmFieldText(g,'mood','mood','understated elegance')}
  else if(pmTab==='cine'){pmSub(g,'framing');pmFieldTok(g,'shot_scale');pmFieldExtra(g,'aspect_ratio');pmFieldText(g,'subject_scale','subject scale','occupies 65–70% of image height');pmFieldText(g,'visibility','visibility','both legs, feet, shoes fully visible');pmFieldTok(g,'composition');pmDiv(g);pmSub(g,'camera');pmFieldText(g,'camera_position','camera position','pulled back several meters');pmFieldTok(g,'camera_angle');pmFieldTok(g,'lens_type');pmFieldTok(g,'focal_length');pmFieldTok(g,'aperture');pmFieldText(g,'movement','movement (video-deferred)','');pmFieldText(g,'duration','duration (video-deferred)','')}

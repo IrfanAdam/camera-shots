@@ -20,9 +20,9 @@
  * file is read from disk instead.
  *
  * The doc states nothing it does not read. Before a byte is written:
- *   - every leaf of tokens.json becomes exactly one table row (186 keys, 20
+ *   - every leaf of tokens.json becomes exactly one table row (188 keys, 20
  *     groups at the time of writing, both counted, never typed);
- *   - all 186 `:root` custom properties in tokens.css carry the tokens.json
+ *   - all 188 `:root` custom properties in tokens.css carry the tokens.json
  *     value for that key;
  *   - every `[data-ds-theme="…"]` block declares exactly the non-null cells of
  *     its map, with the same var names and values, and the fall-through block

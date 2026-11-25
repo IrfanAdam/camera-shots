@@ -282,7 +282,11 @@ async function main(argv) {
   const jsErrors = [];
   const offline = [];
   try {
-    const { page, errors } = await openPage(browser, `${server.origin}/design-system/index.html`);
+    /* the specimen blocks (#spec-tabs, #spec-dialog, #spec-menu) live inside the
+       #specimens tabpanel; the gallery shows one panel at a time, so the page
+       must be entered through its hash route or the assertions act on hidden
+       DOM. The hash also selects the matching tab, exactly as a deep link does. */
+    const { page, errors } = await openPage(browser, `${server.origin}/design-system/index.html#specimens`);
     const cls = classifyErrors(errors);
     jsErrors.push(...cls.js);
     offline.push(...cls.offline);
