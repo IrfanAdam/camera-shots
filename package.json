@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "name": "camera-shots",
+  "description": "Static board/pitch pages. `npm run relay` serves the repo plus the same-origin OpenCode image relay (scripts/relay.mjs).",
+  "scripts": {
+    "relay": "node scripts/relay.mjs"
+  }
+}

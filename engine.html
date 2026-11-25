@@ -1268,9 +1268,15 @@ document.getElementById('copyStub').onclick=()=>{if(!drawerSub){flashHint('open 
    'kid:id'. Detection tries Google, then OpenRouter, then OpenCode; first 200 wins.
    Google generates direct with x-goog-api-key (ACAO:*). OpenRouter generates
    direct POST /api/v1/chat/completions (keyless GET 200 + ACAO:*, preflight 204
-   with Authorization allowed, so browser-direct). OpenCode generates direct POST
-   https://opencode.ai/inference/v1/chat/completions with Bearer key and image
-   modalities, parsed like OpenRouter. */
+   with Authorization allowed, so browser-direct). OpenCode generates via the
+   same-origin relay POST /api/oc-image (scripts/relay.mjs, `npm run relay`):
+   a browser-direct POST is impossible because opencode.ai answers OPTIONS on
+   every /inference/* POST route with 404 and no access-control-* headers, so
+   the preflight fails and the POST is blocked before it is sent (Safari shows
+   this as a bare `Load failed`). Key verification stays browser-direct
+   (GET /models carries ACAO:*); only generation goes through the relay,
+   which forwards {model,prompt} server-side and passes the upstream
+   status+body back for the same OpenRouter-shaped parsing. */
 const GEN_WALLET_LS='cse-img-keys',GEN_MODEL_LS='cse-img-model',GEN_ENABLED_LS='cse-img-enabled',GEN_MODELS_LS='cse-img-models';
 /* Legacy single-key slots: read once to migrate into the wallet, never written. */
 const GEN_KEY_LS='cse-gemini-key',GEN_PROV_LS='cse-img-provider';
@@ -1337,13 +1343,22 @@ function genExtractImage(j){
   if(j&&typeof j.src==='string'&&j.src)return j.src;
  }catch(e){}
  return ''}
-/* OpenCode image generation: direct POST chat/completions with an image modality,
-   same shape as OpenRouter. Parses message.images[][].url (data URLs) with
-   defensive fallbacks; throws real HTTP/body errors, no dead-end hint. */
+/* OpenCode image generation via the same-origin relay POST /api/oc-image
+   (scripts/relay.mjs — run `npm run relay`; default port 8787). A
+   browser-direct POST is impossible: opencode.ai answers the CORS preflight
+   (OPTIONS) on every /inference/* POST route with 404 and no
+   access-control-* headers, so the browser blocks the POST before it is sent
+   and fetch rejects with a bare TypeError (`Load failed` in Safari, `Failed
+   to fetch` in Chrome). The relay forwards {model,prompt} server-side where
+   CORS does not apply and passes the upstream status+body straight back, so
+   parsing stays the OpenRouter shape (message.images[][].url data URLs with
+   defensive fallbacks). Never surfaces the bare TypeError: a dead relay maps
+   to the exact fix, and upstream failures throw real HTTP/body errors. */
+function genRelayNetErr(e){if(e&&e.name==='TypeError')return new Error('image relay unreachable at /api/oc-image — run `npm run relay` on this machine (default port 8787) and retry');return e instanceof Error?e:new Error(String((e&&e.message)||e||'image relay request failed'))}
 async function genOpenCodeImage(model,prompt,key){
- const r=await fetch('https://opencode.ai/inference/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:String(model),messages:[{role:'user',content:prompt}],modalities:['image','text']})});
+ let r;try{r=await fetch('/api/oc-image',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:String(model),prompt:String(prompt)})})}catch(e){throw genRelayNetErr(e)}
  let body='';try{body=await r.text()}catch(_e){}
- if(!r.ok)throw new Error('HTTP '+r.status+' — '+body.slice(0,300));
+ if(!r.ok)throw new Error('OpenCode HTTP '+r.status+' — '+(genErrText(body)||'empty response').slice(0,300));
  let j=null;try{j=JSON.parse(body)}catch(_e){throw new Error('bad JSON response — '+body.slice(0,200))}
  let found=genExtractOpenRouterImage(j)||genExtractImage(j);
  if(!found)throw new Error('no image in response — '+(body||'{}').slice(0,200));
@@ -1414,7 +1429,7 @@ async function genGenerate(){const btn=document.getElementById('genGenBtn');cons
  try{
   const src=await genRequestImage(muid,prompt);
   snap();n.imgUrl=src;loadImage(n);refreshDrawerAfterImg();refreshDrawerMenu();draw();flashHint('image generated with '+muid);
- }catch(e){const msg=String((e&&e.message)||e);console.error('image generate failed',{model:muid,error:msg.slice(0,500)});flashHint(muid+' failed: '+msg.slice(0,140)+' — try another model')}
+ }catch(e){let msg=String((e&&e.message)||e);if(e&&e.name==='TypeError')msg='network error — the request was blocked before it was sent (check connection/VPN, then retry)';console.error('image generate failed',{model:muid,error:msg.slice(0,500)});flashHint(muid+' failed: '+msg.slice(0,140)+' — try another model')}
  btn.disabled=false;btn.textContent=old}
 function genStatusText(){const w=genWallet();
  if(!w.length)return'no keys yet — paste a Google, OpenRouter or OpenCode API key below';
