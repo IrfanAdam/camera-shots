@@ -371,13 +371,14 @@
 }
 
 /* 5 · tabs ---------------------------------------------------------------
-   PARENT TABS ARE BARE; PILLS ARE SECONDARY. A top-level content switch is
-   a bare `.ds-tabs` (no attribute — the pitch Doc Tabs pattern): one
-   horizontal row on the content axis, left-aligned, scrolling under overflow
-   instead of wrapping, never stretched to fill the row. `data-variant="pill"`
-   is the secondary / in-panel shape. `rail` lives only as the nested
-   vertical sub-list inside `.ds-tabsub`, never standalone; the underline
-   variant is legacy for one release. */
+   PARENT TABS ARE UNDERLINE; PILLS ARE SECONDARY. A top-level content
+   switch is `.ds-tabs[data-variant="underline"]` (the pitch Doc Tabs
+   pattern): one horizontal row on the content axis, left-aligned, scrolling
+   under overflow instead of wrapping, never stretched to fill the row.
+   `data-variant="pill"` is the secondary / in-panel shape. The per-panel
+   left nav is `.ds-tabs.ds-tabsub__nav` inside `.ds-tabsub` — a vertical
+   tablist rendered flat like the pitch TOC, never the `rail` variant, which
+   lives only as the nested stacked tablist inside a dialog or panel. */
 .ds-tabs{
   display:flex;
   gap:var(--spacing-6);
@@ -450,10 +451,10 @@
   background:var(--ds-accent);
   color:var(--ds-on-accent);
 }
-/* LEGACY (one release) — underline tabs. Content-switching moved to
-   [data-variant="pill"]; this block keeps rendering because pages still consume
-   it this wave. A later lane migrates those call sites and deletes it. Do not
-   extend: no new page may pass data-variant="underline".
+/* UNDERLINE — the parent content-switch shape (pitch Doc Tabs). One row on the
+   content axis, left-aligned; the selected tab is ink + semibold with the
+   accent rule, never a fill. No new page may use a bare `.ds-tabs` or a pill
+   row for a top-level content switch.
    Note the 2px slot: the underline is border-block-end, so it lives inside the
    tab and does not shift the row. */
 .ds-tabs[data-variant="underline"]{
@@ -476,11 +477,11 @@
   border-block-end-color:var(--ds-accent);
 }
 /* LEGACY (one release) — vertical rail TABS. This is a tablist stacked in a
-   column inside a dialog or panel; it is NOT the section rail. A page's section
-   navigation is `.ds-rail` + `.ds-rail__item` (§20), which is flat and
-   edge-flush; this variant keeps its surface step only because pages still
-   render it this wave, and it retires with the underline variant. Do not
-   extend, and do not reach for it to build a section nav. */
+   column inside a dialog or panel; it is NOT a section nav. A page's section
+   navigation is `.ds-rail` + `.ds-rail__item` (§20), and a specimen main
+   panel's left nav is `.ds-tabsub__nav` below — both flat and edge-flush.
+   This variant keeps its surface step only because pages still render it this
+   wave. Do not extend, and do not reach for it to build a section nav. */
 .ds-tabs[data-variant="rail"]{
   flex-direction:column;
   gap:var(--spacing-2);
@@ -502,15 +503,63 @@
   border-inline-start-color:var(--ds-accent);
   color:var(--ds-ink);
 }
-/* MAIN→SUB COMPOSITION — one composed hierarchy per specimen cell: a bare
-   parent tablist on top switches the main panel, and inside each main panel
-   a vertical rail sub-tablist scopes that panel's own sections in a
+/* MAIN→SUB COMPOSITION — one composed hierarchy per specimen cell: an
+   underline parent tablist on top switches the main panel, and inside each
+   main panel a flat vertical sub-nav scopes that panel's own sections in a
    two-column row.
-   Only layout lives here (two columns + one spacing-ladder gap); the rail
-   tablist keeps its own block, and this never touches .ds-rail (§20), which
+   Only layout lives here (two columns + one spacing-ladder gap); the sub-nav
+   keeps its own block below, and this never touches .ds-rail (§20), which
    is the flat section nav, not a tablist. */
 .ds-tabsub{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--spacing-md);align-items:start}
 .ds-tabsub__panels{min-width:0}
+/* FLAT VERTICAL SUB-NAV — the per-main-panel left nav (pitch TOC shape).
+   Keeps role=tablist + aria-orientation=vertical (DS.tabs needs both for
+   roving tabindex and ArrowUp/ArrowDown), but renders flat like the pitch
+   `.toc` / `.ds-rail`: no fill, no radius, no card. The container carries
+   the inline-start hairline; each tab draws its selected mark as a 2px
+   accent bar overlapping that hairline — the old TOC dot's seat — so the
+   text axis never moves between states. Never use [data-variant="rail"]
+   for this: that variant is a stacked tablist inside a dialog or panel. */
+.ds-tabs.ds-tabsub__nav{
+  flex-direction:column;
+  gap:var(--spacing-2);
+  overflow:visible;
+  border-inline-start:var(--border-width-hairline) solid var(--ds-rule);
+  padding-inline-start:var(--spacing-md);
+}
+.ds-tabs.ds-tabsub__nav .ds-tab{
+  position:relative;
+  inline-size:100%;
+  padding:var(--spacing-2xs) 0 var(--spacing-2xs) var(--spacing-14);
+  border:0;
+  border-radius:var(--radius-none);
+  background:transparent;
+  color:var(--ds-muted);
+  font-weight:var(--weight-regular);
+  text-align:start;
+}
+.ds-tabs.ds-tabsub__nav .ds-tab::before{
+  content:"";
+  position:absolute;
+  inset-inline-start:calc(-1 * var(--spacing-md));
+  inset-block:var(--spacing-2xs);
+  inline-size:var(--border-width-strong);
+  background:transparent;
+}
+.ds-tabs.ds-tabsub__nav .ds-tab:is(:hover,[data-state~="hover"]){
+  background:transparent;
+  border-color:transparent;
+  color:var(--ds-ink);
+}
+.ds-tabs.ds-tabsub__nav .ds-tab:is([aria-selected="true"],[data-state~="selected"]){
+  background:transparent;
+  border-color:transparent;
+  color:var(--ds-ink);
+  font-weight:var(--weight-semibold);
+}
+.ds-tabs.ds-tabsub__nav .ds-tab:is([aria-selected="true"],[data-state~="selected"])::before{
+  background:var(--ds-accent);
+}
 .ds-tabpanel[hidden]{display:none}
 /* COARSE POINTER FLOOR — a tab takes the touch step from the same ladder.
    base.css §8's 44px floor is a `:where()` list (zero specificity), so any

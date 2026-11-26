@@ -80,14 +80,14 @@
     "componentsStyledWithProductInstances": 19,
     "componentsWithoutProductInstances": 18,
     "componentsWithoutProductInstancesStyled": 15,
-    "componentInstances": 975,
+    "componentInstances": 959,
     "componentInstancesProduct": 198,
     "componentInstancesDynamic": 42,
     "componentInstancesBySurface": {
       "wiki": 38,
       "pitch": 77,
       "engine": 83,
-      "gallery": 777
+      "gallery": 761
     },
     "blocks": 21,
     "blocksWithProductInstances": 16,
@@ -10112,23 +10112,23 @@
       "blockTitle": "tabs",
       "kind": "component",
       "defined": true,
-      "instances": 89,
+      "instances": 77,
       "bySurface": {
         "wiki": 2,
         "pitch": 4,
         "engine": 0,
-        "gallery": 83
+        "gallery": 71
       },
       "dynamic": 2,
-      "staticInstances": 87,
+      "staticInstances": 75,
       "productInstances": 6,
       "productDynamic": 2,
       "productStaticInstances": 4,
-      "galleryInstances": 83,
+      "galleryInstances": 71,
       "files": [
         {
           "file": "design-system/index.html",
-          "count": 83
+          "count": 71
         },
         {
           "file": "index.html",
@@ -10289,23 +10289,23 @@
       "blockTitle": "tabs",
       "kind": "component",
       "defined": true,
-      "instances": 32,
+      "instances": 28,
       "bySurface": {
         "wiki": 2,
         "pitch": 1,
         "engine": 0,
-        "gallery": 29
+        "gallery": 25
       },
       "dynamic": 0,
-      "staticInstances": 32,
+      "staticInstances": 28,
       "productInstances": 3,
       "productDynamic": 0,
       "productStaticInstances": 3,
-      "galleryInstances": 29,
+      "galleryInstances": 25,
       "files": [
         {
           "file": "design-system/index.html",
-          "count": 29
+          "count": 25
         },
         {
           "file": "index.html",
@@ -10619,13 +10619,13 @@
         "ds-tabs",
         "ds-tabsub"
       ],
-      "instances": 192,
+      "instances": 176,
       "productInstances": 9,
       "bySurface": {
         "wiki": 4,
         "pitch": 5,
         "engine": 0,
-        "gallery": 183
+        "gallery": 167
       },
       "hasProductInstance": true
     },
@@ -11509,7 +11509,7 @@
       },
       "components": {
         "count": 34,
-        "instances": 777,
+        "instances": 761,
         "list": [
           {
             "class": "ds-btn",
@@ -11517,7 +11517,7 @@
           },
           {
             "class": "ds-tab",
-            "instances": 83
+            "instances": 71
           },
           {
             "class": "ds-switch",
@@ -11549,7 +11549,7 @@
           },
           {
             "class": "ds-tabs",
-            "instances": 29
+            "instances": 25
           },
           {
             "class": "ds-dialog",
