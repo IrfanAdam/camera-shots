@@ -249,22 +249,17 @@ html[data-ds-shell="pitch"] footer code {
 
      header   eyebrow · name · role · status chip · anchor
      meta     variants · states · sizes · instances + per-surface counts
-     themes   the same four cells, one capped band
+     themes   the same four cells, one visible at a time behind pill tabs
      tokens   anatomy string + the tokens usedByBlocks says it consumes
      footer   components.css source (§n) — the rail carries nothing else
 
-   The theme band is the only thing that scrolls, and only vertically — and
-   only from 641 up: at ≤640 the matrix sizes to its own 2×2 content, because
-   a cropped specimen cell is a documentation bug. The cells keep their
-   markup, data-ds-theme, data-surface and data-state exactly.
+   The theme band never scrolls: the pill tablist shows one cell at a time and
+   the band grows with it, so the page is the only scroller. The cells keep
+   their markup, data-ds-theme, data-surface and data-state exactly.
    Everything here is page chrome; no .ds-* rule is redefined.
    ========================================================================== */
 
 html[data-ds-shell="pitch"] .comp {
-  /* comparison window, not the whole specimen: the band shows a readable
-     slice of the four theme cells and the rest scrolls. Four ladder steps
-     (192px) — the old 84px cap cropped control chrome mid-glyph. */
-  --_cell-cap: calc(var(--spacing-2xl) * 4);
   display: grid;
   row-gap: var(--spacing-md);
   border-top: var(--border-width-hairline) solid var(--g-rule);
@@ -465,18 +460,21 @@ html[data-ds-shell="pitch"] .comp-fact-surfaces b {
   color: var(--g-ink);
 }
 
-/* ---------- (c) theme matrix ---------- */
+/* ---------- (c) theme switcher ----------
+   One theme at a time: a pill tablist (shipped .ds-tabs, bound by the page
+   script) switches the four themed cells, so the band grows with its content
+   and the page — never a cell — is the scroller. */
 html[data-ds-shell="pitch"] .comp-band--themes {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  gap: 2px;
+  gap: var(--spacing-xs);
   min-inline-size: 0;
 }
 
 html[data-ds-shell="pitch"] .comp-caption {
   display: flex;
-  align-items: baseline;
-  gap: var(--spacing-xs);
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs) var(--spacing-sm);
   min-inline-size: 0;
 }
 
@@ -491,60 +489,22 @@ html[data-ds-shell="pitch"] .comp-caption h4 {
   white-space: nowrap;
 }
 
-html[data-ds-shell="pitch"] .comp-legend {
-  font-family: var(--typography-family-mono);
-  font-size: 9px;
-  line-height: 1.3;
-  letter-spacing: var(--tracking-snug);
-  color: var(--g-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-html[data-ds-shell="pitch"] .comp-scroll-hint {
+/* the pills sit at the caption's inline end; the tablist keeps its shipped
+   pill shape and wraps under the label on narrow content columns */
+html[data-ds-shell="pitch"] .comp-theme-tabs {
   margin-inline-start: auto;
-  font-family: var(--typography-family-mono);
-  font-size: 9px;
-  line-height: 1.3;
-  color: var(--g-muted);
-  white-space: nowrap;
 }
 
-/* the one scroll region: the shipped .spec-grid is capped rather than wrapped,
-   so the measured cell band is the visible band, and the grid keeps its four
-   columns. tabindex/role/label live on the grid in markup. */
-html[data-ds-shell="pitch"] .comp-themes-scroll {
+/* one panel at a time: the band grows with the visible cell, so there is no
+   scroll container anywhere in the component. `[hidden]` needs the explicit
+   rule because the cell's own `display:flex` beats the UA `[hidden]` hide. */
+html[data-ds-shell="pitch"] .comp-themes {
   display: grid;
   min-inline-size: 0;
 }
 
-/* the table block authors --wide cells; inside the matrix the four themes are
-   always four columns, so a wide cell is reset to one column here. The cell's
-   own .ds-table-wrap keeps its horizontal scroll. */
-html[data-ds-shell="pitch"] .comp-themes-scroll .spec-cell--wide {
-  grid-column: auto;
-}
-
-html[data-ds-shell="pitch"] .comp-themes-scroll > .spec-grid {
-  max-block-size: var(--_cell-cap);
-  overflow: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
-  min-inline-size: 0;
-}
-
-html[data-ds-shell="pitch"] .comp-themes-scroll > .spec-grid:focus-visible {
-  outline: var(--focus-width) solid var(--focus-color, currentColor);
-  outline-offset: var(--focus-offset);
-}
-
-/* 4-up above 900 is the shipped .spec-grid; the gallery keeps 2 columns from
-   641–900 and must be exactly 2×2 at ≤640 (never a single stacked column) */
-@media (max-width: 640px) {
-  html[data-ds-shell="pitch"] .comp .spec-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+html[data-ds-shell="pitch"] .comp-themes > .spec-cell[hidden] {
+  display: none;
 }
 
 /* ---------- (d) anatomy + tokens ---------- */
@@ -712,13 +672,13 @@ html[data-ds-shell="pitch"] .spec-ledger__list li {
    PLACEMENT, not shape: §20's rail is written as a PAGE column — `position:
    sticky`, `block-size:100dvh`, its own `overflow-y`, and a foot pinned to the
    viewport bottom. Reused verbatim inside a tab panel those page rules turn it
-   into a fake fixed sidebar: it pins below the tabbar, stays a full viewport
-   tall regardless of the panel, its foot parks on the viewport bottom, and the
-   rail (not the panel) becomes the scroll container. An in-panel rail is a
-   cell of the panel: it scrolls with the panel, is exactly as tall as its list,
-   and its foot sits under the list. So the page-level rules are dropped here
-   and only the component's look (width, inset, type, hairline, item rules)
-   survives.
+   into a fake fixed sidebar: a full viewport tall regardless of the panel, its
+   foot parked on the viewport bottom. The in-panel rail keeps the sticky park
+   but as a content-height cell of the panel grid: `align-self:start` plus
+   `block-size:auto` with a capped `max-block-size`, so a long section list
+   scrolls inside its own column instead of scrolling away with the page or
+   overlaying the content. Only the component's look (width, inset, type,
+   hairline, item rules) survives otherwise.
 
    NAMED PLACEMENT, not auto-placement. Auto-placement only puts the content in
    the second column while the rail is an in-flow, visible grid item: the
@@ -750,20 +710,25 @@ html[data-ds-shell="pitch"] .spec-ledger__list li {
     min-inline-size: 0;
   }
 
-  /* the in-panel rail never pins: no sticky, no 100dvh box, no inner scroller —
-     the panel is the scroller and the rail is one of its cells. Its block-start
-     padding is dropped too, so the "Sections" label sits on the content's top
-     edge instead of 20px under it.
+  /* the in-panel rail parks under the tabbar and scrolls inside its own cell:
+     `position:sticky` + `align-self:start` keep it a content-height grid item
+     (never the 100dvh page column §20 ships), and the capped block size with
+     its own overflow means a 20-link list scrolls internally instead of
+     overlaying the content. Its block-start padding is dropped too, so the
+     "Sections" label sits on the content's top edge instead of 20px under it.
 
      This is unconditional on purpose: it also overrides a `drawer` stamp that
      survived a breakpoint change (`position:fixed`, `translateX(-100%)`,
      viewport-sized, `hidden`/`inert` — components.css §21). Above the breakpoint
      the panel rail IS this grid's first cell, so the stamp must not paint it
-     over the content or leave the column empty. */
+     over the content or leave the column empty. healRail() in the page script
+     then tears the stale drawer state down through DS.nav's own toStatic(). */
   html[data-ds-shell="pitch"] .g-panelbody > .ds-rail,
   html[data-ds-shell="pitch"] .g-panelbody > .ds-rail[hidden] {
-    position: static;
-    inset: auto;
+    position: sticky;
+    inset-block-start: var(--g-anchor-offset);
+    inset-block-end: auto;
+    inset-inline: auto;
     transform: none;
     z-index: auto;
     transition: none;
@@ -771,8 +736,11 @@ html[data-ds-shell="pitch"] .spec-ledger__list li {
     align-self: start;
     inline-size: var(--layout-rail);
     block-size: auto;
+    max-block-size: calc(100dvh - var(--g-anchor-offset) - var(--spacing-lg));
     padding-block-start: 0;
-    overflow: visible;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
     background: transparent;
     border-inline-end-color: var(--ds-rule);
   }
@@ -828,15 +796,9 @@ html[data-ds-shell="pitch"] .spec-ledger__list li {
    takes its own full-width row. From 901 the tokens and the components.css
    source sit in a 190px rail beside the theme matrix. Reading order stays
    linear — header → meta (which carries the per-surface counts) → themes →
-   tokens → source — and the matrix breathes at two columns instead of four,
-   so a cell is ~2× wider than the old 4-up and nothing clips mid-glyph.
-   Below 901 every band stacks again. */
+   tokens → source — and the visible theme cell keeps its natural height, so
+   nothing clips mid-glyph. Below 901 every band stacks again. */
 @media (min-width: 901px) {
-  html[data-ds-shell="pitch"] .comp .spec-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--spacing-md);
-  }
-
   html[data-ds-shell="pitch"] .comp {
     grid-template-columns: minmax(0, 1fr) 190px;
     grid-template-areas:
@@ -866,25 +828,7 @@ html[data-ds-shell="pitch"] .spec-ledger__list li {
 }
 
 /* ---------- narrow bands ---------- */
-@media (max-width: 900px) {
-  html[data-ds-shell="pitch"] .comp {
-    --_cell-cap: 180px;
-  }
-}
-
 @media (max-width: 640px) {
-  /* no internal crop at phone width: the 2×2 matrix takes its natural height,
-     so every cell is completely visible and the caption stops promising a
-     scroll the block no longer has */
-  html[data-ds-shell="pitch"] .comp-themes-scroll > .spec-grid {
-    max-block-size: none;
-    overflow: visible;
-  }
-
-  html[data-ds-shell="pitch"] .comp-scroll-hint {
-    display: none;
-  }
-
   html[data-ds-shell="pitch"] .comp-facts {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--spacing-2xs) var(--spacing-md);

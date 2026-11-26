@@ -1148,21 +1148,6 @@ if(gt&&g)gt.addEventListener("click",function(){
   gt.textContent=show?"Hide Gantt view":"Show Gantt view";
   gt.setAttribute("aria-expanded",show?"true":"false");
 });
-/* roving tabindex + arrow-key tabs */
-tabs.forEach(function(t){
-  if(PANEL_IDS[t.dataset.doc])t.setAttribute("aria-controls",PANEL_IDS[t.dataset.doc]);
-});
-var tabNav=document.querySelector(".doctabs");
-tabNav.addEventListener("keydown",function(e){
-  var i=tabs.indexOf(document.activeElement);
-  if(i<0)return;
-  var j=null;
-  if(e.key==="ArrowRight")j=(i+1)%tabs.length;
-  else if(e.key==="ArrowLeft")j=(i-1+tabs.length)%tabs.length;
-  else if(e.key==="Home")j=0;
-  else if(e.key==="End")j=tabs.length-1;
-  if(j!==null){e.preventDefault();tabs[j].focus();activate(tabs[j].dataset.doc)}
-});
 /* per-tab export: markdown of the ACTIVE panel only (current DOM), download / copy / print */
 function rich(el){
   var c=el.cloneNode(true);

@@ -39,10 +39,10 @@
     "tokensAliasNoRef": 3,
     "tokensNoRef": 8,
     "tokensAlias": 8,
-    "customPropertyRefs": 2973,
+    "customPropertyRefs": 2976,
     "customPropertyRefsByKind": {
-      "token": 2067,
-      "roleVar": 177,
+      "token": 2069,
+      "roleVar": 178,
       "localVar": 667,
       "canvas": 62
     },
@@ -50,11 +50,11 @@
       "componentLocal": 37,
       "pageAlias": 630
     },
-    "tokenRefs": 2129,
+    "tokenRefs": 2131,
     "tokenRefsByFile": {
       "design-system/base.css": 26,
       "design-system/components.css": 350,
-      "design-system/gallery-pitch.css": 95,
+      "design-system/gallery-pitch.css": 97,
       "design-system/index.html": 374,
       "design-system/pitch-shell.css": 41,
       "engine-pitch.css": 24,
@@ -65,7 +65,7 @@
     "refsByFile": {
       "design-system/base.css": 31,
       "design-system/components.css": 538,
-      "design-system/gallery-pitch.css": 171,
+      "design-system/gallery-pitch.css": 174,
       "design-system/index.html": 463,
       "design-system/pitch-shell.css": 50,
       "engine-pitch.css": 24,
@@ -4522,7 +4522,7 @@
         "wiki": 2,
         "pitch": 2,
         "engine": 1,
-        "gallery": 3
+        "gallery": 4
       },
       "direct": {
         "wiki": 1,
@@ -4532,7 +4532,7 @@
       },
       "cssFiles": {
         "design-system/components.css": 1,
-        "design-system/gallery-pitch.css": 1
+        "design-system/gallery-pitch.css": 2
       },
       "roleMapCells": 0,
       "usedByBlocks": [
@@ -4546,7 +4546,7 @@
         },
         {
           "file": "design-system/gallery-pitch.css",
-          "count": 1
+          "count": 2
         },
         {
           "file": "design-system/index.html",
@@ -4561,9 +4561,9 @@
           "count": 1
         }
       ],
-      "refCount": 5,
+      "refCount": 6,
       "productRefCount": 5,
-      "galleryRefs": 3,
+      "galleryRefs": 4,
       "reach": "product",
       "hasProductRef": true
     },
@@ -6532,7 +6532,7 @@
         "wiki": 12,
         "pitch": 21,
         "engine": 12,
-        "gallery": 32
+        "gallery": 33
       },
       "direct": {
         "wiki": 0,
@@ -6543,7 +6543,7 @@
       "cssFiles": {
         "design-system/base.css": 1,
         "design-system/components.css": 11,
-        "design-system/gallery-pitch.css": 4
+        "design-system/gallery-pitch.css": 5
       },
       "roleMapCells": 0,
       "usedByBlocks": [
@@ -6567,7 +6567,7 @@
         },
         {
           "file": "design-system/gallery-pitch.css",
-          "count": 4
+          "count": 5
         },
         {
           "file": "design-system/index.html",
@@ -6578,9 +6578,9 @@
           "count": 10
         }
       ],
-      "refCount": 42,
+      "refCount": 43,
       "productRefCount": 45,
-      "galleryRefs": 32,
+      "galleryRefs": 33,
       "reach": "product",
       "hasProductRef": true
     },

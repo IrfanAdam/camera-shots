@@ -116,7 +116,10 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
 .sec-head{display:flex;align-items:baseline;gap:var(--spacing-sm);flex-wrap:wrap;border-bottom:var(--border-width-hairline) solid var(--g-rule);padding-bottom:var(--spacing-sm);margin-bottom:var(--spacing-lg)}
 .sec-num{font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);font-weight:var(--weight-medium);color:var(--g-muted);font-variant-numeric:tabular-nums}
 .sec-head h2{font-size:var(--typography-size-h3);letter-spacing:var(--tracking-tight);font-weight:var(--weight-semibold)}
-.sec-head p{margin-left:auto;font-size:var(--typography-size-meta);color:var(--g-muted);max-width:46ch;text-align:right;line-height:1.5}
+/* stacked, one axis: the description always sits below the heading at full
+   width — never beside it. Token tables, links and meta follow the head, so
+   every section reads heading → description → content. */
+.sec-head p{flex:1 1 100%;margin-left:0;font-size:var(--typography-size-meta);color:var(--g-muted);max-width:68ch;text-align:left;line-height:1.5}
 .sec-intro{font-size:var(--typography-size-small);color:var(--g-muted);max-width:64ch;margin-bottom:var(--spacing-lg)}
 
 /* ---------- swatches ---------- */
@@ -927,36 +930,38 @@ footer code{color:var(--g-ink)}
         </dl>
         <div class="comp-band comp-band--themes" data-band="themes">
           <div class="comp-caption">
-            <h4 id="spec-btn-themes">Theme matrix</h4>
-            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
-            <span class="comp-scroll-hint">scroll</span>
+            <h4 id="spec-btn-themes">Themes</h4>
+            <div class="ds-tabs comp-theme-tabs" data-variant="pill" role="tablist" aria-label="Button themes">
+              <button class="ds-tab" type="button" role="tab" id="spec-btn-theme-pitch" aria-controls="spec-btn-panel-pitch" aria-selected="true" tabindex="0">Pitch</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-btn-theme-wiki-light" aria-controls="spec-btn-panel-wiki-light" aria-selected="false" tabindex="-1">Wiki light</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-btn-theme-wiki-dark" aria-controls="spec-btn-panel-wiki-dark" aria-selected="false" tabindex="-1">Wiki dark</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-btn-theme-engine" aria-controls="spec-btn-panel-engine" aria-selected="false" tabindex="-1">Engine</button>
+            </div>
           </div>
-          <div class="comp-themes-scroll">
-<div class="spec-grid" tabindex="0" role="group" aria-label="Button — four theme maps, one per shipped theme">
-        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <div class="comp-themes">
+        <div class="spec-cell" role="tabpanel" id="spec-btn-panel-pitch" aria-labelledby="spec-btn-theme-pitch" tabindex="0" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="spec-row"><button class="ds-btn" data-variant="primary" type="button">Primary</button><button class="ds-btn" data-variant="secondary" type="button">Secondary</button><button class="ds-btn" data-variant="ghost" type="button">Ghost</button><button class="ds-btn" data-variant="danger" type="button">Danger</button></div>
           <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-state="hover" type="button">Hover</button><button class="ds-btn" data-variant="secondary" data-state="focus" type="button">Focus</button><button class="ds-btn" data-variant="secondary" data-state="disabled" type="button" disabled>Disabled</button></div>
           <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">xs</button><button class="ds-btn" data-variant="secondary" data-size="compact" type="button">compact</button><button class="ds-btn" data-variant="secondary" data-size="tall" type="button">tall</button></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+        <div class="spec-cell" role="tabpanel" id="spec-btn-panel-wiki-light" aria-labelledby="spec-btn-theme-wiki-light" tabindex="0" hidden data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
           <div class="spec-row"><button class="ds-btn" data-variant="primary" type="button">Primary</button><button class="ds-btn" data-variant="secondary" type="button">Secondary</button><button class="ds-btn" data-variant="ghost" type="button">Ghost</button><button class="ds-btn" data-variant="danger" type="button">Danger</button></div>
           <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-state="hover" type="button">Hover</button><button class="ds-btn" data-variant="secondary" data-state="focus" type="button">Focus</button><button class="ds-btn" data-variant="secondary" data-state="disabled" type="button" disabled>Disabled</button></div>
           <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">xs</button><button class="ds-btn" data-variant="secondary" data-size="compact" type="button">compact</button><button class="ds-btn" data-variant="secondary" data-size="tall" type="button">tall</button></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+        <div class="spec-cell" role="tabpanel" id="spec-btn-panel-wiki-dark" aria-labelledby="spec-btn-theme-wiki-dark" tabindex="0" hidden data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
           <div class="spec-row"><button class="ds-btn" data-variant="primary" type="button">Primary</button><button class="ds-btn" data-variant="secondary" type="button">Secondary</button><button class="ds-btn" data-variant="ghost" type="button">Ghost</button><button class="ds-btn" data-variant="danger" type="button">Danger</button></div>
           <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-state="hover" type="button">Hover</button><button class="ds-btn" data-variant="secondary" data-state="focus" type="button">Focus</button><button class="ds-btn" data-variant="secondary" data-state="disabled" type="button" disabled>Disabled</button></div>
           <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">xs</button><button class="ds-btn" data-variant="secondary" data-size="compact" type="button">compact</button><button class="ds-btn" data-variant="secondary" data-size="tall" type="button">tall</button></div>
         </div>
-        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+        <div class="spec-cell" role="tabpanel" id="spec-btn-panel-engine" aria-labelledby="spec-btn-theme-engine" tabindex="0" hidden data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
           <div class="spec-row"><button class="ds-btn" data-variant="primary" type="button">Primary</button><button class="ds-btn" data-variant="secondary" type="button">Secondary</button><button class="ds-btn" data-variant="ghost" type="button">Ghost</button><button class="ds-btn" data-variant="danger" type="button">Danger</button></div>
           <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-state="hover" type="button">Hover</button><button class="ds-btn" data-variant="secondary" data-state="focus" type="button">Focus</button><button class="ds-btn" data-variant="secondary" data-state="disabled" type="button" disabled>Disabled</button></div>
           <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">xs</button><button class="ds-btn" data-variant="secondary" data-size="compact" type="button">compact</button><button class="ds-btn" data-variant="secondary" data-size="tall" type="button">tall</button></div>
-        </div>
         </div>
           </div>
         </div>
@@ -990,32 +995,34 @@ footer code{color:var(--g-ink)}
         </dl>
         <div class="comp-band comp-band--themes" data-band="themes">
           <div class="comp-caption">
-            <h4 id="spec-icon-btn-themes">Theme matrix</h4>
-            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
-            <span class="comp-scroll-hint">scroll</span>
+            <h4 id="spec-icon-btn-themes">Themes</h4>
+            <div class="ds-tabs comp-theme-tabs" data-variant="pill" role="tablist" aria-label="Icon button themes">
+              <button class="ds-tab" type="button" role="tab" id="spec-icon-btn-theme-pitch" aria-controls="spec-icon-btn-panel-pitch" aria-selected="true" tabindex="0">Pitch</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-icon-btn-theme-wiki-light" aria-controls="spec-icon-btn-panel-wiki-light" aria-selected="false" tabindex="-1">Wiki light</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-icon-btn-theme-wiki-dark" aria-controls="spec-icon-btn-panel-wiki-dark" aria-selected="false" tabindex="-1">Wiki dark</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-icon-btn-theme-engine" aria-controls="spec-icon-btn-panel-engine" aria-selected="false" tabindex="-1">Engine</button>
+            </div>
           </div>
-          <div class="comp-themes-scroll">
-<div class="spec-grid" tabindex="0" role="group" aria-label="Icon button — four theme maps, one per shipped theme">
-        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <div class="comp-themes">
+        <div class="spec-cell" role="tabpanel" id="spec-icon-btn-panel-pitch" aria-labelledby="spec-icon-btn-theme-pitch" tabindex="0" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="spec-row"><button class="ds-icon-btn" type="button" aria-label="Close"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button><button class="ds-icon-btn" data-variant="circle" type="button" aria-label="More"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-more-h"></use></svg></button><button class="ds-icon-btn" data-variant="circle" data-state="focus" type="button" aria-label="Settings"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-gear"></use></svg></button><button class="ds-icon-btn" data-state="hover" type="button" aria-label="Search"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-search"></use></svg></button><button class="ds-icon-btn" data-state="disabled" type="button" aria-label="Delete" disabled><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-trash"></use></svg></button></div>
           <span class="spec-row"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-moon"></use></svg><svg class="ds-icon ds-icon--md" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-sun"></use></svg><svg class="ds-icon ds-icon--lg" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-play"></use></svg><span class="kicker">sm · md · lg</span></span>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+        <div class="spec-cell" role="tabpanel" id="spec-icon-btn-panel-wiki-light" aria-labelledby="spec-icon-btn-theme-wiki-light" tabindex="0" hidden data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
           <div class="spec-row"><button class="ds-icon-btn" type="button" aria-label="Close"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button><button class="ds-icon-btn" data-variant="circle" type="button" aria-label="More"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-more-h"></use></svg></button><button class="ds-icon-btn" data-variant="circle" data-state="focus" type="button" aria-label="Settings"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-gear"></use></svg></button><button class="ds-icon-btn" data-state="hover" type="button" aria-label="Search"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-search"></use></svg></button><button class="ds-icon-btn" data-state="disabled" type="button" aria-label="Delete" disabled><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-trash"></use></svg></button></div>
           <span class="spec-row"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-moon"></use></svg><svg class="ds-icon ds-icon--md" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-sun"></use></svg><svg class="ds-icon ds-icon--lg" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-play"></use></svg><span class="kicker">sm · md · lg</span></span>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+        <div class="spec-cell" role="tabpanel" id="spec-icon-btn-panel-wiki-dark" aria-labelledby="spec-icon-btn-theme-wiki-dark" tabindex="0" hidden data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
           <div class="spec-row"><button class="ds-icon-btn" type="button" aria-label="Close"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button><button class="ds-icon-btn" data-variant="circle" type="button" aria-label="More"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-more-h"></use></svg></button><button class="ds-icon-btn" data-variant="circle" data-state="focus" type="button" aria-label="Settings"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-gear"></use></svg></button><button class="ds-icon-btn" data-state="hover" type="button" aria-label="Search"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-search"></use></svg></button><button class="ds-icon-btn" data-state="disabled" type="button" aria-label="Delete" disabled><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-trash"></use></svg></button></div>
           <span class="spec-row"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-moon"></use></svg><svg class="ds-icon ds-icon--md" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-sun"></use></svg><svg class="ds-icon ds-icon--lg" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-play"></use></svg><span class="kicker">sm · md · lg</span></span>
         </div>
-        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+        <div class="spec-cell" role="tabpanel" id="spec-icon-btn-panel-engine" aria-labelledby="spec-icon-btn-theme-engine" tabindex="0" hidden data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
           <div class="spec-row"><button class="ds-icon-btn" type="button" aria-label="Close"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button><button class="ds-icon-btn" data-variant="circle" type="button" aria-label="More"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-more-h"></use></svg></button><button class="ds-icon-btn" data-variant="circle" data-state="focus" type="button" aria-label="Settings"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-gear"></use></svg></button><button class="ds-icon-btn" data-state="hover" type="button" aria-label="Search"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-search"></use></svg></button><button class="ds-icon-btn" data-state="disabled" type="button" aria-label="Delete" disabled><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-trash"></use></svg></button></div>
           <span class="spec-row"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-moon"></use></svg><svg class="ds-icon ds-icon--md" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-sun"></use></svg><svg class="ds-icon ds-icon--lg" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-play"></use></svg><span class="kicker">sm · md · lg</span></span>
-        </div>
         </div>
           </div>
         </div>
@@ -1049,13 +1056,16 @@ footer code{color:var(--g-ink)}
         </dl>
         <div class="comp-band comp-band--themes" data-band="themes">
           <div class="comp-caption">
-            <h4 id="spec-field-themes">Theme matrix</h4>
-            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
-            <span class="comp-scroll-hint">scroll</span>
+            <h4 id="spec-field-themes">Themes</h4>
+            <div class="ds-tabs comp-theme-tabs" data-variant="pill" role="tablist" aria-label="Field themes">
+              <button class="ds-tab" type="button" role="tab" id="spec-field-theme-pitch" aria-controls="spec-field-panel-pitch" aria-selected="true" tabindex="0">Pitch</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-field-theme-wiki-light" aria-controls="spec-field-panel-wiki-light" aria-selected="false" tabindex="-1">Wiki light</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-field-theme-wiki-dark" aria-controls="spec-field-panel-wiki-dark" aria-selected="false" tabindex="-1">Wiki dark</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-field-theme-engine" aria-controls="spec-field-panel-engine" aria-selected="false" tabindex="-1">Engine</button>
+            </div>
           </div>
-          <div class="comp-themes-scroll">
-<div class="spec-grid" tabindex="0" role="group" aria-label="Field — four theme maps, one per shipped theme">
-        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <div class="comp-themes">
+        <div class="spec-cell" role="tabpanel" id="spec-field-panel-pitch" aria-labelledby="spec-field-theme-pitch" tabindex="0" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <label class="ds-field"><span class="ds-label">Shot label</span><input class="ds-input" type="text" value="Handheld — corridor"><span class="ds-note">Shown in the timeline and every prompt token.</span></label>
           <label class="ds-field"><span class="ds-label">Lens</span><select class="ds-select"><option>32mm</option><option>50mm</option></select></label>
@@ -1064,7 +1074,7 @@ footer code{color:var(--g-ink)}
           <label class="ds-field" data-invalid="true"><span class="ds-label">Code</span><input class="ds-input" type="text" value="HH-CORRIDOR-EXTRA-LONG" aria-invalid="true"><span class="ds-note">Max 12 characters.</span></label>
           <label class="ds-field"><span class="ds-label">Disabled</span><input class="ds-input" type="text" value="Locked" disabled></label>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+        <div class="spec-cell" role="tabpanel" id="spec-field-panel-wiki-light" aria-labelledby="spec-field-theme-wiki-light" tabindex="0" hidden data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
           <label class="ds-field"><span class="ds-label">Shot label</span><input class="ds-input" type="text" value="Handheld — corridor"><span class="ds-note">Shown in the timeline and every prompt token.</span></label>
           <label class="ds-field"><span class="ds-label">Lens</span><select class="ds-select"><option>32mm</option><option>50mm</option></select></label>
@@ -1073,7 +1083,7 @@ footer code{color:var(--g-ink)}
           <label class="ds-field" data-invalid="true"><span class="ds-label">Code</span><input class="ds-input" type="text" value="HH-CORRIDOR-EXTRA-LONG" aria-invalid="true"><span class="ds-note">Max 12 characters.</span></label>
           <label class="ds-field"><span class="ds-label">Disabled</span><input class="ds-input" type="text" value="Locked" disabled></label>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+        <div class="spec-cell" role="tabpanel" id="spec-field-panel-wiki-dark" aria-labelledby="spec-field-theme-wiki-dark" tabindex="0" hidden data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
           <label class="ds-field"><span class="ds-label">Shot label</span><input class="ds-input" type="text" value="Handheld — corridor"><span class="ds-note">Shown in the timeline and every prompt token.</span></label>
           <label class="ds-field"><span class="ds-label">Lens</span><select class="ds-select"><option>32mm</option><option>50mm</option></select></label>
@@ -1082,7 +1092,7 @@ footer code{color:var(--g-ink)}
           <label class="ds-field" data-invalid="true"><span class="ds-label">Code</span><input class="ds-input" type="text" value="HH-CORRIDOR-EXTRA-LONG" aria-invalid="true"><span class="ds-note">Max 12 characters.</span></label>
           <label class="ds-field"><span class="ds-label">Disabled</span><input class="ds-input" type="text" value="Locked" disabled></label>
         </div>
-        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+        <div class="spec-cell" role="tabpanel" id="spec-field-panel-engine" aria-labelledby="spec-field-theme-engine" tabindex="0" hidden data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
           <label class="ds-field"><span class="ds-label">Shot label</span><input class="ds-input" type="text" value="Handheld — corridor"><span class="ds-note">Shown in the timeline and every prompt token.</span></label>
           <label class="ds-field"><span class="ds-label">Lens</span><select class="ds-select"><option>32mm</option><option>50mm</option></select></label>
@@ -1090,7 +1100,6 @@ footer code{color:var(--g-ink)}
           <label class="ds-field"><span class="ds-label">Focus</span><input class="ds-input" type="text" value="Focused" data-state="focus"></label>
           <label class="ds-field" data-invalid="true"><span class="ds-label">Code</span><input class="ds-input" type="text" value="HH-CORRIDOR-EXTRA-LONG" aria-invalid="true"><span class="ds-note">Max 12 characters.</span></label>
           <label class="ds-field"><span class="ds-label">Disabled</span><input class="ds-input" type="text" value="Locked" disabled></label>
-        </div>
         </div>
           </div>
         </div>
@@ -1124,32 +1133,34 @@ footer code{color:var(--g-ink)}
         </dl>
         <div class="comp-band comp-band--themes" data-band="themes">
           <div class="comp-caption">
-            <h4 id="spec-switch-themes">Theme matrix</h4>
-            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
-            <span class="comp-scroll-hint">scroll</span>
+            <h4 id="spec-switch-themes">Themes</h4>
+            <div class="ds-tabs comp-theme-tabs" data-variant="pill" role="tablist" aria-label="Switch themes">
+              <button class="ds-tab" type="button" role="tab" id="spec-switch-theme-pitch" aria-controls="spec-switch-panel-pitch" aria-selected="true" tabindex="0">Pitch</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-switch-theme-wiki-light" aria-controls="spec-switch-panel-wiki-light" aria-selected="false" tabindex="-1">Wiki light</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-switch-theme-wiki-dark" aria-controls="spec-switch-panel-wiki-dark" aria-selected="false" tabindex="-1">Wiki dark</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-switch-theme-engine" aria-controls="spec-switch-panel-engine" aria-selected="false" tabindex="-1">Engine</button>
+            </div>
           </div>
-          <div class="comp-themes-scroll">
-<div class="spec-grid" tabindex="0" role="group" aria-label="Switch — four theme maps, one per shipped theme">
-        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <div class="comp-themes">
+        <div class="spec-cell" role="tabpanel" id="spec-switch-panel-pitch" aria-labelledby="spec-switch-theme-pitch" tabindex="0" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="spec-row"><label class="ds-switch"><input class="ds-switch__input" type="checkbox"><span class="ds-switch__track"></span><span class="ds-switch__label">Off</span></label><label class="ds-switch"><input class="ds-switch__input" type="checkbox" checked><span class="ds-switch__track"></span><span class="ds-switch__label">On</span></label></div>
           <div class="spec-row"><label class="ds-switch" data-state="focus"><input class="ds-switch__input" type="checkbox" checked><span class="ds-switch__track"></span><span class="ds-switch__label">Focus</span></label><label class="ds-switch"><input class="ds-switch__input" type="checkbox" disabled><span class="ds-switch__track"></span><span class="ds-switch__label">Disabled</span></label></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+        <div class="spec-cell" role="tabpanel" id="spec-switch-panel-wiki-light" aria-labelledby="spec-switch-theme-wiki-light" tabindex="0" hidden data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
           <div class="spec-row"><label class="ds-switch"><input class="ds-switch__input" type="checkbox"><span class="ds-switch__track"></span><span class="ds-switch__label">Off</span></label><label class="ds-switch"><input class="ds-switch__input" type="checkbox" checked><span class="ds-switch__track"></span><span class="ds-switch__label">On</span></label></div>
           <div class="spec-row"><label class="ds-switch" data-state="focus"><input class="ds-switch__input" type="checkbox" checked><span class="ds-switch__track"></span><span class="ds-switch__label">Focus</span></label><label class="ds-switch"><input class="ds-switch__input" type="checkbox" disabled><span class="ds-switch__track"></span><span class="ds-switch__label">Disabled</span></label></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+        <div class="spec-cell" role="tabpanel" id="spec-switch-panel-wiki-dark" aria-labelledby="spec-switch-theme-wiki-dark" tabindex="0" hidden data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
           <div class="spec-row"><label class="ds-switch"><input class="ds-switch__input" type="checkbox"><span class="ds-switch__track"></span><span class="ds-switch__label">Off</span></label><label class="ds-switch"><input class="ds-switch__input" type="checkbox" checked><span class="ds-switch__track"></span><span class="ds-switch__label">On</span></label></div>
           <div class="spec-row"><label class="ds-switch" data-state="focus"><input class="ds-switch__input" type="checkbox" checked><span class="ds-switch__track"></span><span class="ds-switch__label">Focus</span></label><label class="ds-switch"><input class="ds-switch__input" type="checkbox" disabled><span class="ds-switch__track"></span><span class="ds-switch__label">Disabled</span></label></div>
         </div>
-        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+        <div class="spec-cell" role="tabpanel" id="spec-switch-panel-engine" aria-labelledby="spec-switch-theme-engine" tabindex="0" hidden data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
           <div class="spec-row"><label class="ds-switch"><input class="ds-switch__input" type="checkbox"><span class="ds-switch__track"></span><span class="ds-switch__label">Off</span></label><label class="ds-switch"><input class="ds-switch__input" type="checkbox" checked><span class="ds-switch__track"></span><span class="ds-switch__label">On</span></label></div>
           <div class="spec-row"><label class="ds-switch" data-state="focus"><input class="ds-switch__input" type="checkbox" checked><span class="ds-switch__track"></span><span class="ds-switch__label">Focus</span></label><label class="ds-switch"><input class="ds-switch__input" type="checkbox" disabled><span class="ds-switch__track"></span><span class="ds-switch__label">Disabled</span></label></div>
-        </div>
         </div>
           </div>
         </div>
@@ -1183,13 +1194,16 @@ footer code{color:var(--g-ink)}
         </dl>
         <div class="comp-band comp-band--themes" data-band="themes">
           <div class="comp-caption">
-            <h4 id="spec-tabs-themes">Theme matrix</h4>
-            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
-            <span class="comp-scroll-hint">scroll</span>
+            <h4 id="spec-tabs-themes">Themes</h4>
+            <div class="ds-tabs comp-theme-tabs" data-variant="pill" role="tablist" aria-label="Tabs themes">
+              <button class="ds-tab" type="button" role="tab" id="spec-tabs-theme-pitch" aria-controls="spec-tabs-panel-pitch" aria-selected="true" tabindex="0">Pitch</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-tabs-theme-wiki-light" aria-controls="spec-tabs-panel-wiki-light" aria-selected="false" tabindex="-1">Wiki light</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-tabs-theme-wiki-dark" aria-controls="spec-tabs-panel-wiki-dark" aria-selected="false" tabindex="-1">Wiki dark</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-tabs-theme-engine" aria-controls="spec-tabs-panel-engine" aria-selected="false" tabindex="-1">Engine</button>
+            </div>
           </div>
-          <div class="comp-themes-scroll">
-<div class="spec-grid" tabindex="0" role="group" aria-label="Tabs — four theme maps, one per shipped theme">
-        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <div class="comp-themes">
+        <div class="spec-cell" role="tabpanel" id="spec-tabs-panel-pitch" aria-labelledby="spec-tabs-theme-pitch" tabindex="0" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-tabs" data-variant="underline" role="tablist" aria-label="Parent tabs"><button class="ds-tab" role="tab" id="tab-story-pitch" aria-controls="panel-story-pitch" aria-selected="true" tabindex="0" type="button">Story</button><button class="ds-tab" role="tab" id="tab-shots-pitch" aria-controls="panel-shots-pitch" aria-selected="false" tabindex="-1" type="button">Shots</button><button class="ds-tab" role="tab" id="tab-notes-pitch" aria-controls="panel-notes-pitch" aria-selected="false" tabindex="-1" type="button">Notes</button></div>
           <div class="ds-tabpanel" id="panel-story-pitch" role="tabpanel" tabindex="0" aria-labelledby="tab-story-pitch">
@@ -1223,7 +1237,7 @@ footer code{color:var(--g-ink)}
           <span class="kicker">secondary · pill — in-panel filters</span>
           <div class="ds-tabs" id="tabs-secondary-pill-pitch" data-ds-panel-scope="#tabs-secondary-pill-pitch" data-variant="pill" role="tablist" aria-label="Secondary pill filters"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+        <div class="spec-cell" role="tabpanel" id="spec-tabs-panel-wiki-light" aria-labelledby="spec-tabs-theme-wiki-light" tabindex="0" hidden data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
           <div class="ds-tabs" data-variant="underline" role="tablist" aria-label="Parent tabs"><button class="ds-tab" role="tab" id="tab-story-wl" aria-controls="panel-story-wl" aria-selected="true" tabindex="0" type="button">Story</button><button class="ds-tab" role="tab" id="tab-shots-wl" aria-controls="panel-shots-wl" aria-selected="false" tabindex="-1" type="button">Shots</button><button class="ds-tab" role="tab" id="tab-notes-wl" aria-controls="panel-notes-wl" aria-selected="false" tabindex="-1" type="button">Notes</button></div>
           <div class="ds-tabpanel" id="panel-story-wl" role="tabpanel" tabindex="0" aria-labelledby="tab-story-wl">
@@ -1257,7 +1271,7 @@ footer code{color:var(--g-ink)}
           <span class="kicker">secondary · pill — in-panel filters</span>
           <div class="ds-tabs" id="tabs-secondary-pill-wl" data-ds-panel-scope="#tabs-secondary-pill-wl" data-variant="pill" role="tablist" aria-label="Secondary pill filters"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+        <div class="spec-cell" role="tabpanel" id="spec-tabs-panel-wiki-dark" aria-labelledby="spec-tabs-theme-wiki-dark" tabindex="0" hidden data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
           <div class="ds-tabs" data-variant="underline" role="tablist" aria-label="Parent tabs"><button class="ds-tab" role="tab" id="tab-story-wd" aria-controls="panel-story-wd" aria-selected="true" tabindex="0" type="button">Story</button><button class="ds-tab" role="tab" id="tab-shots-wd" aria-controls="panel-shots-wd" aria-selected="false" tabindex="-1" type="button">Shots</button><button class="ds-tab" role="tab" id="tab-notes-wd" aria-controls="panel-notes-wd" aria-selected="false" tabindex="-1" type="button">Notes</button></div>
           <div class="ds-tabpanel" id="panel-story-wd" role="tabpanel" tabindex="0" aria-labelledby="tab-story-wd">
@@ -1291,7 +1305,7 @@ footer code{color:var(--g-ink)}
           <span class="kicker">secondary · pill — in-panel filters</span>
           <div class="ds-tabs" id="tabs-secondary-pill-wd" data-ds-panel-scope="#tabs-secondary-pill-wd" data-variant="pill" role="tablist" aria-label="Secondary pill filters"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
         </div>
-        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+        <div class="spec-cell" role="tabpanel" id="spec-tabs-panel-engine" aria-labelledby="spec-tabs-theme-engine" tabindex="0" hidden data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
           <div class="ds-tabs" data-variant="underline" role="tablist" aria-label="Parent tabs"><button class="ds-tab" role="tab" id="tab-story-eng" aria-controls="panel-story-eng" aria-selected="true" tabindex="0" type="button">Story</button><button class="ds-tab" role="tab" id="tab-shots-eng" aria-controls="panel-shots-eng" aria-selected="false" tabindex="-1" type="button">Shots</button><button class="ds-tab" role="tab" id="tab-notes-eng" aria-controls="panel-notes-eng" aria-selected="false" tabindex="-1" type="button">Notes</button></div>
           <div class="ds-tabpanel" id="panel-story-eng" role="tabpanel" tabindex="0" aria-labelledby="tab-story-eng">
@@ -1325,7 +1339,6 @@ footer code{color:var(--g-ink)}
           <span class="kicker">secondary · pill — in-panel filters</span>
           <div class="ds-tabs" id="tabs-secondary-pill-eng" data-ds-panel-scope="#tabs-secondary-pill-eng" data-variant="pill" role="tablist" aria-label="Secondary pill filters"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
         </div>
-        </div>
           </div>
         </div>
         <div class="comp-band comp-band--tokens" data-band="tokens">
@@ -1358,13 +1371,16 @@ footer code{color:var(--g-ink)}
         </dl>
         <div class="comp-band comp-band--themes" data-band="themes">
           <div class="comp-caption">
-            <h4 id="spec-navigation-themes">Theme matrix</h4>
-            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
-            <span class="comp-scroll-hint">scroll</span>
+            <h4 id="spec-navigation-themes">Themes</h4>
+            <div class="ds-tabs comp-theme-tabs" data-variant="pill" role="tablist" aria-label="Navigation grammar themes">
+              <button class="ds-tab" type="button" role="tab" id="spec-navigation-theme-pitch" aria-controls="spec-navigation-panel-pitch" aria-selected="true" tabindex="0">Pitch</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-navigation-theme-wiki-light" aria-controls="spec-navigation-panel-wiki-light" aria-selected="false" tabindex="-1">Wiki light</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-navigation-theme-wiki-dark" aria-controls="spec-navigation-panel-wiki-dark" aria-selected="false" tabindex="-1">Wiki dark</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-navigation-theme-engine" aria-controls="spec-navigation-panel-engine" aria-selected="false" tabindex="-1">Engine</button>
+            </div>
           </div>
-          <div class="comp-themes-scroll">
-<div class="spec-grid" tabindex="0" role="group" aria-label="Navigation grammar — four theme maps, one per shipped theme">
-        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <div class="comp-themes">
+        <div class="spec-cell" role="tabpanel" id="spec-navigation-panel-pitch" aria-labelledby="spec-navigation-theme-pitch" tabindex="0" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch · live</span>
           <div class="ds-tabs" data-variant="pill" role="tablist" aria-label="Pill tabs, live — pitch">
             <button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button>
@@ -1378,7 +1394,7 @@ footer code{color:var(--g-ink)}
             <a class="ds-nav-item ds-rail__item" href="#spec-navigation">Focus</a>
           </nav>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+        <div class="spec-cell" role="tabpanel" id="spec-navigation-panel-wiki-light" aria-labelledby="spec-navigation-theme-wiki-light" tabindex="0" hidden data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light · live</span>
           <div class="ds-tabs" data-variant="pill" role="tablist" aria-label="Pill tabs, live — wiki-light">
             <button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button>
@@ -1392,7 +1408,7 @@ footer code{color:var(--g-ink)}
             <a class="ds-nav-item ds-rail__item" href="#spec-navigation">Focus</a>
           </nav>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+        <div class="spec-cell" role="tabpanel" id="spec-navigation-panel-wiki-dark" aria-labelledby="spec-navigation-theme-wiki-dark" tabindex="0" hidden data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark · live</span>
           <div class="ds-tabs" data-variant="pill" role="tablist" aria-label="Pill tabs, live — wiki-dark">
             <button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button>
@@ -1406,7 +1422,7 @@ footer code{color:var(--g-ink)}
             <a class="ds-nav-item ds-rail__item" href="#spec-navigation">Focus</a>
           </nav>
         </div>
-        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+        <div class="spec-cell" role="tabpanel" id="spec-navigation-panel-engine" aria-labelledby="spec-navigation-theme-engine" tabindex="0" hidden data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine · live</span>
           <div class="ds-tabs" data-variant="pill" role="tablist" aria-label="Pill tabs, live — engine">
             <button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button>
@@ -1419,7 +1435,6 @@ footer code{color:var(--g-ink)}
             <a class="ds-nav-item ds-rail__item" href="#spec-navigation">Movement</a>
             <a class="ds-nav-item ds-rail__item" href="#spec-navigation">Focus</a>
           </nav>
-        </div>
         </div>
           </div>
         </div>
@@ -1453,32 +1468,34 @@ footer code{color:var(--g-ink)}
         </dl>
         <div class="comp-band comp-band--themes" data-band="themes">
           <div class="comp-caption">
-            <h4 id="spec-chip-themes">Theme matrix</h4>
-            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
-            <span class="comp-scroll-hint">scroll</span>
+            <h4 id="spec-chip-themes">Themes</h4>
+            <div class="ds-tabs comp-theme-tabs" data-variant="pill" role="tablist" aria-label="Chip themes">
+              <button class="ds-tab" type="button" role="tab" id="spec-chip-theme-pitch" aria-controls="spec-chip-panel-pitch" aria-selected="true" tabindex="0">Pitch</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-chip-theme-wiki-light" aria-controls="spec-chip-panel-wiki-light" aria-selected="false" tabindex="-1">Wiki light</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-chip-theme-wiki-dark" aria-controls="spec-chip-panel-wiki-dark" aria-selected="false" tabindex="-1">Wiki dark</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-chip-theme-engine" aria-controls="spec-chip-panel-engine" aria-selected="false" tabindex="-1">Engine</button>
+            </div>
           </div>
-          <div class="comp-themes-scroll">
-<div class="spec-grid" tabindex="0" role="group" aria-label="Chip — four theme maps, one per shipped theme">
-        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <div class="comp-themes">
+        <div class="spec-cell" role="tabpanel" id="spec-chip-panel-pitch" aria-labelledby="spec-chip-theme-pitch" tabindex="0" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="spec-row"><button class="ds-chip" type="button" aria-pressed="false">All shots</button><button class="ds-chip" data-state="hover" type="button" aria-pressed="false">Hover</button></div>
           <div class="spec-row"><button class="ds-chip" type="button" aria-pressed="true">Coverage <span class="ds-chip__count">12</span></button><button class="ds-chip" data-variant="pill" type="button" aria-pressed="false">Pill</button></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+        <div class="spec-cell" role="tabpanel" id="spec-chip-panel-wiki-light" aria-labelledby="spec-chip-theme-wiki-light" tabindex="0" hidden data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
           <div class="spec-row"><button class="ds-chip" type="button" aria-pressed="false">All shots</button><button class="ds-chip" data-state="hover" type="button" aria-pressed="false">Hover</button></div>
           <div class="spec-row"><button class="ds-chip" type="button" aria-pressed="true">Coverage <span class="ds-chip__count">12</span></button><button class="ds-chip" data-variant="pill" type="button" aria-pressed="false">Pill</button></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+        <div class="spec-cell" role="tabpanel" id="spec-chip-panel-wiki-dark" aria-labelledby="spec-chip-theme-wiki-dark" tabindex="0" hidden data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
           <div class="spec-row"><button class="ds-chip" type="button" aria-pressed="false">All shots</button><button class="ds-chip" data-state="hover" type="button" aria-pressed="false">Hover</button></div>
           <div class="spec-row"><button class="ds-chip" type="button" aria-pressed="true">Coverage <span class="ds-chip__count">12</span></button><button class="ds-chip" data-variant="pill" type="button" aria-pressed="false">Pill</button></div>
         </div>
-        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+        <div class="spec-cell" role="tabpanel" id="spec-chip-panel-engine" aria-labelledby="spec-chip-theme-engine" tabindex="0" hidden data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
           <div class="spec-row"><button class="ds-chip" type="button" aria-pressed="false">All shots</button><button class="ds-chip" data-state="hover" type="button" aria-pressed="false">Hover</button></div>
           <div class="spec-row"><button class="ds-chip" type="button" aria-pressed="true">Coverage <span class="ds-chip__count">12</span></button><button class="ds-chip" data-variant="pill" type="button" aria-pressed="false">Pill</button></div>
-        </div>
         </div>
           </div>
         </div>
@@ -1512,28 +1529,30 @@ footer code{color:var(--g-ink)}
         </dl>
         <div class="comp-band comp-band--themes" data-band="themes">
           <div class="comp-caption">
-            <h4 id="spec-badge-themes">Theme matrix</h4>
-            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
-            <span class="comp-scroll-hint">scroll</span>
+            <h4 id="spec-badge-themes">Themes</h4>
+            <div class="ds-tabs comp-theme-tabs" data-variant="pill" role="tablist" aria-label="Badge themes">
+              <button class="ds-tab" type="button" role="tab" id="spec-badge-theme-pitch" aria-controls="spec-badge-panel-pitch" aria-selected="true" tabindex="0">Pitch</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-badge-theme-wiki-light" aria-controls="spec-badge-panel-wiki-light" aria-selected="false" tabindex="-1">Wiki light</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-badge-theme-wiki-dark" aria-controls="spec-badge-panel-wiki-dark" aria-selected="false" tabindex="-1">Wiki dark</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-badge-theme-engine" aria-controls="spec-badge-panel-engine" aria-selected="false" tabindex="-1">Engine</button>
+            </div>
           </div>
-          <div class="comp-themes-scroll">
-<div class="spec-grid" tabindex="0" role="group" aria-label="Badge — four theme maps, one per shipped theme">
-        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <div class="comp-themes">
+        <div class="spec-cell" role="tabpanel" id="spec-badge-panel-pitch" aria-labelledby="spec-badge-theme-pitch" tabindex="0" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="spec-row"><span class="ds-badge" data-variant="success">Free</span><span class="ds-badge" data-variant="info">Paid</span><span class="ds-badge" data-variant="warning">Draft</span><span class="ds-badge" data-variant="danger">Flagged</span><span class="ds-badge" data-variant="neutral">Unverified</span><span class="ds-badge" data-variant="outline">Queued</span></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+        <div class="spec-cell" role="tabpanel" id="spec-badge-panel-wiki-light" aria-labelledby="spec-badge-theme-wiki-light" tabindex="0" hidden data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
           <div class="spec-row"><span class="ds-badge" data-variant="success">Free</span><span class="ds-badge" data-variant="info">Paid</span><span class="ds-badge" data-variant="warning">Draft</span><span class="ds-badge" data-variant="danger">Flagged</span><span class="ds-badge" data-variant="neutral">Unverified</span><span class="ds-badge" data-variant="outline">Queued</span></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+        <div class="spec-cell" role="tabpanel" id="spec-badge-panel-wiki-dark" aria-labelledby="spec-badge-theme-wiki-dark" tabindex="0" hidden data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
           <div class="spec-row"><span class="ds-badge" data-variant="success">Free</span><span class="ds-badge" data-variant="info">Paid</span><span class="ds-badge" data-variant="warning">Draft</span><span class="ds-badge" data-variant="danger">Flagged</span><span class="ds-badge" data-variant="neutral">Unverified</span><span class="ds-badge" data-variant="outline">Queued</span></div>
         </div>
-        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+        <div class="spec-cell" role="tabpanel" id="spec-badge-panel-engine" aria-labelledby="spec-badge-theme-engine" tabindex="0" hidden data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
           <div class="spec-row"><span class="ds-badge" data-variant="success">Free</span><span class="ds-badge" data-variant="info">Paid</span><span class="ds-badge" data-variant="warning">Draft</span><span class="ds-badge" data-variant="danger">Flagged</span><span class="ds-badge" data-variant="neutral">Unverified</span><span class="ds-badge" data-variant="outline">Queued</span></div>
-        </div>
         </div>
           </div>
         </div>
@@ -1567,32 +1586,34 @@ footer code{color:var(--g-ink)}
         </dl>
         <div class="comp-band comp-band--themes" data-band="themes">
           <div class="comp-caption">
-            <h4 id="spec-card-themes">Theme matrix</h4>
-            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
-            <span class="comp-scroll-hint">scroll</span>
+            <h4 id="spec-card-themes">Themes</h4>
+            <div class="ds-tabs comp-theme-tabs" data-variant="pill" role="tablist" aria-label="Card themes">
+              <button class="ds-tab" type="button" role="tab" id="spec-card-theme-pitch" aria-controls="spec-card-panel-pitch" aria-selected="true" tabindex="0">Pitch</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-card-theme-wiki-light" aria-controls="spec-card-panel-wiki-light" aria-selected="false" tabindex="-1">Wiki light</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-card-theme-wiki-dark" aria-controls="spec-card-panel-wiki-dark" aria-selected="false" tabindex="-1">Wiki dark</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-card-theme-engine" aria-controls="spec-card-panel-engine" aria-selected="false" tabindex="-1">Engine</button>
+            </div>
           </div>
-          <div class="comp-themes-scroll">
-<div class="spec-grid" tabindex="0" role="group" aria-label="Card — four theme maps, one per shipped theme">
-        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <div class="comp-themes">
+        <div class="spec-cell" role="tabpanel" id="spec-card-panel-pitch" aria-labelledby="spec-card-theme-pitch" tabindex="0" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-card"><div class="ds-card__head"><span class="ds-card__eyebrow">Shot size · 02</span><span class="ds-badge" data-variant="success">Free</span></div><p>Medium close-up. Chest up, room still in the frame.</p><div class="ds-card__meta"><span>Coverage</span><span>4 prompts</span></div></div>
           <div class="ds-card" data-variant="accent"><div class="ds-card__head"><span class="ds-card__eyebrow">Gate</span></div><p>Accent bar marks the one row that changed.</p></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+        <div class="spec-cell" role="tabpanel" id="spec-card-panel-wiki-light" aria-labelledby="spec-card-theme-wiki-light" tabindex="0" hidden data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
           <div class="ds-card"><div class="ds-card__head"><span class="ds-card__eyebrow">Shot size · 02</span><span class="ds-badge" data-variant="success">Free</span></div><p>Medium close-up. Chest up, room still in the frame.</p><div class="ds-card__meta"><span>Coverage</span><span>4 prompts</span></div></div>
           <div class="ds-card" data-variant="accent"><div class="ds-card__head"><span class="ds-card__eyebrow">Gate</span></div><p>Accent bar marks the one row that changed.</p></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+        <div class="spec-cell" role="tabpanel" id="spec-card-panel-wiki-dark" aria-labelledby="spec-card-theme-wiki-dark" tabindex="0" hidden data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
           <div class="ds-card"><div class="ds-card__head"><span class="ds-card__eyebrow">Shot size · 02</span><span class="ds-badge" data-variant="success">Free</span></div><p>Medium close-up. Chest up, room still in the frame.</p><div class="ds-card__meta"><span>Coverage</span><span>4 prompts</span></div></div>
           <div class="ds-card" data-variant="accent"><div class="ds-card__head"><span class="ds-card__eyebrow">Gate</span></div><p>Accent bar marks the one row that changed.</p></div>
         </div>
-        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+        <div class="spec-cell" role="tabpanel" id="spec-card-panel-engine" aria-labelledby="spec-card-theme-engine" tabindex="0" hidden data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
           <div class="ds-card"><div class="ds-card__head"><span class="ds-card__eyebrow">Shot size · 02</span><span class="ds-badge" data-variant="success">Free</span></div><p>Medium close-up. Chest up, room still in the frame.</p><div class="ds-card__meta"><span>Coverage</span><span>4 prompts</span></div></div>
           <div class="ds-card" data-variant="accent"><div class="ds-card__head"><span class="ds-card__eyebrow">Gate</span></div><p>Accent bar marks the one row that changed.</p></div>
-        </div>
         </div>
           </div>
         </div>
@@ -1626,36 +1647,38 @@ footer code{color:var(--g-ink)}
         </dl>
         <div class="comp-band comp-band--themes" data-band="themes">
           <div class="comp-caption">
-            <h4 id="spec-surface-themes">Theme matrix</h4>
-            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
-            <span class="comp-scroll-hint">scroll</span>
+            <h4 id="spec-surface-themes">Themes</h4>
+            <div class="ds-tabs comp-theme-tabs" data-variant="pill" role="tablist" aria-label="Surface themes">
+              <button class="ds-tab" type="button" role="tab" id="spec-surface-theme-pitch" aria-controls="spec-surface-panel-pitch" aria-selected="true" tabindex="0">Pitch</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-surface-theme-wiki-light" aria-controls="spec-surface-panel-wiki-light" aria-selected="false" tabindex="-1">Wiki light</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-surface-theme-wiki-dark" aria-controls="spec-surface-panel-wiki-dark" aria-selected="false" tabindex="-1">Wiki dark</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-surface-theme-engine" aria-controls="spec-surface-panel-engine" aria-selected="false" tabindex="-1">Engine</button>
+            </div>
           </div>
-          <div class="comp-themes-scroll">
-<div class="spec-grid" tabindex="0" role="group" aria-label="Surface — four theme maps, one per shipped theme">
-        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <div class="comp-themes">
+        <div class="spec-cell" role="tabpanel" id="spec-surface-panel-pitch" aria-labelledby="spec-surface-theme-pitch" tabindex="0" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-surface"><span class="kicker">Surface</span><p>Reader container, no elevation.</p></div>
           <div class="ds-surface" data-variant="raised"><span class="kicker">Raised</span><p>Adds the elevation token.</p></div>
           <div class="ds-surface" data-variant="inset"><span class="kicker">Inset</span><p>Sits on the page background.</p></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+        <div class="spec-cell" role="tabpanel" id="spec-surface-panel-wiki-light" aria-labelledby="spec-surface-theme-wiki-light" tabindex="0" hidden data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
           <div class="ds-surface"><span class="kicker">Surface</span><p>Reader container, no elevation.</p></div>
           <div class="ds-surface" data-variant="raised"><span class="kicker">Raised</span><p>Adds the elevation token.</p></div>
           <div class="ds-surface" data-variant="inset"><span class="kicker">Inset</span><p>Sits on the page background.</p></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+        <div class="spec-cell" role="tabpanel" id="spec-surface-panel-wiki-dark" aria-labelledby="spec-surface-theme-wiki-dark" tabindex="0" hidden data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
           <div class="ds-surface"><span class="kicker">Surface</span><p>Reader container, no elevation.</p></div>
           <div class="ds-surface" data-variant="raised"><span class="kicker">Raised</span><p>Adds the elevation token.</p></div>
           <div class="ds-surface" data-variant="inset"><span class="kicker">Inset</span><p>Sits on the page background.</p></div>
         </div>
-        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+        <div class="spec-cell" role="tabpanel" id="spec-surface-panel-engine" aria-labelledby="spec-surface-theme-engine" tabindex="0" hidden data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
           <div class="ds-surface"><span class="kicker">Surface</span><p>Reader container, no elevation.</p></div>
           <div class="ds-surface" data-variant="raised"><span class="kicker">Raised</span><p>Adds the elevation token.</p></div>
           <div class="ds-surface" data-variant="inset"><span class="kicker">Inset</span><p>Sits on the page background.</p></div>
-        </div>
         </div>
           </div>
         </div>
@@ -1689,13 +1712,16 @@ footer code{color:var(--g-ink)}
         </dl>
         <div class="comp-band comp-band--themes" data-band="themes">
           <div class="comp-caption">
-            <h4 id="spec-table-themes">Theme matrix</h4>
-            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
-            <span class="comp-scroll-hint">scroll</span>
+            <h4 id="spec-table-themes">Themes</h4>
+            <div class="ds-tabs comp-theme-tabs" data-variant="pill" role="tablist" aria-label="Table themes">
+              <button class="ds-tab" type="button" role="tab" id="spec-table-theme-pitch" aria-controls="spec-table-panel-pitch" aria-selected="true" tabindex="0">Pitch</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-table-theme-wiki-light" aria-controls="spec-table-panel-wiki-light" aria-selected="false" tabindex="-1">Wiki light</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-table-theme-wiki-dark" aria-controls="spec-table-panel-wiki-dark" aria-selected="false" tabindex="-1">Wiki dark</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-table-theme-engine" aria-controls="spec-table-panel-engine" aria-selected="false" tabindex="-1">Engine</button>
+            </div>
           </div>
-          <div class="comp-themes-scroll">
-<div class="spec-grid" tabindex="0" role="group" aria-label="Table — four theme maps, one per shipped theme">
-        <div class="spec-cell spec-cell--wide" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <div class="comp-themes">
+        <div class="spec-cell spec-cell--wide" role="tabpanel" id="spec-table-panel-pitch" aria-labelledby="spec-table-theme-pitch" tabindex="0" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-table-wrap">
             <table class="ds-table">
@@ -1708,7 +1734,7 @@ footer code{color:var(--g-ink)}
             </table>
           </div>
         </div>
-        <div class="spec-cell spec-cell--wide" data-ds-theme="wiki-light" data-surface="wiki-light">
+        <div class="spec-cell spec-cell--wide" role="tabpanel" id="spec-table-panel-wiki-light" aria-labelledby="spec-table-theme-wiki-light" tabindex="0" hidden data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
           <div class="ds-table-wrap">
             <table class="ds-table">
@@ -1721,7 +1747,7 @@ footer code{color:var(--g-ink)}
             </table>
           </div>
         </div>
-        <div class="spec-cell spec-cell--wide" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+        <div class="spec-cell spec-cell--wide" role="tabpanel" id="spec-table-panel-wiki-dark" aria-labelledby="spec-table-theme-wiki-dark" tabindex="0" hidden data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
           <div class="ds-table-wrap">
             <table class="ds-table">
@@ -1734,7 +1760,7 @@ footer code{color:var(--g-ink)}
             </table>
           </div>
         </div>
-        <div class="spec-cell spec-cell--wide" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+        <div class="spec-cell spec-cell--wide" role="tabpanel" id="spec-table-panel-engine" aria-labelledby="spec-table-theme-engine" tabindex="0" hidden data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
           <div class="ds-table-wrap">
             <table class="ds-table">
@@ -1746,7 +1772,6 @@ footer code{color:var(--g-ink)}
               </tbody>
             </table>
           </div>
-        </div>
         </div>
           </div>
         </div>
@@ -1780,13 +1805,16 @@ footer code{color:var(--g-ink)}
         </dl>
         <div class="comp-band comp-band--themes" data-band="themes">
           <div class="comp-caption">
-            <h4 id="spec-drawer-themes">Theme matrix</h4>
-            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
-            <span class="comp-scroll-hint">scroll</span>
+            <h4 id="spec-drawer-themes">Themes</h4>
+            <div class="ds-tabs comp-theme-tabs" data-variant="pill" role="tablist" aria-label="Drawer themes">
+              <button class="ds-tab" type="button" role="tab" id="spec-drawer-theme-pitch" aria-controls="spec-drawer-panel-pitch" aria-selected="true" tabindex="0">Pitch</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-drawer-theme-wiki-light" aria-controls="spec-drawer-panel-wiki-light" aria-selected="false" tabindex="-1">Wiki light</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-drawer-theme-wiki-dark" aria-controls="spec-drawer-panel-wiki-dark" aria-selected="false" tabindex="-1">Wiki dark</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-drawer-theme-engine" aria-controls="spec-drawer-panel-engine" aria-selected="false" tabindex="-1">Engine</button>
+            </div>
           </div>
-          <div class="comp-themes-scroll">
-<div class="spec-grid" tabindex="0" role="group" aria-label="Drawer — four theme maps, one per shipped theme">
-        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <div class="comp-themes">
+        <div class="spec-cell" role="tabpanel" id="spec-drawer-panel-pitch" aria-labelledby="spec-drawer-theme-pitch" tabindex="0" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-drawer" data-open>
             <div class="ds-card__head"><h4>Shot 04 · Corridor</h4><button class="ds-icon-btn" type="button" aria-label="Close drawer"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button></div>
@@ -1794,7 +1822,7 @@ footer code{color:var(--g-ink)}
             <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Back</button><button class="ds-btn" data-variant="danger" data-size="xs" data-armed type="button">Delete</button></div>
           </div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+        <div class="spec-cell" role="tabpanel" id="spec-drawer-panel-wiki-light" aria-labelledby="spec-drawer-theme-wiki-light" tabindex="0" hidden data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
           <div class="ds-drawer" data-open>
             <div class="ds-card__head"><h4>Shot 04 · Corridor</h4><button class="ds-icon-btn" type="button" aria-label="Close drawer"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button></div>
@@ -1802,7 +1830,7 @@ footer code{color:var(--g-ink)}
             <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Back</button><button class="ds-btn" data-variant="danger" data-size="xs" data-armed type="button">Delete</button></div>
           </div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+        <div class="spec-cell" role="tabpanel" id="spec-drawer-panel-wiki-dark" aria-labelledby="spec-drawer-theme-wiki-dark" tabindex="0" hidden data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
           <div class="ds-drawer" data-open>
             <div class="ds-card__head"><h4>Shot 04 · Corridor</h4><button class="ds-icon-btn" type="button" aria-label="Close drawer"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button></div>
@@ -1810,14 +1838,13 @@ footer code{color:var(--g-ink)}
             <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Back</button><button class="ds-btn" data-variant="danger" data-size="xs" data-armed type="button">Delete</button></div>
           </div>
         </div>
-        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+        <div class="spec-cell" role="tabpanel" id="spec-drawer-panel-engine" aria-labelledby="spec-drawer-theme-engine" tabindex="0" hidden data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
           <div class="ds-drawer" data-open>
             <div class="ds-card__head"><h4>Shot 04 · Corridor</h4><button class="ds-icon-btn" type="button" aria-label="Close drawer"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-close"></use></svg></button></div>
             <p>Right edge, full height. Closed is hidden + inert, never transform-only.</p>
             <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Back</button><button class="ds-btn" data-variant="danger" data-size="xs" data-armed type="button">Delete</button></div>
           </div>
-        </div>
         </div>
           </div>
         </div>
@@ -1851,13 +1878,16 @@ footer code{color:var(--g-ink)}
         </dl>
         <div class="comp-band comp-band--themes" data-band="themes">
           <div class="comp-caption">
-            <h4 id="spec-dialog-themes">Theme matrix</h4>
-            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
-            <span class="comp-scroll-hint">scroll</span>
+            <h4 id="spec-dialog-themes">Themes</h4>
+            <div class="ds-tabs comp-theme-tabs" data-variant="pill" role="tablist" aria-label="Dialog themes">
+              <button class="ds-tab" type="button" role="tab" id="spec-dialog-theme-pitch" aria-controls="spec-dialog-panel-pitch" aria-selected="true" tabindex="0">Pitch</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-dialog-theme-wiki-light" aria-controls="spec-dialog-panel-wiki-light" aria-selected="false" tabindex="-1">Wiki light</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-dialog-theme-wiki-dark" aria-controls="spec-dialog-panel-wiki-dark" aria-selected="false" tabindex="-1">Wiki dark</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-dialog-theme-engine" aria-controls="spec-dialog-panel-engine" aria-selected="false" tabindex="-1">Engine</button>
+            </div>
           </div>
-          <div class="comp-themes-scroll">
-<div class="spec-grid" tabindex="0" role="group" aria-label="Dialog — four theme maps, one per shipped theme">
-        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <div class="comp-themes">
+        <div class="spec-cell" role="tabpanel" id="spec-dialog-panel-pitch" aria-labelledby="spec-dialog-theme-pitch" tabindex="0" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-dialog">
             <div class="ds-dialog__scrim"></div>
@@ -1869,7 +1899,7 @@ footer code{color:var(--g-ink)}
             <div class="ds-dialog__box"><h4>Sheet variant</h4><p>Pinned to the inline end.</p></div>
           </div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+        <div class="spec-cell" role="tabpanel" id="spec-dialog-panel-wiki-light" aria-labelledby="spec-dialog-theme-wiki-light" tabindex="0" hidden data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
           <div class="ds-dialog">
             <div class="ds-dialog__scrim"></div>
@@ -1881,7 +1911,7 @@ footer code{color:var(--g-ink)}
             <div class="ds-dialog__box"><h4>Sheet variant</h4><p>Pinned to the inline end.</p></div>
           </div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+        <div class="spec-cell" role="tabpanel" id="spec-dialog-panel-wiki-dark" aria-labelledby="spec-dialog-theme-wiki-dark" tabindex="0" hidden data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
           <div class="ds-dialog">
             <div class="ds-dialog__scrim"></div>
@@ -1893,7 +1923,7 @@ footer code{color:var(--g-ink)}
             <div class="ds-dialog__box"><h4>Sheet variant</h4><p>Pinned to the inline end.</p></div>
           </div>
         </div>
-        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+        <div class="spec-cell" role="tabpanel" id="spec-dialog-panel-engine" aria-labelledby="spec-dialog-theme-engine" tabindex="0" hidden data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
           <div class="ds-dialog">
             <div class="ds-dialog__scrim"></div>
@@ -1904,7 +1934,6 @@ footer code{color:var(--g-ink)}
             <div class="ds-dialog__scrim"></div>
             <div class="ds-dialog__box"><h4>Sheet variant</h4><p>Pinned to the inline end.</p></div>
           </div>
-        </div>
         </div>
           </div>
         </div>
@@ -1938,28 +1967,30 @@ footer code{color:var(--g-ink)}
         </dl>
         <div class="comp-band comp-band--themes" data-band="themes">
           <div class="comp-caption">
-            <h4 id="spec-menu-themes">Theme matrix</h4>
-            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
-            <span class="comp-scroll-hint">scroll</span>
+            <h4 id="spec-menu-themes">Themes</h4>
+            <div class="ds-tabs comp-theme-tabs" data-variant="pill" role="tablist" aria-label="Menu themes">
+              <button class="ds-tab" type="button" role="tab" id="spec-menu-theme-pitch" aria-controls="spec-menu-panel-pitch" aria-selected="true" tabindex="0">Pitch</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-menu-theme-wiki-light" aria-controls="spec-menu-panel-wiki-light" aria-selected="false" tabindex="-1">Wiki light</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-menu-theme-wiki-dark" aria-controls="spec-menu-panel-wiki-dark" aria-selected="false" tabindex="-1">Wiki dark</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-menu-theme-engine" aria-controls="spec-menu-panel-engine" aria-selected="false" tabindex="-1">Engine</button>
+            </div>
           </div>
-          <div class="comp-themes-scroll">
-<div class="spec-grid" tabindex="0" role="group" aria-label="Menu — four theme maps, one per shipped theme">
-        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <div class="comp-themes">
+        <div class="spec-cell" role="tabpanel" id="spec-menu-panel-pitch" aria-labelledby="spec-menu-theme-pitch" tabindex="0" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-menu" role="menu" aria-label="Shot actions"><button class="ds-menu__item" role="menuitem" type="button">Duplicate</button><button class="ds-menu__item" role="menuitem" data-state="hover" type="button">Rename</button><button class="ds-menu__item" role="menuitem" data-variant="danger" type="button">Delete</button><button class="ds-menu__item" role="menuitem" data-variant="danger" data-armed type="button">Delete again?</button></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+        <div class="spec-cell" role="tabpanel" id="spec-menu-panel-wiki-light" aria-labelledby="spec-menu-theme-wiki-light" tabindex="0" hidden data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
           <div class="ds-menu" role="menu" aria-label="Shot actions"><button class="ds-menu__item" role="menuitem" type="button">Duplicate</button><button class="ds-menu__item" role="menuitem" data-state="hover" type="button">Rename</button><button class="ds-menu__item" role="menuitem" data-variant="danger" type="button">Delete</button><button class="ds-menu__item" role="menuitem" data-variant="danger" data-armed type="button">Delete again?</button></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+        <div class="spec-cell" role="tabpanel" id="spec-menu-panel-wiki-dark" aria-labelledby="spec-menu-theme-wiki-dark" tabindex="0" hidden data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
           <div class="ds-menu" role="menu" aria-label="Shot actions"><button class="ds-menu__item" role="menuitem" type="button">Duplicate</button><button class="ds-menu__item" role="menuitem" data-state="hover" type="button">Rename</button><button class="ds-menu__item" role="menuitem" data-variant="danger" type="button">Delete</button><button class="ds-menu__item" role="menuitem" data-variant="danger" data-armed type="button">Delete again?</button></div>
         </div>
-        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+        <div class="spec-cell" role="tabpanel" id="spec-menu-panel-engine" aria-labelledby="spec-menu-theme-engine" tabindex="0" hidden data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
           <div class="ds-menu" role="menu" aria-label="Shot actions"><button class="ds-menu__item" role="menuitem" type="button">Duplicate</button><button class="ds-menu__item" role="menuitem" data-state="hover" type="button">Rename</button><button class="ds-menu__item" role="menuitem" data-variant="danger" type="button">Delete</button><button class="ds-menu__item" role="menuitem" data-variant="danger" data-armed type="button">Delete again?</button></div>
-        </div>
         </div>
           </div>
         </div>
@@ -1993,28 +2024,30 @@ footer code{color:var(--g-ink)}
         </dl>
         <div class="comp-band comp-band--themes" data-band="themes">
           <div class="comp-caption">
-            <h4 id="spec-toast-themes">Theme matrix</h4>
-            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
-            <span class="comp-scroll-hint">scroll</span>
+            <h4 id="spec-toast-themes">Themes</h4>
+            <div class="ds-tabs comp-theme-tabs" data-variant="pill" role="tablist" aria-label="Toast themes">
+              <button class="ds-tab" type="button" role="tab" id="spec-toast-theme-pitch" aria-controls="spec-toast-panel-pitch" aria-selected="true" tabindex="0">Pitch</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-toast-theme-wiki-light" aria-controls="spec-toast-panel-wiki-light" aria-selected="false" tabindex="-1">Wiki light</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-toast-theme-wiki-dark" aria-controls="spec-toast-panel-wiki-dark" aria-selected="false" tabindex="-1">Wiki dark</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-toast-theme-engine" aria-controls="spec-toast-panel-engine" aria-selected="false" tabindex="-1">Engine</button>
+            </div>
           </div>
-          <div class="comp-themes-scroll">
-<div class="spec-grid" tabindex="0" role="group" aria-label="Toast — four theme maps, one per shipped theme">
-        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <div class="comp-themes">
+        <div class="spec-cell" role="tabpanel" id="spec-toast-panel-pitch" aria-labelledby="spec-toast-theme-pitch" tabindex="0" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-toast" role="status"><span>Prompt copied to the clipboard</span><button class="ds-btn" data-variant="primary" data-size="xs" type="button">Undo</button></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+        <div class="spec-cell" role="tabpanel" id="spec-toast-panel-wiki-light" aria-labelledby="spec-toast-theme-wiki-light" tabindex="0" hidden data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
           <div class="ds-toast" role="status"><span>Prompt copied to the clipboard</span><button class="ds-btn" data-variant="primary" data-size="xs" type="button">Undo</button></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+        <div class="spec-cell" role="tabpanel" id="spec-toast-panel-wiki-dark" aria-labelledby="spec-toast-theme-wiki-dark" tabindex="0" hidden data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
           <div class="ds-toast" role="status"><span>Prompt copied to the clipboard</span><button class="ds-btn" data-variant="primary" data-size="xs" type="button">Undo</button></div>
         </div>
-        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+        <div class="spec-cell" role="tabpanel" id="spec-toast-panel-engine" aria-labelledby="spec-toast-theme-engine" tabindex="0" hidden data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
           <div class="ds-toast" role="status"><span>Prompt copied to the clipboard</span><button class="ds-btn" data-variant="primary" data-size="xs" type="button">Undo</button></div>
-        </div>
         </div>
           </div>
         </div>
@@ -2048,32 +2081,34 @@ footer code{color:var(--g-ink)}
         </dl>
         <div class="comp-band comp-band--themes" data-band="themes">
           <div class="comp-caption">
-            <h4 id="spec-empty-themes">Theme matrix</h4>
-            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
-            <span class="comp-scroll-hint">scroll</span>
+            <h4 id="spec-empty-themes">Themes</h4>
+            <div class="ds-tabs comp-theme-tabs" data-variant="pill" role="tablist" aria-label="Empty state themes">
+              <button class="ds-tab" type="button" role="tab" id="spec-empty-theme-pitch" aria-controls="spec-empty-panel-pitch" aria-selected="true" tabindex="0">Pitch</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-empty-theme-wiki-light" aria-controls="spec-empty-panel-wiki-light" aria-selected="false" tabindex="-1">Wiki light</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-empty-theme-wiki-dark" aria-controls="spec-empty-panel-wiki-dark" aria-selected="false" tabindex="-1">Wiki dark</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-empty-theme-engine" aria-controls="spec-empty-panel-engine" aria-selected="false" tabindex="-1">Engine</button>
+            </div>
           </div>
-          <div class="comp-themes-scroll">
-<div class="spec-grid" tabindex="0" role="group" aria-label="Empty state — four theme maps, one per shipped theme">
-        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <div class="comp-themes">
+        <div class="spec-cell" role="tabpanel" id="spec-empty-panel-pitch" aria-labelledby="spec-empty-theme-pitch" tabindex="0" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-empty"><span class="ds-empty__title">No shots yet</span><span>Add a shot to start the board.</span></div>
           <div class="ds-empty" data-variant="inline">No matches in this tab.</div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+        <div class="spec-cell" role="tabpanel" id="spec-empty-panel-wiki-light" aria-labelledby="spec-empty-theme-wiki-light" tabindex="0" hidden data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
           <div class="ds-empty"><span class="ds-empty__title">No shots yet</span><span>Add a shot to start the board.</span></div>
           <div class="ds-empty" data-variant="inline">No matches in this tab.</div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+        <div class="spec-cell" role="tabpanel" id="spec-empty-panel-wiki-dark" aria-labelledby="spec-empty-theme-wiki-dark" tabindex="0" hidden data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
           <div class="ds-empty"><span class="ds-empty__title">No shots yet</span><span>Add a shot to start the board.</span></div>
           <div class="ds-empty" data-variant="inline">No matches in this tab.</div>
         </div>
-        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+        <div class="spec-cell" role="tabpanel" id="spec-empty-panel-engine" aria-labelledby="spec-empty-theme-engine" tabindex="0" hidden data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
           <div class="ds-empty"><span class="ds-empty__title">No shots yet</span><span>Add a shot to start the board.</span></div>
           <div class="ds-empty" data-variant="inline">No matches in this tab.</div>
-        </div>
         </div>
           </div>
         </div>
@@ -2107,36 +2142,38 @@ footer code{color:var(--g-ink)}
         </dl>
         <div class="comp-band comp-band--themes" data-band="themes">
           <div class="comp-caption">
-            <h4 id="spec-progress-themes">Theme matrix</h4>
-            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
-            <span class="comp-scroll-hint">scroll</span>
+            <h4 id="spec-progress-themes">Themes</h4>
+            <div class="ds-tabs comp-theme-tabs" data-variant="pill" role="tablist" aria-label="Progress themes">
+              <button class="ds-tab" type="button" role="tab" id="spec-progress-theme-pitch" aria-controls="spec-progress-panel-pitch" aria-selected="true" tabindex="0">Pitch</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-progress-theme-wiki-light" aria-controls="spec-progress-panel-wiki-light" aria-selected="false" tabindex="-1">Wiki light</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-progress-theme-wiki-dark" aria-controls="spec-progress-panel-wiki-dark" aria-selected="false" tabindex="-1">Wiki dark</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-progress-theme-engine" aria-controls="spec-progress-panel-engine" aria-selected="false" tabindex="-1">Engine</button>
+            </div>
           </div>
-          <div class="comp-themes-scroll">
-<div class="spec-grid" tabindex="0" role="group" aria-label="Progress — four theme maps, one per shipped theme">
-        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <div class="comp-themes">
+        <div class="spec-cell" role="tabpanel" id="spec-progress-panel-pitch" aria-labelledby="spec-progress-theme-pitch" tabindex="0" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-progress" role="progressbar" aria-label="Coverage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"><div class="ds-progress__bar"></div></div>
           <div class="ds-progress" data-variant="thick" role="progressbar" aria-label="Rendered" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div class="ds-progress__bar"></div></div>
           <div class="ds-progress" data-variant="ghost" role="progressbar" aria-label="Draft" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60"><div class="ds-progress__bar"></div></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+        <div class="spec-cell" role="tabpanel" id="spec-progress-panel-wiki-light" aria-labelledby="spec-progress-theme-wiki-light" tabindex="0" hidden data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
           <div class="ds-progress" role="progressbar" aria-label="Coverage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"><div class="ds-progress__bar"></div></div>
           <div class="ds-progress" data-variant="thick" role="progressbar" aria-label="Rendered" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div class="ds-progress__bar"></div></div>
           <div class="ds-progress" data-variant="ghost" role="progressbar" aria-label="Draft" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60"><div class="ds-progress__bar"></div></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+        <div class="spec-cell" role="tabpanel" id="spec-progress-panel-wiki-dark" aria-labelledby="spec-progress-theme-wiki-dark" tabindex="0" hidden data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
           <div class="ds-progress" role="progressbar" aria-label="Coverage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"><div class="ds-progress__bar"></div></div>
           <div class="ds-progress" data-variant="thick" role="progressbar" aria-label="Rendered" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div class="ds-progress__bar"></div></div>
           <div class="ds-progress" data-variant="ghost" role="progressbar" aria-label="Draft" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60"><div class="ds-progress__bar"></div></div>
         </div>
-        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+        <div class="spec-cell" role="tabpanel" id="spec-progress-panel-engine" aria-labelledby="spec-progress-theme-engine" tabindex="0" hidden data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
           <div class="ds-progress" role="progressbar" aria-label="Coverage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"><div class="ds-progress__bar"></div></div>
           <div class="ds-progress" data-variant="thick" role="progressbar" aria-label="Rendered" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div class="ds-progress__bar"></div></div>
           <div class="ds-progress" data-variant="ghost" role="progressbar" aria-label="Draft" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60"><div class="ds-progress__bar"></div></div>
-        </div>
         </div>
           </div>
         </div>
@@ -2170,28 +2207,30 @@ footer code{color:var(--g-ink)}
         </dl>
         <div class="comp-band comp-band--themes" data-band="themes">
           <div class="comp-caption">
-            <h4 id="spec-tooltip-themes">Theme matrix</h4>
-            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
-            <span class="comp-scroll-hint">scroll</span>
+            <h4 id="spec-tooltip-themes">Themes</h4>
+            <div class="ds-tabs comp-theme-tabs" data-variant="pill" role="tablist" aria-label="Tooltip themes">
+              <button class="ds-tab" type="button" role="tab" id="spec-tooltip-theme-pitch" aria-controls="spec-tooltip-panel-pitch" aria-selected="true" tabindex="0">Pitch</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-tooltip-theme-wiki-light" aria-controls="spec-tooltip-panel-wiki-light" aria-selected="false" tabindex="-1">Wiki light</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-tooltip-theme-wiki-dark" aria-controls="spec-tooltip-panel-wiki-dark" aria-selected="false" tabindex="-1">Wiki dark</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-tooltip-theme-engine" aria-controls="spec-tooltip-panel-engine" aria-selected="false" tabindex="-1">Engine</button>
+            </div>
           </div>
-          <div class="comp-themes-scroll">
-<div class="spec-grid" tabindex="0" role="group" aria-label="Tooltip — four theme maps, one per shipped theme">
-        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <div class="comp-themes">
+        <div class="spec-cell" role="tabpanel" id="spec-tooltip-panel-pitch" aria-labelledby="spec-tooltip-theme-pitch" tabindex="0" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Hover target</button><span class="ds-tooltip" role="tooltip">Rack focus</span></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+        <div class="spec-cell" role="tabpanel" id="spec-tooltip-panel-wiki-light" aria-labelledby="spec-tooltip-theme-wiki-light" tabindex="0" hidden data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
           <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Hover target</button><span class="ds-tooltip" role="tooltip">Rack focus</span></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+        <div class="spec-cell" role="tabpanel" id="spec-tooltip-panel-wiki-dark" aria-labelledby="spec-tooltip-theme-wiki-dark" tabindex="0" hidden data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
           <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Hover target</button><span class="ds-tooltip" role="tooltip">Rack focus</span></div>
         </div>
-        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+        <div class="spec-cell" role="tabpanel" id="spec-tooltip-panel-engine" aria-labelledby="spec-tooltip-theme-engine" tabindex="0" hidden data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
           <div class="spec-row"><button class="ds-btn" data-variant="secondary" data-size="xs" type="button">Hover target</button><span class="ds-tooltip" role="tooltip">Rack focus</span></div>
-        </div>
         </div>
           </div>
         </div>
@@ -2225,36 +2264,38 @@ footer code{color:var(--g-ink)}
         </dl>
         <div class="comp-band comp-band--themes" data-band="themes">
           <div class="comp-caption">
-            <h4 id="spec-nav-themes">Theme matrix</h4>
-            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
-            <span class="comp-scroll-hint">scroll</span>
+            <h4 id="spec-nav-themes">Themes</h4>
+            <div class="ds-tabs comp-theme-tabs" data-variant="pill" role="tablist" aria-label="Pager · nav item · theme toggle themes">
+              <button class="ds-tab" type="button" role="tab" id="spec-nav-theme-pitch" aria-controls="spec-nav-panel-pitch" aria-selected="true" tabindex="0">Pitch</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-nav-theme-wiki-light" aria-controls="spec-nav-panel-wiki-light" aria-selected="false" tabindex="-1">Wiki light</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-nav-theme-wiki-dark" aria-controls="spec-nav-panel-wiki-dark" aria-selected="false" tabindex="-1">Wiki dark</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-nav-theme-engine" aria-controls="spec-nav-panel-engine" aria-selected="false" tabindex="-1">Engine</button>
+            </div>
           </div>
-          <div class="comp-themes-scroll">
-<div class="spec-grid" tabindex="0" role="group" aria-label="Pager · nav item · theme toggle — four theme maps, one per shipped theme">
-        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <div class="comp-themes">
+        <div class="spec-cell" role="tabpanel" id="spec-nav-panel-pitch" aria-labelledby="spec-nav-theme-pitch" tabindex="0" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-pager"><button class="ds-btn" data-size="xs" type="button"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-arrow-left"></use></svg> Prev</button><span class="kicker">Page 2</span><button class="ds-btn" data-size="xs" type="button">Next <svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-arrow-right"></use></svg></button></div>
           <div class="spec-stack"><a class="ds-nav-item" data-variant="rail" href="#specimens" aria-current="page">Coverage</a><a class="ds-nav-item" data-variant="rail" href="#specimens">Movement</a><a class="ds-nav-item" data-variant="dot" href="#specimens" aria-current="page">Focus</a></div>
           <div class="ds-theme-toggle" role="group" aria-label="Theme"><button class="ds-btn" data-variant="ghost" type="button" aria-pressed="true">Light</button><button class="ds-btn" data-variant="ghost" type="button" aria-pressed="false">Dark</button></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+        <div class="spec-cell" role="tabpanel" id="spec-nav-panel-wiki-light" aria-labelledby="spec-nav-theme-wiki-light" tabindex="0" hidden data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
           <div class="ds-pager"><button class="ds-btn" data-size="xs" type="button"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-arrow-left"></use></svg> Prev</button><span class="kicker">Page 2</span><button class="ds-btn" data-size="xs" type="button">Next <svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-arrow-right"></use></svg></button></div>
           <div class="spec-stack"><a class="ds-nav-item" data-variant="rail" href="#specimens" aria-current="page">Coverage</a><a class="ds-nav-item" data-variant="rail" href="#specimens">Movement</a><a class="ds-nav-item" data-variant="dot" href="#specimens" aria-current="page">Focus</a></div>
           <div class="ds-theme-toggle" role="group" aria-label="Theme"><button class="ds-btn" data-variant="ghost" type="button" aria-pressed="true">Light</button><button class="ds-btn" data-variant="ghost" type="button" aria-pressed="false">Dark</button></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+        <div class="spec-cell" role="tabpanel" id="spec-nav-panel-wiki-dark" aria-labelledby="spec-nav-theme-wiki-dark" tabindex="0" hidden data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
           <div class="ds-pager"><button class="ds-btn" data-size="xs" type="button"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-arrow-left"></use></svg> Prev</button><span class="kicker">Page 2</span><button class="ds-btn" data-size="xs" type="button">Next <svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-arrow-right"></use></svg></button></div>
           <div class="spec-stack"><a class="ds-nav-item" data-variant="rail" href="#specimens" aria-current="page">Coverage</a><a class="ds-nav-item" data-variant="rail" href="#specimens">Movement</a><a class="ds-nav-item" data-variant="dot" href="#specimens" aria-current="page">Focus</a></div>
           <div class="ds-theme-toggle" role="group" aria-label="Theme"><button class="ds-btn" data-variant="ghost" type="button" aria-pressed="true">Light</button><button class="ds-btn" data-variant="ghost" type="button" aria-pressed="false">Dark</button></div>
         </div>
-        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+        <div class="spec-cell" role="tabpanel" id="spec-nav-panel-engine" aria-labelledby="spec-nav-theme-engine" tabindex="0" hidden data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
           <div class="ds-pager"><button class="ds-btn" data-size="xs" type="button"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-arrow-left"></use></svg> Prev</button><span class="kicker">Page 2</span><button class="ds-btn" data-size="xs" type="button">Next <svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-arrow-right"></use></svg></button></div>
           <div class="spec-stack"><a class="ds-nav-item" data-variant="rail" href="#specimens" aria-current="page">Coverage</a><a class="ds-nav-item" data-variant="rail" href="#specimens">Movement</a><a class="ds-nav-item" data-variant="dot" href="#specimens" aria-current="page">Focus</a></div>
           <div class="ds-theme-toggle" role="group" aria-label="Theme"><button class="ds-btn" data-variant="ghost" type="button" aria-pressed="true">Light</button><button class="ds-btn" data-variant="ghost" type="button" aria-pressed="false">Dark</button></div>
-        </div>
         </div>
           </div>
         </div>
@@ -2288,28 +2329,30 @@ footer code{color:var(--g-ink)}
         </dl>
         <div class="comp-band comp-band--themes" data-band="themes">
           <div class="comp-caption">
-            <h4 id="spec-copy-themes">Theme matrix</h4>
-            <span class="comp-legend">PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE</span>
-            <span class="comp-scroll-hint">scroll</span>
+            <h4 id="spec-copy-themes">Themes</h4>
+            <div class="ds-tabs comp-theme-tabs" data-variant="pill" role="tablist" aria-label="Copy field themes">
+              <button class="ds-tab" type="button" role="tab" id="spec-copy-theme-pitch" aria-controls="spec-copy-panel-pitch" aria-selected="true" tabindex="0">Pitch</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-copy-theme-wiki-light" aria-controls="spec-copy-panel-wiki-light" aria-selected="false" tabindex="-1">Wiki light</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-copy-theme-wiki-dark" aria-controls="spec-copy-panel-wiki-dark" aria-selected="false" tabindex="-1">Wiki dark</button>
+              <button class="ds-tab" type="button" role="tab" id="spec-copy-theme-engine" aria-controls="spec-copy-panel-engine" aria-selected="false" tabindex="-1">Engine</button>
+            </div>
           </div>
-          <div class="comp-themes-scroll">
-<div class="spec-grid" tabindex="0" role="group" aria-label="Copy field — four theme maps, one per shipped theme">
-        <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
+          <div class="comp-themes">
+        <div class="spec-cell" role="tabpanel" id="spec-copy-panel-pitch" aria-labelledby="spec-copy-theme-pitch" tabindex="0" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
           <div class="ds-copy"><code class="ds-copy__code">--color-pitch-accent</code><button class="ds-btn" data-size="xs" type="button"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-copy"></use></svg> Copy</button></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
+        <div class="spec-cell" role="tabpanel" id="spec-copy-panel-wiki-light" aria-labelledby="spec-copy-theme-wiki-light" tabindex="0" hidden data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
           <div class="ds-copy"><code class="ds-copy__code">--color-pitch-accent</code><button class="ds-btn" data-size="xs" type="button"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-copy"></use></svg> Copy</button></div>
         </div>
-        <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
+        <div class="spec-cell" role="tabpanel" id="spec-copy-panel-wiki-dark" aria-labelledby="spec-copy-theme-wiki-dark" tabindex="0" hidden data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
           <div class="ds-copy"><code class="ds-copy__code">--color-pitch-accent</code><button class="ds-btn" data-size="xs" type="button"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-copy"></use></svg> Copy</button></div>
         </div>
-        <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
+        <div class="spec-cell" role="tabpanel" id="spec-copy-panel-engine" aria-labelledby="spec-copy-theme-engine" tabindex="0" hidden data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
           <div class="ds-copy"><code class="ds-copy__code">--color-pitch-accent</code><button class="ds-btn" data-size="xs" type="button"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-copy"></use></svg> Copy</button></div>
-        </div>
         </div>
           </div>
         </div>
@@ -2920,6 +2963,15 @@ footer code{color:var(--g-ink)}
 
   if (window.DS && typeof DS.tabs === 'function' && tablist) {
     tabsApi = DS.tabs(tablist, { panelScope: '#main' });
+  }
+
+  /* per-component theme pills: one theme at a time. DS.tabs owns the roving
+     tabindex, the aria-controls panels and the arrow keys; without
+     components.js every theme stays visible, stacked, so nothing is lost. */
+  if (window.DS && typeof DS.tabs === 'function') {
+    Array.prototype.forEach.call(document.querySelectorAll('.comp-theme-tabs'), function (root) {
+      try { DS.tabs(root); } catch (err) { /* no-op */ }
+    });
   }
 
   if (tablist) {

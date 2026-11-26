@@ -14,8 +14,8 @@ Surfaces: `index.html` · `pitch.html` · `engine.html` · `design-system/index.
 | tokens defined | 188 |
 | tokens with a product ref | 158 |
 | tokens with no product ref | 30 |
-| custom-property refs | 2973 |
-| … token / role-var `--ds-*` / local / canvas read | 2067 / 177 / 667 / 62 |
+| custom-property refs | 2976 |
+| … token / role-var `--ds-*` / local / canvas read | 2069 / 178 / 667 / 62 |
 | … local split: component `--_*` / page alias | 37 / 630 |
 | component records | 39 (34 styled in components.css) |
 | component instances | 1019 (198 product, 821 gallery) |

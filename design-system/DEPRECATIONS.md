@@ -180,6 +180,16 @@ The gallery's own chrome followed the navigation grammar this wave: three page-l
 | Left-column gallery nav | the section list sat in a rail cell beside the content | the section nav sits under the hero blurb on the content axis: one flat `.ds-rail` group beneath the masthead lede, items at `control.height.*` via `--_ctl-h`, `spacing.md` text-axis offset, `spacing.2` row rhythm; narrow viewports collapse it to the `[data-ds-nav-mode="drawer"]` drawer |
 | Cramped specimen matrix | theme cells and section heads with ad-hoc gaps | one rhythm: cells at `radius.sm` with `spacing.sm` gaps and `spacing.sm` cell padding, section heads separated by `spacing.lg` block spacing, capped at `layout.max.wiki` |
 
+## Gallery specimen shapes retired (no token removed, 2026-11-26)
+
+The specimen lane follows the same grammar: one pill switcher per component, one sticky in-panel nav per panel, one scroll owner per page. Three gallery-local shapes retired, no `.ds-*` block added or removed to make that happen. Spacing throughout is token-named (`spacing.*`, `layout.*`, `radius.*`, `border.width.*`, `control.height.*`, `z.sticky`); no raw step ships in the contract.
+
+| Shape | Was | Replaced by |
+|---|---|---|
+| Four-across theme matrix (`.spec-grid` of four `.spec-cell`s, `PITCH · WIKI-LIGHT · WIKI-DARK · ENGINE` legend + `scroll` hint) | every specimen rendered all four theme maps side by side at once | one theme panel at a time behind a `.ds-tabs[data-variant="pill"]` theme switcher (secondary pill shape: `radius.pill`, `spacing.2xs`/`spacing.2` rhythm, `control.height.*` targets); the selected pill carries `radius.pill` accent fill, exactly one `role="tabpanel"` visible, the rest `hidden` |
+| Per-component scroll caps (`.comp-themes-scroll` + `tabindex`/`role="group"` scroll regions inside each specimen) | each component owned its own horizontal scroll container, nesting scrollers inside the page | no nested scroll containers: scrolling lives at the page/panel level (`overflow-x:auto` + `overscroll-behavior-x:contain` on the parent tablist row only); specimens and theme panels add no scroll caps |
+| Static in-panel sub-nav | the per-panel `.ds-rail` scrolled away with its panel content | sticky in-panel nav: `position:sticky` at the gallery top-offset token (`control.height.default` + `spacing.2xl` source) and `z.sticky`, with internal `overflow-y:auto` + `overscroll-behavior-y:contain`, so a long sub-nav scrolls without moving the panel |
+
 ## Renames that preceded this list
 
 The 44 renames (16 `color.pro.*` → `color.engine.*`, 28 role/type/scale names) shipped in the Phase 1A stages before this retirement; each old name survived as a `var()` alias and is deleted above, which is why the alias tier is empty apart from the six keys in the first table.
