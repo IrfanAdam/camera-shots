@@ -227,9 +227,9 @@ Anything that used to be a dot, a card-y rail, or an underline is a legacy shape
 
 ### Tabs {#ds-tabs}
 
-**Purpose** — switch between sibling panels in place, without a page load. **Pills are the documented default for content-switching** (navigation grammar); the underline and rail variants are legacy for one release and are not extended.
+**Purpose** — switch between sibling panels in place, without a page load. **Pills are the documented default for content-switching** (navigation grammar), composed as one hierarchy: top pill mains switch the main panel and each main panel scopes its own vertical sub-tabs. The underline and boxed variants are legacy for one release and are not extended.
 
-**Anatomy** — `<div class="ds-tabs" data-variant="pill" role="tablist">` of `.ds-tab[role="tab"]`, each with `aria-controls`; panels are `.ds-tabpanel` and are `hidden` when not selected. `DS.tabs(root)` supplies roving tabindex, ←/→/Home/End and the panel swap.
+**Anatomy** — a top `<div class="ds-tabs" data-variant="pill" role="tablist">` of `.ds-tab[role="tab"]` (Story/Shots/Notes), each with `aria-controls` onto its `.ds-tabpanel` (`hidden` when not selected). Inside each main panel, a `.ds-tabsub` two-column row holds a nested `<div class="ds-tabs" data-variant="rail" role="tablist" aria-orientation="vertical">` sub-tablist plus a `.ds-tabsub__panels` column of sub `.ds-tabpanel`s, each sub-tab carrying its own `aria-controls`. `DS.tabs(root)` is wired per tablist and supplies roving tabindex, ←/→/Home/End and the panel swap within that level.
 
 **Variants**
 
@@ -238,7 +238,7 @@ Anything that used to be a dot, a card-y rail, or an underline is a legacy shape
 | **Pill** | `data-variant="pill"` | rounded-full quiet surface (`radius.pill`), `border-width.hairline` `--ds-rule` boundary, transparent until selected, accent fill + `--ds-on-accent` ink when selected, left-aligned, wraps, each tab sized by its label | **live — use this for content-switching** |
 | Boxed | — (no attribute) | bordered tabs at `radius.xs`; the shape a `.ds-tabs` still renders with no attribute | legacy default, kept for this wave — pass `pill` |
 | Underline | `data-variant="underline"` | no boxes; 2px `border-width.strong` rule under the selected tab | **legacy — retires next release** |
-| Rail | `data-variant="rail"` | vertical stack of tabs (a tablist, not a section nav) | **legacy — retires next release** |
+| Rail (nested sub-tabs only) | `data-variant="rail"` + `aria-orientation="vertical"` inside `.ds-tabsub` | vertical stack; the selected sub-tab takes a `--ds-surface-alt` fill with an `--ds-accent` inline-start mark (a tablist, not a section nav) | **live as the sub shape — never standalone** |
 
 **States** — default (`--ds-muted` ink, hairline boundary) · hover (`--ds-surface-alt` fill, `--ds-rule-strong` boundary, ink text) · selected (`aria-selected="true"` → accent fill, accent border, `--ds-on-accent` ink, no underline) · focus-visible (the shared ring) · panel hidden/shown.
 
@@ -254,11 +254,11 @@ Anything that used to be a dot, a card-y rail, or an underline is a legacy shape
 | Type | `typography.size.small`, `typography.family.sans`, `weight.medium` |
 | Motion | `motion.duration.hover`, `motion.easing.standard` |
 
-**Dos and don'ts** — DO pass `data-variant="pill"` on every new tablist and let the row wrap. DO give every tab `aria-controls` pointing at a real panel id. DON'T reach for `underline` or `rail` (legacy), DON'T stretch tabs to equal widths — the pill is sized by its label — and DON'T add a horizontal scrollbar: a wrapped second row is the intended behaviour on desktop. DON'T wire `DS.tabs` onto a page that re-renders one shared panel — `apply()` hides every non-selected panel, which would hide the only one (wiki's exact blocker; it adopts `.ds-tab` CSS + manual ARIA in Phase 3 and defers the JS).
+**Dos and don'ts** — DO pass `data-variant="pill"` on every new tablist and let the row wrap. DO give every tab `aria-controls` pointing at a real panel id. DON'T reach for `underline` (legacy) or a standalone `rail`, DON'T stretch tabs to equal widths — the pill is sized by its label — and DON'T add a horizontal scrollbar: a wrapped second row is the intended behaviour on desktop. DON'T wire `DS.tabs` onto a page that re-renders one shared panel — `apply()` hides every non-selected panel, which would hide the only one (wiki's exact blocker; it adopts `.ds-tab` CSS + manual ARIA in Phase 3 and defers the JS). DO nest each rail sub-tablist inside its active main panel (`.ds-tabsub` + `.ds-tabsub__panels`). DON'T render a rail tablist as a sibling of the pill mains — a standalone rail is the legacy shape.
 
-**Accessibility** — `role="tablist"` / `role="tab"` / `role="tabpanel"`; exactly one tab in the tab order; `aria-selected` on the tab, `aria-labelledby` on the panel; panels get `hidden` (not `display:none` by hand). The pill's selected state is carried by fill + ink, not by an underline alone, and the focus ring is unchanged from the other controls.
+**Accessibility** — `role="tablist"` / `role="tab"` / `role="tabpanel"`; exactly one tab in the tab order; `aria-selected` on the tab, `aria-labelledby` on the panel; panels get `hidden` (not `display:none` by hand). Each nested sub-tablist carries its own accessible name with `aria-orientation="vertical"`; the `aria-selected` / `hidden` pairing repeats at both levels. The pill's selected state is carried by fill + ink, not by an underline alone, and the focus ring is unchanged from the other controls.
 
-**Gallery** — [Tabs frame](index.html#spec-tabs) · `#spec-tabs` (renders the boxed, underline and rail specimens; the pill cell lands with the gallery lane)
+**Gallery** — [Tabs frame](index.html#spec-tabs) · `#spec-tabs` (renders the composed hierarchy — pill mains on top, one nested vertical sub-tablist per main panel; boxed + underline sit in a single labelled legacy row)
 
 ---
 

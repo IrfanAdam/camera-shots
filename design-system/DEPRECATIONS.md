@@ -163,7 +163,7 @@ The navigation grammar (rails are flat, tabs are pills, buttons keep their geome
 |---|---|---|---|
 | `.ds-nav-item[data-variant="dot"]` | `components.css` §18 | the flat rail item's inline-start accent bar — `class="ds-nav-item ds-rail__item"` | the release after this wave |
 | `.ds-tabs[data-variant="underline"]` | `components.css` §5 | `.ds-tabs[data-variant="pill"]` | the release after this wave |
-| `.ds-tabs[data-variant="rail"]` | `components.css` §5 | `.ds-tabs[data-variant="pill"]` for tabs; `.ds-rail` for a section nav | the release after this wave |
+| `.ds-tabs[data-variant="rail"]` | `components.css` §5 | a standalone rail tablist → `.ds-tabs[data-variant="pill"]` for tabs, `.ds-rail` for a section nav; the nested vertical sub-tablist (`aria-orientation="vertical"` inside `.ds-tabsub`) is the main→sub hierarchy's sub shape, not a standalone rail | standalone use retires the release after this wave; nested sub-tab use is the composed hierarchy |
 | bare `.ds-tabs` (boxed, no attribute) | `components.css` §5 base block | `.ds-tabs[data-variant="pill"]` | when the pages above migrate |
 
 ## Page shapes retired with the rail foot + mobile menu (no token removed, 2026-11-25)

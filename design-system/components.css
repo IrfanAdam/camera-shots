@@ -501,6 +501,14 @@
   border-inline-start-color:var(--ds-accent);
   color:var(--ds-ink);
 }
+/* MAIN→SUB COMPOSITION — one composed hierarchy per specimen cell: a pill
+   tablist on top switches the main panel, and inside each main panel a
+   vertical rail tablist scopes that panel's own sections in a two-column row.
+   Only layout lives here (two columns + one spacing-ladder gap); the rail
+   tablist keeps its own block, and this never touches .ds-rail (§20), which
+   is the flat section nav, not a tablist. */
+.ds-tabsub{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--spacing-md);align-items:start}
+.ds-tabsub__panels{min-width:0}
 .ds-tabpanel[hidden]{display:none}
 /* COARSE POINTER FLOOR — a tab takes the touch step from the same ladder.
    base.css §8's 44px floor is a `:where()` list (zero specificity), so any
