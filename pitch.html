@@ -35,9 +35,9 @@ a{color:inherit}
    owns the max-width and its own gutter — full-bleed grid, no body padding */
 .shell{display:grid;grid-template-columns:var(--layout-rail) minmax(0,1fr)}
 .col{display:flex;flex-direction:column;min-width:0}
-/* header: sticky, brand + tools on row one, left-aligned pill tabs on row two.
-   Cross-surface links are NOT here: they live in the rail's `.ds-rail__foot`,
-   one roster for every surface (components.css §20b). */
+/* header: sticky, brand + tools on row one, left-aligned underline tabs on row
+   two. Cross-surface links are NOT here or in the rail: the rail carries
+   sections only and the surfaces live as inline links in the hero. */
 .top{position:sticky;top:0;z-index:var(--z-sticky);background:var(--color-pitch-overlay-bg);backdrop-filter:blur(8px);border-bottom:var(--border-width-hairline) solid var(--rule);padding-top:env(safe-area-inset-top,0px)}
 .topin{display:flex;flex-direction:column;gap:var(--spacing-2);max-width:var(--layout-max-pitch);margin:0 auto;padding:var(--spacing-10) var(--spacing-20) var(--spacing-2xs)}
 .brandrow{display:flex;align-items:center;justify-content:space-between;gap:var(--spacing-sm)}
@@ -49,18 +49,17 @@ a{color:inherit}
 .hicon{display:flex;align-items:center;justify-content:center;min-width:var(--control-height-default);min-height:var(--control-height-default);width:var(--control-height-default);height:var(--control-height-default);border-radius:var(--radius-xs);background:transparent;border:0;color:var(--mut);font-size:var(--typography-size-ui);cursor:pointer;font-family:inherit}
 .hicon:hover{color:var(--ink);background:var(--s2)}
 .hicon svg{display:block;width:var(--icon-size-sm);height:var(--icon-size-sm)}
-/* doc tabs: DS pill tablist on the content axis — the shape is the pill and the
-   row starts at the same left edge as the section text (no centring) */
+/* doc tabs: DS underline tablist on the content axis (components.css §5 —
+   parent tabs are underline, pills are secondary). The row starts at the same
+   left edge as the section text (no centring) */
 .doctabs{min-width:0}
 /* sidebar: the document TOC as a flat DS section rail (nav.toc toggles per tab) */
 .sidexport{display:flex;flex-direction:column;gap:var(--spacing-xs);border-top:var(--border-width-hairline) solid var(--rule);margin-block-start:auto;padding:var(--spacing-sm) var(--spacing-md) var(--spacing-sm) calc(var(--border-width-strong) + var(--layout-rail-inset))}
-/* bottom cluster: the export block carries the rail's free space, so it and the
-   Surfaces foot below it travel to the block-end edge together. The foot's own
-   `margin-block-start:auto` (components.css §20b) is neutralised here because
-   flex spreads free space equally across every auto margin — leaving both
-   would open a gap between the export cluster and the foot. The foot keeps
-   its sticky block-end edge, so a long TOC still scrolls under it. */
-.side .ds-rail__foot{margin-block-start:0}
+/* bottom cluster: the export block carries the rail's free space, so it rides
+   the block-end edge on its own now that the rail carries sections only — no
+   Surfaces foot below it (the surfaces live as inline links in the hero, the
+   same move the gallery made). A long TOC still scrolls under it inside the
+   rail's own shipped scroller (components.css §20). */
 .sidexport .explabel{font-size:var(--typography-size-eyebrow);font-weight:var(--weight-bold);letter-spacing:.14em;text-transform:uppercase;color:var(--mut);font-family:var(--typography-family-mono)}
 .sidexport .explabel b{color:var(--ink);font-weight:var(--weight-semibold)}
 .expbtns{display:flex;flex-wrap:wrap;gap:var(--spacing-6)}
@@ -193,21 +192,28 @@ tbody td:first-child{white-space:nowrap;font-weight:var(--weight-semibold);color
 .gbar{position:absolute;top:0;bottom:0;border-radius:var(--radius-pill);background:var(--acc)}
 .gbar.ghost{background:transparent;border:var(--border-width-hairline) dashed var(--acc)}
 .viewtoggle{display:flex;gap:var(--spacing-6);margin-top:var(--spacing-18)}
+/* surfaces: the cross-page roster now that the rail carries sections only —
+   inline hero links with a 24px floor, the same move the gallery made */
+.surfaces{display:flex;flex-wrap:wrap;align-items:center;gap:var(--spacing-2xs) var(--spacing-xs);color:var(--mut);font-size:var(--typography-size-meta);margin-top:var(--spacing-sm)}
+.surfaces__label{font-family:var(--typography-family-mono);font-size:var(--typography-size-eyebrow);font-weight:var(--weight-bold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase}
+.surfaces a{display:inline-flex;align-items:center;min-block-size:var(--spacing-lg);color:var(--mut);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:0.16em}
+.surfaces a:hover{color:var(--ink)}
+.surfaces [aria-current="page"]{display:inline-flex;align-items:center;min-block-size:var(--spacing-lg);color:var(--ink);font-weight:var(--weight-semibold)}
 footer{margin:var(--spacing-2xl) 0 var(--spacing-md);color:var(--mut);font-size:var(--typography-size-meta);border-top:var(--border-width-hairline) solid var(--rule);padding-top:var(--spacing-md)}
 /* ≤--breakpoint-lg: the rail leaves the grid and becomes the off-canvas drawer
    (components.css §21), reached from the header's menu button. ONE rail element
    serves both: the page only stops reserving a rail column and drops its
-   `display:contents` wrapper — the drawer, the scrim, the scroll lock, the
-   pinned foot and the drawer's own scroller are the shared layer's job. No
-   second scroller, no pill strip, no floating bar is declared here. */
+   `display:contents` wrapper — the drawer, the scrim, the scroll lock and the
+   drawer's own scroller are the shared layer's job. No
+   second scroller, no tab strip, no floating bar is declared here. */
 @media(max-width:900px){
 .shell{display:flex;flex-direction:column}
 .col{display:contents}
 .top{order:1}
 .side{order:2}
 .w{order:3}
-.doctabs[data-variant="pill"]{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
-.doctabs[data-variant="pill"]::-webkit-scrollbar{display:none}
+.doctabs[data-variant="underline"]{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.doctabs[data-variant="underline"]::-webkit-scrollbar{display:none}
 .grid{grid-template-columns:1fr}
 .metrics{grid-template-columns:1fr 1fr}
 .hero{padding:1.6rem 0 var(--spacing-md)} /* lint-allow: 25.6px compact-hero pad sits between the 24 and 32 steps */
@@ -241,19 +247,20 @@ section{scroll-margin-top:9.5rem}
 /* plan drawer: sticky section nav + uniform week label column (tokens only) */
 #plan-weeks .pl{display:grid;grid-template-columns:calc(var(--spacing-2xl) + var(--spacing-xl)) 1fr;gap:0 var(--spacing-sm);margin-top:var(--spacing-6)}
 #plan-weeks .pl>.k{margin:0}
-/* plan drawer v2: sticky header unit + compact pills + context carousel + footer + week panels (tokens only) */
+/* plan drawer v2: sticky header unit + compact pills + context stack + week panels (tokens only) */
 .plan-head{position:sticky;top:calc(-1 * var(--spacing-lg));z-index:var(--z-sticky);background:var(--color-pitch-overlay-surface);border-bottom:var(--border-width-hairline) solid var(--rule);margin:calc(-1 * var(--spacing-lg)) calc(-1 * var(--spacing-lg)) 0;padding:var(--spacing-sm) var(--spacing-lg)} /* overlay-surface: chrome that week rows scroll under, the same translucent role the sticky page header takes from overlay.bg */
 .plan-nav{position:static;z-index:var(--z-sticky);background:transparent;border:0;margin:0;padding:var(--spacing-xs) 0 0;gap:var(--spacing-2xs)}
 .plan-nav .pill{text-decoration:none;font-size:var(--typography-size-timecode);padding:var(--spacing-2xs) var(--spacing-sm)}
 #plan-weeks .wrow{background:var(--s1);border:var(--border-width-hairline) solid var(--rule);border-radius:var(--radius-sm);padding:var(--spacing-sm) var(--spacing-14);margin:0 0 var(--spacing-sm);scroll-margin-top:calc(var(--spacing-2xl) + var(--spacing-xl) + var(--spacing-lg) + var(--spacing-md))}
 #plan-weeks .wrow>b{display:block;margin-bottom:var(--spacing-2xs)}
-/* plan drawer v4: quiet per-item containers + tighter gap + trailing peek fade (tokens only) */
-#plan-weeks .plan-context{display:flex;gap:var(--spacing-xs);overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scroll-behavior:smooth;margin:0 calc(-1 * var(--spacing-lg)) var(--spacing-sm);padding:0 var(--spacing-lg) var(--spacing-2xs);scroll-padding-inline:var(--spacing-lg);-webkit-mask-image:linear-gradient(90deg,var(--s1) 88%,transparent);mask-image:linear-gradient(90deg,var(--s1) 88%,transparent)}
-#plan-weeks .plan-context .wrow{flex:0 0 auto;max-width:var(--breakpoint-xs);scroll-snap-align:start;background:var(--s2);border:var(--border-width-hairline) solid var(--rule);border-radius:var(--radius-xs);padding:var(--spacing-sm) var(--spacing-sm);margin:0;font-size:var(--typography-size-meta);color:var(--mut)}
+/* plan drawer v4: quiet per-item containers + tighter gap (tokens only).
+   The context cards stack — no sideways carousel inside the drawer, so the
+   drawer is the only scroller. */
+#plan-weeks .plan-context{display:flex;flex-direction:column;gap:var(--spacing-xs);margin:0 0 var(--spacing-sm)}
+#plan-weeks .plan-context .wrow{flex:none;max-width:none;background:var(--s2);border:var(--border-width-hairline) solid var(--rule);border-radius:var(--radius-xs);padding:var(--spacing-sm) var(--spacing-sm);margin:0;font-size:var(--typography-size-meta);color:var(--mut)}
 #plan-weeks .wrow.gate{border-color:var(--rule)}
 #plan-weeks .wrow.gate .k{display:block;margin-bottom:var(--spacing-2xs)}
 #plan-weeks{padding-block-end:var(--spacing-2xl)}
-@media(prefers-reduced-motion:reduce){#plan-weeks .plan-context{scroll-snap-type:none;scroll-behavior:auto}}
 /* print: active article only */
 @media print{
 .top,.side,.ctarow,.drawer,.backdrop,footer,.viewtoggle{display:none}
@@ -304,13 +311,6 @@ html{scroll-behavior:auto}
 </span>
 <span class="expstat" id="exp-stat" role="status" aria-live="polite"></span>
 </div>
-<div class="ds-rail__foot">
-<p class="ds-rail__label">Surfaces</p>
-<a class="ds-nav-item ds-rail__item" href="index.html">Wiki</a>
-<span class="ds-nav-item ds-rail__item" aria-current="page">Pitch</span>
-<a class="ds-nav-item ds-rail__item" href="engine.html">Engine</a>
-<a class="ds-nav-item ds-rail__item" href="design-system/index.html">Design System</a>
-</div>
 </aside>
 <div class="col">
 <header class="top">
@@ -326,7 +326,7 @@ html{scroll-behavior:auto}
 <button type="button" class="ds-navtoggle" data-ds-nav-toggle="nav-drawer" aria-controls="nav-drawer" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-menu"></use></svg></button>
 </div>
 </div>
-<nav class="doctabs ds-tabs" data-variant="pill" role="tablist" aria-label="Company Documents">
+<nav class="doctabs ds-tabs" data-variant="underline" role="tablist" aria-label="Company Documents">
 <button class="ds-tab" id="tab-btn-story" role="tab" data-doc="story" aria-selected="true" aria-controls="panel-doc-01" tabindex="0" onclick="switchTab('story')">Product</button>
 <button class="ds-tab" id="tab-btn-investors" role="tab" data-doc="investors" aria-selected="false" aria-controls="panel-doc-03" tabindex="-1" onclick="switchTab('investors')">Investors</button>
 <button class="ds-tab" id="tab-btn-wiki" role="tab" data-doc="wiki" aria-selected="false" aria-controls="panel-doc-02" tabindex="-1" onclick="switchTab('wiki')">Wiki</button>
@@ -346,6 +346,7 @@ html{scroll-behavior:auto}
 <h1>Start with intent. <span>Let the pixels follow.</span></h1>
 <p class="sub">Most AI video starts with a sentence and hopes for cinema. This engine flips it: storyboard the beats, pin the look, and compose deliberate prompt tokens — highly accurate generations, no black box, just craft you control.</p>
 <p class="meta">An engine that storyboards &middot; tokens you can reuse anywhere &middot; a wiki when you need the language</p>
+<p class="surfaces"><span class="surfaces__label">Surfaces</span><a href="index.html">Wiki</a><span aria-current="page">Pitch</span><a href="engine.html">Engine</a><a href="design-system/index.html">Design System</a></p>
 <div class="ctarow"><a class="btn primary" href="engine.html">Open the engine</a><a class="btn ghost" href="index.html">Browse the wiki</a></div>
 </header>
 </section>
@@ -762,8 +763,8 @@ html{scroll-behavior:auto}
 <p class="k">Funding scenarios</p>
 <h2>Four ways the raise could play.</h2>
 <p class="lede">Illustrative defaults only — plan, not promise. All figures DRAFT pending founder inputs.</p>
-<div class="scenrow"><div class="pills" id="fund-pills">
-<button class="pill" data-fsc="minimal">Minimal</button><button class="pill" data-fsc="conservative">Conservative</button><button class="pill on" data-fsc="ok">OK</button><button class="pill" data-fsc="ideal">Ideal</button>
+<div class="scenrow"><div class="pills ds-tabs" id="fund-pills" data-variant="pill" role="tablist" aria-label="Funding scenario">
+<button class="ds-tab" data-ds-compact role="tab" data-fsc="minimal" aria-selected="false" tabindex="-1">Minimal</button><button class="ds-tab" data-ds-compact role="tab" data-fsc="conservative" aria-selected="false" tabindex="-1">Conservative</button><button class="ds-tab" data-ds-compact role="tab" data-fsc="ok" aria-selected="true" tabindex="0">OK</button><button class="ds-tab" data-ds-compact role="tab" data-fsc="ideal" aria-selected="false" tabindex="-1">Ideal</button>
 </div><div class="curtoggle"><button id="fund-fx" class="fxswitch" type="button" role="switch" aria-checked="false" aria-label="Currency, INR or USD"><span class="fxthumb" aria-hidden="true"></span><span class="fxlab" data-fxlab="inr" aria-hidden="true">₹ INR</span><span class="fxlab" data-fxlab="usd" aria-hidden="true">$ USD</span></button></div></div>
 <div class="metrics" style="grid-template-columns:1fr 1fr" id="fund-kpis"></div>
 <p class="draft-note" id="fund-assump"></p>
@@ -884,8 +885,8 @@ if(tablist)tablist.addEventListener("keydown",function(e){
   e.preventDefault();activate(tabs[n].dataset.doc);tabs[n].focus();
 });
 rail.addEventListener("click",function(e){
-  /* only the document TOC scrolls in place; the rail's foot items are real
-     cross-page destinations and must navigate (components.js closes the drawer) */
+  /* only the document TOC scrolls in place — the rail carries sections only,
+     so every `.toc a` is an in-page jump */
   var a=e.target.closest(".toc a");if(!a)return;e.preventDefault();
   var el=document.getElementById((a.getAttribute("href")||"").slice(1));
   if(el)el.scrollIntoView({behavior:reduce?"auto":"smooth",block:"start"});
@@ -979,7 +980,7 @@ function applyFx(root){[].slice.call((root||document).querySelectorAll("[data-fx
 function fundRender(id){
   if(!FUND.SC[id])id="ok";fundSc=id;
   var sc=FUND.SC[id];
-  [].slice.call(document.querySelectorAll("#fund-pills .pill")).forEach(function(p){p.classList.toggle("on",p.getAttribute("data-fsc")===id)});
+  [].slice.call(document.querySelectorAll("#fund-pills .ds-tab")).forEach(function(p){var on=p.getAttribute("data-fsc")===id;p.setAttribute("aria-selected",on?"true":"false");p.tabIndex=on?0:-1});
   var fx=document.getElementById("fund-fx");if(fx)fx.setAttribute("aria-checked",fundCur==="usd"?"true":"false");
   var be=null,m,gross=0;
   for(m=1;m<=18;m++){gross+=burnAt(sc,m);if(be===null&&mrrAt(sc,m)>=burnAt(sc,m))be=m}
@@ -1046,9 +1047,23 @@ function fundRender(id){
     chart.innerHTML=s;
   }
 }
-var pills=[].slice.call(document.querySelectorAll("#fund-pills .pill"));
+var pills=[].slice.call(document.querySelectorAll("#fund-pills .ds-tab"));
 pills.forEach(function(p){
   p.addEventListener("click",function(){fundRender(p.getAttribute("data-fsc"))});
+});
+/* scenario tablist keyboard: arrows move the roving stop, Home/End jump,
+   activation follows focus (the same pattern the doctabs own) */
+var fundTabs=document.getElementById("fund-pills");
+if(fundTabs)fundTabs.addEventListener("keydown",function(e){
+  var ts=[].slice.call(fundTabs.querySelectorAll('[role="tab"]'));
+  var i=ts.indexOf(document.activeElement);if(i<0)return;
+  var n=null;
+  if(e.key==="ArrowRight"||e.key==="ArrowDown")n=(i+1)%ts.length;
+  else if(e.key==="ArrowLeft"||e.key==="ArrowUp")n=(i-1+ts.length)%ts.length;
+  else if(e.key==="Home")n=0;
+  else if(e.key==="End")n=ts.length-1;
+  if(n===null)return;
+  e.preventDefault();fundRender(ts[n].getAttribute("data-fsc"));ts[n].focus();
 });
 function setFx(cur){fundCur=(cur==="usd")?"usd":"inr";fundRender(fundSc);applyFx(document)}
 var fxBtn=document.getElementById("fund-fx");

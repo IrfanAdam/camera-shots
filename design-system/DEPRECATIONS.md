@@ -196,9 +196,21 @@ The specimen lane follows the same grammar one step further: navs hold sections 
 
 | Shape | Was | Replaced by |
 |---|---|---|
-| `SURFACES` `.ds-rail__foot` inside gallery navs | every gallery `.ds-rail` repeated the cross-surface group (Wiki · Pitch · Engine · Design System) as a pinned foot | surfaces links live in the hero; every gallery `.ds-rail` holds sections only and carries no `.ds-rail__foot` (page rails keep the foot contract in `components.md` §20b–21) |
+| `SURFACES` `.ds-rail__foot` inside gallery navs | every gallery `.ds-rail` repeated the cross-surface group (Wiki · Pitch · Engine · Design System) as a pinned foot | surfaces links live in the hero; every gallery `.ds-rail` holds sections only and carries no `.ds-rail__foot` (pitch + wiki page rails followed in the next lane — see below) |
 | Centred theme switcher row | the per-component `.ds-tabs[data-variant="pill"]` switcher sat as a full-width centred row above the specimen | small left-aligned pill row beside the block heading: `radius.pill` secondary shape, `spacing.2xs` / `spacing.2` rhythm, `control.height.*` targets, wrapping, one `role="tabpanel"` visible at a time |
 | Token chip row | the per-component token list rendered as inline chips inside the specimen band | per-component token code area directly below the specimen frame: a code block naming the block's tokens (token names only, one per line, plus the block's class anatomy string) |
+
+## Pitch + wiki page shapes retired (no token removed, 2026-11-26)
+
+The pitch (`pitch.html` Product / Investors / Wiki / MVP doc panels) and wiki (`index.html` cinematography steps + tabs + panel) pages follow the same composed hierarchy as the gallery specimen lane: underline mains, in-panel nav, small pills, tokens below. Four page-local shapes retired, no `.ds-*` block added or removed to make that happen. Spacing throughout is token-named (`spacing.*`, `layout.*`, `radius.*`, `border-width.*`, `typography.*`, `control.height.*`); no raw step ships in the contract.
+
+| Shape | Was | Replaced by |
+|---|---|---|
+| Pill parent tablist (`.doctabs` / `#tabs` as `.ds-tabs[data-variant="pill"]`) | the parent mains rendered as the secondary pill shape | the live parent shape — `.ds-tabs[data-variant="underline"]`: one horizontal row on the content axis, left-aligned, `spacing.md` gap, `border-width.hairline` `--ds-rule` block-end rule, scrolling under overflow instead of wrapping; pill stays secondary/in-panel only |
+| Standalone section list beside the panels | each doc's sections sat in the page rail (or a flat list outside the panel) | one in-panel `.ds-rail` section nav per main panel: plain links with `href` + `aria-current` in the same `.ds-tabsub` left cell, `layout.rail.inset` text axis, `border-width.strong` `--ds-accent` inline-start mark, `spacing.md` gap to the `.ds-tabsub__panels` column |
+| Full-width pill rows | secondary switchers (funding scenarios, plan weeks, wiki steps) sat as full-width centred rows | small left-aligned pill rows: `radius.pill` secondary shape, `spacing.2xs` / `spacing.2` rhythm, `control.height.*` targets, wrapping, one `role="tabpanel"` visible at a time |
+| Inline token lists | each panel's token list rendered inline inside the panel band | token code area directly below the panel frame: a code block naming the panel's tokens (token names only, one per line, plus the block's class anatomy string) |
+| `SURFACES` `.ds-rail__foot` in page rails | each page rail repeated the cross-surface group (Wiki · Pitch · Engine · Design System) as a pinned foot | surfaces as inline hero links; page rails carry sections only with no `.ds-rail__foot`, the same move the gallery made |
 
 ## Renames that preceded this list
 

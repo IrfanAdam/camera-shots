@@ -71,10 +71,11 @@ p{font-size:var(--typography-size-body);color:var(--body)}.ad{margin-top:var(--s
 /* the two row actions are the thumb target: base.css §6/§8 set 40 (fine) and 44
    (coarse) once [data-ds-compact] is gone; this only pins the square width */
 .mapacts button{min-inline-size:var(--touch-min)}
-/* both switchers are pills (components.css §5): the 7-step row and the 3-tab row
-   share one shape, one gap and one wrap rule, and neither scrolls sideways on
-   desktop. A step is not a tab, so it keeps aria-current="step" and takes the
-   same accent fill the selected tab gets from [aria-selected="true"]. */
+/* the step row stays pills, the tab row is underline (components.css §5:
+   parent tabs are underline, pills are secondary). A step is not a tab, so it
+   keeps aria-current="step" with the accent fill. The underline tab row keeps
+   the shipped sideways scroll under overflow; the pill step row keeps wrapping
+   and never scrolls on desktop. */
 #steps{margin-block:var(--spacing-sm) var(--spacing-6)}
 #tabs{margin-block:0 var(--spacing-md)}
 #steps .ds-tab[aria-current="step"]{background:var(--acc);border-color:var(--acc);color:var(--acc-ink);font-weight:var(--weight-medium)}
@@ -83,6 +84,12 @@ p{font-size:var(--typography-size-body);color:var(--body)}.ad{margin-top:var(--s
 .yt img{width:100%;height:100%;object-fit:cover;opacity:var(--opacity-media)}
 .yt span{position:absolute;inset:0;margin:auto;width:60px;height:60px;border-radius:var(--radius-circle);background:var(--acc);color:var(--acc-ink);display:flex;align-items:center;justify-content:center;font-size:22px}
 .yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+/* surfaces: the cross-page roster now that the rail carries entries only —
+   inline hero links with a 24px floor, the same move the gallery made */
+.surfaces{display:flex;flex-wrap:wrap;align-items:center;gap:var(--spacing-2xs) var(--spacing-sm);color:var(--mut);font-size:var(--typography-size-small);margin:var(--spacing-sm) 0 0}
+.surfaces__label{font-family:var(--typography-family-mono);font-size:var(--typography-size-eyebrow);font-weight:var(--weight-bold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase}
+.surfaces a{display:inline-flex;align-items:center;min-block-size:var(--spacing-lg);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:0.16em}
+.surfaces [aria-current="page"]{display:inline-flex;align-items:center;min-block-size:var(--spacing-lg);color:var(--ink);font-weight:var(--weight-medium)}
 footer{margin:var(--spacing-xl) 0 var(--spacing-md);color:var(--mut);font-size:var(--typography-size-meta)}
 /* ≤--breakpoint-lg: the rail leaves the grid and becomes the off-canvas menu
    (components.css §21) reached from the header's menu button, so the page only
@@ -131,20 +138,14 @@ footer{margin:var(--spacing-xl) 0 var(--spacing-md);color:var(--mut);font-size:v
 <div class="rail-field"><label class="ds-sr-only" for="search">Filter cards in this tab</label><input id="search" class="ds-input" type="search" placeholder="Filter this tab…" aria-describedby="search-hint" autocomplete="off"><span class="ds-sr-only" id="search-hint">Examples: rack, golden, 180.</span></div>
 <p class="rail-count" id="count"></p>
 <div class="rail-list" id="list"></div>
-<div class="ds-rail__foot">
-<p class="ds-rail__label">Surfaces</p>
-<span class="ds-nav-item ds-rail__item" aria-current="page">Wiki</span>
-<a class="ds-nav-item ds-rail__item" href="pitch.html">Pitch</a>
-<a class="ds-nav-item ds-rail__item" href="engine.html">Engine</a>
-<a class="ds-nav-item ds-rail__item" href="design-system/index.html">Design System</a>
-</div>
 </nav>
 <div class="page__main">
 <main id="main" tabindex="-1">
 <p class="sub">A working reference for how films are shot and directed. Pick a concept, see what it does for the story, watch it explained, and copy the prompt phrase to use it.</p>
+<p class="surfaces"><span class="surfaces__label">Surfaces</span><span aria-current="page">Wiki</span><a href="pitch.html">Pitch</a><a href="engine.html">Engine</a><a href="design-system/index.html">Design System</a></p>
 <div class="ds-tabs" id="steps" data-variant="pill" role="group" aria-label="Steps"></div>
 <p class="blurb" id="blurb"></p>
-<div class="ds-tabs" id="tabs" data-variant="pill"></div>
+<div class="ds-tabs" id="tabs" data-variant="underline"></div>
 <div class="panel" id="panel"></div>
 </main>
 <footer>Tip: ← → keys step through cards · / focuses filter · token copy gives you <code>CODE — prompt phrase</code> ready to paste. Direction tab: shoot order for the set.</footer>
@@ -394,7 +395,7 @@ const pillTabs=STEPS.find(s=>s.name==curStep).tabs;
 const tabsEl=$('tabs');
 if(pillTabs.length<=1){tabsEl.innerHTML='';tabsEl.style.display='none';tabsEl.removeAttribute('role');tabsEl.removeAttribute('aria-label')}
 else{tabsEl.style.display='';tabsEl.setAttribute('role','tablist');tabsEl.setAttribute('aria-label','Tabs in '+curStep);
-tabsEl.innerHTML=pillTabs.map(k=>`<button type="button" class="ds-tab" role="tab" id="${tabId(k)}" aria-selected="${k==tab}" aria-controls="panel" tabindex="${k==tab?0:-1}" data-t="${k}" data-ds-key="tab-${k}">${k}</button>`).join('')};
+tabsEl.innerHTML=pillTabs.map(k=>`<button type="button" class="ds-tab" data-ds-compact role="tab" id="${tabId(k)}" aria-selected="${k==tab}" aria-controls="panel" tabindex="${k==tab?0:-1}" data-t="${k}" data-ds-key="tab-${k}">${k}</button>`).join('')};
 const list=$('list'),panel=$('panel');
 if(pillTabs.length>1){panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby',tabId(tab));panel.removeAttribute('aria-label')}
 else{panel.setAttribute('role','region');panel.removeAttribute('aria-labelledby');panel.setAttribute('aria-label',tab+' cards')}

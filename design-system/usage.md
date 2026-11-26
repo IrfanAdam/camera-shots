@@ -14,11 +14,11 @@ Surfaces: `index.html` · `pitch.html` · `engine.html` · `design-system/index.
 | tokens defined | 188 |
 | tokens with a product ref | 158 |
 | tokens with no product ref | 30 |
-| custom-property refs | 2970 |
-| … token / role-var `--ds-*` / local / canvas read | 2064 / 178 / 666 / 62 |
-| … local split: component `--_*` / page alias | 36 / 630 |
+| custom-property refs | 2980 |
+| … token / role-var `--ds-*` / local / canvas read | 2069 / 178 / 671 / 62 |
+| … local split: component `--_*` / page alias | 36 / 635 |
 | component records | 39 (34 styled in components.css) |
-| component instances | 1119 (198 product, 921 gallery) |
+| component instances | 1099 (198 product, 901 gallery) |
 | … authored in JS (flagged dynamic) | 38 |
 | numbered blocks | 21 (16 with a product instance) |
 
@@ -110,20 +110,20 @@ Showing 10 of 13 components.
 
 ### gallery — `design-system/index.html` (docs, quarantined)
 
-921 component instances, 463 custom-property refs in the page source, 133 tokens named by the page and by stylesheets only it loads (131 direct, 25 from its own sheets).
+901 component instances, 463 custom-property refs in the page source, 133 tokens named by the page and by stylesheets only it loads (131 direct, 25 from its own sheets).
 
 | component | instances | share of surface |
 |---|---|---|
-| `.ds-tab` | 151 | 16% |
+| `.ds-tab` | 151 | 17% |
 | `.ds-btn` | 84 | 9% |
 | `.ds-switch` | 64 | 7% |
-| `.ds-rail` | 63 | 7% |
-| `.ds-nav-item` | 59 | 6% |
 | `.ds-icon` | 56 | 6% |
+| `.ds-nav-item` | 51 | 6% |
+| `.ds-rail` | 51 | 6% |
 | `.ds-tabpanel` | 47 | 5% |
 | `.ds-tabs` | 45 | 5% |
 | `.ds-tabsub` | 36 | 4% |
-| `.ds-card` | 32 | 3% |
+| `.ds-card` | 32 | 4% |
 
 Showing 10 of 34 components.
 
