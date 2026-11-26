@@ -61,32 +61,24 @@ code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-
 .stats dt{font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--g-muted)}
 .stats dd{margin-top:var(--spacing-2xs);font-size:var(--typography-size-small);font-weight:var(--weight-medium)}
 
-/* ---------- shell: stacked reading order — hero, sub-nav, content ----------
-   DOM order is already masthead → rail → main, and the grid stacks them the
-   same way: the DS blurb hero spans the full width on top, the section rail
-   below it is a horizontal sub-nav row (gallery-pitch.css, ≥901px), and the
-   content column carries the underline category bar + panels. No side column,
-   so the content axis never shifts between categories.
-
-   `data-rail="on|off"` only decides whether the active panel's section list
-   is painted inside the rail (off = the rail falls back to the categories);
-   the stacked order never changes. */
+/* ---------- shell: hero → underline tabs → panels --------------------------
+   DOM order is masthead → main, and the grid stacks them the same way: the
+   DS blurb hero spans the full width on top, the content column carries the
+   underline category bar + panels. No side column and no strip between hero
+   and tabs, so the content axis never shifts between categories: each
+   sectioned panel carries its own left sub-nav (`.g-panelbody` first child,
+   gallery-pitch.css) under the `#ds-cats` bar. */
 .g-shell{
   display:grid;
   grid-template-columns:minmax(0,1fr);
-  grid-template-areas:"masthead" "rail" "main";
+  grid-template-areas:"masthead" "main";
 }
-.g-railcell{grid-area:rail;min-inline-size:0}
-.g-railcell .ds-rail[hidden]{display:none}
-/* the panel's quick-nav: label + generated section rows, one flat group */
+/* a sectioned panel's own sub-nav: label + section rows, one flat group.
+   The nav element itself is the shipped `.ds-rail` (sticky side column ≥901,
+   drawer ≤900 via components.css §21); these hooks only lay the panel out. */
 .g-rail-group{display:flex;flex-direction:column;gap:0}
 .g-rail-group > .ds-rail__label{flex:0 0 auto}
 .g-rail-list{display:flex;flex-direction:column;gap:var(--spacing-2)}
-/* the short-panel rule: the column stays (foot pinned) and the list does not
-   go blank. `data-rail` is stamped by the page JS; when it is "off" the rail
-   falls back to the seven categories (page JS stamps data-rail-mode), so a
-   panel with no sections still answers "where else can I go". */
-.g-rail-list[data-rail-mode="categories"]{gap:0}
 .g-main{
   grid-area:main;min-inline-size:0;
   inline-size:100%;max-inline-size:var(--layout-max-pitch);margin-inline:auto;
@@ -337,10 +329,11 @@ footer code{color:var(--g-ink)}
 
 /* ---------- responsive ---------- */
 @media (max-width:900px){
-  /* the rail leaves the stacked flow and becomes the off-canvas drawer
-     (components.css §21, toggled by the masthead button); the shell stays a
-     single column and the underline category row is the primary tab strip.
-     Without JS the rail stays in the flow between hero and main. */
+  /* the active panel's own sub-nav becomes the off-canvas drawer
+     (components.css §21, toggled by the masthead button; bound per panel by
+     the page script); the shell stays a single column and the underline
+     category row is the primary tab strip. Without JS the panel nav stays a
+     static list at the top of its panel. */
   .g-shell{display:flex;flex-direction:column}
   .g-main{grid-area:auto;padding:0 var(--spacing-lg) var(--spacing-2xl)}
   .g-tabbar{
@@ -383,12 +376,12 @@ footer code{color:var(--g-ink)}
 
 <a class="ds-skip-link" href="#main">Skip to content</a>
 
-<div class="g-shell" data-rail="on">
+<div class="g-shell">
   <header class="masthead">
     <div class="wrap">
       <div class="mast-top">
         <p class="kicker">Design system · rendered from tokens.css · pitch shell</p>
-        <div class="mast-menu"><button class="ds-navtoggle" data-ds-nav-toggle="nav-drawer" aria-controls="nav-drawer" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-menu"></use></svg></button></div>
+        <div class="mast-menu"><button class="ds-navtoggle" data-ds-nav-toggle="nav-color" aria-controls="nav-color" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-menu"/></svg></button></div>
       </div>
       <h1>Design System — Camera Shots</h1>
       <p class="mast-lede">Every specimen below is drawn with the custom properties in <code>tokens.css</code>, so what you see is what ships. Three surfaces, one token layer: <b>Wiki</b> (read), <b>Pitch</b> (persuade), <b>Engine</b> (operate).</p>
@@ -399,35 +392,6 @@ footer code{color:var(--g-ink)}
       </dl>
     </div>
   </header>
-
-  <!-- rail cell: sub-nav row under the hero (≥901px horizontal strip in
-       gallery-pitch.css; off-canvas drawer ≤900 via components.css §21,
-       `DS.nav`). JS swaps the section list for the active panel; the
-       Surfaces foot is site chrome and is always the row's last group. The
-       list below is the colour panel's, so a no-JS page still carries a rail. -->
-  <div class="g-railcell">
-    <nav class="ds-rail" id="nav-drawer" data-ds-nav aria-label="Design system navigation">
-      <div class="g-rail-group" data-rail-group>
-        <p class="ds-rail__label" data-rail-label>Sections</p>
-        <div class="g-rail-list" data-rail-list>
-          <a class="ds-nav-item ds-rail__item" href="#color-pitch">Pitch — warm dark</a>
-          <a class="ds-nav-item ds-rail__item" href="#color-wiki-light">Wiki — light</a>
-          <a class="ds-nav-item ds-rail__item" href="#color-wiki-dark">Wiki — dark</a>
-          <a class="ds-nav-item ds-rail__item" href="#color-engine">Engine — surface language</a>
-          <a class="ds-nav-item ds-rail__item" href="#color-engine-overlays">Engine — scrims, washes &amp; overlays</a>
-          <a class="ds-nav-item ds-rail__item" href="#color-semantic">Semantic — status</a>
-          <a class="ds-nav-item ds-rail__item" href="#color-support">Support — print, neutral, diagrams</a>
-        </div>
-      </div>
-      <div class="ds-rail__foot">
-        <p class="ds-rail__label">Surfaces</p>
-        <a class="ds-nav-item ds-rail__item" href="../index.html">Wiki</a>
-        <a class="ds-nav-item ds-rail__item" href="../pitch.html">Pitch</a>
-        <a class="ds-nav-item ds-rail__item" href="../engine.html">Engine</a>
-        <span class="ds-nav-item ds-rail__item" aria-current="page">Design System</span>
-      </div>
-    </nav>
-  </div>
 
   <main id="main" class="g-main" tabindex="-1">
     <div class="g-tabbar">
@@ -444,6 +408,33 @@ footer code{color:var(--g-ink)}
 
     <!-- ============ 01 COLOR ============ -->
     <section class="ds-tabpanel" id="color" role="tabpanel" aria-labelledby="tab-color" tabindex="0">
+      <!-- per-panel sub-nav: the section list lives inside the panel, under
+           the #ds-cats bar — never between hero and tabs. Static markup, one
+           nav per sectioned panel, unique id; the page script binds the
+           visible one to the masthead toggle as the ≤900 drawer. -->
+      <div class="g-panelbody">
+      <nav class="ds-rail" id="nav-color" data-ds-nav aria-label="Color sections">
+        <div class="g-rail-group" data-rail-group data-rail-for="color">
+          <p class="ds-rail__label" data-rail-label>Sections</p>
+          <div class="g-rail-list" data-rail-list>
+            <a class="ds-nav-item ds-rail__item" href="#color-pitch">Pitch — warm dark</a>
+            <a class="ds-nav-item ds-rail__item" href="#color-wiki-light">Wiki — light</a>
+            <a class="ds-nav-item ds-rail__item" href="#color-wiki-dark">Wiki — dark</a>
+            <a class="ds-nav-item ds-rail__item" href="#color-engine">Engine — surface language</a>
+            <a class="ds-nav-item ds-rail__item" href="#color-engine-overlays">Engine — scrims, washes &amp; overlays</a>
+            <a class="ds-nav-item ds-rail__item" href="#color-semantic">Semantic — status</a>
+            <a class="ds-nav-item ds-rail__item" href="#color-support">Support — print, neutral, diagrams</a>
+          </div>
+        </div>
+        <div class="ds-rail__foot">
+          <p class="ds-rail__label">Surfaces</p>
+          <a class="ds-nav-item ds-rail__item" href="../index.html">Wiki</a>
+          <a class="ds-nav-item ds-rail__item" href="../pitch.html">Pitch</a>
+          <a class="ds-nav-item ds-rail__item" href="../engine.html">Engine</a>
+          <span class="ds-nav-item ds-rail__item" aria-current="page">Design System</span>
+        </div>
+      </nav>
+      <div class="g-panelcontent">
       <div class="sec-head">
         <span class="sec-num">01</span>
         <h2 id="color-h">Color</h2>
@@ -553,6 +544,8 @@ footer code{color:var(--g-ink)}
           <div class="sw" data-token="color.diagram.scrim.wiki"><span class="sw-chip" style="background:var(--color-diagram-scrim-wiki)"></span><code>--color-diagram-scrim-wiki</code><span class="sw-val" data-live="--color-diagram-scrim-wiki" data-token-value>—</span></div>
         </div>
       </div>
+      </div><!-- /.g-panelcontent -->
+      </div><!-- /.g-panelbody -->
     </section>
 
     <!-- ============ 02 TYPE ============ -->
@@ -866,6 +859,45 @@ footer code{color:var(--g-ink)}
 
     <!-- ============ 07 COMPONENT SPECIMENS ============ -->
     <section class="ds-tabpanel" id="specimens" role="tabpanel" aria-labelledby="tab-specimens" tabindex="0" hidden>
+      <!-- per-panel sub-nav: the flat block list replaces the old top "Jump to"
+           index, so the panel reads bar → left nav → blocks. Same 20 anchors,
+           document order, comp-head labels. -->
+      <div class="g-panelbody">
+      <nav class="ds-rail" id="nav-specimens" data-ds-nav aria-label="Component blocks">
+        <div class="g-rail-group" data-rail-group data-rail-for="specimens">
+          <p class="ds-rail__label" data-rail-label>Blocks</p>
+          <div class="g-rail-list" data-rail-list>
+            <a class="ds-nav-item ds-rail__item" href="#spec-btn">Button</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-icon-btn">Icon button</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-field">Field</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-switch">Switch</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-tabs">Tabs</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-navigation">Navigation grammar</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-chip">Chip</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-badge">Badge</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-card">Card</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-surface">Surface</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-table">Table</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-drawer">Drawer</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-dialog">Dialog</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-menu">Menu</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-toast">Toast</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-empty">Empty state</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-progress">Progress</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-tooltip">Tooltip</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-nav">Pager · nav item · theme toggle</a>
+            <a class="ds-nav-item ds-rail__item" href="#spec-copy">Copy field</a>
+          </div>
+        </div>
+        <div class="ds-rail__foot">
+          <p class="ds-rail__label">Surfaces</p>
+          <a class="ds-nav-item ds-rail__item" href="../index.html">Wiki</a>
+          <a class="ds-nav-item ds-rail__item" href="../pitch.html">Pitch</a>
+          <a class="ds-nav-item ds-rail__item" href="../engine.html">Engine</a>
+          <span class="ds-nav-item ds-rail__item" aria-current="page">Design System</span>
+        </div>
+      </nav>
+      <div class="g-panelcontent">
       <div class="sec-head">
         <span class="sec-num">07</span>
         <h2 id="specimens-h">Component specimens</h2>
@@ -873,15 +905,6 @@ footer code{color:var(--g-ink)}
       </div>
 
       <p class="sec-intro">The shipped library, drawn once per theme map in <code>tokens.css</code>: only <code>data-ds-theme</code> changes between the four cells, so a role token that fails to resolve shows as a hole. Rest, hover, focus and disabled are static <code>[data-state]</code> cells on real controls, so Tab reaches them. <code>components.js</code> is loaded with <code>data-ds-manual</code>.</p>
-
-      <nav class="spec-index" aria-label="Specimen index">
-        <p class="spec-index__title">Jump to</p>
-        <div class="spec-index__group"><span class="spec-index__label">Controls</span><a href="#spec-btn">Button</a><a href="#spec-icon-btn">Icon button</a><a href="#spec-tabs">Tabs</a><a href="#spec-navigation">Navigation grammar</a><a href="#spec-chip">Chip</a><a href="#spec-nav">Pager · nav item · theme toggle</a></div>
-        <div class="spec-index__group"><span class="spec-index__label">Input</span><a href="#spec-field">Field</a><a href="#spec-switch">Switch</a><a href="#spec-copy">Copy field</a></div>
-        <div class="spec-index__group"><span class="spec-index__label">Surfaces</span><a href="#spec-card">Card</a><a href="#spec-surface">Surface</a><a href="#spec-drawer">Drawer</a><a href="#spec-dialog">Dialog</a><a href="#spec-menu">Menu</a></div>
-        <div class="spec-index__group"><span class="spec-index__label">Feedback</span><a href="#spec-badge">Badge</a><a href="#spec-toast">Toast</a><a href="#spec-empty">Empty state</a><a href="#spec-progress">Progress</a><a href="#spec-tooltip">Tooltip</a></div>
-        <div class="spec-index__group"><span class="spec-index__label">Data</span><a href="#spec-table">Table</a></div>
-      </nav>
 
       <article class="comp" id="spec-btn" data-specimen="btn" data-usage-component="btn" data-family="controls">
         <header class="comp-head">
@@ -2305,6 +2328,8 @@ footer code{color:var(--g-ink)}
         <p class="spec-ledger__head"><span class="spec-ledger__title" id="spec-ledger-h">Zero product instances</span> <span class="spec-ledger__count" data-usage-ledger-count>—</span></p>
         <ul class="spec-ledger__list" data-usage-ledger><li>—</li></ul>
       </section>
+      </div><!-- /.g-panelcontent -->
+      </div><!-- /.g-panelbody -->
     </section>
   </main>
 </div>
@@ -2695,33 +2720,27 @@ footer code{color:var(--g-ink)}
   window.addEventListener('resize', paint);
 
   /* ============================================================ CATEGORIES ==
-     One panel per main category, switched by the shipped pill tablist.
+     One panel per main category, switched by the shipped underline tablist.
      DS.tabs owns the ARIA wiring, roving tabindex and ←/→/Home/End; this block
-     adds the three page-level concerns on top of it:
+     adds the two page-level concerns on top of it:
        · the hash route — #color … #specimens and every sub-anchor inside a
          panel, in both directions (tab → pushState, URL → tab), including
          back/forward, with no scroll jump when the tab changes;
-       · the rail decision — a panel earns the left rail only when it has at
-         least three subheadings AND more than ~1.6 screens of content;
-       · the scrollspy — aria-current="page" on the active panel's rail item.
+       · the drawer binding — each sectioned panel carries its own static
+         sub-nav (`.ds-rail` first grid child); the masthead toggle is
+         retargeted to the visible panel's nav, so the ≤900 drawer always
+         opens the sections in front of the reader;
+       · the scrollspy — aria-current="page" on the visible panel's rail item.
      ======================================================================= */
 
   var CATS = ['color', 'type', 'space', 'motion', 'touch', 'matrix', 'specimens'];
-  var shell = document.querySelector('.g-shell');
   var tabbar = document.querySelector('.g-tabbar');
   var tablist = document.getElementById('ds-cats');
   var panelOf = {};
   CATS.forEach(function (id) { panelOf[id] = document.getElementById(id); });
-
-  /* one rail element is the desktop column AND the ≤900 drawer (contract:
-     `.ds-rail` + id + data-ds-nav + aria-label, foot last). The section list
-     is generated from the active panel's own headings, so the markup carries
-     one copy and a tab change never duplicates it. */
-  var railEl = document.querySelector('.g-railcell .ds-rail[data-ds-nav]');
-  var railGroup = railEl ? railEl.querySelector('[data-rail-group]') : null;
-  var railList = railEl ? railEl.querySelector('[data-rail-list]') : null;
-  var railLabel = railEl ? railEl.querySelector('[data-rail-label]') : null;
+  var navToggle = document.querySelector('[data-ds-nav-toggle]');
   var navApi = null;
+  var navBoundId = null;
 
   function panelIdOf(tab) {
     return tab ? tab.getAttribute('aria-controls') : null;
@@ -2732,80 +2751,40 @@ footer code{color:var(--g-ink)}
     return panelIdOf(tab) || CATS[0];
   }
 
-  /* a rail shows its section list only on a panel that is subdivided and long;
-     the COLUMN itself is permanent chrome (foot pinned) and never collapses.
-     Under 900px the rail is the drawer, so the active panel's sections always
-     paint there — the drawer is a menu, not a reading aid. */
-  function railWanted(id) {
+  /* the panel's own sub-nav, if it has one (static markup — only sectioned
+     panels carry a nav; the rest span the full width and need no drawer). */
+  function navFor(id) {
     var panel = panelOf[id];
-    if (!railEl || !panel || window.innerWidth <= 900) return false;
-    if (panel.querySelectorAll('h3').length < 3) return false;
-    return panel.scrollHeight > window.innerHeight * 1.6;
+    return panel ? panel.querySelector('.g-panelbody > nav.ds-rail[data-ds-nav]') : null;
   }
 
-  function esc(s) {
-    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  /* point the single masthead toggle at the visible panel's nav and bind it.
+     Only one Nav instance ever exists: the previous panel's is destroyed
+     first, which also drops its toggle handler, so a click can never open
+     two drawers. Panels without a nav hide the toggle — there is no menu to
+     open. */
+  function bindDrawer(id) {
+    if (navApi) {
+      try { navApi.destroy(); } catch (err) { /* no-op */ }
+      navApi = null;
+      navBoundId = null;
+    }
+    var nav = navFor(id);
+    if (!navToggle) return;
+    if (!nav || !window.DS || typeof DS.nav !== 'function') {
+      if (!nav) navToggle.setAttribute('hidden', '');
+      return;
+    }
+    navToggle.setAttribute('data-ds-nav-toggle', nav.id);
+    navToggle.setAttribute('aria-controls', nav.id);
+    try {
+      navApi = DS.nav(nav);
+      navBoundId = id;
+    } catch (err) { navApi = null; }
+    if (navApi) navApi.sync();
   }
 
-  /* the panel's own landmarks: a heading with an id, or a specimen article
-     (`article.comp#spec-…`, labelled by its comp-head h3). Document order is
-     the rail order, so the list can never drift from the page. */
-  function sectionsFor(id) {
-    var panel = panelOf[id];
-    var out = [];
-    if (!panel) return out;
-    Array.prototype.forEach.call(panel.querySelectorAll('h3[id],article[id]'), function (node) {
-      var label = node.tagName === 'ARTICLE'
-        ? (node.querySelector('.comp-head h3') || {}).textContent
-        : node.textContent;
-      label = (label || '').replace(/\s+/g, ' ').trim();
-      if (label) out.push({ id: node.id, label: label });
-    });
-    return out;
-  }
-
-  function renderRail(id, sections) {
-    if (!railList) return;
-    railList.setAttribute('data-rail-mode', 'sections');
-    railList.innerHTML = (sections || []).map(function (s) {
-      return '<a class="ds-nav-item ds-rail__item" href="#' + s.id +
-        '" data-ds-key="rail-' + s.id + '">' + esc(s.label) + '</a>';
-    }).join('');
-    if (railLabel) railLabel.textContent = id === 'specimens' ? 'Blocks' : 'Sections';
-  }
-
-  /* ---------- short panels: the category list --------------------------
-     A panel with no sections to list (type, space, motion, touch, matrix)
-     would leave the rail blank under its label. Instead it lists the seven
-     categories: same item grammar, active category = ink + medium weight and
-     no accent bar (a destination, not a section). The Surfaces foot is a
-     separate child and stays pinned. */
-  var CAT_LABEL = {
-    color: 'Color', type: 'Type', space: 'Space & shape', motion: 'Motion',
-    touch: 'Touch', matrix: 'Consistency', specimens: 'Component specimens'
-  };
-
-  function renderCategories(id) {
-    if (!railList) return;
-    railList.setAttribute('data-rail-mode', 'categories');
-    railList.innerHTML = '';
-    CATS.forEach(function (key) {
-      var link = document.createElement('a');
-      link.className = 'ds-nav-item ds-rail__item';
-      link.setAttribute('href', '#' + key);
-      link.setAttribute('data-ds-key', 'cat-' + key);
-      /* the tabs are the one source of the category names: a relabel in the
-         tablist cannot leave the rail saying something else */
-      var tab = tablist ? tablist.querySelector('[aria-controls="' + key + '"]') : null;
-      link.textContent = (tab && tab.textContent.trim()) || CAT_LABEL[key] || key;
-      if (key === id) link.setAttribute('aria-current', 'page');
-      railList.appendChild(link);
-    });
-    if (railLabel) railLabel.textContent = 'Categories';
-  }
-
-  /* ---------- scrollspy over the active rail ---------- */
+  /* ---------- scrollspy over the visible panel's rail ---------- */
   var spyItems = [];
   var ticking = false;
 
@@ -2813,10 +2792,9 @@ footer code{color:var(--g-ink)}
      section list — bind them anyway so the open drawer marks the current row */
   function bindSpy() {
     spyItems = [];
+    var nav = navFor(activePanelId());
+    var railList = nav ? nav.querySelector('[data-rail-list]') : null;
     if (!railList) return;
-    /* the category fallback is a destination list, not a section scrollspy:
-       its aria-current is the active tab, set by renderCategories */
-    if (railList.getAttribute('data-rail-mode') === 'categories') return;
     Array.prototype.forEach.call(railList.querySelectorAll('.ds-rail__item'), function (link) {
       var href = link.getAttribute('href') || '';
       var target = href.charAt(0) === '#' ? document.getElementById(href.slice(1)) : null;
@@ -2848,21 +2826,11 @@ footer code{color:var(--g-ink)}
     requestAnimationFrame(spy);
   }
 
-  function paintRail(id) {
-    var sections = sectionsFor(id);
-    /* the drawer (mobile) is a menu: it lists whatever the panel has. On
-       desktop the list is the quick-nav and only long, subdivided panels earn
-       it — the column itself is always there. */
-    var show = sections.length > 0
-      && (window.innerWidth <= 900 || railWanted(id));
-    if (shell) shell.setAttribute('data-rail', show ? 'on' : 'off');
-    /* same place the rail decision lands: the list is re-rendered for the
-       active panel, then the nav module re-syncs so the drawer keeps its
-       hidden/inert state and the toggle keeps its aria-expanded. */
-    if (railGroup) railGroup.setAttribute('data-rail-for', id);
-    if (show) renderRail(id, sections);
-    else renderCategories(id);
-    if (navApi) navApi.sync();
+  /* the tab changed: the toggle now opens this panel's sections (or hides
+     when the panel has no nav), then the drawer re-syncs so it keeps its
+     hidden/inert state and the toggle keeps its aria-expanded. */
+  function paintPanel(id) {
+    bindDrawer(id);
     bindSpy();
     requestSpy();
     revealTab();
@@ -2919,7 +2887,7 @@ footer code{color:var(--g-ink)}
         }
         if (panelOf[k]) panelOf[k].hidden = n !== i;
       });
-      paintRail(id);
+      paintPanel(id);
     }
   }
 
@@ -2953,7 +2921,7 @@ footer code{color:var(--g-ink)}
     tablist.addEventListener('ds:tabchange', function (ev) {
       var detail = ev.detail || {};
       var id = panelIdOf(detail.tab) || activePanelId();
-      paintRail(id);
+      paintPanel(id);
       if (hashQuiet) return;
       var hash = '#' + id;
       if (location.hash !== hash) {
@@ -2991,21 +2959,20 @@ footer code{color:var(--g-ink)}
   window.addEventListener('popstate', function () { routeFromHash(true); });
   window.addEventListener('scroll', requestSpy, { passive: true });
   window.addEventListener('resize', function () {
-    paintRail(activePanelId());
+    if (navApi) navApi.sync();
+    syncAnchorOffset();
+    requestSpy();
   });
 
-  /* the rail is the desktop column and, at ≤900, the drawer: DS.nav owns the
-     hamburger, the scrim, the trap and the focus return. The gallery opts out
-     of DS.init() (data-ds-manual) so only this rail is bound — the specimen
+  /* the visible panel's rail is the ≤900 drawer: DS.nav owns the hamburger,
+     the scrim, the trap and the focus return. The gallery opts out of
+     DS.init() (data-ds-manual) so only this rail is bound — the specimen
      rails stay static documentation. */
-  if (railEl && window.DS && typeof DS.nav === 'function') {
-    try { navApi = DS.nav(railEl); } catch (err) { navApi = null; }
-  }
-
   /* initial route: select the panel the URL names before anything paints, then
-     land on the deep target once the layout (and the fonts) have settled */
+     bind its rail to the toggle and land on the deep target once the layout
+     (and the fonts) have settled */
   routeFromHash(false);
-  paintRail(activePanelId());
+  paintPanel(activePanelId());
   if (location.hash) {
     window.addEventListener('load', function () { routeFromHash(true); });
   }

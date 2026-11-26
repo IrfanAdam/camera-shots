@@ -105,11 +105,12 @@ html[data-ds-shell="pitch"] .stats dd {
    Both are shipped components (.ds-rail in components.css §20, underline tabs
    in §5) and take their ink, rule, accent fill and focus ring from the pitch
    roles pitch-shell.css pins on this page — so there is no colour to declare
-   here. Under 900px the rail leaves the stacked flow for the off-canvas
-   drawer (components.css §21) and the underline category row stays the
-   primary strip, so there is no narrow rail state to restyle here — the
+   here. Each sectioned panel carries its own rail as its first grid child
+   under the underline bar; under 900px the visible panel's rail becomes the
+   off-canvas drawer (components.css §21) and the underline category row stays
+   the primary strip, so there is no narrow rail state to restyle here — the
    drawer keeps this page's label ink. */
-html[data-ds-shell="pitch"] .g-railcell .ds-rail__label {
+html[data-ds-shell="pitch"] .g-panelbody .ds-rail__label {
   color: var(--g-muted);
 }
 
@@ -660,102 +661,6 @@ html[data-ds-shell="pitch"] .comp-source:hover {
   color: var(--g-ink);
 }
 
-/* ---------- specimen index ---------- */
-html[data-ds-shell="pitch"] .spec-index {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-2xs) var(--spacing-lg);
-  padding-block: var(--spacing-2xs);
-  border-block: var(--border-width-hairline) solid var(--g-rule);
-  margin-block-end: var(--spacing-sm);
-  font-size: var(--typography-size-eyebrow);
-  line-height: 1.4;
-}
-
-html[data-ds-shell="pitch"] .spec-index__title {
-  flex: 0 0 auto;
-  margin: 0;
-  font-family: var(--typography-family-mono);
-  font-size: 9px;
-  line-height: 1.4;
-  letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
-  color: var(--g-ink);
-}
-
-html[data-ds-shell="pitch"] .spec-index__group {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 2px var(--spacing-xs);
-  min-inline-size: 0;
-}
-
-html[data-ds-shell="pitch"] .spec-index__label {
-  font-family: var(--typography-family-mono);
-  font-size: 9px;
-  letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
-  color: var(--g-muted);
-}
-
-html[data-ds-shell="pitch"] .spec-index a {
-  color: var(--g-body);
-  text-decoration: none;
-}
-
-html[data-ds-shell="pitch"] .spec-index a:hover {
-  color: var(--g-ink);
-  text-decoration: underline;
-  text-underline-offset: 0.16em;
-}
-
-@media (min-width: 901px) {
-  html[data-ds-shell="pitch"] .spec-index {
-    position: sticky;
-    inset-block-start: calc(var(--g-anchor-offset) - var(--spacing-md));
-    z-index: var(--z-content);
-    background: var(--g-bg);
-  }
-
-  /* deep links land below the tab bar AND the sticky index; the script writes
-     the measured index height to --spec-index-h, 0 when it does not stick */
-  html[data-ds-shell="pitch"] #specimens article.comp {
-    scroll-margin-block-start: calc(var(--g-anchor-offset) + var(--spec-index-h, 138px));
-  }
-}
-
-@media (max-width: 640px) {
-  /* the index is a wrapped list, not a clipped strip: one labelled row per
-     band, links break to the next line instead of disappearing past the edge */
-  html[data-ds-shell="pitch"] .spec-index {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 2px var(--spacing-lg);
-    overflow: visible;
-    padding-block: var(--spacing-2xs);
-  }
-
-  /* label on its own line, links as one wrapped run: a continuation line can
-     never look like an unlabelled group */
-  html[data-ds-shell="pitch"] .spec-index__group {
-    display: block;
-    min-inline-size: 0;
-  }
-
-  html[data-ds-shell="pitch"] .spec-index__label {
-    display: block;
-    margin-block-end: 1px;
-    white-space: nowrap;
-  }
-
-  html[data-ds-shell="pitch"] .spec-index a {
-    display: inline;
-    white-space: normal;
-    margin-inline-end: var(--spacing-sm);
-  }
-}
-
 /* ---------- zero-product ledger ---------- */
 html[data-ds-shell="pitch"] .spec-ledger {
   margin-block-start: var(--spacing-md);
@@ -798,98 +703,40 @@ html[data-ds-shell="pitch"] .spec-ledger__list li {
   min-inline-size: 0;
 }
 
-/* ---------- rail fallback: categories on a panel with no sections ----------
-   `data-rail="off"` keeps the row and its trailing Surfaces group; the list is
-   the seven categories instead of blank. The active category is ink + medium
-   weight and paints no inline-start accent bar (a destination, not a section).
-   Specificity beats components.css §18's current-item rule; loaded later. */
-html[data-ds-shell="pitch"] .g-rail-list[data-rail-mode="categories"] {
-  gap: 0;
-}
-
-html[data-ds-shell="pitch"] .g-rail-list[data-rail-mode="categories"] .ds-nav-item:is([aria-current="page"], [aria-selected="true"], [data-state~="current"]) {
-  border-inline-start-color: transparent;
-  background: transparent;
-  color: var(--g-ink);
-  font-weight: var(--weight-medium);
-}
-
-/* ---------- sub-nav row under the hero (>=901) ----------
-   The rail is the same shipped .ds-rail (same element, id, aria-label, list
-   markup) — only its posture changes: a horizontal strip between the hero
-   blurb and the underline category bar instead of a 100dvh side column, so
-   the hierarchy reads top → left → content without a cramped side gutter.
-   Every value is a page token; no .ds-* shape is redefined, only the rail's
-   own placement properties (position, size, direction, edges).
+/* ---------- in-panel sub-nav column (>=901) ----------
+   A sectioned panel is a two-column body under the underline bar: the shipped
+   `.ds-rail` keeps its own side-column posture (sticky, 100dvh, hairline on
+   the inline-end edge — components.css §20) and only its sticky offset is
+   pinned here, so the rail parks below the sticky category bar instead of
+   under it. The content column takes the rest; panels without sections have
+   no `.g-panelbody` and span the full width.
+   Every value is a page token; no .ds-* shape is redefined.
 
    The `:not([data-ds-nav-mode="drawer"])` guard keeps this inert the moment
    DS.nav stamps drawer mode, so the off-canvas panel (components.css §21,
    position:fixed) always wins regardless of specificity or load order. */
 @media (min-width: 901px) {
-  html[data-ds-shell="pitch"] .g-railcell {
-    max-inline-size: var(--layout-max-pitch);
-    margin-inline: auto;
-    inline-size: 100%;
-    padding-inline: var(--spacing-2xl);
+  html[data-ds-shell="pitch"] .g-panelbody {
+    display: grid;
+    grid-template-columns: var(--layout-rail) minmax(0, 1fr);
+    gap: var(--spacing-2xl);
+    align-items: start;
   }
 
-  html[data-ds-shell="pitch"] .g-railcell .ds-rail:not([data-ds-nav-mode="drawer"]) {
-    position: static;
-    inset-block-start: auto;
-    align-self: auto;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--spacing-2xs) var(--spacing-md);
-    block-size: auto;
-    inline-size: auto;
-    padding-block: var(--spacing-sm);
-    padding-inline: 0;
-    overflow: visible;
-    border: 0;
-    border-block-end: var(--border-width-hairline) solid var(--g-rule);
-    background: transparent;
-  }
-
-  html[data-ds-shell="pitch"] .g-railcell .ds-rail:not([data-ds-nav-mode="drawer"]) > * {
-    flex: 0 1 auto;
-  }
-
-  html[data-ds-shell="pitch"] .g-railcell .ds-rail:not([data-ds-nav-mode="drawer"]) .g-rail-group {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--spacing-2xs) var(--spacing-md);
+  html[data-ds-shell="pitch"] .g-panelbody > .g-panelcontent {
     min-inline-size: 0;
   }
 
-  html[data-ds-shell="pitch"] .g-railcell .ds-rail:not([data-ds-nav-mode="drawer"]) .ds-rail__label {
-    margin-block: 0;
+  html[data-ds-shell="pitch"] .g-panelbody > .ds-rail:not([data-ds-nav-mode="drawer"]) {
+    --_rail-top: var(--g-anchor-offset);
   }
+}
 
-  html[data-ds-shell="pitch"] .g-railcell .ds-rail:not([data-ds-nav-mode="drawer"]) .g-rail-list {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--spacing-2xs) var(--spacing-sm);
-    min-inline-size: 0;
-  }
-
-  html[data-ds-shell="pitch"] .g-railcell .ds-rail:not([data-ds-nav-mode="drawer"]) .ds-rail__foot {
-    position: static;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--spacing-2xs) var(--spacing-sm);
-    margin-block-start: 0;
-    margin-inline-start: auto;
-    border-block-start: 0;
-    padding-block: 0;
-    background: transparent;
-  }
-
-  html[data-ds-shell="pitch"] .g-railcell .ds-rail:not([data-ds-nav-mode="drawer"]) .ds-rail__foot > .ds-rail__label {
-    margin-block: 0;
+@media (max-width: 900px) {
+  /* one column: the rail is either the drawer (JS stamps the mode) or, with
+     no JS, a static list stacked above the panel content */
+  html[data-ds-shell="pitch"] .g-panelbody {
+    display: block;
   }
 }
 
