@@ -28,6 +28,11 @@
   --g-swatch-edge: color-mix(in srgb, var(--color-pitch-muted-2) 42%, transparent);
   /* anchor landing distance under the sticky category bar */
   --g-anchor-offset: calc(var(--control-height-default) + var(--spacing-2xl));
+  /* the shell's content axis: full width up to the pitch content cap, widened
+     by exactly the in-panel rail column and its gap, so adding the section nav
+     to a panel does not squeeze the content column. One value feeds both the
+     masthead wrap and .g-main, so the hero and the panels stay on one axis. */
+  --g-shell-max: calc(var(--layout-max-pitch) + var(--layout-rail) + var(--spacing-2xl));
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -47,7 +52,7 @@ code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-
 /* hero shares the content axis: same max and same inline padding as .g-main,
    so the blurb, the sub-nav row, the underline bar and the panels all start
    on one vertical line. */
-.g-shell > .masthead > .wrap{max-width:var(--layout-max-pitch);padding-inline:var(--spacing-2xl)}
+.g-shell > .masthead > .wrap{max-width:var(--g-shell-max);padding-inline:var(--spacing-2xl)}
 
 /* ---------- masthead ---------- */
 .masthead{grid-area:masthead;border-bottom:var(--border-width-hairline) solid var(--g-rule);padding:var(--spacing-2xl) 0 var(--spacing-xl)}
@@ -81,7 +86,7 @@ code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-
 .g-rail-list{display:flex;flex-direction:column;gap:var(--spacing-2)}
 .g-main{
   grid-area:main;min-inline-size:0;
-  inline-size:100%;max-inline-size:var(--layout-max-pitch);margin-inline:auto;
+  inline-size:100%;max-inline-size:var(--g-shell-max);margin-inline:auto;
   padding:var(--spacing-xl) var(--spacing-2xl) var(--spacing-2xl);
 }
 

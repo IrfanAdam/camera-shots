@@ -39,22 +39,22 @@
     "tokensAliasNoRef": 3,
     "tokensNoRef": 8,
     "tokensAlias": 8,
-    "customPropertyRefs": 3007,
+    "customPropertyRefs": 2970,
     "customPropertyRefsByKind": {
-      "token": 2092,
+      "token": 2065,
       "roleVar": 177,
-      "localVar": 676,
+      "localVar": 666,
       "canvas": 62
     },
     "localVarDetail": {
       "componentLocal": 37,
-      "pageAlias": 639
+      "pageAlias": 629
     },
-    "tokenRefs": 2154,
+    "tokenRefs": 2127,
     "tokenRefsByFile": {
       "design-system/base.css": 26,
       "design-system/components.css": 350,
-      "design-system/gallery-pitch.css": 121,
+      "design-system/gallery-pitch.css": 94,
       "design-system/index.html": 373,
       "design-system/pitch-shell.css": 41,
       "engine-pitch.css": 24,
@@ -65,7 +65,7 @@
     "refsByFile": {
       "design-system/base.css": 31,
       "design-system/components.css": 538,
-      "design-system/gallery-pitch.css": 208,
+      "design-system/gallery-pitch.css": 171,
       "design-system/index.html": 460,
       "design-system/pitch-shell.css": 50,
       "engine-pitch.css": 24,
@@ -80,14 +80,14 @@
     "componentsStyledWithProductInstances": 19,
     "componentsWithoutProductInstances": 18,
     "componentsWithoutProductInstancesStyled": 15,
-    "componentInstances": 971,
+    "componentInstances": 1019,
     "componentInstancesProduct": 198,
-    "componentInstancesDynamic": 42,
+    "componentInstancesDynamic": 38,
     "componentInstancesBySurface": {
       "wiki": 38,
       "pitch": 77,
       "engine": 83,
-      "gallery": 773
+      "gallery": 821
     },
     "blocks": 21,
     "blocksWithProductInstances": 16,
@@ -195,7 +195,7 @@
         "wiki": 45,
         "pitch": 62,
         "engine": 98,
-        "gallery": 65
+        "gallery": 63
       },
       "direct": {
         "wiki": 8,
@@ -206,7 +206,7 @@
       "cssFiles": {
         "design-system/base.css": 4,
         "design-system/components.css": 32,
-        "design-system/gallery-pitch.css": 7,
+        "design-system/gallery-pitch.css": 5,
         "design-system/pitch-shell.css": 1
       },
       "roleMapCells": 0,
@@ -244,7 +244,7 @@
         },
         {
           "file": "design-system/gallery-pitch.css",
-          "count": 7
+          "count": 5
         },
         {
           "file": "design-system/index.html",
@@ -267,9 +267,9 @@
           "count": 30
         }
       ],
-      "refCount": 165,
+      "refCount": 163,
       "productRefCount": 205,
-      "galleryRefs": 65,
+      "galleryRefs": 63,
       "reach": "product",
       "hasProductRef": true
     },
@@ -4398,7 +4398,7 @@
         "wiki": 0,
         "pitch": 2,
         "engine": 0,
-        "gallery": 3
+        "gallery": 2
       },
       "direct": {
         "wiki": 0,
@@ -4406,17 +4406,11 @@
         "engine": 0,
         "gallery": 2
       },
-      "cssFiles": {
-        "design-system/gallery-pitch.css": 1
-      },
+      "cssFiles": {},
       "roleMapCells": 0,
       "usedByBlocks": [],
       "dynamic": 0,
       "refs": [
-        {
-          "file": "design-system/gallery-pitch.css",
-          "count": 1
-        },
         {
           "file": "design-system/index.html",
           "count": 2
@@ -4426,9 +4420,9 @@
           "count": 2
         }
       ],
-      "refCount": 5,
+      "refCount": 4,
       "productRefCount": 2,
-      "galleryRefs": 3,
+      "galleryRefs": 2,
       "reach": "product",
       "hasProductRef": true
     },
@@ -4528,7 +4522,7 @@
         "wiki": 2,
         "pitch": 2,
         "engine": 1,
-        "gallery": 1
+        "gallery": 2
       },
       "direct": {
         "wiki": 1,
@@ -4537,7 +4531,8 @@
         "gallery": 0
       },
       "cssFiles": {
-        "design-system/components.css": 1
+        "design-system/components.css": 1,
+        "design-system/gallery-pitch.css": 1
       },
       "roleMapCells": 0,
       "usedByBlocks": [
@@ -4550,6 +4545,10 @@
           "count": 1
         },
         {
+          "file": "design-system/gallery-pitch.css",
+          "count": 1
+        },
+        {
           "file": "index.html",
           "count": 1
         },
@@ -4558,9 +4557,9 @@
           "count": 1
         }
       ],
-      "refCount": 3,
+      "refCount": 4,
       "productRefCount": 5,
-      "galleryRefs": 1,
+      "galleryRefs": 2,
       "reach": "product",
       "hasProductRef": true
     },
@@ -6339,7 +6338,7 @@
         "wiki": 13,
         "pitch": 22,
         "engine": 45,
-        "gallery": 38
+        "gallery": 31
       },
       "direct": {
         "wiki": 3,
@@ -6350,7 +6349,7 @@
       "cssFiles": {
         "design-system/base.css": 1,
         "design-system/components.css": 9,
-        "design-system/gallery-pitch.css": 15
+        "design-system/gallery-pitch.css": 8
       },
       "roleMapCells": 0,
       "usedByBlocks": [
@@ -6372,7 +6371,7 @@
         },
         {
           "file": "design-system/gallery-pitch.css",
-          "count": 15
+          "count": 8
         },
         {
           "file": "design-system/index.html",
@@ -6391,9 +6390,9 @@
           "count": 13
         }
       ],
-      "refCount": 89,
+      "refCount": 82,
       "productRefCount": 80,
-      "galleryRefs": 38,
+      "galleryRefs": 31,
       "reach": "product",
       "hasProductRef": true
     },
@@ -6529,7 +6528,7 @@
         "wiki": 12,
         "pitch": 21,
         "engine": 12,
-        "gallery": 33
+        "gallery": 31
       },
       "direct": {
         "wiki": 0,
@@ -6540,7 +6539,7 @@
       "cssFiles": {
         "design-system/base.css": 1,
         "design-system/components.css": 11,
-        "design-system/gallery-pitch.css": 5
+        "design-system/gallery-pitch.css": 3
       },
       "roleMapCells": 0,
       "usedByBlocks": [
@@ -6564,7 +6563,7 @@
         },
         {
           "file": "design-system/gallery-pitch.css",
-          "count": 5
+          "count": 3
         },
         {
           "file": "design-system/index.html",
@@ -6575,9 +6574,9 @@
           "count": 10
         }
       ],
-      "refCount": 43,
+      "refCount": 41,
       "productRefCount": 45,
-      "galleryRefs": 33,
+      "galleryRefs": 31,
       "reach": "product",
       "hasProductRef": true
     },
@@ -6595,7 +6594,7 @@
         "wiki": 23,
         "pitch": 29,
         "engine": 25,
-        "gallery": 46
+        "gallery": 43
       },
       "direct": {
         "wiki": 7,
@@ -6605,7 +6604,7 @@
       },
       "cssFiles": {
         "design-system/components.css": 16,
-        "design-system/gallery-pitch.css": 13
+        "design-system/gallery-pitch.css": 10
       },
       "roleMapCells": 0,
       "usedByBlocks": [
@@ -6627,7 +6626,7 @@
         },
         {
           "file": "design-system/gallery-pitch.css",
-          "count": 13
+          "count": 10
         },
         {
           "file": "design-system/index.html",
@@ -6646,9 +6645,9 @@
           "count": 13
         }
       ],
-      "refCount": 75,
+      "refCount": 72,
       "productRefCount": 77,
-      "galleryRefs": 46,
+      "galleryRefs": 43,
       "reach": "product",
       "hasProductRef": true
     },
@@ -6664,7 +6663,7 @@
         "wiki": 21,
         "pitch": 40,
         "engine": 46,
-        "gallery": 39
+        "gallery": 34
       },
       "direct": {
         "wiki": 5,
@@ -6675,7 +6674,7 @@
       "cssFiles": {
         "design-system/base.css": 1,
         "design-system/components.css": 15,
-        "design-system/gallery-pitch.css": 6
+        "design-system/gallery-pitch.css": 1
       },
       "roleMapCells": 0,
       "usedByBlocks": [
@@ -6700,7 +6699,7 @@
         },
         {
           "file": "design-system/gallery-pitch.css",
-          "count": 6
+          "count": 1
         },
         {
           "file": "design-system/index.html",
@@ -6719,9 +6718,9 @@
           "count": 25
         }
       ],
-      "refCount": 99,
+      "refCount": 94,
       "productRefCount": 107,
-      "galleryRefs": 39,
+      "galleryRefs": 34,
       "reach": "product",
       "hasProductRef": true
     },
@@ -6781,7 +6780,7 @@
         "wiki": 25,
         "pitch": 30,
         "engine": 73,
-        "gallery": 33
+        "gallery": 32
       },
       "direct": {
         "wiki": 9,
@@ -6792,7 +6791,7 @@
       "cssFiles": {
         "design-system/base.css": 2,
         "design-system/components.css": 14,
-        "design-system/gallery-pitch.css": 8
+        "design-system/gallery-pitch.css": 7
       },
       "roleMapCells": 0,
       "usedByBlocks": [
@@ -6821,7 +6820,7 @@
         },
         {
           "file": "design-system/gallery-pitch.css",
-          "count": 8
+          "count": 7
         },
         {
           "file": "design-system/index.html",
@@ -6840,9 +6839,9 @@
           "count": 16
         }
       ],
-      "refCount": 115,
+      "refCount": 114,
       "productRefCount": 128,
-      "galleryRefs": 33,
+      "galleryRefs": 32,
       "reach": "product",
       "hasProductRef": true
     },
@@ -6956,7 +6955,7 @@
         "wiki": 10,
         "pitch": 8,
         "engine": 6,
-        "gallery": 26
+        "gallery": 24
       },
       "direct": {
         "wiki": 4,
@@ -6966,7 +6965,7 @@
       },
       "cssFiles": {
         "design-system/components.css": 6,
-        "design-system/gallery-pitch.css": 11
+        "design-system/gallery-pitch.css": 9
       },
       "roleMapCells": 0,
       "usedByBlocks": [
@@ -6984,7 +6983,7 @@
         },
         {
           "file": "design-system/gallery-pitch.css",
-          "count": 11
+          "count": 9
         },
         {
           "file": "design-system/index.html",
@@ -6999,9 +6998,9 @@
           "count": 2
         }
       ],
-      "refCount": 32,
+      "refCount": 30,
       "productRefCount": 24,
-      "galleryRefs": 26,
+      "galleryRefs": 24,
       "reach": "product",
       "hasProductRef": true
     },
@@ -7156,7 +7155,7 @@
         "wiki": 11,
         "pitch": 11,
         "engine": 7,
-        "gallery": 27
+        "gallery": 25
       },
       "direct": {
         "wiki": 5,
@@ -7166,7 +7165,7 @@
       },
       "cssFiles": {
         "design-system/components.css": 5,
-        "design-system/gallery-pitch.css": 18,
+        "design-system/gallery-pitch.css": 16,
         "design-system/pitch-shell.css": 1
       },
       "roleMapCells": 0,
@@ -7185,7 +7184,7 @@
         },
         {
           "file": "design-system/gallery-pitch.css",
-          "count": 18
+          "count": 16
         },
         {
           "file": "design-system/index.html",
@@ -7208,9 +7207,9 @@
           "count": 6
         }
       ],
-      "refCount": 40,
+      "refCount": 38,
       "productRefCount": 29,
-      "galleryRefs": 27,
+      "galleryRefs": 25,
       "reach": "product",
       "hasProductRef": true
     },
@@ -7393,7 +7392,7 @@
         "wiki": 11,
         "pitch": 21,
         "engine": 20,
-        "gallery": 45
+        "gallery": 44
       },
       "direct": {
         "wiki": 2,
@@ -7403,7 +7402,7 @@
       },
       "cssFiles": {
         "design-system/components.css": 9,
-        "design-system/gallery-pitch.css": 6
+        "design-system/gallery-pitch.css": 5
       },
       "roleMapCells": 0,
       "usedByBlocks": [
@@ -7424,7 +7423,7 @@
         },
         {
           "file": "design-system/gallery-pitch.css",
-          "count": 6
+          "count": 5
         },
         {
           "file": "design-system/index.html",
@@ -7443,9 +7442,9 @@
           "count": 12
         }
       ],
-      "refCount": 70,
+      "refCount": 69,
       "productRefCount": 52,
-      "galleryRefs": 45,
+      "galleryRefs": 44,
       "reach": "product",
       "hasProductRef": true
     },
@@ -7978,7 +7977,7 @@
         "wiki": 10,
         "pitch": 10,
         "engine": 18,
-        "gallery": 22
+        "gallery": 21
       },
       "direct": {
         "wiki": 2,
@@ -7988,7 +7987,7 @@
       },
       "cssFiles": {
         "design-system/components.css": 8,
-        "design-system/gallery-pitch.css": 4
+        "design-system/gallery-pitch.css": 3
       },
       "roleMapCells": 0,
       "usedByBlocks": [
@@ -8007,7 +8006,7 @@
         },
         {
           "file": "design-system/gallery-pitch.css",
-          "count": 4
+          "count": 3
         },
         {
           "file": "design-system/index.html",
@@ -8026,9 +8025,9 @@
           "count": 2
         }
       ],
-      "refCount": 36,
+      "refCount": 35,
       "productRefCount": 38,
-      "galleryRefs": 22,
+      "galleryRefs": 21,
       "reach": "product",
       "hasProductRef": true
     },
@@ -8261,7 +8260,7 @@
         "wiki": 0,
         "pitch": 0,
         "engine": 3,
-        "gallery": 1
+        "gallery": 0
       },
       "direct": {
         "wiki": 0,
@@ -8269,25 +8268,19 @@
         "engine": 3,
         "gallery": 0
       },
-      "cssFiles": {
-        "design-system/gallery-pitch.css": 1
-      },
+      "cssFiles": {},
       "roleMapCells": 0,
       "usedByBlocks": [],
       "dynamic": 0,
       "refs": [
         {
-          "file": "design-system/gallery-pitch.css",
-          "count": 1
-        },
-        {
           "file": "engine.html",
           "count": 3
         }
       ],
-      "refCount": 4,
+      "refCount": 3,
       "productRefCount": 3,
-      "galleryRefs": 1,
+      "galleryRefs": 0,
       "reach": "product",
       "hasProductRef": true
     },
@@ -9475,23 +9468,23 @@
       "blockTitle": "pager / nav item / theme toggle",
       "kind": "component",
       "defined": true,
-      "instances": 87,
+      "instances": 109,
       "bySurface": {
         "wiki": 6,
         "pitch": 32,
         "engine": 12,
-        "gallery": 37
+        "gallery": 59
       },
-      "dynamic": 7,
-      "staticInstances": 80,
+      "dynamic": 5,
+      "staticInstances": 104,
       "productInstances": 50,
       "productDynamic": 5,
       "productStaticInstances": 45,
-      "galleryInstances": 37,
+      "galleryInstances": 59,
       "files": [
         {
           "file": "design-system/index.html",
-          "count": 37
+          "count": 59
         },
         {
           "file": "engine.html",
@@ -9779,23 +9772,23 @@
       "blockTitle": "rail — flat vertical section nav",
       "kind": "component",
       "defined": true,
-      "instances": 98,
+      "instances": 124,
       "bySurface": {
         "wiki": 10,
         "pitch": 39,
         "engine": 12,
-        "gallery": 37
+        "gallery": 63
       },
-      "dynamic": 4,
-      "staticInstances": 94,
+      "dynamic": 2,
+      "staticInstances": 122,
       "productInstances": 61,
       "productDynamic": 2,
       "productStaticInstances": 59,
-      "galleryInstances": 37,
+      "galleryInstances": 63,
       "files": [
         {
           "file": "design-system/index.html",
-          "count": 37
+          "count": 63
         },
         {
           "file": "engine.html",
@@ -10832,13 +10825,13 @@
         "ds-pager",
         "ds-theme-toggle"
       ],
-      "instances": 97,
+      "instances": 119,
       "productInstances": 52,
       "bySurface": {
         "wiki": 8,
         "pitch": 32,
         "engine": 12,
-        "gallery": 45
+        "gallery": 67
       },
       "hasProductInstance": true
     },
@@ -10864,13 +10857,13 @@
       "classes": [
         "ds-rail"
       ],
-      "instances": 98,
+      "instances": 124,
       "productInstances": 61,
       "bySurface": {
         "wiki": 10,
         "pitch": 39,
         "engine": 12,
-        "gallery": 37
+        "gallery": 63
       },
       "hasProductInstance": true
     },
@@ -11447,6 +11440,7 @@
           "--icon-size-md",
           "--icon-size-sm",
           "--layout-max-pitch",
+          "--layout-rail",
           "--line-height-display",
           "--line-height-reading",
           "--motion-duration-base",
@@ -11501,15 +11495,14 @@
           "--weight-medium",
           "--weight-regular",
           "--weight-semibold",
-          "--z-content",
           "--z-sticky"
         ],
         "direct": 130,
-        "ownCss": 29
+        "ownCss": 28
       },
       "components": {
         "count": 34,
-        "instances": 773,
+        "instances": 821,
         "list": [
           {
             "class": "ds-btn",
@@ -11524,20 +11517,20 @@
             "instances": 64
           },
           {
+            "class": "ds-rail",
+            "instances": 63
+          },
+          {
+            "class": "ds-nav-item",
+            "instances": 59
+          },
+          {
             "class": "ds-icon",
             "instances": 56
           },
           {
             "class": "ds-tabpanel",
             "instances": 47
-          },
-          {
-            "class": "ds-nav-item",
-            "instances": 37
-          },
-          {
-            "class": "ds-rail",
-            "instances": 37
           },
           {
             "class": "ds-tabsub",
