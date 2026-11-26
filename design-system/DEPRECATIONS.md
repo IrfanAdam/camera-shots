@@ -157,14 +157,13 @@ These six keys keep their names for one release; their values are pointers, so a
 
 ## Component shapes deprecated (one release, no token removed)
 
-The navigation grammar (rails are flat, tabs are pills, buttons keep their geometry) retires three *shapes*, not names. Each still renders in `components.css`, annotated `LEGACY`/`DEPRECATED` in place, because pages still consume it this wave; a later lane migrates the call sites and only then deletes the block (and, for the dot, `dot.size` with it).
+The navigation grammar (rails are flat, parent tabs are the pitch Doc Tabs shape with pill as secondary/in-panel only, buttons keep their geometry) retires three *shapes*, not names. Each still renders in `components.css`, annotated `LEGACY`/`DEPRECATED` in place, because pages still consume it this wave; a later lane migrates the call sites and only then deletes the block (and, for the dot, `dot.size` with it). Bare `.ds-tabs` (no attribute) is the live parent shape, not a deprecation — the legacy boxed rendering of the bare block is superseded by the §5 parent restyle.
 
 | Shape | Where it lives | Replaced by | Retires |
 |---|---|---|---|
 | `.ds-nav-item[data-variant="dot"]` | `components.css` §18 | the flat rail item's inline-start accent bar — `class="ds-nav-item ds-rail__item"` | the release after this wave |
-| `.ds-tabs[data-variant="underline"]` | `components.css` §5 | `.ds-tabs[data-variant="pill"]` | the release after this wave |
-| `.ds-tabs[data-variant="rail"]` | `components.css` §5 | a standalone rail tablist → `.ds-tabs[data-variant="pill"]` for tabs, `.ds-rail` for a section nav; the nested vertical sub-tablist (`aria-orientation="vertical"` inside `.ds-tabsub`) is the main→sub hierarchy's sub shape, not a standalone rail | standalone use retires the release after this wave; nested sub-tab use is the composed hierarchy |
-| bare `.ds-tabs` (boxed, no attribute) | `components.css` §5 base block | `.ds-tabs[data-variant="pill"]` | when the pages above migrate |
+| `.ds-tabs[data-variant="underline"]` | `components.css` §5 | bare `.ds-tabs` (no attribute — the pitch Doc Tabs shape); pill stays secondary/in-panel only | the release after this wave |
+| `.ds-tabs[data-variant="rail"]` | `components.css` §5 | a standalone rail tablist → bare `.ds-tabs` for parent tabs, `.ds-rail` for a section nav; the nested vertical sub-tablist (`aria-orientation="vertical"` inside `.ds-tabsub`, one per main panel with real sub-sections) is the main→sub hierarchy's live sub shape, not a standalone rail | standalone use retires the release after this wave; nested sub-tab use is the composed hierarchy |
 
 ## Page shapes retired with the rail foot + mobile menu (no token removed, 2026-11-25)
 

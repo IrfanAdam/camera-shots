@@ -260,6 +260,10 @@ section{margin-bottom:var(--spacing-2xl);scroll-margin-top:var(--spacing-xl)}
 .spec-cell .ds-card p{margin-block:var(--spacing-2xs)}
 .spec-cell .ds-pager{flex-wrap:wrap}
 .spec-cell .ds-tabs{flex-wrap:wrap;overflow:visible}
+/* the bare parent tablist keeps its shipped row behaviour inside the cell —
+   one scrolling row, never wrapped (the grammar's parent rule); the wrap
+   above stays for the pill/secondary rows */
+.spec-cell .ds-tabs:not([data-variant]){flex-wrap:nowrap;overflow-x:auto}
 /* the rail ships sticky at 100dvh; in a specimen it sits in the flow of its
    cell like the other overlay blocks below, and keeps its inline-edge hairline
    because that edge is part of what the rail is */
@@ -1130,16 +1134,16 @@ footer code{color:var(--g-ink)}
           <a class="comp-source" href="components.css">components.css <span data-usage-source>§—</span></a>
         </footer>
       </article>
-      <article class="comp" id="spec-tabs" data-specimen="tabs" data-usage-component="tabs" data-family="controls" data-legacy="underline rail">
+      <article class="comp" id="spec-tabs" data-specimen="tabs" data-usage-component="tabs" data-family="controls" data-legacy="underline">
         <header class="comp-head">
           <p class="comp-eyebrow"><span class="comp-index">05</span><span class="comp-family">controls</span></p>
           <h3>Tabs</h3>
-          <p class="comp-role">Top pill mains switch the panel; each panel scopes its own vertical sub-tabs. Boxed + underline sit in one labelled legacy row.</p>
+          <p class="comp-role">Bare parent mains switch the panel; every main panel nests its own left vertical sub-list with real sub-sections. Underline sits in one labelled legacy row.</p>
           <span class="comp-status" data-status>—</span>
           <a class="comp-anchor" href="#spec-tabs" aria-label="Link to Tabs">#</a>
         </header>
         <dl class="comp-facts">
-          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">pill · rail (legacy) · underline (legacy)</dd></div>
+          <div class="comp-fact"><dt>Variants</dt><dd data-usage="variants">parent · pill (secondary) · rail (sub) · underline (legacy)</dd></div>
           <div class="comp-fact"><dt>States</dt><dd data-usage="states">focus · hover · selected</dd></div>
           <div class="comp-fact"><dt>Sizes</dt><dd data-usage="sizes">—</dd></div>
           <div class="comp-fact comp-fact--instances"><dt>Instances</dt><dd><span data-usage="reach">—</span><span class="comp-fact-sep" aria-hidden="true">—</span><span class="comp-fact-surfaces" data-usage-surfaces><a href="../index.html">Wiki <b data-usage-count="wiki">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../pitch.html">Pitch <b data-usage-count="pitch">—</b></a><span class="comp-dot" aria-hidden="true">·</span><a href="../engine.html">Engine <b data-usage-count="engine">—</b></a></span></dd></div>
@@ -1154,14 +1158,14 @@ footer code{color:var(--g-ink)}
 <div class="spec-grid" tabindex="0" role="group" aria-label="Tabs — four theme maps, one per shipped theme">
         <div class="spec-cell" data-ds-theme="pitch" data-surface="pitch" data-ds-density="pitch">
           <span class="kicker">pitch</span>
-          <div class="ds-tabs" data-variant="pill" role="tablist" aria-label="Primary tabs"><button class="ds-tab" role="tab" id="tab-story-pitch" aria-controls="panel-story-pitch" aria-selected="true" tabindex="0" type="button">Story</button><button class="ds-tab" role="tab" id="tab-shots-pitch" aria-controls="panel-shots-pitch" aria-selected="false" tabindex="-1" type="button">Shots</button><button class="ds-tab" role="tab" id="tab-notes-pitch" aria-controls="panel-notes-pitch" aria-selected="false" tabindex="-1" type="button">Notes</button></div>
+          <div class="ds-tabs" role="tablist" aria-label="Parent tabs"><button class="ds-tab" role="tab" id="tab-story-pitch" aria-controls="panel-story-pitch" aria-selected="true" tabindex="0" type="button">Story</button><button class="ds-tab" role="tab" id="tab-shots-pitch" aria-controls="panel-shots-pitch" aria-selected="false" tabindex="-1" type="button">Shots</button><button class="ds-tab" role="tab" id="tab-notes-pitch" aria-controls="panel-notes-pitch" aria-selected="false" tabindex="-1" type="button">Notes</button></div>
           <div class="ds-tabpanel" id="panel-story-pitch" role="tabpanel" tabindex="0" aria-labelledby="tab-story-pitch">
             <div class="ds-tabsub">
               <div class="ds-tabs" data-variant="rail" data-ds-orientation="vertical" role="tablist" aria-orientation="vertical" aria-label="Story sections"><button class="ds-tab" role="tab" id="tab-story-coverage-pitch" aria-controls="panel-story-coverage-pitch" aria-selected="true" tabindex="0" type="button">Coverage</button><button class="ds-tab" role="tab" id="tab-story-movement-pitch" aria-controls="panel-story-movement-pitch" aria-selected="false" tabindex="-1" type="button">Movement</button><button class="ds-tab" role="tab" id="tab-story-focus-pitch" aria-controls="panel-story-focus-pitch" aria-selected="false" tabindex="-1" type="button">Focus</button></div>
               <div class="ds-tabsub__panels">
-                <div class="ds-tabpanel" id="panel-story-coverage-pitch" role="tabpanel" tabindex="0" aria-labelledby="tab-story-coverage-pitch"><p>Coverage selects for this story.</p></div>
-                <div class="ds-tabpanel" id="panel-story-movement-pitch" role="tabpanel" tabindex="0" aria-labelledby="tab-story-movement-pitch" hidden><p>Movement beats for this story.</p></div>
-                <div class="ds-tabpanel" id="panel-story-focus-pitch" role="tabpanel" tabindex="0" aria-labelledby="tab-story-focus-pitch" hidden><p>Focus pulls for this story.</p></div>
+                <div class="ds-tabpanel" id="panel-story-coverage-pitch" role="tabpanel" tabindex="0" aria-labelledby="tab-story-coverage-pitch"><p>Coverage selects for this story.</p><ul><li>Wide safety for every beat.</li><li>Closer angles held for the turn.</li></ul></div>
+                <div class="ds-tabpanel" id="panel-story-movement-pitch" role="tabpanel" tabindex="0" aria-labelledby="tab-story-movement-pitch" hidden><p>Movement beats for this story.</p><ul><li>Dolly and lock-off options per beat.</li><li>Held frames where the cut lands.</li></ul></div>
+                <div class="ds-tabpanel" id="panel-story-focus-pitch" role="tabpanel" tabindex="0" aria-labelledby="tab-story-focus-pitch" hidden><p>Focus pulls for this story.</p><ul><li>Rack points marked on the beat.</li><li>Shallow safety for the close calls.</li></ul></div>
               </div>
             </div>
           </div>
@@ -1169,8 +1173,8 @@ footer code{color:var(--g-ink)}
             <div class="ds-tabsub">
               <div class="ds-tabs" data-variant="rail" data-ds-orientation="vertical" role="tablist" aria-orientation="vertical" aria-label="Shots sections"><button class="ds-tab" role="tab" id="tab-shots-selects-pitch" aria-controls="panel-shots-selects-pitch" aria-selected="true" tabindex="0" type="button">Selects</button><button class="ds-tab" role="tab" id="tab-shots-takes-pitch" aria-controls="panel-shots-takes-pitch" aria-selected="false" tabindex="-1" type="button">Takes</button></div>
               <div class="ds-tabsub__panels">
-                <div class="ds-tabpanel" id="panel-shots-selects-pitch" role="tabpanel" tabindex="0" aria-labelledby="tab-shots-selects-pitch"><p>Selected takes for these shots.</p></div>
-                <div class="ds-tabpanel" id="panel-shots-takes-pitch" role="tabpanel" tabindex="0" aria-labelledby="tab-shots-takes-pitch" hidden><p>Every take for these shots.</p></div>
+                <div class="ds-tabpanel" id="panel-shots-selects-pitch" role="tabpanel" tabindex="0" aria-labelledby="tab-shots-selects-pitch"><p>Selected takes for these shots.</p><ul><li>One hero take per setup.</li><li>Alts kept beside the hero.</li></ul></div>
+                <div class="ds-tabpanel" id="panel-shots-takes-pitch" role="tabpanel" tabindex="0" aria-labelledby="tab-shots-takes-pitch" hidden><p>Every take for these shots.</p><ul><li>Full slate in shot order.</li><li>NG takes struck from the row.</li></ul></div>
               </div>
             </div>
           </div>
@@ -1178,25 +1182,24 @@ footer code{color:var(--g-ink)}
             <div class="ds-tabsub">
               <div class="ds-tabs" data-variant="rail" data-ds-orientation="vertical" role="tablist" aria-orientation="vertical" aria-label="Notes sections"><button class="ds-tab" role="tab" id="tab-notes-drafts-pitch" aria-controls="panel-notes-drafts-pitch" aria-selected="true" tabindex="0" type="button">Drafts</button><button class="ds-tab" role="tab" id="tab-notes-shared-pitch" aria-controls="panel-notes-shared-pitch" aria-selected="false" tabindex="-1" type="button">Shared</button></div>
               <div class="ds-tabsub__panels">
-                <div class="ds-tabpanel" id="panel-notes-drafts-pitch" role="tabpanel" tabindex="0" aria-labelledby="tab-notes-drafts-pitch"><p>Working drafts for these notes.</p></div>
-                <div class="ds-tabpanel" id="panel-notes-shared-pitch" role="tabpanel" tabindex="0" aria-labelledby="tab-notes-shared-pitch" hidden><p>Notes shared with the unit.</p></div>
+                <div class="ds-tabpanel" id="panel-notes-drafts-pitch" role="tabpanel" tabindex="0" aria-labelledby="tab-notes-drafts-pitch"><p>Working drafts for these notes.</p><ul><li>Open threads first.</li><li>Resolved notes collapse away.</li></ul></div>
+                <div class="ds-tabpanel" id="panel-notes-shared-pitch" role="tabpanel" tabindex="0" aria-labelledby="tab-notes-shared-pitch" hidden><p>Notes shared with the unit.</p><ul><li>Sent once, read by all.</li><li>Replies land under the note.</li></ul></div>
               </div>
             </div>
           </div>
-          <span class="kicker">legacy · boxed + underline — do not use</span>
-          <div class="ds-tabs" id="tabs-legacy-boxed-pitch" data-ds-panel-scope="#tabs-legacy-boxed-pitch" role="tablist" aria-label="Legacy boxed tabs (no variant)"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
+          <span class="kicker">legacy · underline — do not use</span>
           <div class="ds-tabs" id="tabs-legacy-underline-pitch" data-ds-panel-scope="#tabs-legacy-underline-pitch" data-variant="underline" role="tablist" aria-label="Legacy underline tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
         </div>
         <div class="spec-cell" data-ds-theme="wiki-light" data-surface="wiki-light">
           <span class="kicker">wiki-light</span>
-          <div class="ds-tabs" data-variant="pill" role="tablist" aria-label="Primary tabs"><button class="ds-tab" role="tab" id="tab-story-wl" aria-controls="panel-story-wl" aria-selected="true" tabindex="0" type="button">Story</button><button class="ds-tab" role="tab" id="tab-shots-wl" aria-controls="panel-shots-wl" aria-selected="false" tabindex="-1" type="button">Shots</button><button class="ds-tab" role="tab" id="tab-notes-wl" aria-controls="panel-notes-wl" aria-selected="false" tabindex="-1" type="button">Notes</button></div>
+          <div class="ds-tabs" role="tablist" aria-label="Parent tabs"><button class="ds-tab" role="tab" id="tab-story-wl" aria-controls="panel-story-wl" aria-selected="true" tabindex="0" type="button">Story</button><button class="ds-tab" role="tab" id="tab-shots-wl" aria-controls="panel-shots-wl" aria-selected="false" tabindex="-1" type="button">Shots</button><button class="ds-tab" role="tab" id="tab-notes-wl" aria-controls="panel-notes-wl" aria-selected="false" tabindex="-1" type="button">Notes</button></div>
           <div class="ds-tabpanel" id="panel-story-wl" role="tabpanel" tabindex="0" aria-labelledby="tab-story-wl">
             <div class="ds-tabsub">
               <div class="ds-tabs" data-variant="rail" data-ds-orientation="vertical" role="tablist" aria-orientation="vertical" aria-label="Story sections"><button class="ds-tab" role="tab" id="tab-story-coverage-wl" aria-controls="panel-story-coverage-wl" aria-selected="true" tabindex="0" type="button">Coverage</button><button class="ds-tab" role="tab" id="tab-story-movement-wl" aria-controls="panel-story-movement-wl" aria-selected="false" tabindex="-1" type="button">Movement</button><button class="ds-tab" role="tab" id="tab-story-focus-wl" aria-controls="panel-story-focus-wl" aria-selected="false" tabindex="-1" type="button">Focus</button></div>
               <div class="ds-tabsub__panels">
-                <div class="ds-tabpanel" id="panel-story-coverage-wl" role="tabpanel" tabindex="0" aria-labelledby="tab-story-coverage-wl"><p>Coverage selects for this story.</p></div>
-                <div class="ds-tabpanel" id="panel-story-movement-wl" role="tabpanel" tabindex="0" aria-labelledby="tab-story-movement-wl" hidden><p>Movement beats for this story.</p></div>
-                <div class="ds-tabpanel" id="panel-story-focus-wl" role="tabpanel" tabindex="0" aria-labelledby="tab-story-focus-wl" hidden><p>Focus pulls for this story.</p></div>
+                <div class="ds-tabpanel" id="panel-story-coverage-wl" role="tabpanel" tabindex="0" aria-labelledby="tab-story-coverage-wl"><p>Coverage selects for this story.</p><ul><li>Wide safety for every beat.</li><li>Closer angles held for the turn.</li></ul></div>
+                <div class="ds-tabpanel" id="panel-story-movement-wl" role="tabpanel" tabindex="0" aria-labelledby="tab-story-movement-wl" hidden><p>Movement beats for this story.</p><ul><li>Dolly and lock-off options per beat.</li><li>Held frames where the cut lands.</li></ul></div>
+                <div class="ds-tabpanel" id="panel-story-focus-wl" role="tabpanel" tabindex="0" aria-labelledby="tab-story-focus-wl" hidden><p>Focus pulls for this story.</p><ul><li>Rack points marked on the beat.</li><li>Shallow safety for the close calls.</li></ul></div>
               </div>
             </div>
           </div>
@@ -1204,8 +1207,8 @@ footer code{color:var(--g-ink)}
             <div class="ds-tabsub">
               <div class="ds-tabs" data-variant="rail" data-ds-orientation="vertical" role="tablist" aria-orientation="vertical" aria-label="Shots sections"><button class="ds-tab" role="tab" id="tab-shots-selects-wl" aria-controls="panel-shots-selects-wl" aria-selected="true" tabindex="0" type="button">Selects</button><button class="ds-tab" role="tab" id="tab-shots-takes-wl" aria-controls="panel-shots-takes-wl" aria-selected="false" tabindex="-1" type="button">Takes</button></div>
               <div class="ds-tabsub__panels">
-                <div class="ds-tabpanel" id="panel-shots-selects-wl" role="tabpanel" tabindex="0" aria-labelledby="tab-shots-selects-wl"><p>Selected takes for these shots.</p></div>
-                <div class="ds-tabpanel" id="panel-shots-takes-wl" role="tabpanel" tabindex="0" aria-labelledby="tab-shots-takes-wl" hidden><p>Every take for these shots.</p></div>
+                <div class="ds-tabpanel" id="panel-shots-selects-wl" role="tabpanel" tabindex="0" aria-labelledby="tab-shots-selects-wl"><p>Selected takes for these shots.</p><ul><li>One hero take per setup.</li><li>Alts kept beside the hero.</li></ul></div>
+                <div class="ds-tabpanel" id="panel-shots-takes-wl" role="tabpanel" tabindex="0" aria-labelledby="tab-shots-takes-wl" hidden><p>Every take for these shots.</p><ul><li>Full slate in shot order.</li><li>NG takes struck from the row.</li></ul></div>
               </div>
             </div>
           </div>
@@ -1213,25 +1216,24 @@ footer code{color:var(--g-ink)}
             <div class="ds-tabsub">
               <div class="ds-tabs" data-variant="rail" data-ds-orientation="vertical" role="tablist" aria-orientation="vertical" aria-label="Notes sections"><button class="ds-tab" role="tab" id="tab-notes-drafts-wl" aria-controls="panel-notes-drafts-wl" aria-selected="true" tabindex="0" type="button">Drafts</button><button class="ds-tab" role="tab" id="tab-notes-shared-wl" aria-controls="panel-notes-shared-wl" aria-selected="false" tabindex="-1" type="button">Shared</button></div>
               <div class="ds-tabsub__panels">
-                <div class="ds-tabpanel" id="panel-notes-drafts-wl" role="tabpanel" tabindex="0" aria-labelledby="tab-notes-drafts-wl"><p>Working drafts for these notes.</p></div>
-                <div class="ds-tabpanel" id="panel-notes-shared-wl" role="tabpanel" tabindex="0" aria-labelledby="tab-notes-shared-wl" hidden><p>Notes shared with the unit.</p></div>
+                <div class="ds-tabpanel" id="panel-notes-drafts-wl" role="tabpanel" tabindex="0" aria-labelledby="tab-notes-drafts-wl"><p>Working drafts for these notes.</p><ul><li>Open threads first.</li><li>Resolved notes collapse away.</li></ul></div>
+                <div class="ds-tabpanel" id="panel-notes-shared-wl" role="tabpanel" tabindex="0" aria-labelledby="tab-notes-shared-wl" hidden><p>Notes shared with the unit.</p><ul><li>Sent once, read by all.</li><li>Replies land under the note.</li></ul></div>
               </div>
             </div>
           </div>
-          <span class="kicker">legacy · boxed + underline — do not use</span>
-          <div class="ds-tabs" id="tabs-legacy-boxed-wl" data-ds-panel-scope="#tabs-legacy-boxed-wl" role="tablist" aria-label="Legacy boxed tabs (no variant)"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
+          <span class="kicker">legacy · underline — do not use</span>
           <div class="ds-tabs" id="tabs-legacy-underline-wl" data-ds-panel-scope="#tabs-legacy-underline-wl" data-variant="underline" role="tablist" aria-label="Legacy underline tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
         </div>
         <div class="spec-cell" data-ds-theme="wiki-dark" data-surface="wiki-dark">
           <span class="kicker">wiki-dark</span>
-          <div class="ds-tabs" data-variant="pill" role="tablist" aria-label="Primary tabs"><button class="ds-tab" role="tab" id="tab-story-wd" aria-controls="panel-story-wd" aria-selected="true" tabindex="0" type="button">Story</button><button class="ds-tab" role="tab" id="tab-shots-wd" aria-controls="panel-shots-wd" aria-selected="false" tabindex="-1" type="button">Shots</button><button class="ds-tab" role="tab" id="tab-notes-wd" aria-controls="panel-notes-wd" aria-selected="false" tabindex="-1" type="button">Notes</button></div>
+          <div class="ds-tabs" role="tablist" aria-label="Parent tabs"><button class="ds-tab" role="tab" id="tab-story-wd" aria-controls="panel-story-wd" aria-selected="true" tabindex="0" type="button">Story</button><button class="ds-tab" role="tab" id="tab-shots-wd" aria-controls="panel-shots-wd" aria-selected="false" tabindex="-1" type="button">Shots</button><button class="ds-tab" role="tab" id="tab-notes-wd" aria-controls="panel-notes-wd" aria-selected="false" tabindex="-1" type="button">Notes</button></div>
           <div class="ds-tabpanel" id="panel-story-wd" role="tabpanel" tabindex="0" aria-labelledby="tab-story-wd">
             <div class="ds-tabsub">
               <div class="ds-tabs" data-variant="rail" data-ds-orientation="vertical" role="tablist" aria-orientation="vertical" aria-label="Story sections"><button class="ds-tab" role="tab" id="tab-story-coverage-wd" aria-controls="panel-story-coverage-wd" aria-selected="true" tabindex="0" type="button">Coverage</button><button class="ds-tab" role="tab" id="tab-story-movement-wd" aria-controls="panel-story-movement-wd" aria-selected="false" tabindex="-1" type="button">Movement</button><button class="ds-tab" role="tab" id="tab-story-focus-wd" aria-controls="panel-story-focus-wd" aria-selected="false" tabindex="-1" type="button">Focus</button></div>
               <div class="ds-tabsub__panels">
-                <div class="ds-tabpanel" id="panel-story-coverage-wd" role="tabpanel" tabindex="0" aria-labelledby="tab-story-coverage-wd"><p>Coverage selects for this story.</p></div>
-                <div class="ds-tabpanel" id="panel-story-movement-wd" role="tabpanel" tabindex="0" aria-labelledby="tab-story-movement-wd" hidden><p>Movement beats for this story.</p></div>
-                <div class="ds-tabpanel" id="panel-story-focus-wd" role="tabpanel" tabindex="0" aria-labelledby="tab-story-focus-wd" hidden><p>Focus pulls for this story.</p></div>
+                <div class="ds-tabpanel" id="panel-story-coverage-wd" role="tabpanel" tabindex="0" aria-labelledby="tab-story-coverage-wd"><p>Coverage selects for this story.</p><ul><li>Wide safety for every beat.</li><li>Closer angles held for the turn.</li></ul></div>
+                <div class="ds-tabpanel" id="panel-story-movement-wd" role="tabpanel" tabindex="0" aria-labelledby="tab-story-movement-wd" hidden><p>Movement beats for this story.</p><ul><li>Dolly and lock-off options per beat.</li><li>Held frames where the cut lands.</li></ul></div>
+                <div class="ds-tabpanel" id="panel-story-focus-wd" role="tabpanel" tabindex="0" aria-labelledby="tab-story-focus-wd" hidden><p>Focus pulls for this story.</p><ul><li>Rack points marked on the beat.</li><li>Shallow safety for the close calls.</li></ul></div>
               </div>
             </div>
           </div>
@@ -1239,8 +1241,8 @@ footer code{color:var(--g-ink)}
             <div class="ds-tabsub">
               <div class="ds-tabs" data-variant="rail" data-ds-orientation="vertical" role="tablist" aria-orientation="vertical" aria-label="Shots sections"><button class="ds-tab" role="tab" id="tab-shots-selects-wd" aria-controls="panel-shots-selects-wd" aria-selected="true" tabindex="0" type="button">Selects</button><button class="ds-tab" role="tab" id="tab-shots-takes-wd" aria-controls="panel-shots-takes-wd" aria-selected="false" tabindex="-1" type="button">Takes</button></div>
               <div class="ds-tabsub__panels">
-                <div class="ds-tabpanel" id="panel-shots-selects-wd" role="tabpanel" tabindex="0" aria-labelledby="tab-shots-selects-wd"><p>Selected takes for these shots.</p></div>
-                <div class="ds-tabpanel" id="panel-shots-takes-wd" role="tabpanel" tabindex="0" aria-labelledby="tab-shots-takes-wd" hidden><p>Every take for these shots.</p></div>
+                <div class="ds-tabpanel" id="panel-shots-selects-wd" role="tabpanel" tabindex="0" aria-labelledby="tab-shots-selects-wd"><p>Selected takes for these shots.</p><ul><li>One hero take per setup.</li><li>Alts kept beside the hero.</li></ul></div>
+                <div class="ds-tabpanel" id="panel-shots-takes-wd" role="tabpanel" tabindex="0" aria-labelledby="tab-shots-takes-wd" hidden><p>Every take for these shots.</p><ul><li>Full slate in shot order.</li><li>NG takes struck from the row.</li></ul></div>
               </div>
             </div>
           </div>
@@ -1248,25 +1250,24 @@ footer code{color:var(--g-ink)}
             <div class="ds-tabsub">
               <div class="ds-tabs" data-variant="rail" data-ds-orientation="vertical" role="tablist" aria-orientation="vertical" aria-label="Notes sections"><button class="ds-tab" role="tab" id="tab-notes-drafts-wd" aria-controls="panel-notes-drafts-wd" aria-selected="true" tabindex="0" type="button">Drafts</button><button class="ds-tab" role="tab" id="tab-notes-shared-wd" aria-controls="panel-notes-shared-wd" aria-selected="false" tabindex="-1" type="button">Shared</button></div>
               <div class="ds-tabsub__panels">
-                <div class="ds-tabpanel" id="panel-notes-drafts-wd" role="tabpanel" tabindex="0" aria-labelledby="tab-notes-drafts-wd"><p>Working drafts for these notes.</p></div>
-                <div class="ds-tabpanel" id="panel-notes-shared-wd" role="tabpanel" tabindex="0" aria-labelledby="tab-notes-shared-wd" hidden><p>Notes shared with the unit.</p></div>
+                <div class="ds-tabpanel" id="panel-notes-drafts-wd" role="tabpanel" tabindex="0" aria-labelledby="tab-notes-drafts-wd"><p>Working drafts for these notes.</p><ul><li>Open threads first.</li><li>Resolved notes collapse away.</li></ul></div>
+                <div class="ds-tabpanel" id="panel-notes-shared-wd" role="tabpanel" tabindex="0" aria-labelledby="tab-notes-shared-wd" hidden><p>Notes shared with the unit.</p><ul><li>Sent once, read by all.</li><li>Replies land under the note.</li></ul></div>
               </div>
             </div>
           </div>
-          <span class="kicker">legacy · boxed + underline — do not use</span>
-          <div class="ds-tabs" id="tabs-legacy-boxed-wd" data-ds-panel-scope="#tabs-legacy-boxed-wd" role="tablist" aria-label="Legacy boxed tabs (no variant)"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
+          <span class="kicker">legacy · underline — do not use</span>
           <div class="ds-tabs" id="tabs-legacy-underline-wd" data-ds-panel-scope="#tabs-legacy-underline-wd" data-variant="underline" role="tablist" aria-label="Legacy underline tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
         </div>
         <div class="spec-cell" data-ds-theme="engine" data-surface="engine" data-ds-density="engine">
           <span class="kicker">engine</span>
-          <div class="ds-tabs" data-variant="pill" role="tablist" aria-label="Primary tabs"><button class="ds-tab" role="tab" id="tab-story-eng" aria-controls="panel-story-eng" aria-selected="true" tabindex="0" type="button">Story</button><button class="ds-tab" role="tab" id="tab-shots-eng" aria-controls="panel-shots-eng" aria-selected="false" tabindex="-1" type="button">Shots</button><button class="ds-tab" role="tab" id="tab-notes-eng" aria-controls="panel-notes-eng" aria-selected="false" tabindex="-1" type="button">Notes</button></div>
+          <div class="ds-tabs" role="tablist" aria-label="Parent tabs"><button class="ds-tab" role="tab" id="tab-story-eng" aria-controls="panel-story-eng" aria-selected="true" tabindex="0" type="button">Story</button><button class="ds-tab" role="tab" id="tab-shots-eng" aria-controls="panel-shots-eng" aria-selected="false" tabindex="-1" type="button">Shots</button><button class="ds-tab" role="tab" id="tab-notes-eng" aria-controls="panel-notes-eng" aria-selected="false" tabindex="-1" type="button">Notes</button></div>
           <div class="ds-tabpanel" id="panel-story-eng" role="tabpanel" tabindex="0" aria-labelledby="tab-story-eng">
             <div class="ds-tabsub">
               <div class="ds-tabs" data-variant="rail" data-ds-orientation="vertical" role="tablist" aria-orientation="vertical" aria-label="Story sections"><button class="ds-tab" role="tab" id="tab-story-coverage-eng" aria-controls="panel-story-coverage-eng" aria-selected="true" tabindex="0" type="button">Coverage</button><button class="ds-tab" role="tab" id="tab-story-movement-eng" aria-controls="panel-story-movement-eng" aria-selected="false" tabindex="-1" type="button">Movement</button><button class="ds-tab" role="tab" id="tab-story-focus-eng" aria-controls="panel-story-focus-eng" aria-selected="false" tabindex="-1" type="button">Focus</button></div>
               <div class="ds-tabsub__panels">
-                <div class="ds-tabpanel" id="panel-story-coverage-eng" role="tabpanel" tabindex="0" aria-labelledby="tab-story-coverage-eng"><p>Coverage selects for this story.</p></div>
-                <div class="ds-tabpanel" id="panel-story-movement-eng" role="tabpanel" tabindex="0" aria-labelledby="tab-story-movement-eng" hidden><p>Movement beats for this story.</p></div>
-                <div class="ds-tabpanel" id="panel-story-focus-eng" role="tabpanel" tabindex="0" aria-labelledby="tab-story-focus-eng" hidden><p>Focus pulls for this story.</p></div>
+                <div class="ds-tabpanel" id="panel-story-coverage-eng" role="tabpanel" tabindex="0" aria-labelledby="tab-story-coverage-eng"><p>Coverage selects for this story.</p><ul><li>Wide safety for every beat.</li><li>Closer angles held for the turn.</li></ul></div>
+                <div class="ds-tabpanel" id="panel-story-movement-eng" role="tabpanel" tabindex="0" aria-labelledby="tab-story-movement-eng" hidden><p>Movement beats for this story.</p><ul><li>Dolly and lock-off options per beat.</li><li>Held frames where the cut lands.</li></ul></div>
+                <div class="ds-tabpanel" id="panel-story-focus-eng" role="tabpanel" tabindex="0" aria-labelledby="tab-story-focus-eng" hidden><p>Focus pulls for this story.</p><ul><li>Rack points marked on the beat.</li><li>Shallow safety for the close calls.</li></ul></div>
               </div>
             </div>
           </div>
@@ -1274,8 +1275,8 @@ footer code{color:var(--g-ink)}
             <div class="ds-tabsub">
               <div class="ds-tabs" data-variant="rail" data-ds-orientation="vertical" role="tablist" aria-orientation="vertical" aria-label="Shots sections"><button class="ds-tab" role="tab" id="tab-shots-selects-eng" aria-controls="panel-shots-selects-eng" aria-selected="true" tabindex="0" type="button">Selects</button><button class="ds-tab" role="tab" id="tab-shots-takes-eng" aria-controls="panel-shots-takes-eng" aria-selected="false" tabindex="-1" type="button">Takes</button></div>
               <div class="ds-tabsub__panels">
-                <div class="ds-tabpanel" id="panel-shots-selects-eng" role="tabpanel" tabindex="0" aria-labelledby="tab-shots-selects-eng"><p>Selected takes for these shots.</p></div>
-                <div class="ds-tabpanel" id="panel-shots-takes-eng" role="tabpanel" tabindex="0" aria-labelledby="tab-shots-takes-eng" hidden><p>Every take for these shots.</p></div>
+                <div class="ds-tabpanel" id="panel-shots-selects-eng" role="tabpanel" tabindex="0" aria-labelledby="tab-shots-selects-eng"><p>Selected takes for these shots.</p><ul><li>One hero take per setup.</li><li>Alts kept beside the hero.</li></ul></div>
+                <div class="ds-tabpanel" id="panel-shots-takes-eng" role="tabpanel" tabindex="0" aria-labelledby="tab-shots-takes-eng" hidden><p>Every take for these shots.</p><ul><li>Full slate in shot order.</li><li>NG takes struck from the row.</li></ul></div>
               </div>
             </div>
           </div>
@@ -1283,13 +1284,12 @@ footer code{color:var(--g-ink)}
             <div class="ds-tabsub">
               <div class="ds-tabs" data-variant="rail" data-ds-orientation="vertical" role="tablist" aria-orientation="vertical" aria-label="Notes sections"><button class="ds-tab" role="tab" id="tab-notes-drafts-eng" aria-controls="panel-notes-drafts-eng" aria-selected="true" tabindex="0" type="button">Drafts</button><button class="ds-tab" role="tab" id="tab-notes-shared-eng" aria-controls="panel-notes-shared-eng" aria-selected="false" tabindex="-1" type="button">Shared</button></div>
               <div class="ds-tabsub__panels">
-                <div class="ds-tabpanel" id="panel-notes-drafts-eng" role="tabpanel" tabindex="0" aria-labelledby="tab-notes-drafts-eng"><p>Working drafts for these notes.</p></div>
-                <div class="ds-tabpanel" id="panel-notes-shared-eng" role="tabpanel" tabindex="0" aria-labelledby="tab-notes-shared-eng" hidden><p>Notes shared with the unit.</p></div>
+                <div class="ds-tabpanel" id="panel-notes-drafts-eng" role="tabpanel" tabindex="0" aria-labelledby="tab-notes-drafts-eng"><p>Working drafts for these notes.</p><ul><li>Open threads first.</li><li>Resolved notes collapse away.</li></ul></div>
+                <div class="ds-tabpanel" id="panel-notes-shared-eng" role="tabpanel" tabindex="0" aria-labelledby="tab-notes-shared-eng" hidden><p>Notes shared with the unit.</p><ul><li>Sent once, read by all.</li><li>Replies land under the note.</li></ul></div>
               </div>
             </div>
           </div>
-          <span class="kicker">legacy · boxed + underline — do not use</span>
-          <div class="ds-tabs" id="tabs-legacy-boxed-eng" data-ds-panel-scope="#tabs-legacy-boxed-eng" role="tablist" aria-label="Legacy boxed tabs (no variant)"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
+          <span class="kicker">legacy · underline — do not use</span>
           <div class="ds-tabs" id="tabs-legacy-underline-eng" data-ds-panel-scope="#tabs-legacy-underline-eng" data-variant="underline" role="tablist" aria-label="Legacy underline tabs"><button class="ds-tab" role="tab" aria-selected="true" type="button">Story</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Shots</button><button class="ds-tab" role="tab" aria-selected="false" type="button">Notes</button></div>
         </div>
         </div>
@@ -1302,7 +1302,7 @@ footer code{color:var(--g-ink)}
           <span class="comp-token" data-usage-token="--spacing-2"><code>--spacing-2</code><b data-token-value>—</b></span>
           <span class="comp-token" data-usage-token="--spacing-6"><code>--spacing-6</code><b data-token-value>—</b></span>
           <span class="comp-token" data-usage-token="--spacing-10"><code>--spacing-10</code><b data-token-value>—</b></span>
-          <code class="comp-classes">.ds-tabs · .ds-tab · [data-variant] pill (live) · underline (legacy) · rail (legacy)</code>
+          <code class="comp-classes">.ds-tabs · .ds-tab · bare parent (live) · [data-variant] pill (secondary) · rail (sub) · underline (legacy)</code>
           </div>
         </div>
         <footer class="comp-foot" data-band="footer">

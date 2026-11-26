@@ -371,11 +371,13 @@
 }
 
 /* 5 · tabs ---------------------------------------------------------------
-   THE SHAPE IS THE PILL. A page switching content passes
-   `data-variant="pill"`; the bare `.ds-tabs` box below is the pre-grammar
-   rendering kept for this wave (marked legacy in DEPRECATIONS.md), and the
-   underline/rail variants are legacy too. All three still render, none is
-   extended, and the pill block is the one the docs point at. */
+   PARENT TABS ARE BARE; PILLS ARE SECONDARY. A top-level content switch is
+   a bare `.ds-tabs` (no attribute — the pitch Doc Tabs pattern): one
+   horizontal row on the content axis, left-aligned, scrolling under overflow
+   instead of wrapping, never stretched to fill the row. `data-variant="pill"`
+   is the secondary / in-panel shape. `rail` lives only as the nested
+   vertical sub-list inside `.ds-tabsub`, never standalone; the underline
+   variant is legacy for one release. */
 .ds-tabs{
   display:flex;
   gap:var(--spacing-6);
@@ -410,8 +412,7 @@
   outline-color:var(--focus-color,currentColor);
   outline-offset:var(--focus-offset);
 }
-/* PILL — the documented default for content-switching (owner grammar, this
-   wave). One shape for every tab: a rounded-full quiet surface that only takes
+/* PILL — the secondary / in-panel shape for content-switching. One shape for every tab: a rounded-full quiet surface that only takes
    the accent fill when selected. Left-aligned and wrapping: each tab is sized
    by its label (`flex:0 0 auto`), so a two-word tab never claims a third of the
    row, and the row never scrolls sideways on desktop (a wrapped second line
@@ -501,9 +502,10 @@
   border-inline-start-color:var(--ds-accent);
   color:var(--ds-ink);
 }
-/* MAIN→SUB COMPOSITION — one composed hierarchy per specimen cell: a pill
-   tablist on top switches the main panel, and inside each main panel a
-   vertical rail tablist scopes that panel's own sections in a two-column row.
+/* MAIN→SUB COMPOSITION — one composed hierarchy per specimen cell: a bare
+   parent tablist on top switches the main panel, and inside each main panel
+   a vertical rail sub-tablist scopes that panel's own sections in a
+   two-column row.
    Only layout lives here (two columns + one spacing-ladder gap); the rail
    tablist keeps its own block, and this never touches .ds-rail (§20), which
    is the flat section nav, not a tablist. */
