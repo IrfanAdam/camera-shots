@@ -22,14 +22,29 @@ body{background:var(--bg);color:var(--ink)}
 a{color:var(--acc)}
 a:visited{color:var(--acc)}
 a:hover{color:var(--ink);text-decoration-color:var(--acc)}
-/* page shell: the rail is the first cell of a full-bleed grid, so its item slot
-   and 2px indicator start at the screen edge; the content column owns the max
-   width and centres inside the space the rail leaves. See components.css §20. */
-.page{display:grid;grid-template-columns:var(--layout-rail) minmax(0,1fr);grid-template-areas:"rail head" "rail body"}
-.page>.ds-rail{grid-area:rail}
-.top{grid-area:head;position:sticky;top:0;z-index:var(--z-sticky);background:var(--color-pitch-overlay-bg);border-bottom:var(--border-width-hairline) solid var(--rule);padding-top:calc(var(--spacing-10) + env(safe-area-inset-top,0px));padding-bottom:var(--spacing-10)}
+/* page shell: single column — sticky header (title + menu) on top, then the
+   tab strips, then the panel. The ENTRIES nav lives inside the panel region as
+   the first cell of a .w-panelbody grid (gallery pattern: hero → underline
+   mains → in-panel nav). No page-side rail. */
+.page{display:flex;flex-direction:column}
+/* in-panel body (≥901): the entries nav is the first grid cell and the card
+   panel takes the rest. Named placement so the panel never lands under the
+   rail in any drawer/hidden state of the nav. */
+.w-panelbody{display:grid;grid-template-columns:var(--layout-rail) minmax(0,1fr);grid-template-areas:"rail content";column-gap:var(--spacing-xl);align-items:start;margin-top:var(--spacing-sm)}
+.w-panelbody>.ds-rail{grid-area:rail}
+.w-panelbody>.panel{grid-area:content;min-inline-size:0}
+/* the in-panel rail parks under the sticky header and scrolls inside its own
+   cell: sticky + align-self:start keep it a content-height grid item (never a
+   100dvh page column), and the capped block size with its own overflow means a
+   long entry list scrolls internally. Unconditional so it also overrides a
+   drawer stamp that survived a breakpoint change; the drawer is the ≤900
+   branch (components.css §21). */
+.w-panelbody>.ds-rail,.w-panelbody>.ds-rail[hidden]{position:sticky;inset-block-start:5rem;inset-block-end:auto;inset-inline:auto;transform:none;z-index:auto;transition:none;display:flex;align-self:start;inline-size:var(--layout-rail);block-size:auto;max-block-size:calc(100dvh - 5rem - var(--spacing-lg));padding-block-start:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;background:transparent;border-inline-end-color:var(--rule)}
+/* the drawer's own close control has nothing to dismiss in a static column */
+.w-panelbody>.ds-rail .ds-navclose{display:none}
+.top{position:sticky;top:0;z-index:var(--z-sticky);background:var(--color-pitch-overlay-bg);border-bottom:var(--border-width-hairline) solid var(--rule);padding-top:calc(var(--spacing-10) + env(safe-area-inset-top,0px));padding-bottom:var(--spacing-10)}
 .top__in{display:flex;justify-content:space-between;align-items:baseline;gap:var(--spacing-md);flex-wrap:wrap;max-inline-size:var(--layout-max-wiki);margin-inline:auto;padding-inline:var(--spacing-2xl)}
-.page__main{grid-area:body;min-inline-size:0;max-inline-size:var(--layout-max-wiki);margin-inline:auto;padding-inline:var(--spacing-2xl);padding-block-end:var(--spacing-xl)}
+.page__main{min-inline-size:0;max-inline-size:var(--layout-max-wiki);margin-inline:auto;padding-inline:var(--spacing-2xl);padding-block-end:var(--spacing-xl)}
 .by{font-family:var(--typography-family-mono);letter-spacing:var(--tracking-eyebrow);color:var(--mut);font-size:var(--typography-size-small);white-space:nowrap}
 /* `margin-inline-start:auto` keeps the byline + menu button on the end edge
    even when the title wraps the row (mobile), so the hamburger stays under the
@@ -99,6 +114,13 @@ footer{margin:var(--spacing-xl) 0 var(--spacing-md);color:var(--mut);font-size:v
 .page{display:flex;flex-direction:column}
 .top__in{align-items:center}
 .top__in,.page__main{max-inline-size:none;padding-inline:var(--spacing-20)}
+/* one column: the rail is either the drawer (JS stamps the mode) or, with
+   no JS, a plain list stacked above the card panel */
+.w-panelbody{display:block}
+/* no drawer stamp (no JS): the page posture — sticky, 100dvh — is wrong here
+   too, so the rail is a plain list above the panel. A stamped drawer is left
+   alone: components.css §21 owns it at this width. */
+.w-panelbody>.ds-rail:not([data-ds-nav-mode="drawer"]){position:static;inset-block-start:auto;align-self:auto;block-size:auto;padding-block-start:0;overflow:visible}
 }
 
 /* compact grouped map, ≤--breakpoint-sm 639: the DS table stacks into labelled
@@ -133,12 +155,6 @@ footer{margin:var(--spacing-xl) 0 var(--spacing-md);color:var(--mut);font-size:v
 <a class="ds-skip-link" href="#main">Skip to content</a>
 <div class="page">
 <header class="top"><div class="top__in"><h1>Cinematography and Direction Wiki</h1><div class="hright"><span class="by">by irfan</span><button type="button" class="ds-navtoggle" data-ds-nav-toggle="nav-drawer" aria-controls="nav-drawer" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-menu"></use></svg></button></div></div></header>
-<nav class="ds-rail" id="nav-drawer" data-ds-nav aria-label="Entries">
-<p class="ds-rail__label">Entries</p>
-<div class="rail-field"><label class="ds-sr-only" for="search">Filter cards in this tab</label><input id="search" class="ds-input" type="search" placeholder="Filter this tab…" aria-describedby="search-hint" autocomplete="off"><span class="ds-sr-only" id="search-hint">Examples: rack, golden, 180.</span></div>
-<p class="rail-count" id="count"></p>
-<div class="rail-list" id="list"></div>
-</nav>
 <div class="page__main">
 <main id="main" tabindex="-1">
 <p class="sub">A working reference for how films are shot and directed. Pick a concept, see what it does for the story, watch it explained, and copy the prompt phrase to use it.</p>
@@ -146,7 +162,17 @@ footer{margin:var(--spacing-xl) 0 var(--spacing-md);color:var(--mut);font-size:v
 <div class="ds-tabs" id="steps" data-variant="pill" role="group" aria-label="Steps"></div>
 <p class="blurb" id="blurb"></p>
 <div class="ds-tabs" id="tabs" data-variant="underline"></div>
+<!-- ENTRIES nav lives inside the panel region, under the underline tab strip:
+     one .w-panelbody grid (rail + card panel), the gallery pattern -->
+<div class="w-panelbody">
+<nav class="ds-rail" id="nav-drawer" data-ds-nav aria-label="Entries">
+<p class="ds-rail__label">Entries</p>
+<div class="rail-field"><label class="ds-sr-only" for="search">Filter cards in this tab</label><input id="search" class="ds-input" type="search" placeholder="Filter this tab…" aria-describedby="search-hint" autocomplete="off"><span class="ds-sr-only" id="search-hint">Examples: rack, golden, 180.</span></div>
+<p class="rail-count" id="count"></p>
+<div class="rail-list" id="list"></div>
+</nav>
 <div class="panel" id="panel"></div>
+</div><!-- /.w-panelbody -->
 </main>
 <footer>Tip: ← → keys step through cards · / focuses filter · token copy gives you <code>CODE — prompt phrase</code> ready to paste. Direction tab: shoot order for the set.</footer>
 </div>

@@ -31,26 +31,26 @@
     "surfaces": 4,
     "productSurfaces": 3,
     "tokens": 188,
-    "tokensWithProductRefs": 158,
-    "tokensWithoutProductRefs": 30,
+    "tokensWithProductRefs": 157,
+    "tokensWithoutProductRefs": 31,
     "tokensGalleryOnly": 22,
     "tokensRoleMapOnly": 0,
-    "tokensBreakpointNoRef": 4,
+    "tokensBreakpointNoRef": 5,
     "tokensAliasNoRef": 3,
-    "tokensNoRef": 8,
+    "tokensNoRef": 9,
     "tokensAlias": 8,
-    "customPropertyRefs": 2980,
+    "customPropertyRefs": 3011,
     "customPropertyRefsByKind": {
-      "token": 2069,
+      "token": 2094,
       "roleVar": 178,
-      "localVar": 671,
+      "localVar": 677,
       "canvas": 62
     },
     "localVarDetail": {
       "componentLocal": 36,
-      "pageAlias": 635
+      "pageAlias": 641
     },
-    "tokenRefs": 2131,
+    "tokenRefs": 2156,
     "tokenRefsByFile": {
       "design-system/base.css": 26,
       "design-system/components.css": 350,
@@ -59,8 +59,8 @@
       "design-system/pitch-shell.css": 41,
       "engine-pitch.css": 24,
       "engine.html": 693,
-      "index.html": 160,
-      "pitch.html": 366
+      "index.html": 175,
+      "pitch.html": 376
     },
     "refsByFile": {
       "design-system/base.css": 31,
@@ -70,8 +70,8 @@
       "design-system/pitch-shell.css": 50,
       "engine-pitch.css": 24,
       "engine.html": 940,
-      "index.html": 264,
-      "pitch.html": 492
+      "index.html": 282,
+      "pitch.html": 505
     },
     "canvasReads": 62,
     "components": 39,
@@ -80,12 +80,12 @@
     "componentsStyledWithProductInstances": 19,
     "componentsWithoutProductInstances": 18,
     "componentsWithoutProductInstancesStyled": 15,
-    "componentInstances": 1099,
-    "componentInstancesProduct": 198,
+    "componentInstances": 1087,
+    "componentInstancesProduct": 186,
     "componentInstancesDynamic": 38,
     "componentInstancesBySurface": {
-      "wiki": 38,
-      "pitch": 77,
+      "wiki": 28,
+      "pitch": 75,
       "engine": 83,
       "gallery": 901
     },
@@ -471,13 +471,13 @@
       "aliasedBy": [],
       "bySurface": {
         "wiki": 0,
-        "pitch": 1,
+        "pitch": 0,
         "engine": 0,
         "gallery": 0
       },
       "direct": {
         "wiki": 0,
-        "pitch": 1,
+        "pitch": 0,
         "engine": 0,
         "gallery": 0
       },
@@ -485,17 +485,12 @@
       "roleMapCells": 0,
       "usedByBlocks": [],
       "dynamic": 0,
-      "refs": [
-        {
-          "file": "pitch.html",
-          "count": 1
-        }
-      ],
-      "refCount": 1,
-      "productRefCount": 1,
+      "refs": [],
+      "refCount": 0,
+      "productRefCount": 0,
       "galleryRefs": 0,
-      "reach": "product",
-      "hasProductRef": true
+      "reach": "none",
+      "hasProductRef": false
     },
     "--color-diagram-fill-wiki": {
       "cssName": "--color-diagram-fill-wiki",
@@ -4504,14 +4499,14 @@
       "aliasOf": null,
       "aliasedBy": [],
       "bySurface": {
-        "wiki": 2,
-        "pitch": 2,
+        "wiki": 3,
+        "pitch": 3,
         "engine": 1,
         "gallery": 4
       },
       "direct": {
-        "wiki": 1,
-        "pitch": 1,
+        "wiki": 2,
+        "pitch": 2,
         "engine": 0,
         "gallery": 1
       },
@@ -4539,15 +4534,15 @@
         },
         {
           "file": "index.html",
-          "count": 1
+          "count": 2
         },
         {
           "file": "pitch.html",
-          "count": 1
+          "count": 2
         }
       ],
-      "refCount": 6,
-      "productRefCount": 5,
+      "refCount": 8,
+      "productRefCount": 7,
       "galleryRefs": 4,
       "reach": "product",
       "hasProductRef": true
@@ -6265,13 +6260,13 @@
       "aliasedBy": [],
       "bySurface": {
         "wiki": 5,
-        "pitch": 8,
+        "pitch": 9,
         "engine": 3,
         "gallery": 15
       },
       "direct": {
         "wiki": 2,
-        "pitch": 5,
+        "pitch": 6,
         "engine": 0,
         "gallery": 11
       },
@@ -6304,11 +6299,11 @@
         },
         {
           "file": "pitch.html",
-          "count": 5
+          "count": 6
         }
       ],
-      "refCount": 22,
-      "productRefCount": 16,
+      "refCount": 23,
+      "productRefCount": 17,
       "galleryRefs": 15,
       "reach": "product",
       "hasProductRef": true
@@ -6324,13 +6319,13 @@
         "--spacing-base"
       ],
       "bySurface": {
-        "wiki": 13,
+        "wiki": 14,
         "pitch": 22,
         "engine": 45,
         "gallery": 33
       },
       "direct": {
-        "wiki": 3,
+        "wiki": 4,
         "pitch": 13,
         "engine": 35,
         "gallery": 13
@@ -6372,15 +6367,15 @@
         },
         {
           "file": "index.html",
-          "count": 3
+          "count": 4
         },
         {
           "file": "pitch.html",
           "count": 13
         }
       ],
-      "refCount": 84,
-      "productRefCount": 80,
+      "refCount": 85,
+      "productRefCount": 81,
       "galleryRefs": 33,
       "reach": "product",
       "hasProductRef": true
@@ -6514,14 +6509,14 @@
       "aliasOf": null,
       "aliasedBy": [],
       "bySurface": {
-        "wiki": 12,
-        "pitch": 21,
+        "wiki": 15,
+        "pitch": 22,
         "engine": 12,
         "gallery": 35
       },
       "direct": {
-        "wiki": 0,
-        "pitch": 10,
+        "wiki": 3,
+        "pitch": 11,
         "engine": 0,
         "gallery": 16
       },
@@ -6559,12 +6554,16 @@
           "count": 16
         },
         {
+          "file": "index.html",
+          "count": 3
+        },
+        {
           "file": "pitch.html",
-          "count": 10
+          "count": 11
         }
       ],
-      "refCount": 45,
-      "productRefCount": 45,
+      "refCount": 49,
+      "productRefCount": 49,
       "galleryRefs": 35,
       "reach": "product",
       "hasProductRef": true
@@ -6649,14 +6648,14 @@
       "aliasOf": null,
       "aliasedBy": [],
       "bySurface": {
-        "wiki": 21,
-        "pitch": 40,
+        "wiki": 24,
+        "pitch": 41,
         "engine": 46,
         "gallery": 36
       },
       "direct": {
-        "wiki": 5,
-        "pitch": 25,
+        "wiki": 8,
+        "pitch": 26,
         "engine": 30,
         "gallery": 17
       },
@@ -6700,15 +6699,15 @@
         },
         {
           "file": "index.html",
-          "count": 5
+          "count": 8
         },
         {
           "file": "pitch.html",
-          "count": 25
+          "count": 26
         }
       ],
-      "refCount": 96,
-      "productRefCount": 107,
+      "refCount": 100,
+      "productRefCount": 111,
       "galleryRefs": 36,
       "reach": "product",
       "hasProductRef": true
@@ -6722,13 +6721,13 @@
       "aliasOf": null,
       "aliasedBy": [],
       "bySurface": {
-        "wiki": 3,
+        "wiki": 4,
         "pitch": 4,
         "engine": 0,
         "gallery": 9
       },
       "direct": {
-        "wiki": 3,
+        "wiki": 4,
         "pitch": 4,
         "engine": 0,
         "gallery": 9
@@ -6744,15 +6743,15 @@
         },
         {
           "file": "index.html",
-          "count": 3
+          "count": 4
         },
         {
           "file": "pitch.html",
           "count": 4
         }
       ],
-      "refCount": 16,
-      "productRefCount": 7,
+      "refCount": 17,
+      "productRefCount": 8,
       "galleryRefs": 9,
       "reach": "product",
       "hasProductRef": true
@@ -6767,13 +6766,13 @@
       "aliasedBy": [],
       "bySurface": {
         "wiki": 25,
-        "pitch": 30,
+        "pitch": 31,
         "engine": 73,
         "gallery": 32
       },
       "direct": {
         "wiki": 9,
-        "pitch": 16,
+        "pitch": 17,
         "engine": 57,
         "gallery": 9
       },
@@ -6825,11 +6824,11 @@
         },
         {
           "file": "pitch.html",
-          "count": 16
+          "count": 17
         }
       ],
-      "refCount": 114,
-      "productRefCount": 128,
+      "refCount": 115,
+      "productRefCount": 129,
       "galleryRefs": 32,
       "reach": "product",
       "hasProductRef": true
@@ -6941,14 +6940,14 @@
       "aliasOf": null,
       "aliasedBy": [],
       "bySurface": {
-        "wiki": 10,
-        "pitch": 8,
+        "wiki": 11,
+        "pitch": 9,
         "engine": 6,
         "gallery": 24
       },
       "direct": {
-        "wiki": 4,
-        "pitch": 2,
+        "wiki": 5,
+        "pitch": 3,
         "engine": 0,
         "gallery": 9
       },
@@ -6980,15 +6979,15 @@
         },
         {
           "file": "index.html",
-          "count": 4
+          "count": 5
         },
         {
           "file": "pitch.html",
-          "count": 2
+          "count": 3
         }
       ],
-      "refCount": 30,
-      "productRefCount": 24,
+      "refCount": 32,
+      "productRefCount": 26,
       "galleryRefs": 24,
       "reach": "product",
       "hasProductRef": true
@@ -7141,14 +7140,14 @@
       "aliasOf": null,
       "aliasedBy": [],
       "bySurface": {
-        "wiki": 11,
-        "pitch": 11,
+        "wiki": 12,
+        "pitch": 12,
         "engine": 7,
         "gallery": 24
       },
       "direct": {
-        "wiki": 5,
-        "pitch": 6,
+        "wiki": 6,
+        "pitch": 7,
         "engine": 2,
         "gallery": 3
       },
@@ -7189,15 +7188,15 @@
         },
         {
           "file": "index.html",
-          "count": 5
+          "count": 6
         },
         {
           "file": "pitch.html",
-          "count": 6
+          "count": 7
         }
       ],
-      "refCount": 37,
-      "productRefCount": 29,
+      "refCount": 39,
+      "productRefCount": 31,
       "galleryRefs": 24,
       "reach": "product",
       "hasProductRef": true
@@ -7378,14 +7377,14 @@
       "aliasOf": null,
       "aliasedBy": [],
       "bySurface": {
-        "wiki": 11,
-        "pitch": 21,
+        "wiki": 12,
+        "pitch": 22,
         "engine": 20,
         "gallery": 44
       },
       "direct": {
-        "wiki": 2,
-        "pitch": 12,
+        "wiki": 3,
+        "pitch": 13,
         "engine": 11,
         "gallery": 30
       },
@@ -7424,15 +7423,15 @@
         },
         {
           "file": "index.html",
-          "count": 2
+          "count": 3
         },
         {
           "file": "pitch.html",
-          "count": 12
+          "count": 13
         }
       ],
-      "refCount": 69,
-      "productRefCount": 52,
+      "refCount": 71,
+      "productRefCount": 54,
       "galleryRefs": 44,
       "reach": "product",
       "hasProductRef": true
@@ -7621,13 +7620,13 @@
       "aliasedBy": [],
       "bySurface": {
         "wiki": 9,
-        "pitch": 20,
+        "pitch": 21,
         "engine": 30,
         "gallery": 12
       },
       "direct": {
         "wiki": 3,
-        "pitch": 14,
+        "pitch": 15,
         "engine": 24,
         "gallery": 5
       },
@@ -7668,11 +7667,11 @@
         },
         {
           "file": "pitch.html",
-          "count": 14
+          "count": 15
         }
       ],
-      "refCount": 53,
-      "productRefCount": 59,
+      "refCount": 54,
+      "productRefCount": 60,
       "galleryRefs": 12,
       "reach": "product",
       "hasProductRef": true
@@ -7686,13 +7685,13 @@
       "aliasOf": null,
       "aliasedBy": [],
       "bySurface": {
-        "wiki": 16,
+        "wiki": 17,
         "pitch": 15,
         "engine": 34,
         "gallery": 21
       },
       "direct": {
-        "wiki": 5,
+        "wiki": 6,
         "pitch": 5,
         "engine": 23,
         "gallery": 8
@@ -7739,15 +7738,15 @@
         },
         {
           "file": "index.html",
-          "count": 5
+          "count": 6
         },
         {
           "file": "pitch.html",
           "count": 5
         }
       ],
-      "refCount": 54,
-      "productRefCount": 65,
+      "refCount": 55,
+      "productRefCount": 66,
       "galleryRefs": 21,
       "reach": "product",
       "hasProductRef": true
@@ -7861,14 +7860,14 @@
       "aliasOf": null,
       "aliasedBy": [],
       "bySurface": {
-        "wiki": 4,
-        "pitch": 10,
+        "wiki": 5,
+        "pitch": 11,
         "engine": 7,
         "gallery": 8
       },
       "direct": {
-        "wiki": 2,
-        "pitch": 9,
+        "wiki": 3,
+        "pitch": 10,
         "engine": 6,
         "gallery": 4
       },
@@ -7905,15 +7904,15 @@
         },
         {
           "file": "index.html",
-          "count": 2
+          "count": 3
         },
         {
           "file": "pitch.html",
-          "count": 9
+          "count": 10
         }
       ],
-      "refCount": 25,
-      "productRefCount": 21,
+      "refCount": 27,
+      "productRefCount": 23,
       "galleryRefs": 8,
       "reach": "product",
       "hasProductRef": true
@@ -7963,13 +7962,13 @@
       "aliasOf": null,
       "aliasedBy": [],
       "bySurface": {
-        "wiki": 10,
+        "wiki": 11,
         "pitch": 10,
         "engine": 18,
         "gallery": 21
       },
       "direct": {
-        "wiki": 2,
+        "wiki": 3,
         "pitch": 2,
         "engine": 10,
         "gallery": 10
@@ -8007,15 +8006,15 @@
         },
         {
           "file": "index.html",
-          "count": 2
+          "count": 3
         },
         {
           "file": "pitch.html",
           "count": 2
         }
       ],
-      "refCount": 35,
-      "productRefCount": 38,
+      "refCount": 36,
+      "productRefCount": 39,
       "galleryRefs": 21,
       "reach": "product",
       "hasProductRef": true
@@ -8080,13 +8079,13 @@
       "aliasedBy": [],
       "bySurface": {
         "wiki": 4,
-        "pitch": 9,
+        "pitch": 10,
         "engine": 3,
         "gallery": 11
       },
       "direct": {
         "wiki": 0,
-        "pitch": 6,
+        "pitch": 7,
         "engine": 0,
         "gallery": 5
       },
@@ -8120,11 +8119,11 @@
         },
         {
           "file": "pitch.html",
-          "count": 6
+          "count": 7
         }
       ],
-      "refCount": 17,
-      "productRefCount": 16,
+      "refCount": 18,
+      "productRefCount": 17,
       "galleryRefs": 11,
       "reach": "product",
       "hasProductRef": true
@@ -9457,18 +9456,18 @@
       "blockTitle": "pager / nav item / theme toggle",
       "kind": "component",
       "defined": true,
-      "instances": 101,
+      "instances": 93,
       "bySurface": {
-        "wiki": 6,
-        "pitch": 32,
+        "wiki": 2,
+        "pitch": 28,
         "engine": 12,
         "gallery": 51
       },
       "dynamic": 5,
-      "staticInstances": 96,
-      "productInstances": 50,
+      "staticInstances": 88,
+      "productInstances": 42,
       "productDynamic": 5,
-      "productStaticInstances": 45,
+      "productStaticInstances": 37,
       "galleryInstances": 51,
       "files": [
         {
@@ -9481,11 +9480,11 @@
         },
         {
           "file": "index.html",
-          "count": 6
+          "count": 2
         },
         {
           "file": "pitch.html",
-          "count": 32
+          "count": 28
         }
       ],
       "modifiers": [],
@@ -9761,18 +9760,18 @@
       "blockTitle": "rail — flat vertical section nav",
       "kind": "component",
       "defined": true,
-      "instances": 112,
+      "instances": 103,
       "bySurface": {
-        "wiki": 10,
-        "pitch": 39,
+        "wiki": 4,
+        "pitch": 36,
         "engine": 12,
         "gallery": 51
       },
       "dynamic": 2,
-      "staticInstances": 110,
-      "productInstances": 61,
+      "staticInstances": 101,
+      "productInstances": 52,
       "productDynamic": 2,
-      "productStaticInstances": 59,
+      "productStaticInstances": 50,
       "galleryInstances": 51,
       "files": [
         {
@@ -9785,11 +9784,11 @@
         },
         {
           "file": "index.html",
-          "count": 10
+          "count": 4
         },
         {
           "file": "pitch.html",
-          "count": 39
+          "count": 36
         }
       ],
       "modifiers": [],
@@ -10093,18 +10092,18 @@
       "blockTitle": "tabs",
       "kind": "component",
       "defined": true,
-      "instances": 157,
+      "instances": 161,
       "bySurface": {
         "wiki": 2,
-        "pitch": 4,
+        "pitch": 8,
         "engine": 0,
         "gallery": 151
       },
       "dynamic": 2,
-      "staticInstances": 155,
-      "productInstances": 6,
+      "staticInstances": 159,
+      "productInstances": 10,
       "productDynamic": 2,
-      "productStaticInstances": 4,
+      "productStaticInstances": 8,
       "galleryInstances": 151,
       "files": [
         {
@@ -10117,7 +10116,7 @@
         },
         {
           "file": "pitch.html",
-          "count": 4
+          "count": 8
         }
       ],
       "modifiers": [],
@@ -10270,18 +10269,18 @@
       "blockTitle": "tabs",
       "kind": "component",
       "defined": true,
-      "instances": 48,
+      "instances": 49,
       "bySurface": {
         "wiki": 2,
-        "pitch": 1,
+        "pitch": 2,
         "engine": 0,
         "gallery": 45
       },
       "dynamic": 0,
-      "staticInstances": 48,
-      "productInstances": 3,
+      "staticInstances": 49,
+      "productInstances": 4,
       "productDynamic": 0,
-      "productStaticInstances": 3,
+      "productStaticInstances": 4,
       "galleryInstances": 45,
       "files": [
         {
@@ -10294,7 +10293,7 @@
         },
         {
           "file": "pitch.html",
-          "count": 1
+          "count": 2
         }
       ],
       "modifiers": [],
@@ -10603,11 +10602,11 @@
         "ds-tabs",
         "ds-tabsub"
       ],
-      "instances": 288,
-      "productInstances": 9,
+      "instances": 293,
+      "productInstances": 14,
       "bySurface": {
         "wiki": 4,
-        "pitch": 5,
+        "pitch": 10,
         "engine": 0,
         "gallery": 279
       },
@@ -10814,11 +10813,11 @@
         "ds-pager",
         "ds-theme-toggle"
       ],
-      "instances": 111,
-      "productInstances": 52,
+      "instances": 103,
+      "productInstances": 44,
       "bySurface": {
-        "wiki": 8,
-        "pitch": 32,
+        "wiki": 4,
+        "pitch": 28,
         "engine": 12,
         "gallery": 59
       },
@@ -10846,11 +10845,11 @@
       "classes": [
         "ds-rail"
       ],
-      "instances": 112,
-      "productInstances": 61,
+      "instances": 103,
+      "productInstances": 52,
       "bySurface": {
-        "wiki": 10,
-        "pitch": 39,
+        "wiki": 4,
+        "pitch": 36,
         "engine": 12,
         "gallery": 51
       },
@@ -10886,14 +10885,14 @@
         "design-system/pitch-shell.css"
       ],
       "refs": {
-        "customProperties": 264,
-        "tokens": 160,
+        "customProperties": 282,
+        "tokens": 175,
         "roleVars": 0,
-        "localVars": 104,
+        "localVars": 107,
         "canvas": 0
       },
       "tokens": {
-        "count": 58,
+        "count": 59,
         "list": [
           "--border-width-accent",
           "--border-width-hairline",
@@ -10933,6 +10932,7 @@
           "--spacing-2xl",
           "--spacing-2xs",
           "--spacing-6",
+          "--spacing-lg",
           "--spacing-md",
           "--spacing-sm",
           "--spacing-xl",
@@ -10954,23 +10954,19 @@
           "--weight-medium",
           "--z-sticky"
         ],
-        "direct": 58,
+        "direct": 59,
         "ownCss": 0
       },
       "components": {
         "count": 14,
-        "instances": 38,
+        "instances": 28,
         "list": [
           {
-            "class": "ds-rail",
-            "instances": 10
-          },
-          {
-            "class": "ds-nav-item",
-            "instances": 6
-          },
-          {
             "class": "ds-btn",
+            "instances": 4
+          },
+          {
+            "class": "ds-rail",
             "instances": 4
           },
           {
@@ -10979,6 +10975,10 @@
           },
           {
             "class": "ds-copy",
+            "instances": 2
+          },
+          {
+            "class": "ds-nav-item",
             "instances": 2
           },
           {
@@ -11028,18 +11028,17 @@
         "design-system/components.css"
       ],
       "refs": {
-        "customProperties": 492,
-        "tokens": 366,
+        "customProperties": 505,
+        "tokens": 376,
         "roleVars": 0,
-        "localVars": 126,
+        "localVars": 129,
         "canvas": 0
       },
       "tokens": {
-        "count": 88,
+        "count": 87,
         "list": [
           "--border-width-hairline",
           "--border-width-strong",
-          "--breakpoint-xs",
           "--color-pitch-accent",
           "--color-pitch-accent-ink",
           "--color-pitch-bg",
@@ -11126,31 +11125,31 @@
           "--z-sticky",
           "--z-tooltip"
         ],
-        "direct": 88,
+        "direct": 87,
         "ownCss": 0
       },
       "components": {
         "count": 5,
-        "instances": 77,
+        "instances": 75,
         "list": [
           {
             "class": "ds-rail",
-            "instances": 39
+            "instances": 36
           },
           {
             "class": "ds-nav-item",
-            "instances": 32
+            "instances": 28
           },
           {
             "class": "ds-tab",
-            "instances": 4
-          },
-          {
-            "class": "ds-navtoggle",
-            "instances": 1
+            "instances": 8
           },
           {
             "class": "ds-tabs",
+            "instances": 2
+          },
+          {
+            "class": "ds-navtoggle",
             "instances": 1
           }
         ]
@@ -11664,7 +11663,8 @@
         "--breakpoint-lg",
         "--breakpoint-md",
         "--breakpoint-sm",
-        "--breakpoint-xl"
+        "--breakpoint-xl",
+        "--breakpoint-xs"
       ],
       "aliasUnreferenced": [
         "--color-pro-tool-hover",

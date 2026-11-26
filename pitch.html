@@ -31,10 +31,28 @@ a{color:inherit}
 /* chart hit-rects sit flush inside the plot: same ring, drawn inward (offset inverted) */
 .fchart rect[data-m]:focus-visible{outline:var(--focus-width) solid var(--color-pitch-accent);outline-offset:calc(-1*var(--focus-offset))}
 .w{max-width:var(--layout-max-pitch);margin:0 auto;padding:0 var(--spacing-20) 4rem} /* lint-allow: 4rem deck bottom pad is layout-scale; no spacing step sits at 64px */
-/* shell: the rail cell sits flush against the viewport edge, the content column
-   owns the max-width and its own gutter — full-bleed grid, no body padding */
-.shell{display:grid;grid-template-columns:var(--layout-rail) minmax(0,1fr)}
+/* shell: single column — sticky header (brand + underline doctabs) on top,
+   then the panels. Each doctab panel carries its own section nav as the first
+   cell of a .p-panelbody grid (gallery pattern: hero → underline mains →
+   in-panel nav). No page-side rail. */
+.shell{display:block}
 .col{display:flex;flex-direction:column;min-width:0}
+/* in-panel body (≥901): the panel's own section nav is the first grid cell
+   and the content takes the rest. Named placement (not auto-placement) so the
+   content keeps its offset in every drawer/hidden state of the rail. */
+.p-panelbody{display:grid;grid-template-columns:var(--layout-rail) minmax(0,1fr);grid-template-areas:"rail content";column-gap:var(--spacing-2xl);align-items:start}
+.p-panelbody>.ds-rail{grid-area:rail}
+.p-panelbody>.p-panelcontent{grid-area:content;min-inline-size:0}
+/* the in-panel rail parks under the sticky header and scrolls inside its own
+   cell: sticky + align-self:start keep it a content-height grid item (never a
+   100dvh page column), and the capped block size with its own overflow means a
+   long TOC scrolls internally. Unconditional so it also overrides a drawer
+   stamp that survived a breakpoint change; the drawer is the ≤900 branch. */
+.p-panelbody>.ds-rail,.p-panelbody>.ds-rail[hidden]{position:sticky;inset-block-start:8.5rem;inset-block-end:auto;inset-inline:auto;transform:none;z-index:auto;transition:none;display:flex;align-self:start;inline-size:var(--layout-rail);block-size:auto;max-block-size:calc(100dvh - 8.5rem - var(--spacing-lg));padding-block-start:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;background:transparent;border-inline-end-color:var(--rule)}
+/* the drawer's own close control has nothing to dismiss in a static column */
+.p-panelbody>.ds-rail .ds-navclose{display:none}
+/* the export cluster follows the TOC instead of hanging on the viewport bottom */
+.p-panelbody>.ds-rail>.sidexport{position:static;inset-block-end:auto;margin-block-start:var(--spacing-lg);padding-block-end:0;background:transparent}
 /* header: sticky, brand + tools on row one, left-aligned underline tabs on row
    two. Cross-surface links are NOT here or in the rail: the rail carries
    sections only and the surfaces live as inline links in the hero. */
@@ -53,13 +71,14 @@ a{color:inherit}
    parent tabs are underline, pills are secondary). The row starts at the same
    left edge as the section text (no centring) */
 .doctabs{min-width:0}
-/* sidebar: the document TOC as a flat DS section rail (nav.toc toggles per tab) */
+/* in-panel TOC: each doctab panel owns one flat DS section rail (nav.toc);
+   only the visible panel's TOC shows, and the export cluster rides under it */
 .sidexport{display:flex;flex-direction:column;gap:var(--spacing-xs);border-top:var(--border-width-hairline) solid var(--rule);margin-block-start:auto;padding:var(--spacing-sm) var(--spacing-md) var(--spacing-sm) calc(var(--border-width-strong) + var(--layout-rail-inset))}
-/* bottom cluster: the export block carries the rail's free space, so it rides
-   the block-end edge on its own now that the rail carries sections only — no
-   Surfaces foot below it (the surfaces live as inline links in the hero, the
-   same move the gallery made). A long TOC still scrolls under it inside the
-   rail's own shipped scroller (components.css §20). */
+/* bottom cluster: the export block rides under the TOC inside the panel's own
+   nav, so it sits at the block-end edge on its own now that the rail carries
+   sections only — no Surfaces foot below it (the surfaces live as inline links
+   in the hero, the same move the gallery made). A long TOC still scrolls under
+   it inside the rail's own shipped scroller (components.css §20). */
 .sidexport .explabel{font-size:var(--typography-size-eyebrow);font-weight:var(--weight-bold);letter-spacing:.14em;text-transform:uppercase;color:var(--mut);font-family:var(--typography-family-mono)}
 .sidexport .explabel b{color:var(--ink);font-weight:var(--weight-semibold)}
 .expbtns{display:flex;flex-wrap:wrap;gap:var(--spacing-6)}
@@ -71,7 +90,7 @@ a{color:inherit}
 .ds-rail[data-ds-nav-mode="drawer"] .expbtn{min-block-size:var(--control-height-touch)}
 .expstat{font-size:var(--typography-size-meta);color:var(--acc);min-height:1em}
 /* edge-flush rail items: draw the ring inward so the viewport edge cannot clip it */
-.side .ds-nav-item:focus-visible{outline-offset:calc(-1 * var(--focus-offset))}
+.p-panelbody .ds-nav-item:focus-visible{outline-offset:calc(-1 * var(--focus-offset))}
 .panels{display:flex;flex-direction:column;min-width:0}
 /* active-panel TOC: one nav at a time inside the rail; the rail supplies the
    geometry, the items carry the flat 2px inline-start indicator */
@@ -200,18 +219,25 @@ tbody td:first-child{white-space:nowrap;font-weight:var(--weight-semibold);color
 .surfaces a:hover{color:var(--ink)}
 .surfaces [aria-current="page"]{display:inline-flex;align-items:center;min-block-size:var(--spacing-lg);color:var(--ink);font-weight:var(--weight-semibold)}
 footer{margin:var(--spacing-2xl) 0 var(--spacing-md);color:var(--mut);font-size:var(--typography-size-meta);border-top:var(--border-width-hairline) solid var(--rule);padding-top:var(--spacing-md)}
-/* ≤--breakpoint-lg: the rail leaves the grid and becomes the off-canvas drawer
-   (components.css §21), reached from the header's menu button. ONE rail element
-   serves both: the page only stops reserving a rail column and drops its
-   `display:contents` wrapper — the drawer, the scrim, the scroll lock and the
-   drawer's own scroller are the shared layer's job. No
-   second scroller, no tab strip, no floating bar is declared here. */
+/* ≤--breakpoint-lg: the visible panel's own nav becomes the off-canvas drawer
+   (components.css §21), reached from the header's menu button. ONE nav per
+   panel serves both: the page only drops the two-column panel body —
+   `.p-panelbody` stacks — the drawer, the scrim, the scroll lock and the
+   drawer's own scroller are the shared layer's job. No second scroller, no
+   tab strip, no floating bar is declared here. */
 @media(max-width:900px){
-.shell{display:flex;flex-direction:column}
+.shell{display:block}
 .col{display:contents}
 .top{order:1}
-.side{order:2}
-.w{order:3}
+.w{order:2}
+/* one column: the rail is either the drawer (JS stamps the mode) or, with
+   no JS, a plain list stacked above the panel content */
+.p-panelbody{display:block}
+/* no drawer stamp (no JS, or a rail the script does not own): the page
+   posture — sticky, 100dvh — is wrong here too, so the rail is a plain list
+   above the content. A stamped drawer is left alone: components.css §21 owns
+   it at this width. */
+.p-panelbody>.ds-rail:not([data-ds-nav-mode="drawer"]){position:static;inset-block-start:auto;align-self:auto;block-size:auto;padding-block-start:0;overflow:visible}
 .doctabs[data-variant="underline"]{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
 .doctabs[data-variant="underline"]::-webkit-scrollbar{display:none}
 .grid{grid-template-columns:1fr}
@@ -261,9 +287,9 @@ section{scroll-margin-top:9.5rem}
 #plan-weeks .wrow.gate{border-color:var(--rule)}
 #plan-weeks .wrow.gate .k{display:block;margin-bottom:var(--spacing-2xs)}
 #plan-weeks{padding-block-end:var(--spacing-2xl)}
-/* print: active article only */
+/* print: active article only (in-panel navs stay on screen) */
 @media print{
-.top,.side,.ctarow,.drawer,.backdrop,footer,.viewtoggle{display:none}
+.top,.p-panelbody>.ds-rail,.ctarow,.drawer,.backdrop,footer,.viewtoggle{display:none}
 .shell,.col{display:block}
 body{background:var(--paper);color:var(--prtink)}
 .w{max-width:100%;padding:0}
@@ -284,34 +310,6 @@ html{scroll-behavior:auto}
 </style></head>
 <body data-print-doc="story">
 <div class="shell">
-<!-- ============ RAIL: document TOC (one nav per document, flat DS rail) ============ -->
-<aside class="side ds-rail" id="nav-drawer" data-ds-nav aria-label="Documents">
-<nav class="toc on" data-toc="story" aria-label="Product contents">
-<p class="ds-rail__label">Product</p>
-<a class="ds-nav-item ds-rail__item" href="#s-hero" aria-current="page">Intro</a><a class="ds-nav-item ds-rail__item" href="#s-vision">01 — Vision</a><a class="ds-nav-item ds-rail__item" href="#s-problem">02 — Problem</a><a class="ds-nav-item ds-rail__item" href="#s-gap">03 — Craft Gap</a><a class="ds-nav-item ds-rail__item" href="#s-how">04 — How It Works</a><a class="ds-nav-item ds-rail__item" href="#s-built">05 — Built For</a><a class="ds-nav-item ds-rail__item" href="#s-principles">06 — Principles</a><a class="ds-nav-item ds-rail__item" href="#s-next">07 — What's Next</a><a class="ds-nav-item ds-rail__item" href="#s-cta">Build with Intent</a>
-</nav>
-<nav class="toc" data-toc="investors" aria-label="Investor contents">
-<p class="ds-rail__label">Investors</p>
-<a class="ds-nav-item ds-rail__item" href="#d3-thesis">Thesis</a><a class="ds-nav-item ds-rail__item" href="#d3-market">Why Now</a><a class="ds-nav-item ds-rail__item" href="#d3-model">Model</a><a class="ds-nav-item ds-rail__item" href="#d3-roadmap">Roadmap</a><a class="ds-nav-item ds-rail__item" href="#d3-allocation">Allocation</a><a class="ds-nav-item ds-rail__item" href="#d3-runway">Runway</a>
-</nav>
-<nav class="toc" data-toc="wiki" aria-label="Wiki contents">
-<p class="ds-rail__label">Wiki</p>
-<a class="ds-nav-item ds-rail__item" href="#d2-purpose">Purpose</a><a class="ds-nav-item ds-rail__item" href="#d2-principles">Principles</a><a class="ds-nav-item ds-rail__item" href="#d2-architecture">Architecture</a><a class="ds-nav-item ds-rail__item" href="#d2-narrative">Narrative</a><a class="ds-nav-item ds-rail__item" href="#d2-usecases">Use cases</a><a class="ds-nav-item ds-rail__item" href="#d2-stack">Stack</a><a class="ds-nav-item ds-rail__item" href="#d2-security">Security</a><a class="ds-nav-item ds-rail__item" href="#d2-adr">ADRs</a>
-</nav>
-<nav class="toc" data-toc="mvp" aria-label="MVP contents">
-<p class="ds-rail__label">MVP</p>
-<a class="ds-nav-item ds-rail__item" href="#d4-research">Research</a><a class="ds-nav-item ds-rail__item" href="#d4-scope">Scope</a><a class="ds-nav-item ds-rail__item" href="#d4-requirements">Requirements</a><a class="ds-nav-item ds-rail__item" href="#d4-nfr">NFRs</a><a class="ds-nav-item ds-rail__item" href="#d4-backlog">Backlog</a>
-</nav>
-<div class="sidexport no-print" role="group" aria-label="Export active document">
-<span class="explabel">Export: <b id="export-label">Product</b></span>
-<span class="expbtns">
-<button class="expbtn" id="exp-md" type="button" title="Download .md of this tab" aria-label="Download active tab markdown"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>.md</button>
-<button class="expbtn" id="exp-copy" type="button" title="Copy .md of this tab" aria-label="Copy active tab markdown"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button>
-<button class="expbtn" id="exp-print" type="button" title="Print this tab" aria-label="Print active tab"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print</button>
-</span>
-<span class="expstat" id="exp-stat" role="status" aria-live="polite"></span>
-</div>
-</aside>
 <div class="col">
 <header class="top">
 <div class="topin">
@@ -323,7 +321,7 @@ html{scroll-behavior:auto}
 <button class="hicon" id="h-copy" type="button" title="Copy .md of this tab" aria-label="Copy active tab markdown"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
 <button class="hicon" id="h-print" type="button" title="Print this tab" aria-label="Print active tab"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button>
 </span>
-<button type="button" class="ds-navtoggle" data-ds-nav-toggle="nav-drawer" aria-controls="nav-drawer" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-menu"></use></svg></button>
+<button type="button" class="ds-navtoggle" data-ds-nav-toggle="nav-story" aria-controls="nav-story" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-menu"></use></svg></button>
 </div>
 </div>
 <nav class="doctabs ds-tabs" data-variant="underline" role="tablist" aria-label="Company Documents">
@@ -339,6 +337,22 @@ html{scroll-behavior:auto}
 
 <!-- ============ TAB 1: PRODUCT ============ -->
 <div class="panel on" id="panel-doc-01" data-panel="story" role="tabpanel" aria-label="Product">
+<div class="p-panelbody">
+<nav class="toc on ds-rail" id="nav-story" data-ds-nav data-toc="story" aria-label="Product contents">
+<p class="ds-rail__label">Product</p>
+<a class="ds-nav-item ds-rail__item" href="#s-hero" aria-current="page">Intro</a><a class="ds-nav-item ds-rail__item" href="#s-vision">01 — Vision</a><a class="ds-nav-item ds-rail__item" href="#s-problem">02 — Problem</a><a class="ds-nav-item ds-rail__item" href="#s-gap">03 — Craft Gap</a><a class="ds-nav-item ds-rail__item" href="#s-how">04 — How It Works</a><a class="ds-nav-item ds-rail__item" href="#s-built">05 — Built For</a><a class="ds-nav-item ds-rail__item" href="#s-principles">06 — Principles</a><a class="ds-nav-item ds-rail__item" href="#s-next">07 — What's Next</a><a class="ds-nav-item ds-rail__item" href="#s-cta">Build with Intent</a>
+<div class="sidexport no-print" role="group" aria-label="Export active document">
+<span class="explabel">Export: <b id="export-label">Product</b></span>
+<span class="expbtns">
+<button class="expbtn" id="exp-md" type="button" title="Download .md of this tab" aria-label="Download active tab markdown"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>.md</button>
+<button class="expbtn" id="exp-copy" type="button" title="Copy .md of this tab" aria-label="Copy active tab markdown"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button>
+<button class="expbtn" id="exp-print" type="button" title="Print this tab" aria-label="Print active tab"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print</button>
+</span>
+<span class="expstat" id="exp-stat" role="status" aria-live="polite"></span>
+</div>
+
+</nav>
+<div class="p-panelcontent">
 <article>
 <section id="s-hero">
 <header class="hero">
@@ -429,10 +443,18 @@ html{scroll-behavior:auto}
 </div>
 </section>
 </article>
+</div><!-- /.p-panelcontent -->
+</div><!-- /.p-panelbody -->
 </div>
 
 <!-- ============ TAB 2: INVESTORS ============ -->
 <div class="panel" id="panel-doc-03" data-panel="investors" role="tabpanel" aria-label="Investors">
+<div class="p-panelbody">
+<nav class="toc ds-rail" id="nav-investors" data-ds-nav data-toc="investors" aria-label="Investor contents">
+<p class="ds-rail__label">Investors</p>
+<a class="ds-nav-item ds-rail__item" href="#d3-thesis">Thesis</a><a class="ds-nav-item ds-rail__item" href="#d3-market">Why Now</a><a class="ds-nav-item ds-rail__item" href="#d3-model">Model</a><a class="ds-nav-item ds-rail__item" href="#d3-roadmap">Roadmap</a><a class="ds-nav-item ds-rail__item" href="#d3-allocation">Allocation</a><a class="ds-nav-item ds-rail__item" href="#d3-runway">Runway</a>
+</nav>
+<div class="p-panelcontent">
 <article>
 <section id="d3-thesis">
 <span class="draft">Draft — figures being finalised</span>
@@ -551,10 +573,18 @@ html{scroll-behavior:auto}
 <p class="draft-note">No funding figures, dates, or metrics beyond the cited market research above have been invented for this page.</p>
 </section>
 </article>
+</div><!-- /.p-panelcontent -->
+</div><!-- /.p-panelbody -->
 </div>
 
 <!-- ============ TAB 3: WIKI ============ -->
 <div class="panel" id="panel-doc-02" data-panel="wiki" role="tabpanel" aria-label="Wiki">
+<div class="p-panelbody">
+<nav class="toc ds-rail" id="nav-wiki" data-ds-nav data-toc="wiki" aria-label="Wiki contents">
+<p class="ds-rail__label">Wiki</p>
+<a class="ds-nav-item ds-rail__item" href="#d2-purpose">Purpose</a><a class="ds-nav-item ds-rail__item" href="#d2-principles">Principles</a><a class="ds-nav-item ds-rail__item" href="#d2-architecture">Architecture</a><a class="ds-nav-item ds-rail__item" href="#d2-narrative">Narrative</a><a class="ds-nav-item ds-rail__item" href="#d2-usecases">Use cases</a><a class="ds-nav-item ds-rail__item" href="#d2-stack">Stack</a><a class="ds-nav-item ds-rail__item" href="#d2-security">Security</a><a class="ds-nav-item ds-rail__item" href="#d2-adr">ADRs</a>
+</nav>
+<div class="p-panelcontent">
 <article>
 <section id="d2-purpose">
 <p class="k">Purpose</p>
@@ -637,10 +667,18 @@ html{scroll-behavior:auto}
 </table></div>
 </section>
 </article>
+</div><!-- /.p-panelcontent -->
+</div><!-- /.p-panelbody -->
 </div>
 
 <!-- ============ TAB 4: MVP ============ -->
 <div class="panel" id="panel-doc-04" data-panel="mvp" role="tabpanel" aria-label="MVP">
+<div class="p-panelbody">
+<nav class="toc ds-rail" id="nav-mvp" data-ds-nav data-toc="mvp" aria-label="MVP contents">
+<p class="ds-rail__label">MVP</p>
+<a class="ds-nav-item ds-rail__item" href="#d4-research">Research</a><a class="ds-nav-item ds-rail__item" href="#d4-scope">Scope</a><a class="ds-nav-item ds-rail__item" href="#d4-requirements">Requirements</a><a class="ds-nav-item ds-rail__item" href="#d4-nfr">NFRs</a><a class="ds-nav-item ds-rail__item" href="#d4-backlog">Backlog</a>
+</nav>
+<div class="p-panelcontent">
 <article>
 <section id="d4-header">
 <span class="draft">Draft — refining</span>
@@ -747,6 +785,8 @@ html{scroll-behavior:auto}
 </div>
 </section>
 </article>
+</div><!-- /.p-panelcontent -->
+</div><!-- /.p-panelbody -->
 </div>
 </div><!-- /panels -->
 
@@ -820,16 +860,32 @@ mvp:[["d4-research","Research"],["d4-scope","Scope"],["d4-requirements","Reqs"],
 };
 var tabs=[].slice.call(document.querySelectorAll(".doctabs .ds-tab"));
 var tocs=[].slice.call(document.querySelectorAll(".toc[data-toc]"));
-var rail=document.querySelector(".side");
-/* the same rail is the ≤--breakpoint-lg drawer (components.css §21): ONE element
-   for desktop and mobile, no duplicate markup. Nav() owns [data-ds-open],
-   `hidden`+`inert` when closed, aria-expanded on the toggle, the scrim, the
-   scroll lock, the focus trap and the return-to-invoker. It needs no sync()
-   here because this header never re-renders; a page that does re-render calls
-   `DS.nav(rail).sync()`. */
-try{if(window.DS&&DS.nav)DS.nav(rail)}catch(err){}
+var navToggle=document.querySelector("[data-ds-nav-toggle]");
+var navApi=null;
+/* the visible panel's own nav is the ≤--breakpoint-lg drawer (components.css
+   §21, the gallery's bindDrawer pattern): ONE Nav instance ever — the previous
+   panel's is destroyed first, which also drops its toggle handler, so a click
+   can never open two drawers. Nav() owns [data-ds-open], `hidden`+`inert` when
+   closed, aria-expanded on the toggle, the scrim, the scroll lock, the focus
+   trap and the return-to-invoker. */
+function navFor(name){var p=panels[name];return p?p.querySelector(".p-panelbody > nav.ds-rail[data-ds-nav]"):null}
+function bindDrawer(name){
+  if(navApi){try{navApi.destroy()}catch(err){}navApi=null}
+  var nav=navFor(name);
+  if(!navToggle)return;
+  if(!nav||!(window.DS&&DS.nav)){if(!nav)navToggle.setAttribute("hidden","");return}
+  navToggle.setAttribute("data-ds-nav-toggle",nav.id);
+  navToggle.setAttribute("aria-controls",nav.id);
+  try{navApi=DS.nav(nav)}catch(err){navApi=null}
+  if(navApi&&navApi.sync)navApi.sync();
+  /* one export cluster serves every doc: keep it inside the visible panel's
+     nav so it rides the drawer on phones */
+  var sx=document.querySelector(".sidexport");
+  if(sx&&sx.parentNode!==nav)nav.appendChild(sx);
+}
 var current="story";
 var panels={};TABS.forEach(function(n){panels[n]=document.querySelector('[data-panel="'+n+'"]')});
+bindDrawer(current);
 var reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
 var spy=null;
 function mark(id){
@@ -857,6 +913,7 @@ function activate(name,skipScroll){
   });
   TABS.forEach(function(n){var on=n===name;panels[n].classList.toggle("on",on);panels[n].hidden=!on});
   tocs.forEach(function(c){c.classList.toggle("on",c.dataset.toc===name)});
+  bindDrawer(name);
   document.body.dataset.printDoc=name;
   var xl=document.getElementById("export-label");if(xl)xl.textContent=DOC_TITLES[name]||name;
   observe(name);
@@ -884,9 +941,9 @@ if(tablist)tablist.addEventListener("keydown",function(e){
   if(n===null)return;
   e.preventDefault();activate(tabs[n].dataset.doc);tabs[n].focus();
 });
-rail.addEventListener("click",function(e){
-  /* only the document TOC scrolls in place — the rail carries sections only,
-     so every `.toc a` is an in-page jump */
+document.querySelector(".panels").addEventListener("click",function(e){
+  /* only the document TOC scrolls in place — each panel's rail carries
+     sections only, so every `.toc a` is an in-page jump */
   var a=e.target.closest(".toc a");if(!a)return;e.preventDefault();
   var el=document.getElementById((a.getAttribute("href")||"").slice(1));
   if(el)el.scrollIntoView({behavior:reduce?"auto":"smooth",block:"start"});

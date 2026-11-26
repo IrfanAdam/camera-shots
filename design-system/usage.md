@@ -12,17 +12,17 @@ Surfaces: `index.html` · `pitch.html` · `engine.html` · `design-system/index.
 |---|---|
 | surfaces | 4 (3 product + 1 quarantined) |
 | tokens defined | 188 |
-| tokens with a product ref | 158 |
-| tokens with no product ref | 30 |
-| custom-property refs | 2980 |
-| … token / role-var `--ds-*` / local / canvas read | 2069 / 178 / 671 / 62 |
-| … local split: component `--_*` / page alias | 36 / 635 |
+| tokens with a product ref | 157 |
+| tokens with no product ref | 31 |
+| custom-property refs | 3011 |
+| … token / role-var `--ds-*` / local / canvas read | 2094 / 178 / 677 / 62 |
+| … local split: component `--_*` / page alias | 36 / 641 |
 | component records | 39 (34 styled in components.css) |
-| component instances | 1099 (198 product, 901 gallery) |
+| component instances | 1087 (186 product, 901 gallery) |
 | … authored in JS (flagged dynamic) | 38 |
 | numbered blocks | 21 (16 with a product instance) |
 
-## Tokens with no product reference (30)
+## Tokens with no product reference (31)
 
 A gallery swatch proves a token renders; it does not prove a product uses it.
 None of these has a direct reference from a product page or product stylesheet,
@@ -32,7 +32,7 @@ grouped by why:
 |---|---|---|---|
 | gallery-only | 22 | referenced by the gallery page or a gallery-only stylesheet | `--color-engine-accent`, `--color-engine-accent-ink`, `--color-engine-track-audio`, `--color-wiki-dark-accent`, `--color-wiki-dark-accent-wash`, `--color-wiki-dark-amber`, `--color-wiki-dark-bg`, `--color-wiki-dark-card`, `--color-wiki-dark-ink`, `--color-wiki-dark-muted`, `--color-wiki-dark-rule`, `--color-wiki-light-accent`, `--color-wiki-light-accent-wash`, `--color-wiki-light-card`, `--color-wiki-light-muted`, `--color-wiki-light-rule`, `--elevation-float`, `--elevation-inset`, `--elevation-ring`, `--icon-size-lg`, `--radius-lg`, `--spacing-gutter-pro` |
 | role-map only | 0 | referenced by a theme-map cell, by no var() anywhere | — |
-| breakpoint | 4 | a media-query criterion; var() is invalid there | `--breakpoint-lg`, `--breakpoint-md`, `--breakpoint-sm`, `--breakpoint-xl` |
+| breakpoint | 5 | a media-query criterion; var() is invalid there | `--breakpoint-lg`, `--breakpoint-md`, `--breakpoint-sm`, `--breakpoint-xl`, `--breakpoint-xs` |
 | alias, unreferenced | 3 | a var(--alias) definition nothing references | `--color-pro-tool-hover`, `--color-wiki-dark-accent-ink`, `--spacing-base` |
 | unreferenced | 1 | defined, never read | `--tracking-label` |
 
@@ -60,34 +60,34 @@ Structural and utility records with no product instance: `.ds-icon` (56 gallery)
 
 ### wiki — `index.html` (read)
 
-38 component instances, 264 custom-property refs in the page source, 58 tokens named by the page and by stylesheets only it loads (58 direct, 0 from its own sheets).
+28 component instances, 282 custom-property refs in the page source, 59 tokens named by the page and by stylesheets only it loads (59 direct, 0 from its own sheets).
 
 | component | instances | share of surface |
 |---|---|---|
-| `.ds-rail` | 10 | 26% |
-| `.ds-nav-item` | 6 | 16% |
-| `.ds-btn` | 4 | 11% |
-| `.ds-sr-only` | 4 | 11% |
-| `.ds-copy` | 2 | 5% |
-| `.ds-pager` | 2 | 5% |
-| `.ds-tab` | 2 | 5% |
-| `.ds-tabs` | 2 | 5% |
-| `.ds-badge` | 1 | 3% |
-| `.ds-input` | 1 | 3% |
+| `.ds-btn` | 4 | 14% |
+| `.ds-rail` | 4 | 14% |
+| `.ds-sr-only` | 4 | 14% |
+| `.ds-copy` | 2 | 7% |
+| `.ds-nav-item` | 2 | 7% |
+| `.ds-pager` | 2 | 7% |
+| `.ds-tab` | 2 | 7% |
+| `.ds-tabs` | 2 | 7% |
+| `.ds-badge` | 1 | 4% |
+| `.ds-input` | 1 | 4% |
 
 Showing 10 of 14 components.
 
 ### pitch — `pitch.html` (persuade)
 
-77 component instances, 492 custom-property refs in the page source, 88 tokens named by the page and by stylesheets only it loads (88 direct, 0 from its own sheets).
+75 component instances, 505 custom-property refs in the page source, 87 tokens named by the page and by stylesheets only it loads (87 direct, 0 from its own sheets).
 
 | component | instances | share of surface |
 |---|---|---|
-| `.ds-rail` | 39 | 51% |
-| `.ds-nav-item` | 32 | 42% |
-| `.ds-tab` | 4 | 5% |
+| `.ds-rail` | 36 | 48% |
+| `.ds-nav-item` | 28 | 37% |
+| `.ds-tab` | 8 | 11% |
+| `.ds-tabs` | 2 | 3% |
 | `.ds-navtoggle` | 1 | 1% |
-| `.ds-tabs` | 1 | 1% |
 
 ### engine — `engine.html` (operate)
 
