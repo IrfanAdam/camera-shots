@@ -9,7 +9,7 @@ node scripts/lint-tokens.mjs          # table + regenerate this report
 node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 ```
 
-- Generated: 2026-11-25
+- Generated: 2026-11-26
 - Tokens defined: 188 (`design-system/tokens.css`)
 - Files scanned: `index.html`, `pitch.html`, `engine.html`, `design-system/index.html`
 - Result: **PASS** — 0 over budget, 21 exempt, 0 bad-allow
@@ -22,8 +22,8 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 | `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 264 |
 | `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 | 0 | 27 | 492 |
 | `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 0 | 2 | 880 |
-| `design-system/index.html` | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 95 | 456 |
-| **Total** | **0** | **0** | **1** | **0** | **0** | **0** | **0** | **0** | **0** | **21** | **0** | **140** | **2092** |
+| `design-system/index.html` | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 95 | 460 |
+| **Total** | **0** | **0** | **1** | **0** | **0** | **0** | **0** | **0** | **0** | **21** | **0** | **140** | **2096** |
 
 ## Type, consumer & theme counts
 
@@ -161,7 +161,7 @@ _None._
 
 | Line | Class | Found | Reason |
 |---:|---|---|---|
-| 201 | V8 | `margin-top:-10px` | negative half of the 20px dot centres it against the track |
+| 202 | V8 | `margin-top:-10px` | negative half of the 20px dot centres it against the track |
 
 ## How to fix
 
