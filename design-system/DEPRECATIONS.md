@@ -169,6 +169,16 @@ The navigation grammar (rails are flat, parent tabs are the underline shape with
 
 `index.html` was the only surface that turned the rail into a horizontal pill strip under the header (`@media(max-width:900px)` rules for `.rail-list`, `.rail-field`, `.rail-count` and `.ds-rail__item`). Those page-local rules are deleted: the same rail is the off-canvas menu now (`.ds-rail[data-ds-nav-mode="drawer"]`, `components.css` §21), reached from one `[data-ds-nav-toggle]` button, and no `.ds-*` block was retired to make that happen. The wiki's header cross-links (`pitch →`, `engine →`, `design system →`) moved out of `.hright` into the rail's `.ds-rail__foot`; the `.eng` / `.pitch` header-button rules and their `pointer:coarse` expansion went with them. Both are page CSS, not contract — recorded here only so a later lane does not reintroduce a second mobile nav shape.
 
+## Gallery shell shapes retired (no token removed, 2026-11-26)
+
+The gallery's own chrome followed the navigation grammar this wave: three page-local shapes retired, no `.ds-*` block added or removed to make that happen. Spacing throughout is token-named (`spacing.*`, `layout.*`, `radius.*`, `border.width.*`); no raw step ships in the contract.
+
+| Shape | Was | Replaced by |
+|---|---|---|
+| Pill top strip (`#ds-cats` as `.ds-tabs[data-variant="pill"]`) | the gallery's category row rendered as the secondary pill shape | the live parent shape — `#ds-cats` as `.ds-tabs[data-variant="underline"]`: one horizontal row on the content axis, left-aligned, `spacing.md` gap, `border-width.hairline` `--ds-rule` block-end rule, scrolling under overflow instead of wrapping |
+| Left-column gallery nav | the section list sat in a rail cell beside the content | the section nav sits under the hero blurb on the content axis: one flat `.ds-rail` group beneath the masthead lede, items at `control.height.*` via `--_ctl-h`, `spacing.md` text-axis offset, `spacing.2` row rhythm; narrow viewports collapse it to the `[data-ds-nav-mode="drawer"]` drawer |
+| Cramped specimen matrix | theme cells and section heads with ad-hoc gaps | one rhythm: cells at `radius.sm` with `spacing.sm` gaps and `spacing.sm` cell padding, section heads separated by `spacing.lg` block spacing, capped at `layout.max.wiki` |
+
 ## Renames that preceded this list
 
 The 44 renames (16 `color.pro.*` → `color.engine.*`, 28 role/type/scale names) shipped in the Phase 1A stages before this retirement; each old name survived as a `var()` alias and is deleted above, which is why the alias tier is empty apart from the six keys in the first table.

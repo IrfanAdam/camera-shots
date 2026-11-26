@@ -101,18 +101,14 @@ html[data-ds-shell="pitch"] .stats dd {
   color: var(--g-ink);
 }
 
-/* ---------- section rail + category bar ----------
-   Both are shipped components (.ds-rail in components.css §20, pill tabs in §5)
-   and take their ink, rule, accent fill and focus ring from the pitch roles
-   pitch-shell.css pins on this page — so there is no colour to declare here.
-   What is left is parity with the page chrome: the rail's eyebrow label reads
-   at the same weight and ink as the masthead kicker (--g-muted, 8:1 on the
-   pitch ground) instead of --ds-faint, and the sticky bar's hairline is the
-   page rule. The bar's ground and the rail's hairline come from the page
-   <style>, which is where the grid that places them lives. Under 900px the
-   rail leaves the grid for the off-canvas drawer (components.css §21) and the
-   category pills stay the primary strip, so there is no narrow rail state to
-   restyle here — the drawer keeps this page's label ink. */
+/* ---------- sub-nav rail + category bar ----------
+   Both are shipped components (.ds-rail in components.css §20, underline tabs
+   in §5) and take their ink, rule, accent fill and focus ring from the pitch
+   roles pitch-shell.css pins on this page — so there is no colour to declare
+   here. Under 900px the rail leaves the stacked flow for the off-canvas
+   drawer (components.css §21) and the underline category row stays the
+   primary strip, so there is no narrow rail state to restyle here — the
+   drawer keeps this page's label ink. */
 html[data-ds-shell="pitch"] .g-railcell .ds-rail__label {
   color: var(--g-muted);
 }
@@ -264,14 +260,15 @@ html[data-ds-shell="pitch"] footer code {
    ========================================================================== */
 
 html[data-ds-shell="pitch"] .comp {
-  /* measured compression constant: the band is a comparison window, not the
-     whole specimen. Below this the four cells are taller than the chrome. */
-  --_cell-cap: 84px;
+  /* comparison window, not the whole specimen: the band shows a readable
+     slice of the four theme cells and the rest scrolls. Four ladder steps
+     (192px) — the old 84px cap cropped control chrome mid-glyph. */
+  --_cell-cap: calc(var(--spacing-2xl) * 4);
   display: grid;
-  row-gap: var(--spacing-2);
+  row-gap: var(--spacing-md);
   border-top: var(--border-width-hairline) solid var(--g-rule);
-  padding-block-start: var(--spacing-6);
-  margin-block-start: var(--spacing-6);
+  padding-block-start: var(--spacing-md);
+  margin-block-start: var(--spacing-md);
   min-inline-size: 0;
 }
 
@@ -802,7 +799,7 @@ html[data-ds-shell="pitch"] .spec-ledger__list li {
 }
 
 /* ---------- rail fallback: categories on a panel with no sections ----------
-   `data-rail="off"` keeps the column and its pinned Surfaces foot; the list is
+   `data-rail="off"` keeps the row and its trailing Surfaces group; the list is
    the seven categories instead of blank. The active category is ink + medium
    weight and paints no inline-start accent bar (a destination, not a section).
    Specificity beats components.css §18's current-item rule; loaded later. */
@@ -817,15 +814,100 @@ html[data-ds-shell="pitch"] .g-rail-list[data-rail-mode="categories"] .ds-nav-it
   font-weight: var(--weight-medium);
 }
 
+/* ---------- sub-nav row under the hero (>=901) ----------
+   The rail is the same shipped .ds-rail (same element, id, aria-label, list
+   markup) — only its posture changes: a horizontal strip between the hero
+   blurb and the underline category bar instead of a 100dvh side column, so
+   the hierarchy reads top → left → content without a cramped side gutter.
+   Every value is a page token; no .ds-* shape is redefined, only the rail's
+   own placement properties (position, size, direction, edges).
+
+   The `:not([data-ds-nav-mode="drawer"])` guard keeps this inert the moment
+   DS.nav stamps drawer mode, so the off-canvas panel (components.css §21,
+   position:fixed) always wins regardless of specificity or load order. */
+@media (min-width: 901px) {
+  html[data-ds-shell="pitch"] .g-railcell {
+    max-inline-size: var(--layout-max-pitch);
+    margin-inline: auto;
+    inline-size: 100%;
+    padding-inline: var(--spacing-2xl);
+  }
+
+  html[data-ds-shell="pitch"] .g-railcell .ds-rail:not([data-ds-nav-mode="drawer"]) {
+    position: static;
+    inset-block-start: auto;
+    align-self: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-2xs) var(--spacing-md);
+    block-size: auto;
+    inline-size: auto;
+    padding-block: var(--spacing-sm);
+    padding-inline: 0;
+    overflow: visible;
+    border: 0;
+    border-block-end: var(--border-width-hairline) solid var(--g-rule);
+    background: transparent;
+  }
+
+  html[data-ds-shell="pitch"] .g-railcell .ds-rail:not([data-ds-nav-mode="drawer"]) > * {
+    flex: 0 1 auto;
+  }
+
+  html[data-ds-shell="pitch"] .g-railcell .ds-rail:not([data-ds-nav-mode="drawer"]) .g-rail-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-2xs) var(--spacing-md);
+    min-inline-size: 0;
+  }
+
+  html[data-ds-shell="pitch"] .g-railcell .ds-rail:not([data-ds-nav-mode="drawer"]) .ds-rail__label {
+    margin-block: 0;
+  }
+
+  html[data-ds-shell="pitch"] .g-railcell .ds-rail:not([data-ds-nav-mode="drawer"]) .g-rail-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-2xs) var(--spacing-sm);
+    min-inline-size: 0;
+  }
+
+  html[data-ds-shell="pitch"] .g-railcell .ds-rail:not([data-ds-nav-mode="drawer"]) .ds-rail__foot {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-2xs) var(--spacing-sm);
+    margin-block-start: 0;
+    margin-inline-start: auto;
+    border-block-start: 0;
+    padding-block: 0;
+    background: transparent;
+  }
+
+  html[data-ds-shell="pitch"] .g-railcell .ds-rail:not([data-ds-nav-mode="drawer"]) .ds-rail__foot > .ds-rail__label {
+    margin-block: 0;
+  }
+}
+
 /* ---------- anatomy rail beside the matrix (>=901) ----------
    The measured constraint is horizontal, not vertical: 20 blocks with a
    120px identity band plus a theme window cannot fit 5,200px if every band
    takes its own full-width row. From 901 the tokens and the components.css
    source sit in a 190px rail beside the theme matrix. Reading order stays
    linear — header → meta (which carries the per-surface counts) → themes →
-   tokens → source — and the cells keep four columns.
+   tokens → source — and the matrix breathes at two columns instead of four,
+   so a cell is ~2× wider than the old 4-up and nothing clips mid-glyph.
    Below 901 every band stacks again. */
 @media (min-width: 901px) {
+  html[data-ds-shell="pitch"] .comp .spec-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-md);
+  }
+
   html[data-ds-shell="pitch"] .comp {
     grid-template-columns: minmax(0, 1fr) 190px;
     grid-template-areas:

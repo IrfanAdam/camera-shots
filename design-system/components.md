@@ -258,7 +258,7 @@ Anything that used to be a dot, a card-y rail, or a boxed bare parent is a legac
 
 **Accessibility** — `role="tablist"` / `role="tab"` / `role="tabpanel"`; exactly one tab in the tab order; `aria-selected` on the tab, `aria-labelledby` on the panel; panels get `hidden` (not `display:none` by hand). Each nested sub-tablist carries its own accessible name with `aria-orientation="vertical"`; the `aria-selected` / `hidden` pairing repeats at both levels. The pill's selected state is carried by fill + ink, not by an underline alone, and the focus ring is unchanged from the other controls.
 
-**Gallery** — [Tabs frame](index.html#spec-tabs) · `#spec-tabs` (renders the composed hierarchy — underline parent mains on top, every main panel nesting its own flat left vertical sub-tablist with real sub-sections inside the main container; pill is the secondary/in-panel shape; the boxed bare rendering sits in a single labelled legacy row. Note: `#spec-tabs` still carries `data-legacy="underline"` (`index.html:1137`) with a `parent · pill (secondary) · rail (sub) · underline (legacy)` variants fact (`index.html:1146`) — both stale and owned by the gallery lane: underline is the live parent shape, not a legacy variant, and the legacy flag belongs on the boxed bare rendering.)
+**Gallery** — [Tabs frame](index.html#spec-tabs) · `#spec-tabs` (renders the composed hierarchy — underline parent mains on top, every main panel nesting its own flat left vertical sub-tablist with real sub-sections inside the main container; pill is the secondary/in-panel shape; the boxed bare rendering sits in a single labelled legacy row). The gallery's own top strip (`#ds-cats`) is the same live parent shape — `.ds-tabs[data-variant="underline"]`: one horizontal row on the content axis, left-aligned, `spacing.md` gap, `border-width.hairline` `--ds-rule` block-end rule, scrolling under overflow instead of wrapping. Pill is never the gallery top strip.
 
 ---
 
@@ -719,7 +719,7 @@ The 2px slot is present on **every** item, current or not, which is why the text
 
 **Accessibility** — a landmark `<nav>` with `aria-label`; items are links (`<a href>`), not buttons, and the current one carries `aria-current="page"` so the state is announced rather than coloured. The rail is in normal document order before the content, so the tab sequence matches reading order; the focus ring is the shared `base.css` ring. Because the rail is sticky and full height, it must not trap scrolling: it scrolls its own overflow only when the sections exceed the viewport.
 
-**Gallery** — no frame is claimed here. The navigation frame is owned by the gallery lane this wave; this section and the next are the contract it must render — three densities, four theme cells, one current item, one open drawer.
+**Gallery** — the gallery places its section nav under the hero blurb, not in a left column: one flat `.ds-rail` group on the content axis beneath the masthead lede, items at `control.height.*` via `--_ctl-h` with the `spacing.md` text-axis offset and `spacing.2` row rhythm. The top category strip above the panels is the underline parent shape (`#ds-cats` as `.ds-tabs[data-variant="underline"]`). The drawer contract in the next section still holds — this section states the placement, the next states the drawer.
 
 ---
 
@@ -813,7 +813,7 @@ The 2px slot is present on **every** item, current or not, which is why the text
 
 **Accessibility** — a closed drawer is `display:none` (via `[hidden]`) **and** `inert`, so it is out of the accessibility tree and the tab order; open, it is still the `<nav>` landmark (a drawer is not a dialog, so no `role="dialog"`), Tab is trapped, Escape closes, the background is `inert`, focus returns to the 44×44 toggle whose `aria-label` flips to "Close menu", and crossing the breakpoint upward tears every bit of drawer state down so the static rail is never left inert. The rail keeps its own vertical scroll, so an open drawer never traps page scrolling.
 
-**Gallery** — none claimed yet; the navigation frame the gallery lane is wiring should render the static rail, the foot, and one open drawer cell at 390.
+**Gallery** — the specimen matrix below the nav keeps one rhythm: cells at `radius.sm` with `spacing.sm` gaps and `spacing.sm` cell padding, section heads separated by `spacing.lg` block spacing and capped at `layout.max.wiki`. On a narrow viewport the under-hero nav collapses to the same `[data-ds-nav-mode="drawer"]` drawer opened from one `[data-ds-nav-toggle]` button; the foot and drawer contract above still holds.
 
 ---
 

@@ -44,6 +44,10 @@ code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-
 ::selection{background:var(--color-engine-selection);color:var(--color-primitive-black)}
 
 .wrap{max-width:1100px;margin:0 auto;padding:0 var(--spacing-lg)}
+/* hero shares the content axis: same max and same inline padding as .g-main,
+   so the blurb, the sub-nav row, the underline bar and the panels all start
+   on one vertical line. */
+.g-shell > .masthead > .wrap{max-width:var(--layout-max-pitch);padding-inline:var(--spacing-2xl)}
 
 /* ---------- masthead ---------- */
 .masthead{grid-area:masthead;border-bottom:var(--border-width-hairline) solid var(--g-rule);padding:var(--spacing-2xl) 0 var(--spacing-xl)}
@@ -57,21 +61,20 @@ code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-
 .stats dt{font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--g-muted)}
 .stats dd{margin-top:var(--spacing-2xs);font-size:var(--typography-size-small);font-weight:var(--weight-medium)}
 
-/* ---------- shell: permanent rail chrome + content column ----------
-   The section rail is the FIRST cell of a full-bleed grid and starts at the
-   viewport top — no centred wrapper around it (shipped rail grammar,
-   components.css §20), and the masthead lives in the content column so the
-   rail's 100dvh column starts at y=0 and its Surfaces foot lands on the
-   viewport bottom on every category.
+/* ---------- shell: stacked reading order — hero, sub-nav, content ----------
+   DOM order is already masthead → rail → main, and the grid stacks them the
+   same way: the DS blurb hero spans the full width on top, the section rail
+   below it is a horizontal sub-nav row (gallery-pitch.css, ≥901px), and the
+   content column carries the underline category bar + panels. No side column,
+   so the content axis never shifts between categories.
 
-   `data-rail="on|off"` no longer owns the column: it now only decides whether
-   the active panel's section list is painted inside the rail (off = the rail
-   is just the pinned Surfaces foot). The column never changes width, so the
-   content x is identical across all seven tabs. */
+   `data-rail="on|off"` only decides whether the active panel's section list
+   is painted inside the rail (off = the rail falls back to the categories);
+   the stacked order never changes. */
 .g-shell{
   display:grid;
-  grid-template-columns:var(--layout-rail) minmax(0,1fr);
-  grid-template-areas:"rail masthead" "rail main";
+  grid-template-columns:minmax(0,1fr);
+  grid-template-areas:"masthead" "rail" "main";
 }
 .g-railcell{grid-area:rail;min-inline-size:0}
 .g-railcell .ds-rail[hidden]{display:none}
@@ -86,14 +89,14 @@ code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-
 .g-rail-list[data-rail-mode="categories"]{gap:0}
 .g-main{
   grid-area:main;min-inline-size:0;
-  inline-size:100%;max-inline-size:var(--layout-max-wiki);margin-inline:auto;
+  inline-size:100%;max-inline-size:var(--layout-max-pitch);margin-inline:auto;
   padding:var(--spacing-xl) var(--spacing-2xl) var(--spacing-2xl);
 }
 
-/* sticky category bar — one pill tablist, left-aligned to the content axis.
-   The negative inline margin bleeds its ground to the column edge, but the
-   hairline rides the text axis: it starts at the first pill's left edge and
-   stops at the row's right edge, so the rule never overhangs the pills. */
+/* sticky underline category bar, left-aligned to the content axis.
+   The underline tablist (components.css §5) paints its own rule, so the
+   bar's ::after stays parked for the pill shape only — with underline tabs
+   it would double the rule. */
 .g-tabbar{
   --_pad-x:var(--spacing-2xl);
   position:sticky;inset-block-start:0;z-index:var(--z-sticky);
@@ -105,6 +108,7 @@ code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-
   content:"";position:absolute;inset-block-end:0;inset-inline:var(--_pad-x);
   block-size:var(--border-width-hairline);background:var(--g-rule);
 }
+.g-tabbar:has(.ds-tabs[data-variant="underline"])::after{display:none}
 
 /* one panel at a time (the shipped .ds-tabpanel[hidden] hides the rest);
    a panel or sub-anchor lands below the sticky bar instead of under it */
@@ -333,10 +337,10 @@ footer code{color:var(--g-ink)}
 
 /* ---------- responsive ---------- */
 @media (max-width:900px){
-  /* the rail leaves the grid and becomes the off-canvas drawer
-     (components.css §21, toggled by the masthead button); the shell stops
-     reserving a rail column and the category pills are the primary tab strip.
-     Without JS the rail stays in the flow above the main column. */
+  /* the rail leaves the stacked flow and becomes the off-canvas drawer
+     (components.css §21, toggled by the masthead button); the shell stays a
+     single column and the underline category row is the primary tab strip.
+     Without JS the rail stays in the flow between hero and main. */
   .g-shell{display:flex;flex-direction:column}
   .g-main{grid-area:auto;padding:0 var(--spacing-lg) var(--spacing-2xl)}
   .g-tabbar{
@@ -344,7 +348,7 @@ footer code{color:var(--g-ink)}
     margin:0 calc(var(--_pad-x) * -1) var(--spacing-md);
     padding:var(--spacing-sm) var(--_pad-x);
   }
-  /* one scrollable pill strip, left-aligned; the pill shape never changes */
+  /* one scrollable underline strip, left-aligned; the underline shape never changes */
   .g-tabbar .ds-tabs{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}
   .g-tabbar .ds-tabs::-webkit-scrollbar{display:none}
   .g-tabbar .ds-tab{flex:0 0 auto}
@@ -396,10 +400,10 @@ footer code{color:var(--g-ink)}
     </div>
   </header>
 
-  <!-- rail cell: permanent chrome at x=0. ONE rail element is both the desktop
-       column and the ≤900 drawer (components.css §20/§21, `DS.nav`). JS swaps
-       the section list for the active panel; the Surfaces foot is site chrome
-       and is always the rail's last child, pinned to the viewport bottom. The
+  <!-- rail cell: sub-nav row under the hero (≥901px horizontal strip in
+       gallery-pitch.css; off-canvas drawer ≤900 via components.css §21,
+       `DS.nav`). JS swaps the section list for the active panel; the
+       Surfaces foot is site chrome and is always the row's last group. The
        list below is the colour panel's, so a no-JS page still carries a rail. -->
   <div class="g-railcell">
     <nav class="ds-rail" id="nav-drawer" data-ds-nav aria-label="Design system navigation">
@@ -427,7 +431,7 @@ footer code{color:var(--g-ink)}
 
   <main id="main" class="g-main" tabindex="-1">
     <div class="g-tabbar">
-      <div class="ds-tabs" id="ds-cats" data-variant="pill" role="tablist" aria-label="Design system categories" data-ds-panel-scope="#main">
+      <div class="ds-tabs" id="ds-cats" data-variant="underline" role="tablist" aria-label="Design system categories" data-ds-panel-scope="#main">
         <button class="ds-tab" type="button" role="tab" id="tab-color" aria-controls="color" aria-selected="true" tabindex="0">Color</button>
         <button class="ds-tab" type="button" role="tab" id="tab-type" aria-controls="type" aria-selected="false" tabindex="-1">Type</button>
         <button class="ds-tab" type="button" role="tab" id="tab-space" aria-controls="space" aria-selected="false" tabindex="-1">Space &amp; shape</button>
