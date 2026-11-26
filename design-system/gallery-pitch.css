@@ -101,6 +101,26 @@ html[data-ds-shell="pitch"] .stats dd {
   color: var(--g-ink);
 }
 
+/* the Surfaces stat is the surface switcher now that the rails carry sections
+   only: same inline-link treatment as the per-block instance counts */
+html[data-ds-shell="pitch"] .stats dd a {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--spacing-lg);
+  color: var(--g-body);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
+}
+
+html[data-ds-shell="pitch"] .stats dd a:hover {
+  color: var(--g-ink);
+}
+
+html[data-ds-shell="pitch"] .stats dd a[aria-current="page"] {
+  color: var(--g-ink);
+}
+
 /* ---------- sub-nav rail + category bar ----------
    Both are shipped components (.ds-rail in components.css §20, underline tabs
    in §5) and take their ink, rule, accent fill and focus ring from the pitch
@@ -250,8 +270,10 @@ html[data-ds-shell="pitch"] footer code {
      header   eyebrow · name · role · status chip · anchor
      meta     variants · states · sizes · instances + per-surface counts
      themes   the same four cells, one visible at a time behind pill tabs
-     tokens   anatomy string + the tokens usedByBlocks says it consumes
-     footer   components.css source (§n) — the rail carries nothing else
+     tokens   full-width mono code block below the specimen: the tokens
+              usedByBlocks says the block consumes + the usage anatomy line
+     footer   components.css source (§n) — the in-panel rails carry the
+              section links only; the surfaces live in the hero stat row
 
    The theme band never scrolls: the pill tablist shows one cell at a time and
    the band grows with it, so the page is the only scroller. The cells keep
@@ -489,10 +511,13 @@ html[data-ds-shell="pitch"] .comp-caption h4 {
   white-space: nowrap;
 }
 
-/* the pills sit at the caption's inline end; the tablist keeps its shipped
-   pill shape and wraps under the label on narrow content columns */
+/* the pills sit at the caption's inline start, compact and left-aligned; the
+   tablist keeps its shipped pill shape and wraps under the label on narrow
+   content columns. Size comes from the shipped [data-ds-compact] step on each
+   tab (components.css §1); this rule only pulls the row left. */
 html[data-ds-shell="pitch"] .comp-theme-tabs {
-  margin-inline-start: auto;
+  margin-inline-start: 0;
+  justify-content: flex-start;
 }
 
 /* one panel at a time: the band grows with the visible cell, so there is no
@@ -507,12 +532,15 @@ html[data-ds-shell="pitch"] .comp-themes > .spec-cell[hidden] {
   display: none;
 }
 
-/* ---------- (d) anatomy + tokens ---------- */
+/* ---------- (d) token code block ----------
+   Rendered specimen on top (band c), token code block below it: one full-width
+   mono block on the wash ground — token names in body ink, resolved values
+   muted — wrapping instead of scrolling sideways. Tokens only; the usage
+   anatomy string rides with them as the last line. */
 html[data-ds-shell="pitch"] .comp-band--tokens {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: var(--spacing-xs);
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--spacing-2xs);
   min-inline-size: 0;
 }
 
@@ -529,19 +557,18 @@ html[data-ds-shell="pitch"] .comp-band--tokens > h4 {
 
 html[data-ds-shell="pitch"] .comp-tokens {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-2xs) var(--spacing-xs);
   min-inline-size: 0;
   overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none;
-  white-space: nowrap;
+  border: var(--border-width-hairline) solid var(--g-rule);
+  border-radius: var(--radius-sm);
+  background: var(--g-wash);
+  padding: var(--spacing-sm);
+  font-family: var(--typography-family-mono);
   font-size: 10px;
   line-height: 1.4;
-}
-
-html[data-ds-shell="pitch"] .comp-tokens::-webkit-scrollbar {
-  display: none;
 }
 
 html[data-ds-shell="pitch"] .comp-classes {
@@ -790,23 +817,24 @@ html[data-ds-shell="pitch"] .spec-ledger__list li {
   }
 }
 
-/* ---------- anatomy rail beside the matrix (>=901) ----------
-   The measured constraint is horizontal, not vertical: 20 blocks with a
-   120px identity band plus a theme window cannot fit 5,200px if every band
-   takes its own full-width row. From 901 the tokens and the components.css
-   source sit in a 190px rail beside the theme matrix. Reading order stays
-   linear — header → meta (which carries the per-surface counts) → themes →
-   tokens → source — and the visible theme cell keeps its natural height, so
-   nothing clips mid-glyph. Below 901 every band stacks again. */
+/* ---------- tokens below the specimen (>=901) ----------
+   The measured constraint used to be horizontal: 20 blocks with a 120px
+   identity band plus a theme window could not fit 5,200px if every band took
+   its own full-width row, so the tokens sat in a 190px rail beside the theme
+   matrix. The lane now reads linear at every width — header → meta (which
+   carries the per-surface counts) → themes → token code block → source — and
+   the visible theme cell keeps its natural height, so nothing clips mid-glyph.
+   The areas below only pin that order; the single column is the base grid. */
 @media (min-width: 901px) {
   html[data-ds-shell="pitch"] .comp {
-    grid-template-columns: minmax(0, 1fr) 190px;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
-      "head   head"
-      "facts  facts"
-      "themes tokens"
-      "themes foot";
-    column-gap: var(--spacing-md);
+      "head"
+      "facts"
+      "themes"
+      "tokens"
+      "foot";
+    column-gap: 0;
   }
 
   html[data-ds-shell="pitch"] .comp-head { grid-area: head; }
@@ -814,16 +842,9 @@ html[data-ds-shell="pitch"] .spec-ledger__list li {
   html[data-ds-shell="pitch"] .comp-band--themes { grid-area: themes; }
   html[data-ds-shell="pitch"] .comp-band--tokens {
     grid-area: tokens;
-    align-self: start;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 2px;
   }
   html[data-ds-shell="pitch"] .comp-foot {
     grid-area: foot;
-    align-self: end;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
   }
 }
 

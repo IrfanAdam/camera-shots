@@ -190,6 +190,16 @@ The specimen lane follows the same grammar: one pill switcher per component, one
 | Per-component scroll caps (`.comp-themes-scroll` + `tabindex`/`role="group"` scroll regions inside each specimen) | each component owned its own horizontal scroll container, nesting scrollers inside the page | no nested scroll containers: scrolling lives at the page/panel level (`overflow-x:auto` + `overscroll-behavior-x:contain` on the parent tablist row only); specimens and theme panels add no scroll caps |
 | Static in-panel sub-nav | the per-panel `.ds-rail` scrolled away with its panel content | sticky in-panel nav: `position:sticky` at the gallery top-offset token (`control.height.default` + `spacing.2xl` source) and `z.sticky`, with internal `overflow-y:auto` + `overscroll-behavior-y:contain`, so a long sub-nav scrolls without moving the panel |
 
+## Gallery specimen chrome retired (no token removed, 2026-11-26)
+
+The specimen lane follows the same grammar one step further: navs hold sections only, theme pills stay small and left, tokens read as code. Three gallery-local shapes retired, no `.ds-*` block added or removed to make that happen. Spacing throughout is token-named (`spacing.*`, `radius.*`, `border-width.*`, `typography.*`, `control.height.*`); no raw step ships in the contract.
+
+| Shape | Was | Replaced by |
+|---|---|---|
+| `SURFACES` `.ds-rail__foot` inside gallery navs | every gallery `.ds-rail` repeated the cross-surface group (Wiki · Pitch · Engine · Design System) as a pinned foot | surfaces links live in the hero; every gallery `.ds-rail` holds sections only and carries no `.ds-rail__foot` (page rails keep the foot contract in `components.md` §20b–21) |
+| Centred theme switcher row | the per-component `.ds-tabs[data-variant="pill"]` switcher sat as a full-width centred row above the specimen | small left-aligned pill row beside the block heading: `radius.pill` secondary shape, `spacing.2xs` / `spacing.2` rhythm, `control.height.*` targets, wrapping, one `role="tabpanel"` visible at a time |
+| Token chip row | the per-component token list rendered as inline chips inside the specimen band | per-component token code area directly below the specimen frame: a code block naming the block's tokens (token names only, one per line, plus the block's class anatomy string) |
+
 ## Renames that preceded this list
 
 The 44 renames (16 `color.pro.*` → `color.engine.*`, 28 role/type/scale names) shipped in the Phase 1A stages before this retirement; each old name survived as a `var()` alias and is deleted above, which is why the alias tier is empty apart from the six keys in the first table.
