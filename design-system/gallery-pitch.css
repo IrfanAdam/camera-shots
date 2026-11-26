@@ -720,42 +720,76 @@ html[data-ds-shell="pitch"] .spec-ledger__list li {
    and only the component's look (width, inset, type, hairline, item rules)
    survives.
 
-   The `:not([data-ds-nav-mode="drawer"])` guard keeps this inert the moment
-   DS.nav stamps drawer mode, so the off-canvas panel (components.css §21,
-   position:fixed) always wins regardless of specificity or load order. */
+   NAMED PLACEMENT, not auto-placement. Auto-placement only puts the content in
+   the second column while the rail is an in-flow, visible grid item: the
+   instant the rail left the flow the content became the first in-flow item,
+   landed in the rail's own column and painted across the panel's full width,
+   with the nav over it — a stale `data-ds-nav-mode="drawer"` (an off-canvas
+   panel that outlived the breakpoint), a `[hidden]` rail after a re-bind, or a
+   rail the script still owns as `position:fixed`. Named areas cannot collapse,
+   so the content keeps its offset in every one of those states, and the rail
+   below is nailed into the first column whatever the script last stamped on
+   it. The drawer is the ≤900 branch (components.css §21), so nothing here has
+   to yield to it at this width. */
 @media (min-width: 901px) {
   html[data-ds-shell="pitch"] .g-panelbody {
     display: grid;
     grid-template-columns: var(--layout-rail) minmax(0, 1fr);
-    gap: var(--spacing-2xl);
+    grid-template-areas: "rail content";
+    column-gap: var(--spacing-2xl);
+    row-gap: 0;
     align-items: start;
   }
 
+  html[data-ds-shell="pitch"] .g-panelbody > .ds-rail {
+    grid-area: rail;
+  }
+
   html[data-ds-shell="pitch"] .g-panelbody > .g-panelcontent {
+    grid-area: content;
     min-inline-size: 0;
   }
-}
 
-/* the in-panel rail never pins: no sticky, no 100dvh box, no inner scroller —
-   the panel is the scroller and the rail is one of its cells. Its block-start
-   padding is dropped too, so the "Sections" label sits on the content's top
-   edge instead of 20px under it. */
-html[data-ds-shell="pitch"] .g-panelbody > .ds-rail:not([data-ds-nav-mode="drawer"]) {
-  position: static;
-  inset-block-start: auto;
-  align-self: start;
-  block-size: auto;
-  padding-block-start: 0;
-  overflow: visible;
-}
+  /* the in-panel rail never pins: no sticky, no 100dvh box, no inner scroller —
+     the panel is the scroller and the rail is one of its cells. Its block-start
+     padding is dropped too, so the "Sections" label sits on the content's top
+     edge instead of 20px under it.
 
-/* and its foot follows the list instead of hanging on the viewport bottom */
-html[data-ds-shell="pitch"] .g-panelbody > .ds-rail:not([data-ds-nav-mode="drawer"]) > .ds-rail__foot {
-  position: static;
-  inset-block-end: auto;
-  margin-block-start: var(--spacing-lg);
-  padding-block-end: 0;
-  background: transparent;
+     This is unconditional on purpose: it also overrides a `drawer` stamp that
+     survived a breakpoint change (`position:fixed`, `translateX(-100%)`,
+     viewport-sized, `hidden`/`inert` — components.css §21). Above the breakpoint
+     the panel rail IS this grid's first cell, so the stamp must not paint it
+     over the content or leave the column empty. */
+  html[data-ds-shell="pitch"] .g-panelbody > .ds-rail,
+  html[data-ds-shell="pitch"] .g-panelbody > .ds-rail[hidden] {
+    position: static;
+    inset: auto;
+    transform: none;
+    z-index: auto;
+    transition: none;
+    display: flex;
+    align-self: start;
+    inline-size: var(--layout-rail);
+    block-size: auto;
+    padding-block-start: 0;
+    overflow: visible;
+    background: transparent;
+    border-inline-end-color: var(--ds-rule);
+  }
+
+  /* the drawer's own close control has nothing to dismiss in a static column */
+  html[data-ds-shell="pitch"] .g-panelbody > .ds-rail .ds-navclose {
+    display: none;
+  }
+
+  /* and its foot follows the list instead of hanging on the viewport bottom */
+  html[data-ds-shell="pitch"] .g-panelbody > .ds-rail > .ds-rail__foot {
+    position: static;
+    inset-block-end: auto;
+    margin-block-start: var(--spacing-lg);
+    padding-block-end: 0;
+    background: transparent;
+  }
 }
 
 @media (max-width: 900px) {
@@ -764,6 +798,27 @@ html[data-ds-shell="pitch"] .g-panelbody > .ds-rail:not([data-ds-nav-mode="drawe
      sticky column, for the same reason as above */
   html[data-ds-shell="pitch"] .g-panelbody {
     display: block;
+  }
+
+  /* no drawer stamp (no JS, or a rail the script does not own): §20's page
+     posture — sticky, 100dvh, viewport-pinned foot — is wrong here too, so the
+     rail is a plain list above the content. A stamped drawer is left alone:
+     components.css §21 owns it at this width. */
+  html[data-ds-shell="pitch"] .g-panelbody > .ds-rail:not([data-ds-nav-mode="drawer"]) {
+    position: static;
+    inset-block-start: auto;
+    align-self: auto;
+    block-size: auto;
+    padding-block-start: 0;
+    overflow: visible;
+  }
+
+  html[data-ds-shell="pitch"] .g-panelbody > .ds-rail:not([data-ds-nav-mode="drawer"]) > .ds-rail__foot {
+    position: static;
+    inset-block-end: auto;
+    margin-block-start: var(--spacing-lg);
+    padding-block-end: 0;
+    background: transparent;
   }
 }
 

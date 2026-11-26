@@ -2963,11 +2963,37 @@ footer code{color:var(--g-ink)}
   window.addEventListener('hashchange', function () { routeFromHash(true); });
   window.addEventListener('popstate', function () { routeFromHash(true); });
   window.addEventListener('scroll', requestSpy, { passive: true });
+
+  /* above the drawer breakpoint the panel rail must be a static column: the
+     gallery's CSS pins it into the first grid cell (gallery-pitch.css), but
+     `hidden`/`inert` are JS state — a rail left as the off-canvas drawer (an
+     open drawer carried across the breakpoint, a re-bind that landed while the
+     query still matched) would be visible yet unfocusable. One re-bind tears
+     every bit of drawer state down through DS.nav's own toStatic(). */
+  var railDesktop = window.matchMedia ? window.matchMedia('(min-width: 901px)') : null;
+  function railIsStale(el) {
+    return !!el && (el.hasAttribute('hidden') || el.hasAttribute('inert') ||
+      el.getAttribute('data-ds-nav-mode') === 'drawer');
+  }
+  function healRail() {
+    if (!railDesktop || !railDesktop.matches) return;
+    if (railIsStale(navApi && navApi.el)) {
+      bindDrawer(activePanelId());
+      bindSpy();
+      requestSpy();
+    }
+  }
+
   window.addEventListener('resize', function () {
     if (navApi) navApi.sync();
+    healRail();
     syncAnchorOffset();
     requestSpy();
   });
+  if (railDesktop) {
+    if (railDesktop.addEventListener) railDesktop.addEventListener('change', healRail);
+    else if (railDesktop.addListener) railDesktop.addListener(healRail);
+  }
 
   /* the visible panel's rail is the ≤900 drawer: DS.nav owns the hamburger,
      the scrim, the trap and the focus return. The gallery opts out of
