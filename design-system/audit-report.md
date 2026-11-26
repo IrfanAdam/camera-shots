@@ -19,11 +19,11 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 
 | File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | V7 border width | V8 spacing | U1 dead var | exempt | bad-allow | inline `style=` | `var(--)` uses |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 264 |
-| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 | 0 | 27 | 492 |
+| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 282 |
+| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 | 0 | 27 | 505 |
 | `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 0 | 2 | 880 |
 | `design-system/index.html` | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 95 | 460 |
-| **Total** | **0** | **0** | **1** | **0** | **0** | **0** | **0** | **0** | **0** | **21** | **0** | **140** | **2096** |
+| **Total** | **0** | **0** | **1** | **0** | **0** | **0** | **0** | **0** | **0** | **21** | **0** | **140** | **2127** |
 
 ## Type, consumer & theme counts
 
@@ -132,9 +132,9 @@ _None._
 | Line | Class | Found | Reason |
 |---:|---|---|---|
 | 33 | V8 | `padding:0 var(--spacing-20) 4rem` | 4rem deck bottom pad is layout-scale; no spacing step sits at 64px |
-| 97 | V8 | `padding:2.6rem 0 1.6rem` | hero section pad is layout-scale; 41.6px and 25.6px have no step within 0.9px |
-| 103 | V8 | `margin-top:1.4rem` | 22.4px CTA lift sits between the 20 and 24 steps; snapping moves 1.6px |
-| 213 | V8 | `padding:1.6rem 0 var(--spacing-md)` | 25.6px compact-hero pad sits between the 24 and 32 steps |
+| 115 | V8 | `padding:2.6rem 0 1.6rem` | hero section pad is layout-scale; 41.6px and 25.6px have no step within 0.9px |
+| 121 | V8 | `margin-top:1.4rem` | 22.4px CTA lift sits between the 20 and 24 steps; snapping moves 1.6px |
+| 245 | V8 | `padding:1.6rem 0 var(--spacing-md)` | 25.6px compact-hero pad sits between the 24 and 32 steps |
 
 ### `engine.html` — Exempt (16)
 
@@ -161,7 +161,7 @@ _None._
 
 | Line | Class | Found | Reason |
 |---:|---|---|---|
-| 202 | V8 | `margin-top:-10px` | negative half of the 20px dot centres it against the track |
+| 205 | V8 | `margin-top:-10px` | negative half of the 20px dot centres it against the track |
 
 ## How to fix
 
