@@ -12,7 +12,7 @@
      · the specimen cells — each carries its own data-ds-theme / data-surface
        map (PITCH / WIKI-LIGHT / WIKI-DARK / ENGINE). They are documentation:
        the four cells have to keep looking like the four surfaces they show.
-     · the matrix section, which carries data-ds-theme="wiki-light" on purpose.
+     · the matrix block, which carries data-ds-theme="wiki-light" on purpose.
 
    Loaded after the inline <style> and after pitch-shell.css, scoped with
    html[data-ds-shell] so a harness that stamps data-theme / data-ds-theme on
@@ -136,6 +136,13 @@ html[data-ds-shell="pitch"] .g-panelbody .ds-rail__label {
 
 html[data-ds-shell="pitch"] .g-tabbar {
   border-block-end-color: var(--g-rule);
+}
+
+/* the category bar is the page's primary nav: one step above body copy,
+   roomier block padding, underline parent grammar unchanged. */
+html[data-ds-shell="pitch"] .g-tabbar .ds-tabs[data-variant="underline"] .ds-tab {
+  font-size: var(--typography-size-body);
+  padding: var(--spacing-sm) var(--spacing-sm);
 }
 
 /* ---------- section heads ---------- */
