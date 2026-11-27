@@ -34,10 +34,10 @@ a{color:inherit}
 /* chart hit-rects sit flush inside the plot: same ring, drawn inward (offset inverted) */
 .fchart rect[data-m]:focus-visible{outline:var(--focus-width) solid var(--color-pitch-accent);outline-offset:calc(-1*var(--focus-offset))}
 .w{padding-block:0 4rem} /* lint-allow: 4rem deck bottom pad is layout-scale; no spacing step sits at 64px */
-/* shell: single column — sticky header (brand + underline doc tabs) on top,
-   then the panels. Each doc panel carries its own section nav as the first
-   cell of a .p-panelbody grid (gallery pattern: hero → underline mains →
-   in-panel nav). No page-side rail. */
+/* shell: single column — sticky header (title + hero + underline doc tabs)
+   on top, then the panels. Each doc panel carries its own section nav as the
+   first cell of a .p-panelbody grid (gallery pattern: title → hero →
+   underline mains → in-panel nav). No page-side rail. */
 .shell{display:block}
 .col{display:flex;flex-direction:column;min-width:0}
 /* in-panel body (≥901): the panel's own section nav is the first grid cell
@@ -51,27 +51,27 @@ a{color:inherit}
    100dvh page column), and the capped block size with its own overflow means a
    long TOC scrolls internally. Unconditional so it also overrides a drawer
    stamp that survived a breakpoint change; the drawer is the ≤900 branch. */
-.p-panelbody>.ds-rail,.p-panelbody>.ds-rail[hidden]{position:sticky;inset-block-start:8.5rem;inset-block-end:auto;inset-inline:auto;transform:none;z-index:auto;transition:none;display:flex;align-self:start;inline-size:var(--layout-rail);block-size:auto;max-block-size:calc(100dvh - 8.5rem - var(--spacing-lg));padding-block-start:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;background:transparent;border-inline-end-color:var(--rule)}
+.p-panelbody>.ds-rail,.p-panelbody>.ds-rail[hidden]{position:sticky;inset-block-start:var(--p-stick,8.5rem);inset-block-end:auto;inset-inline:auto;transform:none;z-index:auto;transition:none;display:flex;align-self:start;inline-size:var(--layout-rail);block-size:auto;max-block-size:calc(100dvh - var(--p-stick,8.5rem) - var(--spacing-lg));padding-block-start:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;background:transparent;border-inline-end-color:var(--rule)}
 /* the drawer's own close control has nothing to dismiss in a static column */
 .p-panelbody>.ds-rail .ds-navclose{display:none}
 /* the export cluster follows the TOC instead of hanging on the viewport bottom */
 .p-panelbody>.ds-rail>.sidexport{position:static;inset-block-end:auto;margin-block-start:var(--spacing-lg);padding-block-end:0;background:transparent}
 /* header: the shared sticky page header (design-system/shell.css §S4
-   `.ds-stick`) — title block above the tab row, one stuck transition owned
-   by the shell. The rail carries sections only; the hero keeps its inline
-   Surfaces links and the tab row keeps a persistent Surfaces menu at the
-   inline end (DS tabbar pattern), so the cross-surface jump stays reachable
-   on scroll. */
+   `.ds-stick`) — title block, then the hero, then the tab row; one stuck
+   transition owned by the shell. The rail carries sections only; the hero
+   keeps its inline Surfaces links and the tab row keeps a persistent
+   Surfaces menu at the inline end (DS tabbar pattern), so the cross-surface
+   jump stays reachable on scroll. */
 .hdricons{display:flex;align-items:center;gap:var(--spacing-2xs)}
 @media(min-width:901px){.hdricons{display:none}}
 .hicon{display:flex;align-items:center;justify-content:center;min-width:var(--control-height-default);min-height:var(--control-height-default);width:var(--control-height-default);height:var(--control-height-default);border-radius:var(--radius-xs);background:transparent;border:0;color:var(--mut);font-size:var(--typography-size-ui);cursor:pointer;font-family:inherit}
 .hicon:hover{color:var(--ink);background:var(--s2)}
 .hicon svg{display:block;width:var(--icon-size-sm);height:var(--icon-size-sm)}
 /* the tab row rides inside the shared sticky header (design-system/shell.css
-   §S4 `.ds-stick` + §S2 `.ds-tabbar` + §S3 `.ds-smenu`) — the underline parent
-   tablist takes the free axis (and scrolls it on a phone), the Surfaces menu
-   keeps its own width at the inline end, so it stays reachable after the hero
-   links scroll away. The panel is the shipped .ds-menu, CSS-anchored to its
+   §S4 `.ds-stick` + §S2 `.ds-tabbar` + §S3 `.ds-smenu`) below the hero — the
+   underline parent tablist takes the free axis (and scrolls it on a phone),
+   the Surfaces menu keeps its own width at the inline end, so it stays
+   reachable beside the tabs. The panel is the shipped .ds-menu, CSS-anchored to its
    own box. No page-local restyle: tab size/border come from components.css
    §5, header chrome and the stuck transition come from shell.css §S4. */
 /* in-panel TOC: each doc panel owns one flat DS section rail (nav.toc);
@@ -104,7 +104,7 @@ a{color:inherit}
 .panel.on{display:block;animation:fadeSlideIn var(--motion-duration-tab) var(--motion-easing-standard)}
 @keyframes fadeSlideIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 article{display:flex;flex-direction:column;gap:var(--spacing-2xl);min-width:0}
-section{scroll-margin-top:8.5rem}
+section{scroll-margin-top:var(--p-stick,8.5rem)}
 .k{font-size:var(--typography-size-eyebrow);font-weight:var(--weight-bold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--mut);font-family:var(--typography-family-mono);margin-bottom:var(--spacing-6)}
 .draft{display:inline-block;font-size:var(--typography-size-eyebrow);font-weight:var(--weight-bold);letter-spacing:.14em;text-transform:uppercase;color:var(--mut);font-family:var(--typography-family-mono);border:var(--border-width-hairline) dashed var(--rule);border-radius:var(--radius-xs);padding:var(--spacing-2xs) var(--spacing-sm);margin-bottom:var(--spacing-10)}
 .draft-note{font-size:var(--typography-size-meta);color:var(--mut);margin-top:var(--spacing-sm);max-width:40rem}
@@ -271,7 +271,7 @@ footer{margin:var(--spacing-2xl) 0 var(--spacing-md);color:var(--mut);font-size:
 .drawer.open{transform:none}
 .grow{grid-template-columns:64px 1fr}
 html{scroll-padding-top:9.5rem}
-section{scroll-margin-top:9.5rem}
+section{scroll-margin-top:var(--p-stick,9.5rem)}
 }
 /* touch targets ≥44px on coarse pointers — desktop look untouched
    `.ds-tab` needs no page-local lift: components.css §5 states the same floor
@@ -307,7 +307,7 @@ section{scroll-margin-top:9.5rem}
 #plan-weeks{padding-block-end:var(--spacing-2xl)}
 /* print: active article only (in-panel navs stay on screen) */
 @media print{
-.ds-stick,.p-panelbody>.ds-rail,.ctarow,.drawer,.backdrop,footer,.viewtoggle{display:none}
+.ds-stick__title,.ds-stick .ds-tabbar,.p-panelbody>.ds-rail,.ctarow,.drawer,.backdrop,footer,.viewtoggle{display:none}
 .shell,.col{display:block}
 body{background:var(--paper);color:var(--prtink)}
 .w{max-width:100%;padding:0}
@@ -343,6 +343,16 @@ html{scroll-behavior:auto}
 <button type="button" class="ds-navtoggle" data-ds-nav-toggle="nav-story" aria-controls="nav-story" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-menu"></use></svg></button>
 </div>
 </div>
+<section id="s-hero">
+<div class="masthead">
+<p class="kicker">Craft-led AI cinema</p>
+<h1>Start with intent. <span>Let the pixels follow.</span></h1>
+<p class="mast-lede">Most AI video starts with a sentence and hopes for cinema. This engine flips it: storyboard the beats, pin the look, and compose deliberate prompt tokens — highly accurate generations, no black box, just craft you control.</p>
+<p class="meta">An engine that storyboards &middot; tokens you can reuse anywhere &middot; a wiki when you need the language</p>
+<p class="surfaces"><span class="surfaces__label">Surfaces</span><a href="index.html">Wiki</a><span aria-current="page">Pitch</span><a href="engine.html">Engine</a><a href="design-system/index.html">Design System</a></p>
+<div class="ctarow"><a class="btn primary" href="engine.html">Open the engine</a><a class="btn ghost" href="index.html">Browse the wiki</a></div>
+</div>
+</section>
 <div class="ds-tabbar">
 <nav class="ds-tabs" data-variant="underline" role="tablist" aria-label="Company Documents">
 <button class="ds-tab" id="tab-btn-story" role="tab" data-doc="story" aria-selected="true" aria-controls="panel-doc-01" tabindex="0" onclick="switchTab('story')">Product</button>
@@ -384,16 +394,6 @@ html{scroll-behavior:auto}
 </nav>
 <div class="p-panelcontent">
 <article>
-<section id="s-hero">
-<header class="masthead">
-<p class="kicker">Craft-led AI cinema</p>
-<h1>Start with intent. <span>Let the pixels follow.</span></h1>
-<p class="mast-lede">Most AI video starts with a sentence and hopes for cinema. This engine flips it: storyboard the beats, pin the look, and compose deliberate prompt tokens — highly accurate generations, no black box, just craft you control.</p>
-<p class="meta">An engine that storyboards &middot; tokens you can reuse anywhere &middot; a wiki when you need the language</p>
-<p class="surfaces"><span class="surfaces__label">Surfaces</span><a href="index.html">Wiki</a><span aria-current="page">Pitch</span><a href="engine.html">Engine</a><a href="design-system/index.html">Design System</a></p>
-<div class="ctarow"><a class="btn primary" href="engine.html">Open the engine</a><a class="btn ghost" href="index.html">Browse the wiki</a></div>
-</header>
-</section>
 <section id="s-vision">
 <p class="k">01 — Vision</p>
 <h2>Cinema is a language, not a lottery.</h2>
@@ -927,15 +927,20 @@ bindDrawer(current);
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!p.hasAttribute('hidden')){close();t.focus()}});
 })();
 /* shared sticky-header stuck state (design-system/shell.css §S4): the bar
-   starts transparent and borderless over the hero; past the top it condenses
-   (translucent ground + hairline + tighter title pad), transitioned by the
-   shell. rAF-throttled scroll read, no layout work. */
+   holds the title block, the hero and the tab row, in that order; it starts
+   transparent and borderless, and past the top it condenses (translucent
+   ground + hairline + tighter title pad), transitioned by the shell.
+   rAF-throttled scroll read, no layout work. The landing offset follows the
+   measured bar height (hero included), so TOC jumps land under the bar. */
 (function(){
   var bar=document.querySelector('.ds-stick');if(!bar)return;
   var tick=false;
   function set(){tick=false;bar.classList.toggle('is-stuck',window.scrollY>0)}
-  set();
+  function sync(){try{document.documentElement.style.setProperty('--p-stick',Math.ceil(bar.offsetHeight+12)+'px')}catch(e){}}
+  set();sync();
   window.addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(set)}},{passive:true});
+  window.addEventListener('resize',function(){sync()});
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){sync()});
 })();
 var reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
 var spy=null;

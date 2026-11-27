@@ -52,12 +52,12 @@ code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-
 ::selection{background:var(--color-engine-selection);color:var(--color-primitive-black)}
 
 .wrap{max-width:1100px;margin:0 auto;padding:0 var(--spacing-lg)}
-/* hero shares the content axis: the shared shell (design-system/shell.css
-   `.ds-shell`, same max and same inline padding as .g-main), so the blurb,
-   the sub-nav row, the underline bar and the panels all start on one
-   vertical line. */
+/* hero shares the content axis: it rides in the sticky header's own
+   `.ds-shell` (design-system/shell.css — same max and same inline padding as
+   .g-main), so the blurb, the underline bar and the panels all start on one
+   vertical line. (`.wrap` stays for any non-shell centred block.) */
 
-/* ---------- masthead (static hero under the sticky header) ---------- */
+/* ---------- masthead (hero inside the sticky header, above the tabs) ---------- */
 .masthead{grid-area:masthead;border-bottom:var(--border-width-hairline) solid var(--g-rule);padding:var(--spacing-2xl) 0 var(--spacing-xl)}
 .mast-menu{display:flex;align-items:center}
 .kicker{font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;font-weight:var(--weight-medium);color:var(--g-muted)}
@@ -68,16 +68,15 @@ code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-
 .stats dt{font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--g-muted)}
 .stats dd{margin-top:var(--spacing-2xs);font-size:var(--typography-size-small);font-weight:var(--weight-medium)}
 
-/* ---------- shell: sticky header → hero → underline tabs → panels ----
-   The sticky header (design-system/shell.css §S4 `.ds-stick`: title block
-   above the tab row) is a direct body child ABOVE this grid, so it sticks
-   for the whole page — a grid item only sticks inside its own grid area.
-   DOM order is header → masthead → main, and the grid stacks the same way:
-   the DS blurb hero spans the full width on top, the content column carries
-   the panels. No side column and no strip between hero and tabs, so the
-   content axis never shifts between categories: each sectioned panel
-   carries its own left sub-nav (`.g-panelbody` first child,
-   gallery-pitch.css) under the tab row. */
+/* ---------- shell: sticky header (title → hero → tabs) → panels ----
+   The sticky header (design-system/shell.css §S4 `.ds-stick`) is a direct
+   body child, so it sticks for the whole page — a grid item only sticks
+   inside its own grid area. DOM order inside it is title → hero → tabs:
+   the title row first, then the DS blurb hero, then the underline tab row
+   (the §S4 title-above-tabs composition, hero above the tabs). This grid carries
+   the panels only. No side column, so the content axis never shifts between
+   categories: each sectioned panel carries its own left sub-nav
+   (`.g-panelbody` first child, gallery-pitch.css) under the tab row. */
 .g-shell{
   display:grid;
   grid-template-columns:minmax(0,1fr);
@@ -96,17 +95,19 @@ code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-
 }
 
 /* the tab row rides inside the shared sticky header (design-system/shell.css
-   §S4 `.ds-stick` + §S2 `.ds-tabbar`): `.ds-stick__title` above,
-   the underline tablist + Surfaces menu below — the same title-above-tabs
-   composition the pitch page sticks. The underline tablist
+   §S4 `.ds-stick` + §S2 `.ds-tabbar`): `.ds-stick__title` first, the hero
+   `.masthead` next, the underline tablist + Surfaces menu below — the same
+   title-above-tabs composition the pitch page sticks, hero above the tabs.
+   The underline tablist
    (components.css §5) paints its own rule, so the bar's ::after stays parked
    for the pill shape only — with underline tabs it would double the rule. */
 
 /* persistent surfaces menu at the right end of the sticky category bar — the
    shared shell menu (design-system/shell.css `.ds-smenu`). The bar is flex:
    the underline tablist takes the free axis (and scrolls it on a phone), the
-   menu keeps its own width at the inline end, so it stays reachable after
-   the masthead — and its Surfaces links — scroll away. The panel is the
+   menu keeps its own width at the inline end, so it stays reachable beside
+   the tabs (the hero sticks with the bar, so its Surfaces links never
+   scroll away either). The panel is the
    shipped .ds-menu, CSS-anchored to its own box, so no MenuButton anchor
    math runs; the only new geometry is one spacing step. */
 
@@ -391,6 +392,16 @@ footer code{color:var(--g-ink)}
         <div class="mast-menu"><button class="ds-navtoggle" data-ds-nav-toggle="nav-color" aria-controls="nav-color" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-menu"/></svg></button></div>
       </div>
     </div>
+    <div class="masthead">
+      <p class="kicker">Design system · rendered from tokens.css · pitch shell</p>
+      <h1>Design System — Camera Shots</h1>
+      <p class="mast-lede">Every specimen below is drawn with the custom properties in <code>tokens.css</code>, so what you see is what ships. Three surfaces, one token layer: <b>Wiki</b> (read), <b>Pitch</b> (persuade), <b>Engine</b> (operate).</p>
+      <dl class="stats">
+        <div><dt>Tokens</dt><dd><span class="js-token-count">—</span> · one <code>:root</code> block</dd></div>
+        <div><dt>Surfaces</dt><dd><a href="../index.html">Wiki</a> · <a href="../pitch.html">Pitch</a> · <a href="../engine.html">Engine</a> · <a href="./index.html" aria-current="page">Design System</a></dd></div>
+        <div><dt>Theme maps</dt><dd>Pitch · Wiki light · Wiki dark · Engine</dd></div>
+      </dl>
+    </div>
     <div class="g-tabbar ds-tabbar">
       <div class="ds-tabs" id="ds-cats" data-variant="underline" role="tablist" aria-label="Design system categories" data-ds-panel-scope="#main">
         <button class="ds-tab" type="button" role="tab" id="tab-color" aria-controls="color" aria-selected="true" tabindex="0">Color</button>
@@ -412,25 +423,12 @@ footer code{color:var(--g-ink)}
 </header>
 
 <div class="g-shell">
-  <header class="masthead">
-    <div class="wrap ds-shell">
-      <p class="kicker">Design system · rendered from tokens.css · pitch shell</p>
-      <h1>Design System — Camera Shots</h1>
-      <p class="mast-lede">Every specimen below is drawn with the custom properties in <code>tokens.css</code>, so what you see is what ships. Three surfaces, one token layer: <b>Wiki</b> (read), <b>Pitch</b> (persuade), <b>Engine</b> (operate).</p>
-      <dl class="stats">
-        <div><dt>Tokens</dt><dd><span class="js-token-count">—</span> · one <code>:root</code> block</dd></div>
-        <div><dt>Surfaces</dt><dd><a href="../index.html">Wiki</a> · <a href="../pitch.html">Pitch</a> · <a href="../engine.html">Engine</a> · <a href="./index.html" aria-current="page">Design System</a></dd></div>
-        <div><dt>Theme maps</dt><dd>Pitch · Wiki light · Wiki dark · Engine</dd></div>
-      </dl>
-    </div>
-  </header>
-
   <main id="main" class="g-main ds-shell" tabindex="-1">
     <!-- ============ 01 COLOR ============ -->
     <section class="ds-tabpanel" id="color" role="tabpanel" aria-labelledby="tab-color" tabindex="0">
       <!-- per-panel sub-nav: the section list lives inside the panel, under
-           the sticky tab row — the tab row sits in the header above the
-           hero, so a panel nav never lands between hero and tabs. Static
+           the sticky tab row — the hero sits in the header above the tab
+           row, so a panel nav never lands between hero and tabs. Static
            markup, one nav per sectioned panel, unique id; the page script binds the
            visible one to the sticky-header toggle as the ≤900 drawer. -->
       <div class="g-panelbody">
