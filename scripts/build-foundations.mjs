@@ -257,8 +257,9 @@ const escapeRe = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
  * from disk, so a token edit regenerates here before it is committed.
  *
  * This is a count of occurrences, not the gate's T8 presence test: T8 asks only
- * whether any of product/theme/`components.css` names a token and excludes the
- * gallery, so a key can be T8-unconsumed and still count here.
+ * whether any of product/theme/`components.css`/linked-last `shell.css` names
+ * a token and excludes the gallery, so a key can be T8-unconsumed and still
+ * count here.
  */
 const productFiles = PRODUCT_FILES.map((file) => ({ file, text: readCommitted(file) }));
 
@@ -325,10 +326,13 @@ for (const leaf of leaves) {
 }
 
 /* T8's narrower scope, reproduced so the doc can name the gate's orphans: a
-   `var()` reference from a product page, a theme cell, or components.css;
-   gallery excluded; aliases (`value: var(--other)`) and breakpoint.* exempt. */
+   `var()` reference from a product page, a theme cell, components.css, or the
+   linked-last shared shell.css; gallery excluded; aliases (`value: var(--other)`)
+   and breakpoint.* exempt. */
 const componentsCss = readCommitted('design-system/components.css', { optional: true }) ?? '';
 const componentRefs = new Set([...componentsCss.matchAll(/var\(\s*(--[a-z0-9-]+)/g)].map((match) => match[1]));
+const shellCss = readCommitted('design-system/shell.css', { optional: true }) ?? '';
+for (const match of shellCss.matchAll(/var\(\s*(--[a-z0-9-]+)/g)) componentRefs.add(match[1]);
 const gateOrphans = leaves.filter((leaf) => {
   if (/^var\(/.test(leaf.value.trim())) return false; // alias: the pointer is its own consumer
   if (leaf.key.startsWith('breakpoint.')) return false; // var() is invalid in @media
@@ -513,7 +517,7 @@ lines.push(`3. **Gallery** — one per \`.sw\` swatch row in \`${GALLERY}\` nami
 lines.push('');
 lines.push('**Source:** the consumer files are read as committed at `HEAD` (`git show HEAD:<path>`), so an uncommitted page or component edit cannot move these numbers — commit the change, then regenerate. `tokens.json` and `tokens.css` are read from disk, so a token edit is reflected before it is committed. When git is unavailable (an exported tree, e.g. `git archive`) or a consumer file is untracked, that file is read from disk instead.');
 lines.push('');
-lines.push('It is a **count of occurrences**, not the gate\'s T8 presence test: T8 asks only whether a product page, a theme cell or `components.css` names a token at all, and excludes the gallery. So a key can be T8-unconsumed and still show a non-zero count here — read the breakdown the gate prints, not this column, when judging orphans.');
+lines.push('It is a **count of occurrences**, not the T8 presence test: T8 asks only whether a product page, a theme cell, `components.css`, or the linked-last shared `shell.css` names a token at all, and excludes the gallery. So a key can be T8-unconsumed and still show a non-zero count here — read the breakdown the gate prints, not this column, when judging orphans.');
 lines.push('');
 lines.push(`Totals at committed HEAD: **${totalConsumers} consumer references** across ${leaves.length} keys, **${zeroConsumer.length}** key(s) with none${zeroConsumer.length ? ` (${zeroConsumer.map((leaf) => `\`${leaf.key}\``).join(', ')})` : ''}.`);
 lines.push('');

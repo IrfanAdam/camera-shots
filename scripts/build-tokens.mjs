@@ -180,9 +180,8 @@ const ROLE_VAR_COUNT = 17;
  * `--themes-pitch-bg-page` would push this over and fail the build loudly
  * instead of shipping ~70 invented properties.
  *
- * 189 = 188 + `layout.shell.max` (the canonical-shell content-axis measure:
- * pitch cap + rail column + one gap), consumed by all four pages via
- * design-system/shell.css instead of three page-local copies of the calc.
+ * 188 = 186 + `layout.rail` (208px) + `layout.rail.inset` (var(--spacing-20)),
+ * the navigation-grammar pair consumed by `.ds-rail` in components.css.
  * The navigation rewrite retired `layout.sidebar.wiki`, `layout.sidebar.pitch`
  * and `spacing.section` (191 → 188); see design-system/DEPRECATIONS.md.
  * The pinned-surface-switcher wave then traded `layout.bar.engine` (its last
@@ -190,7 +189,7 @@ const ROLE_VAR_COUNT = 17;
  * `layout.nav.drawer.width` (min(20rem, 86vw), the drawer panel), so the count
  * holds at 188 with one different key.
  */
-const EXPECTED_LEAVES = 189;
+const EXPECTED_LEAVES = 188;
 
 const typeLabel = (path) => path.join('.');
 

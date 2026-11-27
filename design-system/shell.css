@@ -3,7 +3,7 @@
 
    One shared stylesheet owning three things every shipped page repeats:
 
-     §S1  the content-axis measure  — `--layout-shell-max` (tokens.json), the
+     §S1  the content-axis measure  — `--ds-shell-max` (this file), the
           pitch cap + the in-panel rail column + one gap. Pages adopt
           `.ds-shell` on their content column / header inner instead of
           carrying a page-local copy of the calc.
@@ -39,9 +39,12 @@
    ========================================================================== */
 
 /* §S1 · content column — one measure, one inline gutter, centred.
+   The measure is a plain declaration of this file (not a token: it composes
+   three layout tokens, and tokens never point at each other except by alias).
    Adopt on the page's own column / header inner; keep block padding local. */
+:root{--ds-shell-max:calc(var(--layout-max-pitch) + var(--layout-rail) + var(--spacing-2xl))}
 .ds-shell{
-  max-inline-size:var(--layout-shell-max);
+  max-inline-size:var(--ds-shell-max);
   margin-inline:auto;
   padding-inline:var(--spacing-2xl);
 }

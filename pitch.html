@@ -16,7 +16,7 @@
 --pos:var(--color-pitch-positive);--posink:var(--color-pitch-positive-ink);
 --switchbg:var(--color-pitch-switch-bg);
 /* content axis: the shared shell (design-system/shell.css `.ds-shell` owns the
-   measure + gutter from --layout-shell-max); the hero and the panel content
+   measure + gutter from shell.css --ds-shell-max); the hero and the panel content
    stay on one axis once the section nav joins the panel */
 /* print sheet */
 --paper:var(--color-primitive-white);--prtink:var(--color-print-ink);--prtbody:var(--color-print-body);
@@ -206,6 +206,13 @@ tbody td:first-child{white-space:nowrap;font-weight:var(--weight-semibold);color
 .ftip{position:absolute;z-index:var(--z-tooltip);pointer-events:none;background:var(--s2);border:var(--border-width-hairline) solid var(--mut2);border-radius:var(--radius-sm);padding:var(--spacing-xs) var(--spacing-10);font-size:var(--typography-size-eyebrow);line-height:var(--line-height-relaxed);color:var(--ink);white-space:nowrap;display:none;max-width:100%}
 .ftip.show{display:block}
 .ftip .be{display:inline-block;font-size:.62rem;font-weight:var(--weight-bold);padding:0 var(--spacing-xs);border-radius:var(--radius-xs);background:var(--pos);color:var(--posink);vertical-align:1px}
+/* funding month rows: burn vs surplus reads shipped tokens only — surplus is
+   pitch-positive (the same voice as the chart tooltip + breakeven dot), burn
+   is the status danger; the breakeven month is labelled in place. Pre/post
+   breakeven treatment is the Net cell itself, so no second signal is needed. */
+.fund-net-pos{color:var(--color-pitch-positive)}
+.fund-net-neg{color:var(--color-status-danger)}
+.fund-be{color:var(--color-pitch-positive);font-weight:var(--weight-semibold)}
 .pills{display:flex;gap:var(--spacing-6);flex-wrap:wrap;margin:var(--spacing-md) 0}
 .pill{font-size:var(--typography-size-meta);font-weight:var(--weight-semibold);border:var(--border-width-hairline) solid var(--rule);background:transparent;color:var(--mut);border-radius:var(--radius-pill);padding:var(--spacing-6) var(--spacing-14);cursor:pointer;font-family:inherit}
 .pill.on{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
@@ -778,10 +785,10 @@ html{scroll-behavior:auto}
 <div class="card"><h3>Phase 2 — Compose</h3><p>FR-03 + FR-04 + FR-05: locked templates, ledger, checker.</p><p class="gate">Gate: multi-scene board holds anchors end to end.</p></div>
 <div class="card"><h3>Scale — Handoff</h3><p>FR-06 + team export: tokenised prompts, shared ledgers, seats.</p><p class="gate">Gate: a team completes learn-to-export weekly.</p></div>
 </div>
-<p class="lede tgap">Scenario model — burn vs MRR vs funding left (never commitments):</p>
+<p class="lede tgap">Scenario model — burn vs MRR vs funding left (never commitments). Per-scenario callouts render from the same illustrative model as the funding drawer; placeholders below are the no-JS fallback.</p>
 <div class="tbl"><table>
-<thead><tr><th>Scenario</th><th>Burn (run-rate)</th><th>MRR (scenario)</th><th>Funding left</th></tr></thead>
-<tbody>
+<thead id="fund-static-head"><tr><th>Scenario</th><th>Burn (run-rate)</th><th>MRR (scenario)</th><th>Funding left</th></tr></thead>
+<tbody id="fund-static-rows">
 <tr><td>Minimal</td><td>[BURN] <span class="qual">scenario</span></td><td>[M6 MRR] <span class="qual">scenario</span></td><td>[RAISE] minus spend <span class="qual">plan, not promise</span></td></tr>
 <tr><td>Conservative</td><td>[BURN] <span class="qual">scenario</span></td><td>[M6 MRR] <span class="qual">scenario</span></td><td>[RAISE] minus spend <span class="qual">plan, not promise</span></td></tr>
 <tr><td>OK</td><td>[BURN] <span class="qual">scenario</span></td><td>[M6 MRR] <span class="qual">scenario</span></td><td>[RAISE] minus spend <span class="qual">plan, not promise</span></td></tr>
@@ -823,7 +830,7 @@ html{scroll-behavior:auto}
 <span class="draft">Draft — scenario model, not a forecast</span>
 <p class="k">Funding scenarios</p>
 <h2>Four ways the raise could play.</h2>
-<p class="lede">Illustrative defaults only — plan, not promise. All figures DRAFT pending founder inputs.</p>
+<p class="lede">Illustrative defaults only — plan, not promise. All figures DRAFT pending founder inputs. Two buckets: the operating pool only drains (funding left never refills); post-breakeven surplus is ring-fenced as profit, never ploughed back.</p>
 <div class="scenrow"><div class="pills ds-tabs" id="fund-pills" data-variant="pill" role="tablist" aria-label="Funding scenario">
 <button class="ds-tab" data-ds-compact role="tab" data-fsc="minimal" aria-selected="false" tabindex="-1">Minimal</button><button class="ds-tab" data-ds-compact role="tab" data-fsc="conservative" aria-selected="false" tabindex="-1">Conservative</button><button class="ds-tab" data-ds-compact role="tab" data-fsc="ok" aria-selected="true" tabindex="0">OK</button><button class="ds-tab" data-ds-compact role="tab" data-fsc="ideal" aria-selected="false" tabindex="-1">Ideal</button>
 </div><div class="curtoggle"><button id="fund-fx" class="fxswitch" type="button" role="switch" aria-checked="false" aria-label="Currency, INR or USD"><span class="fxthumb" aria-hidden="true"></span><span class="fxlab" data-fxlab="inr" aria-hidden="true">₹ INR</span><span class="fxlab" data-fxlab="usd" aria-hidden="true">$ USD</span></button></div></div>
@@ -832,7 +839,7 @@ html{scroll-behavior:auto}
 <div class="fchart" id="fund-chart" aria-label="Monthly burn versus scenario MRR"></div>
 <div class="fleg" aria-hidden="true"><span><i class="fsw burn"></i>Burn</span><span><i class="fsw"></i>MRR</span><span><i class="fdot"></i>Breakeven</span></div>
 <div class="tbl"><table>
-<thead><tr><th>M</th><th>Burn</th><th>MRR</th><th>Team</th><th>Gap</th></tr></thead>
+<thead><tr><th>M</th><th>Burn</th><th>MRR</th><th>Net</th><th>Used Σ</th><th>Left</th><th>Team</th><th>Profit / head</th></tr></thead>
 <tbody id="fund-rows"></tbody>
 </table></div>
 <p class="draft-note">Scenario model — illustrative defaults, not a forecast. Post-breakeven surplus is ring-fenced as profit, not spent. Plan, not promise.</p>
@@ -1054,7 +1061,7 @@ document.addEventListener("click",function(e){
 });
 document.addEventListener("keydown",function(e){if(e.key==="Escape")closeDrawers()});
 /* funding scenarios — labelled illustrative defaults (DRAFT, scenario-not-forecast) */
-window.HEAL_FX_rate=function(){return 90};
+window.HEAL_FX_rate=function(){return 92.5};
 var FUND={B0:5500000,START:2083200,RAISE:126000000,HC_NON:1500000,HC_COST:180000,
 SC:{minimal:{label:"Minimal",g:0.045,bs:60000},conservative:{label:"Conservative",g:0.075,bs:110000},ok:{label:"OK",g:0.105,bs:150000},ideal:{label:"Ideal",g:0.13,bs:170000}}};
 var ASSUMPS={
@@ -1064,9 +1071,25 @@ OK:"Assumption (OK): full loop plus team handoff staffed; runway measured from c
 Ideal:"Assumption (Ideal): loop plus content engine; buffer included; runway measured from close. Illustrative default — scenario, not a forecast, plan not promise."
 };
 var fundSc="ok",fundCur="inr";
-function burnAt(sc,m){return FUND.B0+sc.bs*m}
+function burnAt(sc,m){return FUND.B0+sc.bs*(m-1)}
 function mrrAt(sc,m){return Math.round(FUND.START*Math.pow(1+sc.g,m))}
 function teamAt(burn){return Math.round((burn-FUND.HC_NON)/FUND.HC_COST)}
+/* two buckets, per the heal reference: the operating pool only drains — used
+   is the cumulative monthly deficit (burn minus MRR, floored at zero), left is
+   raise minus used and never refills; post-breakeven surplus is ring-fenced
+   as profit, never ploughed back. Headcount is an overlay from the same burn
+   ramp (fixed non-payroll plus a blended cost per head). */
+function fundSeries(sc){
+  var out=[],used=0;
+  for(var m=1;m<=18;m++){
+    var b=burnAt(sc,m),r=mrrAt(sc,m),net=r-b;
+    if(net<0)used+=(-net);
+    var left=FUND.RAISE-used,team=teamAt(b);
+    out.push({m:m,b:b,r:r,net:net,used:used,left:left,team:team,phead:net/team});
+  }
+  return out;
+}
+function fundBreakeven(sc){for(var m=1;m<=18;m++){if(mrrAt(sc,m)>=burnAt(sc,m))return m}return null}
 function inr(n){return "\u20B9"+Math.round(n).toLocaleString("en-IN")}
 function usd(n){return "$"+Math.round(n/window.HEAL_FX_rate()).toLocaleString("en-US")}
 function fxSpan(n){return '<span data-fx data-inr="'+inr(n)+'" data-usd="'+usd(n)+'">'+(fundCur==="usd"?usd(n):inr(n))+"</span>"}
@@ -1076,30 +1099,35 @@ function fundRender(id){
   var sc=FUND.SC[id];
   [].slice.call(document.querySelectorAll("#fund-pills .ds-tab")).forEach(function(p){var on=p.getAttribute("data-fsc")===id;p.setAttribute("aria-selected",on?"true":"false");p.tabIndex=on?0:-1});
   var fx=document.getElementById("fund-fx");if(fx)fx.setAttribute("aria-checked",fundCur==="usd"?"true":"false");
-  var be=null,m,gross=0;
-  for(m=1;m<=18;m++){gross+=burnAt(sc,m);if(be===null&&mrrAt(sc,m)>=burnAt(sc,m))be=m}
-  var left=FUND.RAISE-gross;
+  var be=fundBreakeven(sc);
+  var rowsData=fundSeries(sc);
+  var endMRR=rowsData[17].r,usedEnd=rowsData[17].used,leftEnd=rowsData[17].left;
+  var pct=Math.round(usedEnd/FUND.RAISE*100);
   var kpis=document.getElementById("fund-kpis");
   if(kpis)kpis.innerHTML=
-    '<div class="metric"><div class="v">'+fxSpan(burnAt(sc,1))+'</div><div class="l">Monthly burn M1 (run-rate)</div><div class="q">scenario — being finalised</div></div>'+
-    '<div class="metric"><div class="v">'+fxSpan(mrrAt(sc,6))+'</div><div class="l">M6 MRR (scenario)</div><div class="q">scenario model — plan, not promise</div></div>'+
     '<div class="metric"><div class="v">'+(be?("M"+be):"Beyond M18")+'</div><div class="l">Breakeven (MRR \u2265 burn)</div><div class="q">scenario model — plan, not promise</div></div>'+
-    '<div class="metric"><div class="v">'+fxSpan(left)+'</div><div class="l">Funding left of '+fxSpan(FUND.RAISE)+'</div><div class="q">raise minus 18-mo spend; surplus ring-fenced</div></div>';
+    '<div class="metric"><div class="v">'+fxSpan(endMRR)+'</div><div class="l">MRR at F18 (scenario)</div><div class="q">scenario model — plan, not promise</div></div>'+
+    '<div class="metric"><div class="v">'+pct+'%'+'</div><div class="l">Funding consumed (% of raise)</div><div class="q">scenario — plan, not promise</div></div>'+
+    '<div class="metric"><div class="v">'+fxSpan(leftEnd)+'</div><div class="l">Ring-fenced left (surplus not spent)</div><div class="q">two buckets — operating pool only</div></div>';
   var assump=document.getElementById("fund-assump");
   if(assump)assump.textContent=ASSUMPS[sc.label]||"";
   var rows=document.getElementById("fund-rows");
   if(rows){
     var html="";
-    for(m=1;m<=18;m++){
-      var b=burnAt(sc,m),r=mrrAt(sc,m),gap=r-b;
-      html+="<tr><td>M"+m+"</td><td>"+fxSpan(b)+"</td><td>"+fxSpan(r)+"</td><td>"+teamAt(b)+"</td><td>"+(gap>=0?("+"+fxSpan(gap)+" surplus"):("\u2212"+fxSpan(-gap)+" burn"))+"</td></tr>";
+    for(var i=0;i<rowsData.length;i++){
+      var d=rowsData[i],pos=d.net>=0;
+      var mcell=(be!==null&&d.m===be)?('M'+d.m+' <span class="fund-be">breakeven</span>'):("M"+d.m);
+      html+="<tr><td>"+mcell+"</td><td>"+fxSpan(d.b)+"</td><td>"+fxSpan(d.r)+"</td>"+
+        '<td class="'+(pos?"fund-net-pos":"fund-net-neg")+'">'+(pos?"+":"\u2212")+fxSpan(pos?d.net:-d.net)+(pos?" surplus":" burn")+"</td>"+
+        "<td>"+fxSpan(d.used)+"</td><td>"+fxSpan(d.left)+"</td><td>"+d.team+"</td>"+
+        '<td class="'+(pos?"fund-net-pos":"fund-net-neg")+'">'+(pos?"+":"\u2212")+fxSpan(pos?d.phead:-d.phead)+"</td></tr>";
     }
     rows.innerHTML=html;
   }
   var chart=document.getElementById("fund-chart");
   if(chart){
     var W=600,H=210,pL=52,pR=10,pT=12,pB=22;
-    var mrr=[],brn=[],i;
+    var mrr=[],brn=[],i,m;
     for(m=1;m<=18;m++){mrr.push(mrrAt(sc,m));brn.push(burnAt(sc,m))}
     var ymax=Math.max(brn[17]*1.1,mrr[17]*1.12);
     var step=ymax/4,pow=Math.pow(10,Math.floor(Math.log(step)/Math.LN10)),nn=step/pow;
@@ -1178,12 +1206,15 @@ if(fxBtn){
   function show(idx){
     var t=tip();if(!t||!(idx>=0&&idx<18))return;
     var sc=FUND.SC[fundSc];if(!sc)return;
-    var b=burnAt(sc,idx+1),r=mrrAt(sc,idx+1),net=r-b;
-    var isBe=r>=b&&(idx===0||mrrAt(sc,idx)<burnAt(sc,idx));
+    var series=fundSeries(sc),d=series[idx];
+    var b=d.b,r=d.r,net=d.net;
+    var isBe=r>=b&&(idx===0||series[idx-1].r<series[idx-1].b);
     t.innerHTML='<div style="font-weight:var(--weight-bold);">M'+(idx+1)+(isBe?' <span class="be">breakeven</span>':"")+"</div>"
       +"<div>MRR "+val(r)+"</div>"
       +"<div>Burn "+val(b)+"</div>"
-      +"<div>Net "+val(net)+(net>=0?' <span style="color:var(--color-pitch-positive);">surplus</span>':' <span style="color:var(--mut);">burn</span>')+"</div>";
+      +"<div>Net "+val(net)+(net>=0?' <span style="color:var(--color-pitch-positive);">surplus</span>':' <span style="color:var(--mut);">burn</span>')+"</div>"
+      +"<div>Used "+val(d.used)+" · Left "+val(d.left)+"</div>"
+      +"<div>Team "+d.team+" · "+val(d.phead)+"/head</div>";
     t.classList.add("show");
     var W=600,H=210,pL=52,pR=10,pT=12,pB=22;
     var ymax=Math.max(burnAt(sc,18)*1.1,mrrAt(sc,18)*1.12);
@@ -1226,17 +1257,17 @@ function downloadText(name,text){
 function fundDrawerToMarkdown(){
   fundRender(fundSc);
   var sc=FUND.SC[fundSc],date=new Date().toISOString().slice(0,10);
-  var be=null,m,gross=0;
-  for(m=1;m<=18;m++){gross+=burnAt(sc,m);if(be===null&&mrrAt(sc,m)>=burnAt(sc,m))be=m}
+  var be=fundBreakeven(sc),rowsData=fundSeries(sc);
+  var endMRR=rowsData[17].r,usedEnd=rowsData[17].used,leftEnd=rowsData[17].left;
+  var pct=Math.round(usedEnd/FUND.RAISE*100);
   var L=["# Camera Shots — Funding scenarios ("+sc.label+")","","_Exported "+date+" · DRAFT illustrative defaults — scenario model, not a forecast._","","## Assumptions",(ASSUMPS[sc.label]||""),"",
-    "Constants: B0="+FUND.B0+", START="+FUND.START+", RAISE="+FUND.RAISE+", HC_NON="+FUND.HC_NON+", HC_COST="+FUND.HC_COST+"; growth="+(sc.g*100).toFixed(1)+"%, monthly burn step="+sc.bs+".","",
-    "## KPIs","- Monthly burn M1 (run-rate): "+inr(burnAt(sc,1))+" ("+usd(burnAt(sc,1))+")",
-    "- M6 MRR (scenario): "+inr(mrrAt(sc,6))+" ("+usd(mrrAt(sc,6))+")",
-    "- Breakeven: "+(be?("M"+be):"beyond M18")+" (first month MRR \u2265 burn)",
-    "- Funding left: "+inr(FUND.RAISE-gross)+" of "+inr(FUND.RAISE)+" (raise minus 18-mo spend; post-breakeven surplus ring-fenced as profit)","",
-    "## Month rows","| M | Burn | MRR | Team | Gap |","| --- | --- | --- | --- | --- |"];
-  for(m=1;m<=18;m++){var b=burnAt(sc,m),r=mrrAt(sc,m);L.push("| M"+m+" | "+inr(b)+" | "+inr(r)+" | "+teamAt(b)+" | "+(r>=b?"+":"")+inr(r-b)+" |")}
-  L.push("","_Scenario model — illustrative defaults, not a forecast. Plan, not promise._","");
+    "Constants: B0="+FUND.B0+", START="+FUND.START+", RAISE="+FUND.RAISE+", HC_NON="+FUND.HC_NON+", HC_COST="+FUND.HC_COST+"; growth="+(sc.g*100).toFixed(1)+"%, monthly burn step="+sc.bs+". Two buckets: the operating pool only drains (funding left never refills); post-breakeven surplus is ring-fenced as profit, never ploughed back. Headcount is an overlay from the same burn ramp.","","## Callouts","- Breakeven: "+(be?("M"+be):"beyond M18")+" (first month MRR \u2265 burn)",
+    "- MRR at F18: "+inr(endMRR)+" ("+usd(endMRR)+")",
+    "- Funding consumed: "+pct+"% of raise ("+inr(usedEnd)+" of "+inr(FUND.RAISE)+")",
+    "- Ring-fenced left: "+inr(leftEnd)+" (post-breakeven surplus not spent)","",
+    "## Month rows","| M | Burn | MRR | Net | Used Σ | Left | Team | Profit / head |","| --- | --- | --- | --- | --- | --- | --- | --- |"];
+  for(var i=0;i<rowsData.length;i++){var d=rowsData[i];L.push("| M"+d.m+(be!==null&&d.m===be?" (breakeven)":"")+" | "+inr(d.b)+" | "+inr(d.r)+" | "+(d.net>=0?"+":"")+inr(d.net)+" | "+inr(d.used)+" | "+inr(d.left)+" | "+d.team+" | "+(d.phead>=0?"+":"")+inr(d.phead)+" |")}
+  L.push("","_Scenario model — illustrative defaults, not a forecast. Post-breakeven surplus is ring-fenced as profit, not spent. Plan, not promise._","");
   return L.join("\n");
 }
 function exportFundDrawerMD(){var date=new Date().toISOString().slice(0,10);downloadText("camera-shots-fund-"+fundSc+"-"+date+".md",fundDrawerToMarkdown());expStat("Downloaded fund-"+fundSc+" scenario .md")}
@@ -1250,6 +1281,25 @@ var fundMdBtn=document.getElementById("fund-md");if(fundMdBtn)fundMdBtn.addEvent
 var planMdBtn=document.getElementById("plan-md");if(planMdBtn)planMdBtn.addEventListener("click",exportPlanDrawerMD);
 window.fundRender=fundRender;window.fundDrawerToMarkdown=fundDrawerToMarkdown;
 window.exportFundDrawerMD=exportFundDrawerMD;window.exportPlanDrawerMD=exportPlanDrawerMD;
+/* static scenario table (MVP panel): same illustrative model as the drawer,
+   rendered on load so the two never drift. The thead + placeholder rows above
+   are the no-JS fallback; with JS the drawer toggle re-renders these cells
+   too (every value is an fxSpan, so INR/USD flips them together). */
+function renderFundStatic(){
+  var head=document.getElementById("fund-static-head"),body=document.getElementById("fund-static-rows");
+  if(!head||!body)return;
+  head.innerHTML='<tr><th>Scenario</th><th>Burn (run-rate)</th><th>M6 MRR</th><th>Breakeven</th><th>MRR at F18</th><th>Consumed</th><th>Ring-fenced left</th></tr>';
+  var html="";
+  ["minimal","conservative","ok","ideal"].forEach(function(id){
+    var sc=FUND.SC[id],rowsData=fundSeries(sc),be=fundBreakeven(sc);
+    var usedEnd=rowsData[17].used,leftEnd=rowsData[17].left;
+    html+="<tr><td>"+sc.label+"</td><td>"+fxSpan(burnAt(sc,1))+"</td><td>"+fxSpan(mrrAt(sc,6))+"</td>"+
+      "<td>"+(be?("M"+be):"Beyond M18")+"</td><td>"+fxSpan(rowsData[17].r)+"</td>"+
+      "<td>"+Math.round(usedEnd/FUND.RAISE*100)+"%</td><td>"+fxSpan(leftEnd)+"</td></tr>";
+  });
+  body.innerHTML=html;
+}
+renderFundStatic();
 /* gantt toggle */
 var gt=document.getElementById("gantt-toggle"),g=document.getElementById("gantt");
 if(gt&&g)gt.addEventListener("click",function(){

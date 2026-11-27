@@ -2,7 +2,7 @@
    tokens.css — GENERATED FILE, DO NOT EDIT BY HAND.
    Source:     design-system/tokens.json
    Regenerate: node scripts/build-tokens.mjs
-   Tokens:     189
+   Tokens:     188
    Themes:     4 · role slots: 14 · role vars: 17
    ========================================================================== */
 
@@ -276,9 +276,6 @@
   /* layout.rail */
   --layout-rail: 208px;
   --layout-rail-inset: var(--spacing-20);
-
-  /* layout.shell */
-  --layout-shell-max: calc(var(--layout-max-pitch) + var(--layout-rail) + var(--spacing-2xl));
 
   /* layout.drawer */
   --layout-drawer-engine-width: min(360px, 92vw);

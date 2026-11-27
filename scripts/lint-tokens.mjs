@@ -270,6 +270,15 @@ if (fs.existsSync(COMPONENTS_CSS)) {
   for (const r of refsIn(fs.readFileSync(COMPONENTS_CSS, 'utf8'))) componentRefs.add(r);
 }
 
+/* shell.css is the linked-last shared shell: every product page loads it, so
+   its var() refs prove product consumption exactly like a page's (the
+   canonical-shell pass moved the thrice-repeated axis calc here). */
+const SHELL_CSS = path.join(ROOT, 'design-system', 'shell.css');
+const shellRefs = new Set();
+if (fs.existsSync(SHELL_CSS)) {
+  for (const r of refsIn(fs.readFileSync(SHELL_CSS, 'utf8'))) shellRefs.add(r);
+}
+
 /* Aliases (`value: var(--other)`) and breakpoints can never be consumed by a
    product page — an alias IS a pointer, and `var()` is invalid in @media. */
 const aliasNames = new Set(
@@ -1395,12 +1404,13 @@ const ALL_CLASSES = [...classes, ...fileTClasses, ...globalTClasses];
 
 /* T8 — a token defined in the `:root` contract that nothing consumes.
    Consumers are: a `var()` reference from a product page, a `themes` map cell
-   (the role contract is why the primitive exists), or `components.css` once it
-   lands. A gallery swatch proves the token renders; it does not prove a
-   product uses it, so `design-system/index.html` stays outside. Aliases
+   (the role contract is why the primitive exists), `components.css` once it
+   lands, or the linked-last shared `shell.css` every product page loads. A
+   gallery swatch proves the token renders; it does not prove a product uses
+   it, so `design-system/index.html` stays outside. Aliases
    (`value: var(--other)`) and `breakpoint.*` are exempt: a pointer is its own
    consumer, and `var()` cannot appear in `@media`. */
-const consumed = new Set([...productRefs, ...themeRefs, ...componentRefs]);
+const consumed = new Set([...productRefs, ...themeRefs, ...componentRefs, ...shellRefs]);
 const unusedTokens = [...defined]
   .filter((name) => !consumed.has(name) && !aliasNames.has(name) && !breakpointNames.has(name))
   .sort();
@@ -1847,7 +1857,7 @@ const LEGEND = [
   ['T3', 'Raw `letter-spacing` value', '`typography.tracking.*` → `var(--typography-tracking-*)`'],
   ['T4', 'Raw numeric `font-weight`, or a literal family stack', '`typography.weight.*` / `typography.family.*` → `var(--typography-weight-*)` / `var(--typography-family-*)`'],
   ['T6', 'Raw px width in an `@media` query that does not equal a `breakpoint.*` value', 'Use the token\'s px value exactly (`var()` is invalid in a media prelude) — or keep the one-off with an in-place `lint-allow` reason'],
-  ['T8', 'Token defined in the `:root` contract with no consumer (product page, `themes` map cell, or `components.css`)', 'Wire it in `index/pitch/engine.html`, in a theme map, or `components.css` — or delete it; gallery swatches do not count'],
+  ['T8', 'Token defined in the `:root` contract with no consumer (product page, `themes` map cell, `components.css`, or the linked-last `shell.css`)', 'Wire it in `index/pitch/engine.html`, in a theme map, in `components.css`, or in `design-system/shell.css` — or delete it; gallery swatches do not count'],
   ['T9', 'Two role names resolving to one value: in the token set, or in one theme map and family', 'Alias one name to the other (`--other`) and remove the duplicate role; a slot that legitimately has no own value is declared `null`'],
   ['T10', 'Role contract parity: a map missing a slot, a slot outside the contract, or an emitted block with the wrong role-var count', 'Declare all 14 slots in every map (null where a theme has no value) and regenerate; nulls are explicit, not gaps'],
   ['T11', 'Token `type` does not match its `value` shape (an alias `var(--other)` is skipped — the target is judged)', 'Fix the type or the value in `tokens.json` → regenerate'],
@@ -2032,7 +2042,7 @@ md += '- A hex color is legal only as a `var()` fallback: `var(--color-x, #fff)`
 md += '- Spacing is a 2px grid: `padding`/`margin`/`gap` take `var(--spacing-2|2xs|6|xs|10|sm|14|md|18|20|lg|xl|2xl)` or `0`/`auto`/a percentage. `width`, `height`, `top`, `left`, `inset`, `transform` and `grid-template` are geometry and stay out of V8.\n';
 md += '- Layout-scale padding above 48px, negative offsets, and off-grid values (22.4, 25.6, 41.6, 86.4, 118) that would move more than 0.9px are kept literal with an in-place `lint-allow` reason.\n';
 md += '- Budgets are ceilings, not exemptions: the count measured on 2026-11-24 stays visible, no file is excluded from any check, and a count below budget is progress. Only the excess fails `--check`.\n';
-md += '- `T8` counts `var()` references inside `<style>`/`<script>` of the three product pages, every `themes` map cell, and `design-system/components.css` when it exists; `design-system/index.html` is the system\'s own documentation and never counts as a consumer. Aliases (`value: var(--other)`) and `breakpoint.*` are exempt.\n';
+md += '- `T8` counts `var()` references inside `<style>`/`<script>` of the three product pages, every `themes` map cell, and `design-system/components.css` when it exists, and the linked-last `design-system/shell.css` every page loads; `design-system/index.html` is the system\'s own documentation and never counts as a consumer. Aliases (`value: var(--other)`) and `breakpoint.*` are exempt.\n';
 md += '- `T9` compares colors across the whole set but dimensions only between step names of one scale (`spacing.base ≡ spacing.2xs`), because `spacing.xs` and `radius.sm` both being 8px is two scales, not two roles. Role slots are compared only inside one theme map and one family, so the same warning color in two themes is a palette prior, not a duplicate role.\n';
 md += '- `T10` asserts the role contract: 14 slots in all four maps, nulls explicit, the fall-through covering exactly the null set, and one emitted block per map with 17 − nulls role vars. Themes legitimately differ in nulls (pitch 2, wiki-light 5, wiki-dark 5, engine 3).\n';
 md += '- `T11` validates the 9 canonical types; `other` is gone from the source and is rejected by the generator. A `var()` alias value is skipped (it is a pointer; the target keeps its own row).\n';

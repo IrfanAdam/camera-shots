@@ -11,14 +11,15 @@
       "css": [
         "design-system/base.css",
         "design-system/components.css",
-        "design-system/pitch-shell.css"
+        "design-system/pitch-shell.css",
+        "design-system/shell.css"
       ]
     },
     {
       "id": "pitch",
       "page": "pitch.html",
       "role": "persuade",
-      "css": ["design-system/components.css"]
+      "css": ["design-system/components.css", "design-system/shell.css"]
     },
     {
       "id": "engine",
@@ -27,7 +28,8 @@
       "css": [
         "design-system/base.css",
         "design-system/components.css",
-        "engine-pitch.css"
+        "engine-pitch.css",
+        "design-system/shell.css"
       ]
     },
     {
@@ -39,7 +41,8 @@
         "design-system/base.css",
         "design-system/components.css",
         "design-system/pitch-shell.css",
-        "design-system/gallery-pitch.css"
+        "design-system/gallery-pitch.css",
+        "design-system/shell.css"
       ]
     }
   ],
