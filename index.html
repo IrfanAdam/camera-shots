@@ -43,8 +43,12 @@ a:hover{color:var(--ink);text-decoration-color:var(--acc)}
 /* the drawer's own close control has nothing to dismiss in a static column */
 .w-panelbody>.ds-rail .ds-navclose{display:none}
 .top{position:sticky;top:0;z-index:var(--z-sticky);background:var(--color-pitch-overlay-bg);border-bottom:var(--border-width-hairline) solid var(--rule);padding-top:calc(var(--spacing-10) + env(safe-area-inset-top,0px));padding-bottom:var(--spacing-10)}
-.top__in{display:flex;justify-content:space-between;align-items:baseline;gap:var(--spacing-md);flex-wrap:wrap;max-inline-size:var(--layout-max-wiki);margin-inline:auto;padding-inline:var(--spacing-2xl)}
-.page__main{min-inline-size:0;max-inline-size:var(--layout-max-wiki);margin-inline:auto;padding-inline:var(--spacing-2xl);padding-block-end:var(--spacing-xl)}
+/* content axis: the DS shell measure (design-system --g-shell-max): pitch cap +
+   rail column + one gap, so the wiki hero, tab rows and panels sit on the
+   same axis as the design-system page. Page-local copy; pitch-shell.css stays
+   the canonical source for paint. */
+.top__in{display:flex;justify-content:space-between;align-items:baseline;gap:var(--spacing-md);flex-wrap:wrap;max-inline-size:calc(var(--layout-max-pitch) + var(--layout-rail) + var(--spacing-2xl));margin-inline:auto;padding-inline:var(--spacing-2xl)}
+.page__main{min-inline-size:0;width:100%;max-inline-size:calc(var(--layout-max-pitch) + var(--layout-rail) + var(--spacing-2xl));margin-inline:auto;padding-inline:var(--spacing-2xl);padding-block-end:var(--spacing-xl)}
 .by{font-family:var(--typography-family-mono);letter-spacing:var(--tracking-eyebrow);color:var(--mut);font-size:var(--typography-size-small);white-space:nowrap}
 /* `margin-inline-start:auto` keeps the byline + menu button on the end edge
    even when the title wraps the row (mobile), so the hamburger stays under the
@@ -86,14 +90,21 @@ p{font-size:var(--typography-size-body);color:var(--body)}.ad{margin-top:var(--s
 /* the two row actions are the thumb target: base.css §6/§8 set 40 (fine) and 44
    (coarse) once [data-ds-compact] is gone; this only pins the square width */
 .mapacts button{min-inline-size:var(--touch-min)}
-/* the step row stays pills, the tab row is underline (components.css §5:
-   parent tabs are underline, pills are secondary). A step is not a tab, so it
-   keeps aria-current="step" with the accent fill. The underline tab row keeps
-   the shipped sideways scroll under overflow; the pill step row keeps wrapping
-   and never scrolls on desktop. */
-#steps{margin-block:var(--spacing-sm) var(--spacing-6)}
+/* DS grammar (components.css §5): parent tabs are underline, pills are
+   secondary. #steps is the parent row (one underline row, sideways scroll
+   under overflow, never wrapping); #tabs is the secondary pill row (wraps,
+   never scrolls on desktop). The underline tab carries the selected mark, so
+   no page-local fill is needed. */
+/* the parent row lives in a flex row: the row itself is a shrinkable flex
+   item (same clamp as design-system .g-tabbar), its width:100% ancestor keeps
+   the page column at the viewport instead of the row's content width (the
+   centered column's auto margins would otherwise size it to content), and the
+   tabs never shrink — the strip scrolls sideways on a phone with full labels,
+   the same no-shrink rule the DS tabbar uses at 390px. */
+.w-tabbar{display:flex;align-items:center;gap:var(--spacing-md);max-inline-size:100%}
+.w-tabbar>#steps{flex:1 1 auto;min-inline-size:0;margin-block:var(--spacing-sm) var(--spacing-6)}
+.w-tabbar .ds-tab{flex:0 0 auto}
 #tabs{margin-block:0 var(--spacing-md)}
-#steps .ds-tab[aria-current="step"]{background:var(--acc);border-color:var(--acc);color:var(--acc-ink);font-weight:var(--weight-medium)}
 .blurb{font-size:var(--typography-size-small);color:var(--mut);margin-block:0 var(--spacing-sm)}
 .yt{position:relative;aspect-ratio:16/9;background:var(--black);border-radius:var(--radius-sm);overflow:hidden;margin-top:var(--spacing-xs);cursor:pointer}
 .yt img{width:100%;height:100%;object-fit:cover;opacity:var(--opacity-media)}
@@ -105,6 +116,16 @@ p{font-size:var(--typography-size-body);color:var(--body)}.ad{margin-top:var(--s
 .surfaces__label{font-family:var(--typography-family-mono);font-size:var(--typography-size-eyebrow);font-weight:var(--weight-bold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase}
 .surfaces a{display:inline-flex;align-items:center;min-block-size:var(--spacing-lg);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:0.16em}
 .surfaces [aria-current="page"]{display:inline-flex;align-items:center;min-block-size:var(--spacing-lg);color:var(--ink);font-weight:var(--weight-medium)}
+/* persistent surfaces menu at the inline end of the sticky header — the DS
+   sticky-bar pattern (design-system .g-surfaces): the hero Surfaces links
+   scroll away, this one stays reachable. The panel is the shipped .ds-menu,
+   CSS-anchored to its own box, so no MenuButton anchor math runs; the page
+   script binds it with DS.menu (data-ds-manual opts out of auto-init). */
+.w-surfaces{position:relative;flex:0 0 auto}
+.w-surfaces__btn svg{inline-size:var(--icon-size-sm);block-size:var(--icon-size-sm)}
+.w-surfaces .ds-menu{inset-inline-end:0;inset-block-start:calc(100% + var(--spacing-2xs))}
+.w-surfaces .ds-menu__item{text-decoration:none}
+.w-surfaces .ds-menu__item[aria-current="page"]{font-weight:var(--weight-semibold)}
 footer{margin:var(--spacing-xl) 0 var(--spacing-md);color:var(--mut);font-size:var(--typography-size-meta)}
 /* ≤--breakpoint-lg: the rail leaves the grid and becomes the off-canvas menu
    (components.css §21) reached from the header's menu button, so the page only
@@ -113,7 +134,7 @@ footer{margin:var(--spacing-xl) 0 var(--spacing-md);color:var(--mut);font-size:v
 @media(max-width:900px){
 .page{display:flex;flex-direction:column}
 .top__in{align-items:center}
-.top__in,.page__main{max-inline-size:none;padding-inline:var(--spacing-20)}
+.top__in,.page__main{max-inline-size:none;padding-inline:var(--spacing-lg)}
 /* one column: the rail is either the drawer (JS stamps the mode) or, with
    no JS, a plain list stacked above the card panel */
 .w-panelbody{display:block}
@@ -154,15 +175,15 @@ footer{margin:var(--spacing-xl) 0 var(--spacing-md);color:var(--mut);font-size:v
 <link rel="stylesheet" href="design-system/pitch-shell.css"></head><body>
 <a class="ds-skip-link" href="#main">Skip to content</a>
 <div class="page">
-<header class="top"><div class="top__in"><h1>Cinematography and Direction Wiki</h1><div class="hright"><span class="by">by irfan</span><button type="button" class="ds-navtoggle" data-ds-nav-toggle="nav-drawer" aria-controls="nav-drawer" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-menu"></use></svg></button></div></div></header>
+<header class="top"><div class="top__in"><h1>Cinematography and Direction Wiki</h1><div class="hright"><span class="by">by irfan</span><div class="w-surfaces"><button class="ds-btn w-surfaces__btn" type="button" data-ds-menu-trigger aria-controls="w-surfaces-menu" aria-expanded="false" aria-haspopup="menu"><span class="ds-btn__label">Surfaces</span><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-chevron-down"></use></svg></button><div class="ds-menu" id="w-surfaces-menu" role="menu" aria-label="Surfaces" hidden><a class="ds-menu__item" role="menuitem" href="index.html" aria-current="page">Wiki</a><a class="ds-menu__item" role="menuitem" href="pitch.html">Pitch</a><a class="ds-menu__item" role="menuitem" href="engine.html">Engine</a><a class="ds-menu__item" role="menuitem" href="design-system/index.html">Design System</a></div></div><button type="button" class="ds-navtoggle" data-ds-nav-toggle="nav-drawer" aria-controls="nav-drawer" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-menu"></use></svg></button></div></div></header>
 <div class="page__main">
 <main id="main" tabindex="-1">
 <p class="sub">A working reference for how films are shot and directed. Pick a concept, see what it does for the story, watch it explained, and copy the prompt phrase to use it.</p>
 <p class="surfaces"><span class="surfaces__label">Surfaces</span><span aria-current="page">Wiki</span><a href="pitch.html">Pitch</a><a href="engine.html">Engine</a><a href="design-system/index.html">Design System</a></p>
-<div class="ds-tabs" id="steps" data-variant="pill" role="group" aria-label="Steps"></div>
+<div class="w-tabbar"><div class="ds-tabs" id="steps" data-variant="underline" role="tablist" aria-label="Categories"></div></div>
 <p class="blurb" id="blurb"></p>
-<div class="ds-tabs" id="tabs" data-variant="underline"></div>
-<!-- ENTRIES nav lives inside the panel region, under the underline tab strip:
+<div class="ds-tabs" id="tabs" data-variant="pill"></div>
+<!-- ENTRIES nav lives inside the panel region, under the tab rows:
      one .w-panelbody grid (rail + card panel), the gallery pattern -->
 <div class="w-panelbody">
 <nav class="ds-rail" id="nav-drawer" data-ds-nav aria-label="Entries">
@@ -415,7 +436,7 @@ if(cb.left<lb.left)l.scrollLeft-=lb.left-cb.left;
 else if(cb.right>lb.right-pad)l.scrollLeft+=cb.right-(lb.right-pad);}
 function draw(){
 const curStep=stepOf(tab);
-$('steps').innerHTML=STEPS.map(s=>`<button type="button" class="ds-tab" data-step="${s.name}" data-ds-key="step-${s.name}"${s.name==curStep?' aria-current="step"':''}>${s.name}</button>`).join('');
+$('steps').innerHTML=STEPS.map(s=>`<button type="button" class="ds-tab" role="tab" aria-selected="${s.name==curStep}" tabindex="${s.name==curStep?0:-1}" data-step="${s.name}" data-ds-key="step-${s.name}">${s.name}</button>`).join('');
 $('blurb').textContent=STEPS.find(s=>s.name==curStep).blurb;
 const pillTabs=STEPS.find(s=>s.name==curStep).tabs;
 const tabsEl=$('tabs');
@@ -456,6 +477,13 @@ else if(b.dataset.i)idx=+b.dataset.i;
 else if(b.dataset.n){const n=(D[tab].items||[]).length;idx=(idx+ +b.dataset.n+n)%n}else return;render();
 if(jump){jump=false;const c=$('list').querySelector('[aria-current="page"]');if(c)c.focus()}});
 $('search').addEventListener('input',e=>{q=e.target.value.trim();render();announceCount()});
+$('steps').addEventListener('keydown',e=>{if(!/^(ArrowLeft|ArrowRight|Home|End)$/.test(e.key))return;
+const cats=[...$('steps').querySelectorAll('[role="tab"]')];if(!cats.length)return;
+e.preventDefault();e.stopPropagation();
+const i=cats.indexOf(document.activeElement);if(i<0)return;
+let n=i;if(e.key=='ArrowRight')n=(i+1)%cats.length;else if(e.key=='ArrowLeft')n=(i-1+cats.length)%cats.length;else n=e.key=='Home'?0:cats.length-1;
+tab=STEPS[n].tabs[0];idx=0;draw();
+const nx=$('steps').querySelector('[role="tab"][aria-selected="true"]');if(nx)nx.focus()});
 $('tabs').addEventListener('keydown',e=>{if(!/^(ArrowLeft|ArrowRight|Home|End)$/.test(e.key))return;
 const tabs=[...$('tabs').querySelectorAll('[role="tab"]')];if(!tabs.length)return;
 e.preventDefault();e.stopPropagation();
@@ -475,4 +503,7 @@ draw();
 /* the rail IS the mobile menu (components.css §21): bind the drawer. Above
    900px DS.nav leaves the static rail alone, incl. after a resize. */
 try{DS.nav(document.getElementById('nav-drawer'))}catch(err){}
+/* the sticky header's Surfaces menu: the DS sticky-bar pattern, bound by hand
+   because data-ds-manual opts out of auto-init (same reason as the rail) */
+try{const t=document.querySelector('[data-ds-menu-trigger]');if(t)DS.menu(t)}catch(err){}
 </script></body></html>
