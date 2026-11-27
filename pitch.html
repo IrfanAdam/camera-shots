@@ -15,6 +15,10 @@
 --acc:var(--color-pitch-accent);--acc-ink:var(--color-pitch-accent-ink);
 --pos:var(--color-pitch-positive);--posink:var(--color-pitch-positive-ink);
 --switchbg:var(--color-pitch-switch-bg);
+/* content axis: the DS shell cap (design-system/index.html --g-shell-max) —
+   pitch max plus the in-panel rail column and its gap, so the hero and the
+   panel content stay on one axis once the section nav joins the panel */
+--p-shell-max:calc(var(--layout-max-pitch) + var(--layout-rail) + var(--spacing-2xl));
 /* print sheet */
 --paper:var(--color-primitive-white);--prtink:var(--color-print-ink);--prtbody:var(--color-print-body);
 --prtfine:var(--color-print-fine);--prtacc:var(--color-print-accent);--prtrule:var(--color-print-rule);
@@ -30,7 +34,7 @@ a{color:inherit}
 :focus:not(:focus-visible){outline:none}
 /* chart hit-rects sit flush inside the plot: same ring, drawn inward (offset inverted) */
 .fchart rect[data-m]:focus-visible{outline:var(--focus-width) solid var(--color-pitch-accent);outline-offset:calc(-1*var(--focus-offset))}
-.w{max-width:var(--layout-max-pitch);margin:0 auto;padding:0 var(--spacing-20) 4rem} /* lint-allow: 4rem deck bottom pad is layout-scale; no spacing step sits at 64px */
+.w{max-width:var(--p-shell-max);margin:0 auto;padding:0 var(--spacing-20) 4rem} /* lint-allow: 4rem deck bottom pad is layout-scale; no spacing step sits at 64px */
 /* shell: single column — sticky header (brand + underline doctabs) on top,
    then the panels. Each doctab panel carries its own section nav as the first
    cell of a .p-panelbody grid (gallery pattern: hero → underline mains →
@@ -53,11 +57,12 @@ a{color:inherit}
 .p-panelbody>.ds-rail .ds-navclose{display:none}
 /* the export cluster follows the TOC instead of hanging on the viewport bottom */
 .p-panelbody>.ds-rail>.sidexport{position:static;inset-block-end:auto;margin-block-start:var(--spacing-lg);padding-block-end:0;background:transparent}
-/* header: sticky, brand + tools on row one, left-aligned underline tabs on row
-   two. Cross-surface links are NOT here or in the rail: the rail carries
-   sections only and the surfaces live as inline links in the hero. */
+/* header: sticky, brand + tools on row one, tab row on row two. The rail
+   carries sections only; the hero keeps its inline Surfaces links and the
+   tab row keeps a persistent Surfaces menu at the inline end (DS tabbar
+   pattern), so the cross-surface jump stays reachable on scroll. */
 .top{position:sticky;top:0;z-index:var(--z-sticky);background:var(--color-pitch-overlay-bg);backdrop-filter:blur(8px);border-bottom:var(--border-width-hairline) solid var(--rule);padding-top:env(safe-area-inset-top,0px)}
-.topin{display:flex;flex-direction:column;gap:var(--spacing-2);max-width:var(--layout-max-pitch);margin:0 auto;padding:var(--spacing-10) var(--spacing-20) var(--spacing-2xs)}
+.topin{display:flex;flex-direction:column;gap:var(--spacing-2);max-width:var(--p-shell-max);margin:0 auto;padding:var(--spacing-10) var(--spacing-20) var(--spacing-2xs)}
 .brandrow{display:flex;align-items:center;justify-content:space-between;gap:var(--spacing-sm)}
 .brand{font-size:var(--typography-size-body);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-snug);text-decoration:none}
 .brand small{display:block;color:var(--mut);font-weight:var(--weight-regular);font-size:var(--typography-size-meta)}
@@ -71,6 +76,17 @@ a{color:inherit}
    parent tabs are underline, pills are secondary). The row starts at the same
    left edge as the section text (no centring) */
 .doctabs{min-width:0}
+/* sticky tab row: the DS tabbar pattern — the underline parent tablist takes
+   the free axis (and scrolls it on a phone), the Surfaces menu keeps its own
+   width at the inline end, so it stays reachable after the hero links scroll
+   away. The panel is the shipped .ds-menu, CSS-anchored to its own box. */
+.docbar{display:flex;align-items:center;gap:var(--spacing-md)}
+.docbar .doctabs{flex:1 1 auto;min-inline-size:0}
+.p-surfaces{position:relative;flex:0 0 auto;margin-inline-start:auto}
+.p-surfaces__btn svg{inline-size:var(--icon-size-sm);block-size:var(--icon-size-sm)}
+.p-surfaces .ds-menu{inset-inline-end:0;inset-block-start:calc(100% + var(--spacing-2xs))}
+.p-surfaces .ds-menu__item{text-decoration:none}
+.p-surfaces .ds-menu__item[aria-current="page"]{font-weight:var(--weight-semibold)}
 /* in-panel TOC: each doctab panel owns one flat DS section rail (nav.toc);
    only the visible panel's TOC shows, and the export cluster rides under it */
 .sidexport{display:flex;flex-direction:column;gap:var(--spacing-xs);border-top:var(--border-width-hairline) solid var(--rule);margin-block-start:auto;padding:var(--spacing-sm) var(--spacing-md) var(--spacing-sm) calc(var(--border-width-strong) + var(--layout-rail-inset))}
@@ -324,12 +340,23 @@ html{scroll-behavior:auto}
 <button type="button" class="ds-navtoggle" data-ds-nav-toggle="nav-story" aria-controls="nav-story" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-menu"></use></svg></button>
 </div>
 </div>
+<div class="docbar">
 <nav class="doctabs ds-tabs" data-variant="underline" role="tablist" aria-label="Company Documents">
 <button class="ds-tab" id="tab-btn-story" role="tab" data-doc="story" aria-selected="true" aria-controls="panel-doc-01" tabindex="0" onclick="switchTab('story')">Product</button>
 <button class="ds-tab" id="tab-btn-investors" role="tab" data-doc="investors" aria-selected="false" aria-controls="panel-doc-03" tabindex="-1" onclick="switchTab('investors')">Investors</button>
 <button class="ds-tab" id="tab-btn-wiki" role="tab" data-doc="wiki" aria-selected="false" aria-controls="panel-doc-02" tabindex="-1" onclick="switchTab('wiki')">Wiki</button>
 <button class="ds-tab" id="tab-btn-mvp" role="tab" data-doc="mvp" aria-selected="false" aria-controls="panel-doc-04" tabindex="-1" onclick="switchTab('mvp')">MVP</button>
 </nav>
+<div class="p-surfaces">
+<button class="ds-btn p-surfaces__btn" type="button" data-ds-menu-trigger aria-controls="p-surfaces-menu" aria-expanded="false" aria-haspopup="menu"><span class="ds-btn__label">Surfaces</span><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-chevron-down"/></svg></button>
+<div class="ds-menu" id="p-surfaces-menu" role="menu" aria-label="Surfaces" hidden>
+<a class="ds-menu__item" role="menuitem" href="index.html">Wiki</a>
+<a class="ds-menu__item" role="menuitem" href="pitch.html" aria-current="page">Pitch</a>
+<a class="ds-menu__item" role="menuitem" href="engine.html">Engine</a>
+<a class="ds-menu__item" role="menuitem" href="design-system/index.html">Design System</a>
+</div>
+</div>
+</div>
 </div>
 </header>
 <div class="w">
@@ -823,7 +850,7 @@ html{scroll-behavior:auto}
 <span class="draft">Draft — plan, not promise</span>
 <p class="k">8-week plan</p>
 <h2>Week by week, gated twice.</h2>
-<nav class="pills plan-nav" id="plan-nav" aria-label="Plan sections"><a class="pill on" href="#pw-w1" data-psec="pw-w1">W1</a><a class="pill" href="#pw-w2" data-psec="pw-w2">W2</a><a class="pill" href="#pw-w3" data-psec="pw-w3">W3</a><a class="pill" href="#pw-w4" data-psec="pw-w4">W4</a><a class="pill" href="#pw-w5" data-psec="pw-w5">W5</a><a class="pill" href="#pw-w6" data-psec="pw-w6">W6</a><a class="pill" href="#pw-w7" data-psec="pw-w7">W7</a><a class="pill" href="#pw-w8" data-psec="pw-w8">W8</a></nav>
+<nav class="pills plan-nav ds-tabs" id="plan-nav" data-variant="pill" role="group" aria-label="Plan sections"><a class="pill on" href="#pw-w1" data-psec="pw-w1">W1</a><a class="pill" href="#pw-w2" data-psec="pw-w2">W2</a><a class="pill" href="#pw-w3" data-psec="pw-w3">W3</a><a class="pill" href="#pw-w4" data-psec="pw-w4">W4</a><a class="pill" href="#pw-w5" data-psec="pw-w5">W5</a><a class="pill" href="#pw-w6" data-psec="pw-w6">W6</a><a class="pill" href="#pw-w7" data-psec="pw-w7">W7</a><a class="pill" href="#pw-w8" data-psec="pw-w8">W8</a></nav>
 </div>
 <div id="plan-weeks">
 <div class="plan-context">
@@ -886,6 +913,22 @@ function bindDrawer(name){
 var current="story";
 var panels={};TABS.forEach(function(n){panels[n]=document.querySelector('[data-panel="'+n+'"]')});
 bindDrawer(current);
+/* persistent Surfaces menu (DS menu pattern): the sticky tab row keeps the
+   cross-surface jump at the inline end after the hero links scroll away.
+   DS.menu owns roving focus, Escape + outside close and return-to-trigger;
+   the fallback below only covers a missing shared layer. */
+(function(){
+  var t=document.querySelector('[data-ds-menu-trigger]');if(!t)return;
+  try{if(window.DS&&DS.menu){DS.menu(t);return}}catch(e){}
+  var p=document.getElementById(t.getAttribute('aria-controls'));if(!p)return;
+  function close(){t.setAttribute('aria-expanded','false');p.setAttribute('hidden','')}
+  t.addEventListener('click',function(){
+    var open=t.getAttribute('aria-expanded')==='true';
+    if(open){close()}else{t.setAttribute('aria-expanded','true');p.removeAttribute('hidden')}
+  });
+  document.addEventListener('pointerdown',function(e){if(!p.hasAttribute('hidden')&&!t.contains(e.target)&&!p.contains(e.target))close()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!p.hasAttribute('hidden')){close();t.focus()}});
+})();
 var reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
 var spy=null;
 function mark(id){
