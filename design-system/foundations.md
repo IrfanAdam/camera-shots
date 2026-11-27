@@ -26,11 +26,11 @@ Read order: [README](README.md) → this file → [components](components.md) �
 
 **Source:** the consumer files are read as committed at `HEAD` (`git show HEAD:<path>`), so an uncommitted page or component edit cannot move these numbers — commit the change, then regenerate. `tokens.json` and `tokens.css` are read from disk, so a token edit is reflected before it is committed. When git is unavailable (an exported tree, e.g. `git archive`) or a consumer file is untracked, that file is read from disk instead.
 
-It is a **count of occurrences**, not the gate's T8 presence test: T8 asks only whether a product page, a theme cell or `components.css` names a token at all, and excludes the gallery. So a key can be T8-unconsumed and still show a non-zero count here — read the breakdown the gate prints, not this column, when judging orphans.
+It is a **count of occurrences**, not the T8 presence test: T8 asks only whether a product page, a theme cell, `components.css`, or the linked-last shared `shell.css` names a token at all, and excludes the gallery. So a key can be T8-unconsumed and still show a non-zero count here — read the breakdown the gate prints, not this column, when judging orphans.
 
-Totals at committed HEAD: **1380 consumer references** across 188 keys, **25** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `color.pro.tool.hover`, `color.status.danger.ink.light`, `color.wiki.dark.accent.ink`, `control.height.compact`, `dot.size`, `elevation.1`, `elevation.float`, `elevation.inset`, `elevation.ring`, `focus.color`, `hover.lift`, `icon.size.lg`, `icon.size.md`, `layout.max.wiki`, `layout.nav.drawer.width`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `tracking.label`).
+Totals at committed HEAD: **1352 consumer references** across 188 keys, **26** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `color.pro.tool.hover`, `color.status.danger.ink.light`, `color.wiki.dark.accent.ink`, `control.height.compact`, `dot.size`, `elevation.1`, `elevation.float`, `elevation.inset`, `elevation.ring`, `focus.color`, `hover.lift`, `icon.size.lg`, `icon.size.md`, `layout.max.pitch`, `layout.max.wiki`, `layout.nav.drawer.width`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `tracking.label`).
 
-Under the gate's narrower **T8** scope — `var()` in the three product pages plus theme-map cells plus `components.css`, gallery excluded, aliases and `breakpoint.*` exempt — **9** key(s) are unconsumed: `color.engine.track.audio`, `color.engine.track.fx`, `color.engine.track.title`, `elevation.float`, `elevation.inset`, `elevation.ring`, `icon.size.lg`, `radius.lg`, `tracking.label`. Keys that differ between the two views are canvas-only (`CT()`/`WA()` strings the gate cannot see) or gallery-only consumers; `scripts/lint-tokens.mjs` prints the authoritative list and its budget note.
+Under the gate's narrower **T8** scope — `var()` in the three product pages plus theme-map cells plus `components.css` plus linked-last `shell.css`, gallery excluded, aliases and `breakpoint.*` exempt — **9** key(s) are unconsumed: `color.engine.track.audio`, `color.engine.track.fx`, `color.engine.track.title`, `elevation.float`, `elevation.inset`, `elevation.ring`, `icon.size.lg`, `radius.lg`, `tracking.label`. Keys that differ between the two views are canvas-only (`CT()`/`WA()` strings the gate cannot see) or gallery-only consumers; `scripts/lint-tokens.mjs` prints the authoritative list and its budget note.
 
 ## Theme contract
 
@@ -120,7 +120,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `focus` | 3 | 2 | 1 |
 | `hover` | 1 | 0 | 1 |
 | `icon` | 3 | 1 | 2 |
-| `layout` | 8 | 6 | 2 |
+| `layout` | 8 | 5 | 3 |
 | `line-height` | 5 | 5 | 0 |
 | `motion` | 14 | 14 | 0 |
 | `opacity` | 2 | 1 | 1 |
@@ -131,7 +131,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `typography` | 13 | 13 | 0 |
 | `weight` | 5 | 5 | 0 |
 | `z` | 17 | 17 | 0 |
-| **total** | **188** | **163** | **25** |
+| **total** | **188** | **162** | **26** |
 
 ### border
 
@@ -193,7 +193,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `color.pitch.muted.2` | `#8E8C86` | color | fg.faint | 5 (3/1/1) |
 | `color.pitch.overlay.bg` | `rgba(10,10,11,.92)` | color | — | 3 (2/0/1) |
 | `color.pitch.overlay.surface` | `rgba(20,20,22,.92)` | color | — | 2 (1/0/1) |
-| `color.pitch.positive` | `#10B981` | color | status.success | 8 (4/3/1) |
+| `color.pitch.positive` | `#10B981` | color | status.success | 10 (6/3/1) |
 | `color.pitch.positive.ink` | `#06110C` | color | — | 2 (1/0/1) |
 | `color.pitch.rule` | `#26262B` | color | line.default | 7 (5/1/1) |
 | `color.pitch.scrim.mid` | `rgba(0,0,0,.6)` | color | — | 2 (1/0/1) |
@@ -208,7 +208,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `color.print.ink` | `var(--color-engine-accent-ink)` | color | — · alias → --color-engine-accent-ink | 2 (1/0/1) |
 | `color.print.rule` | `#DDDDDD` | color | — | 2 (1/0/1) |
 | `color.pro.tool.hover` | `var(--color-engine-divider)` | color | — · alias → --color-engine-divider | 0 (0/0/0) |
-| `color.status.danger` | `#E5484D` | color | status.danger | 6 (1/4/1) |
+| `color.status.danger` | `#E5484D` | color | status.danger | 7 (2/4/1) |
 | `color.status.danger.ink.dark` | `#EA6C70` | color | — | 1 (1/0/0) |
 | `color.status.danger.ink.light` | `#C93F43` | color | — | 0 (0/0/0) |
 | `color.status.info` | `#8A5CF6` | color | status.info | 6 (1/4/1) |
@@ -290,7 +290,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 |---|---|---|---|---|
 | `icon.size.lg` | `24px` | dimension | — | 0 (0/0/0) |
 | `icon.size.md` | `20px` | dimension | — | 0 (0/0/0) |
-| `icon.size.sm` | `16px` | dimension | — | 8 (8/0/0) |
+| `icon.size.sm` | `16px` | dimension | — | 2 (2/0/0) |
 
 ### layout
 
@@ -300,10 +300,10 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 |---|---|---|---|---|
 | `layout.drawer.engine.width` | `min(360px, 92vw)` | dimension | — | 1 (1/0/0) |
 | `layout.drawer.pitch.width` | `min(720px, 100vw)` | dimension | — | 1 (1/0/0) |
-| `layout.max.pitch` | `1080px` | dimension | — | 4 (4/0/0) |
+| `layout.max.pitch` | `1080px` | dimension | — | 0 (0/0/0) |
 | `layout.max.wiki` | `980px` | dimension | — | 0 (0/0/0) |
 | `layout.nav.drawer.width` | `min(20rem, 86vw)` | dimension | — | 0 (0/0/0) |
-| `layout.rail` | `208px` | dimension | — | 8 (8/0/0) |
+| `layout.rail` | `208px` | dimension | — | 4 (4/0/0) |
 | `layout.rail.inset` | `var(--spacing-20)` | dimension | — · alias → --spacing-20 | 3 (3/0/0) |
 | `layout.sidebar.engine` | `148px` | dimension | — | 1 (1/0/0) |
 
@@ -373,14 +373,14 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `spacing.14` | `14px` | dimension | — | 18 (18/0/0) |
 | `spacing.18` | `18px` | dimension | — | 16 (16/0/0) |
 | `spacing.2` | `2px` | dimension | — | 17 (17/0/0) |
-| `spacing.20` | `20px` | dimension | — | 10 (10/0/0) |
-| `spacing.2xl` | `48px` | dimension | — | 12 (12/0/0) |
-| `spacing.2xs` | `4px` | dimension | — | 55 (55/0/0) |
+| `spacing.20` | `20px` | dimension | — | 8 (8/0/0) |
+| `spacing.2xl` | `48px` | dimension | — | 6 (6/0/0) |
+| `spacing.2xs` | `4px` | dimension | — | 52 (52/0/0) |
 | `spacing.6` | `6px` | dimension | — | 69 (69/0/0) |
 | `spacing.base` | `var(--spacing-2xs)` | dimension | — · alias → --spacing-2xs | 0 (0/0/0) |
 | `spacing.gutter.pro` | `var(--spacing-md)` | dimension | — · alias → --spacing-md | 0 (0/0/0) |
-| `spacing.lg` | `24px` | dimension | — | 15 (15/0/0) |
-| `spacing.md` | `16px` | dimension | — | 33 (33/0/0) |
+| `spacing.lg` | `24px` | dimension | — | 14 (14/0/0) |
+| `spacing.md` | `16px` | dimension | — | 30 (30/0/0) |
 | `spacing.sm` | `12px` | dimension | — | 65 (65/0/0) |
 | `spacing.xl` | `32px` | dimension | — | 8 (8/0/0) |
 | `spacing.xs` | `8px` | dimension | — | 83 (83/0/0) |
@@ -435,7 +435,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `weight.heavy` | `800` | fontWeight | — | 1 (1/0/0) |
 | `weight.medium` | `600` | fontWeight | — | 14 (14/0/0) |
 | `weight.regular` | `400` | fontWeight | — | 1 (1/0/0) |
-| `weight.semibold` | `650` | fontWeight | — | 10 (10/0/0) |
+| `weight.semibold` | `650` | fontWeight | — | 8 (8/0/0) |
 
 ### z
 

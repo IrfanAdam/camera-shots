@@ -12,18 +12,18 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 - Generated: 2026-11-27
 - Tokens defined: 188 (`design-system/tokens.css`)
 - Files scanned: `index.html`, `pitch.html`, `engine.html`, `design-system/index.html`
-- Result: **FAIL** — 1 over budget, 21 exempt, 0 bad-allow
-- Budgets: V1 0/0 · V2 0/0 · V3 1/1 · V4 0/0 · V5 0/0 · V6 0/0 · V7 0/0 · V8 0/0 · U1 0/0 · T1 8/10 · T2 25/32 · T3 18/21 · T4w 0/22 · T4f 2/2 · T6 2/5 · T13 0/0 · T14 8/8 · T15 140/147 · T8 9/9 · T9 0/0 · T10 0/0 · T11 0/0 · C1 6/6 · C2 1/12 · C3 0/0 · C4 0/0 · C5 0/0 · C6 0/0
+- Result: **PASS** — 0 over budget, 21 exempt, 0 bad-allow
+- Budgets: V1 0/0 · V2 0/0 · V3 1/1 · V4 0/0 · V5 0/0 · V6 0/0 · V7 0/0 · V8 0/0 · U1 0/0 · T1 8/10 · T2 25/32 · T3 18/21 · T4w 0/22 · T4f 2/2 · T6 2/5 · T13 0/0 · T14 8/8 · T15 140/147 · T8 9/9 · T9 0/0 · T10 0/0 · T11 0/0 · C1 6/6 · C2 0/12 · C3 0/0 · C4 0/0 · C5 0/0 · C6 0/0
 
 ## Per-file violations
 
 | File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | V7 border width | V8 spacing | U1 dead var | exempt | bad-allow | inline `style=` | `var(--)` uses |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 287 |
-| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 | 0 | 27 | 513 |
-| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 0 | 2 | 894 |
-| `design-system/index.html` | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 95 | 465 |
-| **Total** | **0** | **0** | **1** | **0** | **0** | **0** | **0** | **0** | **0** | **21** | **0** | **140** | **2159** |
+| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 274 |
+| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 | 0 | 27 | 510 |
+| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 0 | 2 | 884 |
+| `design-system/index.html` | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 95 | 452 |
+| **Total** | **0** | **0** | **1** | **0** | **0** | **0** | **0** | **0** | **0** | **21** | **0** | **140** | **2120** |
 
 ## Type, consumer & theme counts
 
@@ -66,7 +66,7 @@ Each class carries the count measured on 2026-11-24 as a ceiling. A count at or 
 | T10 | 0 | 0 | ok |
 | T11 | 0 | 0 | ok |
 | C1 | 6 | 6 (per file design-system/base.css 0, design-system/components.css 6) | ok |
-| C2 | 1 | 12 (per file index.html 0, pitch.html 4, engine.html 8, design-system/index.html 0) | OVER +1 |
+| C2 | 0 | 12 (per file index.html 0, pitch.html 4, engine.html 8, design-system/index.html 0) | under |
 | C3 | 0 | 0 | ok |
 | C4 | 0 | 0 | ok |
 | C5 | 0 | 0 | ok |
@@ -88,7 +88,7 @@ The shared layer (`base.css`, `components.css`, `components.js`, `icons.svg`) is
 | Class | Source | Now | Ceiling | Note |
 |---|---|---:|---:|---|
 | C1 | `design-system/base.css`, `design-system/components.css` | 6 | 6 | components.css 6 listed values (560px, 94vw, 88vh, 92vw, rgb(0 0 0 / .6), 40rem), each with a reason and a ceiling of 1; base.css 0 — its only literals are 0, 100%, 50%, the calc() sign multiplier and an iteration count — per file: design-system/base.css 0 · design-system/components.css 6 |
-| C2 | `index.html`, `pitch.html`, `engine.html`, `design-system/index.html` | 1 | 12 | pitch 4 + engine 8, measured on the committed HEAD blob. Engine: html,body · body · header · .dp h3 · #arrowpick button · #chapterbar select · #anchorRow code · #drawerX. Pitch: .plan-nav · .plan-nav .pill · #plan-weeks .wrow · .mrail (inside @media(max-width:900px)). Identical-declaration matching would catch 0 of these — every later block adds a declaration — per file: index.html 0 · pitch.html 4 · engine.html 8 · design-system/index.html 0 |
+| C2 | `index.html`, `pitch.html`, `engine.html`, `design-system/index.html` | 0 | 12 | pitch 4 + engine 8, measured on the committed HEAD blob. Engine: html,body · body · header · .dp h3 · #arrowpick button · #chapterbar select · #anchorRow code · #drawerX. Pitch: .plan-nav · .plan-nav .pill · #plan-weeks .wrow · .mrail (inside @media(max-width:900px)). Identical-declaration matching would catch 0 of these — every later block adds a declaration — per file: index.html 0 · pitch.html 4 · engine.html 8 · design-system/index.html 0 |
 | C3 | all four HTML surfaces | 0 | 0 | 2 aria-modal nodes checked (both pitch drawers: role=dialog + aria-label + hidden when closed), 0 bad |
 | C4 | both stylesheets + four pages | 0 | 0 | 0 classes defined at top level in two sources; the 14 `.spec-cell .ds-*` rules in the gallery are scoped stage overrides and do not count as definitions |
 | C5 | four pages → `icons.svg` | 0 | 0 | 48 `<use href="icons.svg#…">` references, 24 symbols, 0 unresolved |
@@ -98,11 +98,7 @@ Counters: **5** `aria-modal` node(s) checked · **56** `svg#id` reference(s) res
 
 ## Over-budget detail
 
-### `design-system/index.html` — C2 1/0 (+1)
-
-| Line | Found | Note |
-|---:|---|---|
-| 116 | `.g-tabbar @ top level` | duplicate selector (first declared line 97) |
+_No class is over budget._
 
 ## Token-set baseline
 
@@ -135,10 +131,10 @@ _None._
 
 | Line | Class | Found | Reason |
 |---:|---|---|---|
-| 37 | V8 | `padding:0 var(--spacing-20) 4rem` | 4rem deck bottom pad is layout-scale; no spacing step sits at 64px |
-| 131 | V8 | `padding:2.6rem 0 1.6rem` | hero section pad is layout-scale; 41.6px and 25.6px have no step within 0.9px |
-| 137 | V8 | `margin-top:1.4rem` | 22.4px CTA lift sits between the 20 and 24 steps; snapping moves 1.6px |
-| 261 | V8 | `padding:1.6rem 0 var(--spacing-md)` | 25.6px compact-hero pad sits between the 24 and 32 steps |
+| 36 | V8 | `padding-block:0 4rem` | 4rem deck bottom pad is layout-scale; no spacing step sits at 64px |
+| 124 | V8 | `padding:2.6rem 0 1.6rem` | hero section pad is layout-scale; 41.6px and 25.6px have no step within 0.9px |
+| 130 | V8 | `margin-top:1.4rem` | 22.4px CTA lift sits between the 20 and 24 steps; snapping moves 1.6px |
+| 267 | V8 | `padding:1.6rem 0 var(--spacing-md)` | 25.6px compact-hero pad sits between the 24 and 32 steps |
 
 ### `engine.html` — Exempt (16)
 
@@ -165,7 +161,7 @@ _None._
 
 | Line | Class | Found | Reason |
 |---:|---|---|---|
-| 219 | V8 | `margin-top:-10px` | negative half of the 20px dot centres it against the track |
+| 217 | V8 | `margin-top:-10px` | negative half of the 20px dot centres it against the track |
 
 ## How to fix
 
@@ -185,7 +181,7 @@ _None._
 | T3 | Raw `letter-spacing` value | `typography.tracking.*` → `var(--typography-tracking-*)` |
 | T4 | Raw numeric `font-weight`, or a literal family stack | `typography.weight.*` / `typography.family.*` → `var(--typography-weight-*)` / `var(--typography-family-*)` |
 | T6 | Raw px width in an `@media` query that does not equal a `breakpoint.*` value | Use the token's px value exactly (`var()` is invalid in a media prelude) — or keep the one-off with an in-place `lint-allow` reason |
-| T8 | Token defined in the `:root` contract with no consumer (product page, `themes` map cell, or `components.css`) | Wire it in `index/pitch/engine.html`, in a theme map, or `components.css` — or delete it; gallery swatches do not count |
+| T8 | Token defined in the `:root` contract with no consumer (product page, `themes` map cell, `components.css`, or the linked-last `shell.css`) | Wire it in `index/pitch/engine.html`, in a theme map, in `components.css`, or in `design-system/shell.css` — or delete it; gallery swatches do not count |
 | T9 | Two role names resolving to one value: in the token set, or in one theme map and family | Alias one name to the other (`--other`) and remove the duplicate role; a slot that legitimately has no own value is declared `null` |
 | T10 | Role contract parity: a map missing a slot, a slot outside the contract, or an emitted block with the wrong role-var count | Declare all 14 slots in every map (null where a theme has no value) and regenerate; nulls are explicit, not gaps |
 | T11 | Token `type` does not match its `value` shape (an alias `var(--other)` is skipped — the target is judged) | Fix the type or the value in `tokens.json` → regenerate |
@@ -214,7 +210,7 @@ Legitimate only where **a browser cannot resolve the value from a custom propert
 - Spacing is a 2px grid: `padding`/`margin`/`gap` take `var(--spacing-2|2xs|6|xs|10|sm|14|md|18|20|lg|xl|2xl)` or `0`/`auto`/a percentage. `width`, `height`, `top`, `left`, `inset`, `transform` and `grid-template` are geometry and stay out of V8.
 - Layout-scale padding above 48px, negative offsets, and off-grid values (22.4, 25.6, 41.6, 86.4, 118) that would move more than 0.9px are kept literal with an in-place `lint-allow` reason.
 - Budgets are ceilings, not exemptions: the count measured on 2026-11-24 stays visible, no file is excluded from any check, and a count below budget is progress. Only the excess fails `--check`.
-- `T8` counts `var()` references inside `<style>`/`<script>` of the three product pages, every `themes` map cell, and `design-system/components.css` when it exists; `design-system/index.html` is the system's own documentation and never counts as a consumer. Aliases (`value: var(--other)`) and `breakpoint.*` are exempt.
+- `T8` counts `var()` references inside `<style>`/`<script>` of the three product pages, every `themes` map cell, and `design-system/components.css` when it exists, and the linked-last `design-system/shell.css` every page loads; `design-system/index.html` is the system's own documentation and never counts as a consumer. Aliases (`value: var(--other)`) and `breakpoint.*` are exempt.
 - `T9` compares colors across the whole set but dimensions only between step names of one scale (`spacing.base ≡ spacing.2xs`), because `spacing.xs` and `radius.sm` both being 8px is two scales, not two roles. Role slots are compared only inside one theme map and one family, so the same warning color in two themes is a palette prior, not a duplicate role.
 - `T10` asserts the role contract: 14 slots in all four maps, nulls explicit, the fall-through covering exactly the null set, and one emitted block per map with 17 − nulls role vars. Themes legitimately differ in nulls (pitch 2, wiki-light 5, wiki-dark 5, engine 3).
 - `T11` validates the 9 canonical types; `other` is gone from the source and is rejected by the generator. A `var()` alias value is skipped (it is a pointer; the target keeps its own row).

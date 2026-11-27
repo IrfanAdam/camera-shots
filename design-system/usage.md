@@ -14,11 +14,11 @@ Surfaces: `index.html` · `pitch.html` · `engine.html` · `design-system/index.
 | tokens defined | 188 |
 | tokens with a product ref | 157 |
 | tokens with no product ref | 31 |
-| custom-property refs | 3046 |
-| … token / role-var `--ds-*` / local / canvas read | 2127 / 178 / 679 / 62 |
-| … local split: component `--_*` / page alias | 36 / 643 |
-| component records | 39 (34 styled in components.css) |
-| component instances | 1143 (215 product, 928 gallery) |
+| custom-property refs | 3013 |
+| … token / role-var `--ds-*` / local / canvas read | 2098 / 179 / 674 / 62 |
+| … local split: component `--_*` / page alias | 36 / 638 |
+| component records | 42 (34 styled in components.css) |
+| component instances | 1161 (228 product, 933 gallery) |
 | … authored in JS (flagged dynamic) | 39 |
 | numbered blocks | 21 (16 with a product instance) |
 
@@ -60,59 +60,62 @@ Structural and utility records with no product instance: `.ds-icon` (56 gallery)
 
 ### wiki — `index.html` (read)
 
-35 component instances, 287 custom-property refs in the page source, 60 tokens named by the page and by stylesheets only it loads (60 direct, 0 from its own sheets).
+39 component instances, 274 custom-property refs in the page source, 56 tokens named by the page and by stylesheets only it loads (56 direct, 0 from its own sheets).
 
 | component | instances | share of surface |
 |---|---|---|
-| `.ds-btn` | 6 | 17% |
-| `.ds-menu` | 5 | 14% |
-| `.ds-rail` | 4 | 11% |
-| `.ds-sr-only` | 4 | 11% |
-| `.ds-copy` | 2 | 6% |
-| `.ds-nav-item` | 2 | 6% |
-| `.ds-pager` | 2 | 6% |
-| `.ds-tab` | 2 | 6% |
-| `.ds-tabs` | 2 | 6% |
-| `.ds-badge` | 1 | 3% |
+| `.ds-btn` | 6 | 15% |
+| `.ds-menu` | 5 | 13% |
+| `.ds-rail` | 4 | 10% |
+| `.ds-sr-only` | 4 | 10% |
+| `.ds-copy` | 2 | 5% |
+| `.ds-nav-item` | 2 | 5% |
+| `.ds-pager` | 2 | 5% |
+| `.ds-shell` | 2 | 5% |
+| `.ds-smenu` | 2 | 5% |
+| `.ds-tab` | 2 | 5% |
 
-Showing 10 of 15 components.
+Showing 10 of 17 components.
 
 ### pitch — `pitch.html` (persuade)
 
-83 component instances, 513 custom-property refs in the page source, 87 tokens named by the page and by stylesheets only it loads (87 direct, 0 from its own sheets).
+88 component instances, 505 custom-property refs in the page source, 87 tokens named by the page and by stylesheets only it loads (87 direct, 0 from its own sheets).
 
 | component | instances | share of surface |
 |---|---|---|
-| `.ds-rail` | 36 | 43% |
-| `.ds-nav-item` | 28 | 34% |
-| `.ds-tab` | 8 | 10% |
+| `.ds-rail` | 36 | 41% |
+| `.ds-nav-item` | 28 | 32% |
+| `.ds-tab` | 8 | 9% |
 | `.ds-menu` | 5 | 6% |
-| `.ds-tabs` | 3 | 4% |
+| `.ds-tabs` | 3 | 3% |
 | `.ds-btn` | 2 | 2% |
+| `.ds-shell` | 2 | 2% |
+| `.ds-smenu` | 2 | 2% |
 | `.ds-navtoggle` | 1 | 1% |
+| `.ds-tabbar` | 1 | 1% |
 
 ### engine — `engine.html` (operate)
 
-97 component instances, 954 custom-property refs in the page source, 99 tokens named by the page and by stylesheets only it loads (99 direct, 10 from its own sheets).
+101 component instances, 944 custom-property refs in the page source, 94 tokens named by the page and by stylesheets only it loads (94 direct, 10 from its own sheets).
 
 | component | instances | share of surface |
 |---|---|---|
-| `.ds-btn` | 31 | 32% |
-| `.ds-menu` | 18 | 19% |
+| `.ds-btn` | 31 | 31% |
+| `.ds-menu` | 18 | 18% |
 | `.ds-rail` | 12 | 12% |
 | `.ds-nav-item` | 9 | 9% |
 | `.ds-tab` | 7 | 7% |
 | `.ds-switch` | 6 | 6% |
 | `.ds-dialog` | 4 | 4% |
 | `.ds-tabs` | 3 | 3% |
+| `.ds-smenu` | 2 | 2% |
 | `.ds-chip` | 1 | 1% |
-| `.ds-drawer` | 1 | 1% |
 
-Showing 10 of 15 components.
+Showing 10 of 18 components.
 
 ### gallery — `design-system/index.html` (docs, quarantined)
 
-928 component instances, 468 custom-property refs in the page source, 133 tokens named by the page and by stylesheets only it loads (131 direct, 26 from its own sheets).
+933 component instances, 455 custom-property refs in the page source, 132 tokens named by the page and by stylesheets only it loads (129 direct, 26 from its own sheets).
 
 | component | instances | share of surface |
 |---|---|---|
@@ -127,7 +130,7 @@ Showing 10 of 15 components.
 | `.ds-tabsub` | 36 | 4% |
 | `.ds-card` | 32 | 3% |
 
-Showing 10 of 34 components.
+Showing 10 of 37 components.
 
 ## How this is computed
 

@@ -521,7 +521,7 @@ lines.push('It is a **count of occurrences**, not the T8 presence test: T8 asks 
 lines.push('');
 lines.push(`Totals at committed HEAD: **${totalConsumers} consumer references** across ${leaves.length} keys, **${zeroConsumer.length}** key(s) with none${zeroConsumer.length ? ` (${zeroConsumer.map((leaf) => `\`${leaf.key}\``).join(', ')})` : ''}.`);
 lines.push('');
-lines.push(`Under the gate's narrower **T8** scope — \`var()\` in the three product pages plus theme-map cells plus \`components.css\`, gallery excluded, aliases and \`breakpoint.*\` exempt — **${gateOrphans.length}** key(s) are unconsumed: ${gateOrphans.length ? gateOrphans.map((leaf) => `\`${leaf.key}\``).join(', ') : 'none'}. Keys that differ between the two views are canvas-only (\`CT()\`/\`WA()\` strings the gate cannot see) or gallery-only consumers; \`scripts/lint-tokens.mjs\` prints the authoritative list and its budget note.`);
+lines.push(`Under the gate's narrower **T8** scope — \`var()\` in the three product pages plus theme-map cells plus \`components.css\` plus linked-last \`shell.css\`, gallery excluded, aliases and \`breakpoint.*\` exempt — **${gateOrphans.length}** key(s) are unconsumed: ${gateOrphans.length ? gateOrphans.map((leaf) => `\`${leaf.key}\``).join(', ') : 'none'}. Keys that differ between the two views are canvas-only (\`CT()\`/\`WA()\` strings the gate cannot see) or gallery-only consumers; \`scripts/lint-tokens.mjs\` prints the authoritative list and its budget note.`);
 lines.push('');
 
 // ---- theme contract -------------------------------------------------------
