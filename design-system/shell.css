@@ -1,9 +1,9 @@
 /* ==========================================================================
    shell.css — the single source of truth for the cross-surface page shell.
 
-   One shared stylesheet owning three things every shipped page repeats:
+   One shared stylesheet owning four things every shipped page repeats:
 
-     §S1  the content-axis measure  — `--ds-shell-max` (this file), the
+     §S1  the content-axis measure — `--ds-shell-max` (this file), the
           pitch cap + the in-panel rail column + one gap. Pages adopt
           `.ds-shell` on their content column / header inner instead of
           carrying a page-local copy of the calc.
@@ -16,6 +16,12 @@
           the shipped `.ds-menu` panel, so no MenuButton anchor math runs.
           Pages bind it with DS.menu (or the auto-init, where the page opts
           in); the page script owns wiring, this file owns geometry.
+     §S4  the sticky page header    — `.ds-stick`: title block above the tab
+          row, one stuck transition. The bar starts transparent/borderless
+          over the hero; `.is-stuck` (toggled by the page's own scroll
+          listener) condenses it to translucent role ground + blur +
+          hairline + tighter title padding, transitioned. Pages adopt the
+          markup, never a local copy of the chrome.
 
    OPT IN
    ------
@@ -23,11 +29,14 @@
      ... the page's own base/component/page <style> ...
      <link rel="stylesheet" href="design-system/shell.css">   <!-- LAST -->
 
-   ORDER MATTERS: load it after the page's inline <style>. These rules carry
-   no paint and no new values — every length resolves to a token from
+   ORDER MATTERS: load it after the page's inline <style>. The geometry rules
+   carry no paint and no new values — every length resolves to a token from
    tokens.css, every zero is structural — so the only thing the cascade order
    decides is that the shared geometry wins over a leftover page-local copy
    during a migration. There are no leftovers: each page deleted its own.
+   (§S4 is the one exception: the stuck chrome resolves only through --ds-*
+   roles with page-alias fallbacks, so it stays theme-agnostic — no page may
+   restyle the bar, the title row, or the stuck state locally.)
 
    CONTRACT
    --------
@@ -66,4 +75,35 @@
    one gutter — the full-bleed posture every page already used here. */
 @media(max-width:900px){
   .ds-shell{max-inline-size:none;padding-inline:var(--spacing-lg)}
+}
+
+/* §S4 · sticky page header — title block above the tab row, one stuck
+   transition. `.ds-stick` is the sticky wrapper (opt-in per page): inside,
+   `.ds-stick__title` (brand + tools) sits BEFORE `.ds-tabbar` (§S2), so the
+   stuck composition reads title → tabs on every page that adopts it.
+   Unstuck the bar is transparent with a transparent hairline (the hairline
+   holds the layout so sticking never shifts a pixel); `.is-stuck` — toggled
+   by the page's own scroll listener — condenses it: translucent ground +
+   blur + rule hairline + tighter title padding, transitioned on
+   background-color, border-color and padding. Ground and rule resolve
+   through --ds-* roles (pitch-shell theme map) with the page-alias
+   fallbacks (--bg/--rule/--ds-muted/--mut), so the bar stays
+   theme-agnostic: no page restyles the bar, the title row, or .is-stuck. */
+.ds-stick{position:sticky;top:0;z-index:var(--z-sticky);
+  padding-top:env(safe-area-inset-top,0px);
+  background-color:transparent;
+  border-bottom:var(--border-width-hairline) solid transparent;
+  transition:background-color var(--motion-duration-base) var(--motion-easing-standard),border-color var(--motion-duration-base) var(--motion-easing-standard)}
+.ds-stick__title{display:flex;align-items:center;justify-content:space-between;gap:var(--spacing-sm);
+  padding-block:var(--spacing-md) var(--spacing-2xs);
+  transition:padding-block var(--motion-duration-base) var(--motion-easing-standard)}
+.ds-stick__brand{font-size:var(--typography-size-body);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-snug);text-decoration:none}
+.ds-stick__brand small{display:block;color:var(--ds-muted,var(--mut));font-weight:var(--weight-regular);font-size:var(--typography-size-meta)}
+.ds-stick__tools{display:flex;align-items:center;gap:var(--spacing-sm)}
+.ds-stick.is-stuck{background-color:color-mix(in srgb,var(--ds-bg,var(--bg)) 88%,transparent);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  border-bottom-color:var(--ds-rule,var(--rule))}
+.ds-stick.is-stuck .ds-stick__title{padding-block:var(--spacing-2xs)}
+@media(prefers-reduced-motion:reduce){
+  .ds-stick,.ds-stick__title{transition:none}
 }

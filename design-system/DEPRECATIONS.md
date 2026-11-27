@@ -24,6 +24,14 @@ The shared rail/drawer wave replaced engine's 62px mobile status strip with the 
 
 The same wave added `layout.nav.drawer.width` (`min(20rem, 86vw)`) for the drawer panel, so the token set holds at **188 keys / 20 groups** with one different key. `scripts/build-tokens.mjs` (`EXPECTED_LEAVES`) and `scripts/build-foundations.mjs` were updated in the same commit.
 
+## Retired by the shared sticky header (2026-11-27)
+
+The `design-system/shell.css` §S4 sticky page header replaced the pitch page-local sticky chrome (`.top`: `var(--color-pitch-overlay-bg)` ground + blur + rule). The shared bar resolves its stuck ground through `--ds-*` roles, so the pitch-only overlay ground lost its last consumer. Measured with a case-sensitive grep across every HTML page, `design-system/*.css`, `engine-pitch.css`, `components.js` (`CT('--…')` / `WA('--…')`), the theme maps, `scripts/*.mjs` and the gallery swatch rows before deletion: zero `var()`, zero string lookup, zero alias value, zero gallery specimen. The token set goes 188 → 187 keys (20 groups unchanged).
+
+| Key | Was | Reason it stopped resolving | Replaced by |
+|---|---|---|---|
+| `color.pitch.overlay.bg` | `rgba(10,10,11,.92)` | `pitch.html`'s page-local `.top` sticky header is gone — the shared `.ds-stick` stuck state (shell.css §S4) paints `color-mix(in srgb, var(--ds-bg) 88%, transparent)` instead | nothing (the shared stuck chrome: `--ds-bg` / `--ds-rule` roles) |
+
 ## Alias tier still live (one release)
 
 These six keys keep their names for one release; their values are pointers, so a consumer that still names them resolves through the target. `focus.color` is not an alias in this sense — it is the role pointer the re-pointed focus rings consume.

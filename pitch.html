@@ -56,27 +56,24 @@ a{color:inherit}
 .p-panelbody>.ds-rail .ds-navclose{display:none}
 /* the export cluster follows the TOC instead of hanging on the viewport bottom */
 .p-panelbody>.ds-rail>.sidexport{position:static;inset-block-end:auto;margin-block-start:var(--spacing-lg);padding-block-end:0;background:transparent}
-/* header: sticky, brand + tools on row one, tab row on row two. The rail
-   carries sections only; the hero keeps its inline Surfaces links and the
-   tab row keeps a persistent Surfaces menu at the inline end (DS tabbar
-   pattern), so the cross-surface jump stays reachable on scroll. */
-.top{position:sticky;top:0;z-index:var(--z-sticky);background:var(--color-pitch-overlay-bg);backdrop-filter:blur(8px);border-bottom:var(--border-width-hairline) solid var(--rule);padding-top:env(safe-area-inset-top,0px)}
-.topin{display:flex;flex-direction:column;gap:var(--spacing-2);padding-block:var(--spacing-10) var(--spacing-2xs)}
-.brandrow{display:flex;align-items:center;justify-content:space-between;gap:var(--spacing-sm)}
-.brand{font-size:var(--typography-size-body);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-snug);text-decoration:none}
-.brand small{display:block;color:var(--mut);font-weight:var(--weight-regular);font-size:var(--typography-size-meta)}
-.brandtools{display:flex;align-items:center;gap:var(--spacing-sm)}
+/* header: the shared sticky page header (design-system/shell.css §S4
+   `.ds-stick`) — title block above the tab row, one stuck transition owned
+   by the shell. The rail carries sections only; the hero keeps its inline
+   Surfaces links and the tab row keeps a persistent Surfaces menu at the
+   inline end (DS tabbar pattern), so the cross-surface jump stays reachable
+   on scroll. */
 .hdricons{display:flex;align-items:center;gap:var(--spacing-2xs)}
 @media(min-width:901px){.hdricons{display:none}}
 .hicon{display:flex;align-items:center;justify-content:center;min-width:var(--control-height-default);min-height:var(--control-height-default);width:var(--control-height-default);height:var(--control-height-default);border-radius:var(--radius-xs);background:transparent;border:0;color:var(--mut);font-size:var(--typography-size-ui);cursor:pointer;font-family:inherit}
 .hicon:hover{color:var(--ink);background:var(--s2)}
 .hicon svg{display:block;width:var(--icon-size-sm);height:var(--icon-size-sm)}
-/* sticky tab row: the shared shell tabbar (design-system/shell.css `.ds-tabbar`
-   + `.ds-smenu`) — the underline parent tablist takes the free axis (and
-   scrolls it on a phone), the Surfaces menu keeps its own width at the inline
-   end, so it stays reachable after the hero links scroll away. The panel is
-   the shipped .ds-menu, CSS-anchored to its own box. No page-local restyle:
-   tab size/border come from components.css §5, identical to the DS gallery. */
+/* the tab row rides inside the shared sticky header (design-system/shell.css
+   §S4 `.ds-stick` + §S2 `.ds-tabbar` + §S3 `.ds-smenu`) — the underline parent
+   tablist takes the free axis (and scrolls it on a phone), the Surfaces menu
+   keeps its own width at the inline end, so it stays reachable after the hero
+   links scroll away. The panel is the shipped .ds-menu, CSS-anchored to its
+   own box. No page-local restyle: tab size/border come from components.css
+   §5, header chrome and the stuck transition come from shell.css §S4. */
 /* in-panel TOC: each doc panel owns one flat DS section rail (nav.toc);
    only the visible panel's TOC shows, and the export cluster rides under it */
 .sidexport{display:flex;flex-direction:column;gap:var(--spacing-xs);border-top:var(--border-width-hairline) solid var(--rule);margin-block-start:auto;padding:var(--spacing-sm) var(--spacing-md) var(--spacing-sm) calc(var(--border-width-strong) + var(--layout-rail-inset))}
@@ -251,7 +248,6 @@ footer{margin:var(--spacing-2xl) 0 var(--spacing-md);color:var(--mut);font-size:
 @media(max-width:900px){
 .shell{display:block}
 .col{display:contents}
-.top{order:1}
 .w{order:2}
 /* one column: the rail is either the drawer (JS stamps the mode) or, with
    no JS, a plain list stacked above the panel content */
@@ -294,7 +290,7 @@ section{scroll-margin-top:9.5rem}
 #plan-weeks .pl{display:grid;grid-template-columns:calc(var(--spacing-2xl) + var(--spacing-xl)) 1fr;gap:0 var(--spacing-sm);margin-top:var(--spacing-6)}
 #plan-weeks .pl>.k{margin:0}
 /* plan drawer v2: sticky header unit + compact pills + context stack + week panels (tokens only) */
-.plan-head{position:sticky;top:calc(-1 * var(--spacing-lg));z-index:var(--z-sticky);background:var(--color-pitch-overlay-surface);border-bottom:var(--border-width-hairline) solid var(--rule);margin:calc(-1 * var(--spacing-lg)) calc(-1 * var(--spacing-lg)) 0;padding:var(--spacing-sm) var(--spacing-lg)} /* overlay-surface: chrome that week rows scroll under, the same translucent role the sticky page header takes from overlay.bg */
+.plan-head{position:sticky;top:calc(-1 * var(--spacing-lg));z-index:var(--z-sticky);background:var(--color-pitch-overlay-surface);border-bottom:var(--border-width-hairline) solid var(--rule);margin:calc(-1 * var(--spacing-lg)) calc(-1 * var(--spacing-lg)) 0;padding:var(--spacing-sm) var(--spacing-lg)} /* overlay-surface: chrome that week rows scroll under, the same translucent role the old sticky page header took from overlay.bg before shell.css §S4 replaced it */
 /* fund drawer: sticky header unit (same heal pattern as .plan-head, tokens only — title + pills + toggle persist while KPIs/chart/table scroll; no transitions, so reduced-motion safe by construction) */
 .fund-head{position:sticky;top:calc(-1 * var(--spacing-lg));z-index:var(--z-sticky);background:var(--color-pitch-overlay-surface);border-bottom:var(--border-width-hairline) solid var(--rule);margin:calc(-1 * var(--spacing-lg)) calc(-1 * var(--spacing-lg)) 0;padding:var(--spacing-sm) var(--spacing-lg)}
 .plan-nav{position:static;z-index:var(--z-sticky);background:transparent;border:0;margin:0;padding:var(--spacing-xs) 0 0;gap:var(--spacing-2xs)}
@@ -311,7 +307,7 @@ section{scroll-margin-top:9.5rem}
 #plan-weeks{padding-block-end:var(--spacing-2xl)}
 /* print: active article only (in-panel navs stay on screen) */
 @media print{
-.top,.p-panelbody>.ds-rail,.ctarow,.drawer,.backdrop,footer,.viewtoggle{display:none}
+.ds-stick,.p-panelbody>.ds-rail,.ctarow,.drawer,.backdrop,footer,.viewtoggle{display:none}
 .shell,.col{display:block}
 body{background:var(--paper);color:var(--prtink)}
 .w{max-width:100%;padding:0}
@@ -334,11 +330,11 @@ html{scroll-behavior:auto}
 <body data-print-doc="story">
 <div class="shell">
 <div class="col">
-<header class="top">
-<div class="topin ds-shell">
-<div class="brandrow">
-<a class="brand" href="#story" onclick="switchTab('story');return false;">Camera Shots<small>intent before pixels</small></a>
-<div class="brandtools">
+<header class="ds-stick">
+<div class="ds-shell">
+<div class="ds-stick__title">
+<a class="ds-stick__brand" href="#story" onclick="switchTab('story');return false;">Camera Shots<small>intent before pixels</small></a>
+<div class="ds-stick__tools">
 <span class="hdricons no-print">
 <button class="hicon" id="h-exp" type="button" title="Download .md of this tab" aria-label="Download active tab markdown"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button>
 <button class="hicon" id="h-copy" type="button" title="Copy .md of this tab" aria-label="Copy active tab markdown"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
@@ -355,7 +351,7 @@ html{scroll-behavior:auto}
 <button class="ds-tab" id="tab-btn-mvp" role="tab" data-doc="mvp" aria-selected="false" aria-controls="panel-doc-04" tabindex="-1" onclick="switchTab('mvp')">MVP</button>
 </nav>
 <div class="ds-smenu">
-<button class="ds-btn ds-smenu__btn" type="button" data-ds-menu-trigger aria-controls="p-surfaces-menu" aria-expanded="false" aria-haspopup="menu"><span class="ds-btn__label">Surfaces</span><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-chevron-down"/></svg></button>
+<button class="ds-btn ds-smenu__btn" type="button" data-ds-menu-trigger aria-controls="p-surfaces-menu" aria-expanded="false" aria-haspopup="menu"><span class="ds-btn__label">Pitch</span><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-chevron-down"/></svg></button>
 <div class="ds-menu" id="p-surfaces-menu" role="menu" aria-label="Surfaces" hidden>
 <a class="ds-menu__item" role="menuitem" href="index.html">Wiki</a>
 <a class="ds-menu__item" role="menuitem" href="pitch.html" aria-current="page">Pitch</a>
@@ -929,6 +925,17 @@ bindDrawer(current);
   });
   document.addEventListener('pointerdown',function(e){if(!p.hasAttribute('hidden')&&!t.contains(e.target)&&!p.contains(e.target))close()});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!p.hasAttribute('hidden')){close();t.focus()}});
+})();
+/* shared sticky-header stuck state (design-system/shell.css §S4): the bar
+   starts transparent and borderless over the hero; past the top it condenses
+   (translucent ground + hairline + tighter title pad), transitioned by the
+   shell. rAF-throttled scroll read, no layout work. */
+(function(){
+  var bar=document.querySelector('.ds-stick');if(!bar)return;
+  var tick=false;
+  function set(){tick=false;bar.classList.toggle('is-stuck',window.scrollY>0)}
+  set();
+  window.addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(set)}},{passive:true});
 })();
 var reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
 var spy=null;

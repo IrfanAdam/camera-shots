@@ -26,8 +26,10 @@
   --g-accent: var(--color-pitch-accent);
   --g-accent-ink: var(--color-pitch-accent-ink);
   --g-swatch-edge: color-mix(in srgb, var(--color-pitch-muted-2) 42%, transparent);
-  /* anchor landing distance under the sticky category bar */
-  --g-anchor-offset: calc(var(--control-height-default) + var(--spacing-2xl));
+  /* anchor landing distance under the sticky header: the title row plus the
+     tab row plus one spacing step (the script re-measures the live bar and
+     writes the exact value at runtime; this stays as the no-JS fallback). */
+  --g-anchor-offset: calc(var(--control-height-default) + var(--spacing-2xl) + var(--spacing-xl));
   /* the shell's content axis lives in design-system/shell.css (`.ds-shell`
      from shell.css --ds-shell-max): full width up to the pitch content cap,
      widened by exactly the in-panel rail column and its gap, so adding the
@@ -55,10 +57,9 @@ code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-
    the sub-nav row, the underline bar and the panels all start on one
    vertical line. */
 
-/* ---------- masthead ---------- */
+/* ---------- masthead (static hero under the sticky header) ---------- */
 .masthead{grid-area:masthead;border-bottom:var(--border-width-hairline) solid var(--g-rule);padding:var(--spacing-2xl) 0 var(--spacing-xl)}
-.mast-top{display:flex;align-items:center;justify-content:space-between;gap:var(--spacing-md);flex-wrap:wrap;margin-bottom:var(--spacing-xl)}
-.mast-menu{display:flex;align-items:center;margin-inline-start:auto}
+.mast-menu{display:flex;align-items:center}
 .kicker{font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;font-weight:var(--weight-medium);color:var(--g-muted)}
 .masthead h1{font-size:var(--typography-size-display);line-height:var(--line-height-display);letter-spacing:var(--tracking-tight);font-weight:var(--weight-bold);max-width:18ch}
 .mast-lede{margin-top:var(--spacing-md);max-width:56ch;color:var(--g-muted);font-size:var(--typography-size-body)}
@@ -67,13 +68,16 @@ code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-
 .stats dt{font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--g-muted)}
 .stats dd{margin-top:var(--spacing-2xs);font-size:var(--typography-size-small);font-weight:var(--weight-medium)}
 
-/* ---------- shell: hero → underline tabs → panels --------------------------
-   DOM order is masthead → main, and the grid stacks them the same way: the
-   DS blurb hero spans the full width on top, the content column carries the
-   underline category bar + panels. No side column and no strip between hero
-   and tabs, so the content axis never shifts between categories: each
-   sectioned panel carries its own left sub-nav (`.g-panelbody` first child,
-   gallery-pitch.css) under the `#ds-cats` bar. */
+/* ---------- shell: sticky header → hero → underline tabs → panels ----
+   The sticky header (design-system/shell.css §S4 `.ds-stick`: title block
+   above the tab row) is a direct body child ABOVE this grid, so it sticks
+   for the whole page — a grid item only sticks inside its own grid area.
+   DOM order is header → masthead → main, and the grid stacks the same way:
+   the DS blurb hero spans the full width on top, the content column carries
+   the panels. No side column and no strip between hero and tabs, so the
+   content axis never shifts between categories: each sectioned panel
+   carries its own left sub-nav (`.g-panelbody` first child,
+   gallery-pitch.css) under the tab row. */
 .g-shell{
   display:grid;
   grid-template-columns:minmax(0,1fr);
@@ -91,25 +95,12 @@ code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-
   padding-block:var(--spacing-xl) var(--spacing-2xl);
 }
 
-/* sticky underline category bar, left-aligned to the content axis — one
-   rule, not two (the duplicate .g-tabbar block was folded here). The flex
-   row itself is the shared shell tabbar (design-system/shell.css
-   `.ds-tabbar`): the underline tablist takes the free axis and the Surfaces
-   menu keeps its own width at the inline end. The underline tablist
+/* the tab row rides inside the shared sticky header (design-system/shell.css
+   §S4 `.ds-stick` + §S2 `.ds-tabbar`): `.ds-stick__title` above,
+   the underline tablist + Surfaces menu below — the same title-above-tabs
+   composition the pitch page sticks. The underline tablist
    (components.css §5) paints its own rule, so the bar's ::after stays parked
    for the pill shape only — with underline tabs it would double the rule. */
-.g-tabbar{
-  --_pad-x:var(--spacing-2xl);
-  position:sticky;inset-block-start:0;z-index:var(--z-sticky);
-  margin:0 calc(var(--_pad-x) * -1) var(--spacing-lg);
-  padding:var(--spacing-md) var(--_pad-x);
-  background:var(--g-bg);
-}
-.g-tabbar::after{
-  content:"";position:absolute;inset-block-end:0;inset-inline:var(--_pad-x);
-  block-size:var(--border-width-hairline);background:var(--g-rule);
-}
-.g-tabbar:has(.ds-tabs[data-variant="underline"])::after{display:none}
 
 /* persistent surfaces menu at the right end of the sticky category bar — the
    shared shell menu (design-system/shell.css `.ds-smenu`). The bar is flex:
@@ -350,17 +341,12 @@ footer code{color:var(--g-ink)}
 /* ---------- responsive ---------- */
 @media (max-width:900px){
   /* the active panel's own sub-nav becomes the off-canvas drawer
-     (components.css §21, toggled by the masthead button; bound per panel by
+     (components.css §21, toggled by the sticky-header button; bound per panel by
      the page script); the shell stays a single column and the underline
      category row is the primary tab strip. Without JS the panel nav stays a
      static list at the top of its panel. */
   .g-shell{display:flex;flex-direction:column}
-  .g-main{grid-area:auto;padding-block:0 var(--spacing-2xl)}
-  .g-tabbar{
-    --_pad-x:var(--spacing-lg);
-    margin:0 calc(var(--_pad-x) * -1) var(--spacing-md);
-    padding:var(--spacing-sm) var(--_pad-x);
-  }
+  .g-main{grid-area:auto;padding-block:var(--spacing-md) var(--spacing-2xl)}
   /* one scrollable underline strip, left-aligned; the underline shape never changes */
   .g-tabbar .ds-tabs{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}
   .g-tabbar .ds-tabs::-webkit-scrollbar{display:none}
@@ -397,13 +383,38 @@ footer code{color:var(--g-ink)}
 
 <a class="ds-skip-link" href="#main">Skip to content</a>
 
+<header class="ds-stick">
+  <div class="ds-shell">
+    <div class="ds-stick__title">
+      <a class="ds-stick__brand" href="./index.html">Camera Shots<small>design system</small></a>
+      <div class="ds-stick__tools">
+        <div class="mast-menu"><button class="ds-navtoggle" data-ds-nav-toggle="nav-color" aria-controls="nav-color" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-menu"/></svg></button></div>
+      </div>
+    </div>
+    <div class="g-tabbar ds-tabbar">
+      <div class="ds-tabs" id="ds-cats" data-variant="underline" role="tablist" aria-label="Design system categories" data-ds-panel-scope="#main">
+        <button class="ds-tab" type="button" role="tab" id="tab-color" aria-controls="color" aria-selected="true" tabindex="0">Color</button>
+        <button class="ds-tab" type="button" role="tab" id="tab-type" aria-controls="type" aria-selected="false" tabindex="-1">Type</button>
+        <button class="ds-tab" type="button" role="tab" id="tab-space-consistency" aria-controls="space-consistency" aria-selected="false" tabindex="-1">Space &amp; consistency</button>
+        <button class="ds-tab" type="button" role="tab" id="tab-specimens" aria-controls="specimens" aria-selected="false" tabindex="-1">Components</button>
+      </div>
+      <div class="ds-smenu">
+        <button class="ds-btn ds-smenu__btn" type="button" data-ds-menu-trigger aria-controls="g-surfaces-menu" aria-expanded="false" aria-haspopup="menu"><span class="ds-btn__label">Design System</span><svg aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-chevron-down"/></svg></button>
+        <div class="ds-menu" id="g-surfaces-menu" role="menu" aria-label="Surfaces" hidden>
+          <a class="ds-menu__item" role="menuitem" href="../index.html">Wiki</a>
+          <a class="ds-menu__item" role="menuitem" href="../pitch.html">Pitch</a>
+          <a class="ds-menu__item" role="menuitem" href="../engine.html">Engine</a>
+          <a class="ds-menu__item" role="menuitem" href="./index.html" aria-current="page">Design System</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
 <div class="g-shell">
   <header class="masthead">
     <div class="wrap ds-shell">
-      <div class="mast-top">
-        <p class="kicker">Design system · rendered from tokens.css · pitch shell</p>
-        <div class="mast-menu"><button class="ds-navtoggle" data-ds-nav-toggle="nav-color" aria-controls="nav-color" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-menu"/></svg></button></div>
-      </div>
+      <p class="kicker">Design system · rendered from tokens.css · pitch shell</p>
       <h1>Design System — Camera Shots</h1>
       <p class="mast-lede">Every specimen below is drawn with the custom properties in <code>tokens.css</code>, so what you see is what ships. Three surfaces, one token layer: <b>Wiki</b> (read), <b>Pitch</b> (persuade), <b>Engine</b> (operate).</p>
       <dl class="stats">
@@ -415,30 +426,13 @@ footer code{color:var(--g-ink)}
   </header>
 
   <main id="main" class="g-main ds-shell" tabindex="-1">
-    <div class="g-tabbar ds-tabbar">
-      <div class="ds-tabs" id="ds-cats" data-variant="underline" role="tablist" aria-label="Design system categories" data-ds-panel-scope="#main">
-        <button class="ds-tab" type="button" role="tab" id="tab-color" aria-controls="color" aria-selected="true" tabindex="0">Color</button>
-        <button class="ds-tab" type="button" role="tab" id="tab-type" aria-controls="type" aria-selected="false" tabindex="-1">Type</button>
-        <button class="ds-tab" type="button" role="tab" id="tab-space-consistency" aria-controls="space-consistency" aria-selected="false" tabindex="-1">Space &amp; consistency</button>
-        <button class="ds-tab" type="button" role="tab" id="tab-specimens" aria-controls="specimens" aria-selected="false" tabindex="-1">Components</button>
-      </div>
-      <div class="ds-smenu">
-        <button class="ds-btn ds-smenu__btn" type="button" data-ds-menu-trigger aria-controls="g-surfaces-menu" aria-expanded="false" aria-haspopup="menu"><span class="ds-btn__label">Surfaces</span><svg aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-chevron-down"/></svg></button>
-        <div class="ds-menu" id="g-surfaces-menu" role="menu" aria-label="Surfaces" hidden>
-          <a class="ds-menu__item" role="menuitem" href="../index.html">Wiki</a>
-          <a class="ds-menu__item" role="menuitem" href="../pitch.html">Pitch</a>
-          <a class="ds-menu__item" role="menuitem" href="../engine.html">Engine</a>
-          <a class="ds-menu__item" role="menuitem" href="./index.html" aria-current="page">Design System</a>
-        </div>
-      </div>
-    </div>
-
     <!-- ============ 01 COLOR ============ -->
     <section class="ds-tabpanel" id="color" role="tabpanel" aria-labelledby="tab-color" tabindex="0">
       <!-- per-panel sub-nav: the section list lives inside the panel, under
-           the #ds-cats bar — never between hero and tabs. Static markup, one
-           nav per sectioned panel, unique id; the page script binds the
-           visible one to the masthead toggle as the ≤900 drawer. -->
+           the sticky tab row — the tab row sits in the header above the
+           hero, so a panel nav never lands between hero and tabs. Static
+           markup, one nav per sectioned panel, unique id; the page script binds the
+           visible one to the sticky-header toggle as the ≤900 drawer. -->
       <div class="g-panelbody">
       <nav class="ds-rail" id="nav-color" data-ds-nav aria-label="Color sections">
         <div class="g-rail-group" data-rail-group data-rail-for="color">
@@ -479,7 +473,6 @@ footer code{color:var(--g-ink)}
           <div class="sw" data-token="color.pitch.switch.bg"><span class="sw-chip" style="background:var(--color-pitch-switch-bg)"></span><code>--color-pitch-switch-bg</code><span class="sw-val" data-live="--color-pitch-switch-bg" data-token-value>—</span></div>
           <div class="sw" data-token="color.pitch.scrim.mid"><span class="sw-chip" style="background:var(--color-pitch-scrim-mid)"></span><code>--color-pitch-scrim-mid</code><span class="sw-val" data-live="--color-pitch-scrim-mid" data-token-value>—</span></div>
           <div class="sw" data-token="color.pitch.overlay.surface"><span class="sw-chip" style="background:var(--color-pitch-overlay-surface)"></span><code>--color-pitch-overlay-surface</code><span class="sw-val" data-live="--color-pitch-overlay-surface" data-token-value>—</span></div>
-          <div class="sw" data-token="color.pitch.overlay.bg"><span class="sw-chip" style="background:var(--color-pitch-overlay-bg)"></span><code>--color-pitch-overlay-bg</code><span class="sw-val" data-live="--color-pitch-overlay-bg" data-token-value>—</span></div>
         </div>
       </div>
 
@@ -2823,14 +2816,14 @@ footer code{color:var(--g-ink)}
          panel, in both directions (tab → pushState, URL → tab), including
          back/forward, with no scroll jump when the tab changes;
        · the drawer binding — each sectioned panel carries its own static
-         sub-nav (`.ds-rail` first grid child); the masthead toggle is
+         sub-nav (`.ds-rail` first grid child); the sticky-header toggle is
          retargeted to the visible panel's nav, so the ≤900 drawer always
          opens the sections in front of the reader;
        · the scrollspy — aria-current="page" on the visible panel's rail item.
      ======================================================================= */
 
   var CATS = ['color', 'type', 'space-consistency', 'specimens'];
-  var tabbar = document.querySelector('.g-tabbar');
+  var tabbar = document.querySelector('.ds-stick') || document.querySelector('.g-tabbar');
   var tablist = document.getElementById('ds-cats');
   var panelOf = {};
   CATS.forEach(function (id) { panelOf[id] = document.getElementById(id); });
@@ -2854,7 +2847,7 @@ footer code{color:var(--g-ink)}
     return panel ? panel.querySelector('.g-panelbody > nav.ds-rail[data-ds-nav]') : null;
   }
 
-  /* point the single masthead toggle at the visible panel's nav and bind it.
+  /* point the single sticky-header toggle at the visible panel's nav and bind it.
      Only one Nav instance ever exists: the previous panel's is destroyed
      first, which also drops its toggle handler, so a click can never open
      two drawers. Panels without a nav hide the toggle — there is no menu to
@@ -2933,9 +2926,9 @@ footer code{color:var(--g-ink)}
     syncAnchorOffset();
   }
 
-  /* the bar's height is the one measurement CSS cannot know: the pills wrap to
-     a second row between 901 and ~1100. Write the landing distance as the
-     measured bar plus one spacing step, so a deep link lands under the bar at
+  /* the bar's height is the one measurement CSS cannot know: the title row
+     plus the tab row. Write the landing distance as the measured sticky
+     header plus one spacing step, so a deep link lands under the bar at
      every width (the CSS value stays as the no-JS fallback). */
   function syncAnchorOffset() {
     if (!tabbar) return;
@@ -3022,6 +3015,24 @@ footer code{color:var(--g-ink)}
   if (window.DS && typeof DS.menu === 'function' && surfacesTrigger && surfacesPanel) {
     DS.menu(surfacesTrigger, surfacesPanel);
   }
+
+  /* shared sticky-header stuck state (design-system/shell.css §S4): the bar
+     starts transparent and borderless over the hero; past the top it
+     condenses (translucent ground + hairline + tighter title pad),
+     transitioned by the shell. rAF-throttled scroll read, no layout work. */
+  (function () {
+    var bar = document.querySelector('.ds-stick');
+    if (!bar) return;
+    var tick = false;
+    function set() {
+      tick = false;
+      bar.classList.toggle('is-stuck', window.scrollY > 0);
+    }
+    set();
+    window.addEventListener('scroll', function () {
+      if (!tick) { tick = true; requestAnimationFrame(set); }
+    }, { passive: true });
+  })();
 
   /* per-component theme pills: one theme at a time. DS.tabs owns the roving
      tabindex, the aria-controls panels and the arrow keys; without

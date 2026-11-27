@@ -24,7 +24,7 @@ pipeline runs. Values live in the generated references, never here.
 
 | Path | What it is | Generated |
 |---|---|---|
-| `design-system/tokens.json` | Token source: **188 keys, 20 groups**, 4 theme maps — the only hand-edited value source | no |
+| `design-system/tokens.json` | Token source: **187 keys, 20 groups**, 4 theme maps — the only hand-edited value source | no |
 | `design-system/tokens.css` | `:root` properties + `[data-ds-theme]` role blocks | yes |
 | `design-system/base.css` · `components.css` · `components.js` | Reset/focus/target floor · 21 numbered blocks (1–21, §20b the rail foot), `var()` only, four densities · behaviour (`DS.init/tabs/menu/overlay/nav/toast/…`) | no |
 | `design-system/usage.json` · `usage.md` | Who consumes each token / component: 188 tokens, 158 with a product ref; 5 of 21 blocks have no product instance | yes |

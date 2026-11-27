@@ -187,9 +187,11 @@ const ROLE_VAR_COUNT = 17;
  * The pinned-surface-switcher wave then traded `layout.bar.engine` (its last
  * consumer, engine's 62px mobile strip, became the shared drawer) for
  * `layout.nav.drawer.width` (min(20rem, 86vw), the drawer panel), so the count
- * holds at 188 with one different key.
+ * holds at 188 with one different key. The shared sticky-header lane then
+ * retired `color.pitch.overlay.bg` (its last consumer, the pitch page-local
+ * sticky header, became shell.css §S4), so the count holds at 187.
  */
-const EXPECTED_LEAVES = 188;
+const EXPECTED_LEAVES = 187;
 
 const typeLabel = (path) => path.join('.');
 

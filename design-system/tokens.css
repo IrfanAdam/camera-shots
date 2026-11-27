@@ -2,7 +2,7 @@
    tokens.css — GENERATED FILE, DO NOT EDIT BY HAND.
    Source:     design-system/tokens.json
    Regenerate: node scripts/build-tokens.mjs
-   Tokens:     188
+   Tokens:     187
    Themes:     4 · role slots: 14 · role vars: 17
    ========================================================================== */
 
@@ -23,7 +23,6 @@
   --color-pitch-switch-bg: #101012;
   --color-pitch-scrim-mid: rgba(0,0,0,.6);
   --color-pitch-overlay-surface: rgba(20,20,22,.92);
-  --color-pitch-overlay-bg: rgba(10,10,11,.92);
 
   /* color.wiki */
   --color-wiki-light-bg: #F8F8F4;

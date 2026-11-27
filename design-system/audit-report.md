@@ -10,32 +10,32 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 ```
 
 - Generated: 2026-11-27
-- Tokens defined: 188 (`design-system/tokens.css`)
+- Tokens defined: 187 (`design-system/tokens.css`)
 - Files scanned: `index.html`, `pitch.html`, `engine.html`, `design-system/index.html`
-- Result: **PASS** — 0 over budget, 21 exempt, 0 bad-allow
-- Budgets: V1 0/0 · V2 0/0 · V3 1/1 · V4 0/0 · V5 0/0 · V6 0/0 · V7 0/0 · V8 0/0 · U1 0/0 · T1 8/10 · T2 25/32 · T3 18/21 · T4w 0/22 · T4f 2/2 · T6 2/5 · T13 0/0 · T14 8/8 · T15 140/147 · T8 9/9 · T9 0/0 · T10 0/0 · T11 0/0 · C1 6/6 · C2 0/12 · C3 0/0 · C4 0/0 · C5 0/0 · C6 0/0
+- Result: **PASS** — 0 over budget, 19 exempt, 0 bad-allow
+- Budgets: V1 0/0 · V2 0/0 · V3 1/1 · V4 0/0 · V5 0/0 · V6 0/0 · V7 0/0 · V8 0/0 · U1 0/0 · T1 8/10 · T2 25/32 · T3 17/21 · T4w 0/22 · T4f 2/2 · T6 2/5 · T13 0/0 · T14 8/8 · T15 139/147 · T8 10/10 · T9 0/0 · T10 0/0 · T11 0/0 · C1 6/6 · C2 0/12 · C3 0/0 · C4 0/0 · C5 0/0 · C6 0/0
 
 ## Per-file violations
 
 | File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | V7 border width | V8 spacing | U1 dead var | exempt | bad-allow | inline `style=` | `var(--)` uses |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 274 |
-| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 | 0 | 27 | 510 |
+| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 254 |
+| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 0 | 27 | 500 |
 | `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 0 | 2 | 884 |
-| `design-system/index.html` | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 95 | 452 |
-| **Total** | **0** | **0** | **1** | **0** | **0** | **0** | **0** | **0** | **0** | **21** | **0** | **140** | **2120** |
+| `design-system/index.html` | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 94 | 436 |
+| **Total** | **0** | **0** | **1** | **0** | **0** | **0** | **0** | **0** | **0** | **19** | **0** | **139** | **2074** |
 
 ## Type, consumer & theme counts
 
 | File | T1 font-size | T2 line-height | T3 tracking | T4 weight | T4 family | T6 `@media` px | T13 dup alias | T14 `!important` | T15 inline `style=` |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | `index.html` | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 16 |
-| `pitch.html` | 3 | 1 | 6 | 0 | 0 | 1 | 0 | 5 | 27 |
+| `pitch.html` | 3 | 1 | 5 | 0 | 0 | 1 | 0 | 5 | 27 |
 | `engine.html` | 2 | 14 | 10 | 0 | 2 | 0 | 0 | 1 | 2 |
-| `design-system/index.html` | 2 | 10 | 2 | 0 | 0 | 1 | 0 | 0 | 95 |
-| **Total** | **8** | **25** | **18** | **0** | **2** | **2** | **0** | **8** | **140** |
+| `design-system/index.html` | 2 | 10 | 2 | 0 | 0 | 1 | 0 | 0 | 94 |
+| **Total** | **8** | **25** | **17** | **0** | **2** | **2** | **0** | **8** | **139** |
 
-Token-set checks (not per file): **T8** 9 unconsumed tokens · **T9** 0 duplicate role values · **T10** 0 role-contract gaps · **T11** 0 type/value mismatch.
+Token-set checks (not per file): **T8** 10 unconsumed tokens · **T9** 0 duplicate role values · **T10** 0 role-contract gaps · **T11** 0 type/value mismatch.
 
 ## Budgets
 
@@ -54,14 +54,14 @@ Each class carries the count measured on 2026-11-24 as a ceiling. A count at or 
 | U1 | 0 | 0 | ok |
 | T1 | 8 | 10 (per file index.html 3, pitch.html 3, engine.html 2, design-system/index.html 2) | under |
 | T2 | 25 | 32 (per file index.html 0, pitch.html 2, engine.html 17, design-system/index.html 13) | under |
-| T3 | 18 | 21 (per file index.html 1, pitch.html 6, engine.html 10, design-system/index.html 4) | under |
+| T3 | 17 | 21 (per file index.html 1, pitch.html 6, engine.html 10, design-system/index.html 4) | under |
 | T4w | 0 | 22 (per file index.html 0, pitch.html 0, engine.html 22, design-system/index.html 0) | under |
 | T4f | 2 | 2 (per file index.html 0, pitch.html 0, engine.html 2, design-system/index.html 0) | ok |
 | T6 | 2 | 5 (per file index.html 0, pitch.html 4, engine.html 0, design-system/index.html 1) | under |
 | T13 | 0 | 0 | ok |
 | T14 | 8 | 8 (per file index.html 2, pitch.html 5, engine.html 1, design-system/index.html 0) | ok |
-| T15 | 140 | 147 (per file index.html 19, pitch.html 31, engine.html 2, design-system/index.html 95) | under |
-| T8 | 9 | 9 | ok |
+| T15 | 139 | 147 (per file index.html 19, pitch.html 31, engine.html 2, design-system/index.html 95) | under |
+| T8 | 10 | 10 | ok |
 | T9 | 0 | 0 | ok |
 | T10 | 0 | 0 | ok |
 | T11 | 0 | 0 | ok |
@@ -104,14 +104,14 @@ _No class is over budget._
 
 The four set-level checks are budgeted at the measured post-Phase-1A value, so they document the gap without failing the build until it grows.
 
-### T8 — no consumer (9)
+### T8 — no consumer (10)
 
 A `var()` reference in `index.html`, `pitch.html` or `engine.html`, a `themes` map cell, or (from Phase 2) `components.css` counts; a gallery swatch does not. Aliases (`value: var(--other)`) and `breakpoint.*` are exempt because neither can be consumed by a page.
 
 <details><summary>Unconsumed tokens</summary>
 
 - `--color-engine-track-audio`, `--color-engine-track-fx`, `--color-engine-track-title`, `--elevation-float`, `--elevation-inset`, `--elevation-ring`
-- `--icon-size-lg`, `--radius-lg`, `--tracking-label`
+- `--icon-size-lg`, `--radius-lg`, `--tracking-label`, `--typography-size-h1`
 
 </details>
 
@@ -127,14 +127,12 @@ One regex per declared type: `color`, `dimension`, `fontSize`, `lineHeight`, `le
 
 _None._
 
-### `pitch.html` — Exempt (4)
+### `pitch.html` — Exempt (2)
 
 | Line | Class | Found | Reason |
 |---:|---|---|---|
 | 36 | V8 | `padding-block:0 4rem` | 4rem deck bottom pad is layout-scale; no spacing step sits at 64px |
-| 124 | V8 | `padding:2.6rem 0 1.6rem` | hero section pad is layout-scale; 41.6px and 25.6px have no step within 0.9px |
-| 130 | V8 | `margin-top:1.4rem` | 22.4px CTA lift sits between the 20 and 24 steps; snapping moves 1.6px |
-| 268 | V8 | `padding:1.6rem 0 var(--spacing-md)` | 25.6px compact-hero pad sits between the 24 and 32 steps |
+| 127 | V8 | `margin-top:1.4rem` | 22.4px CTA lift sits between the 20 and 24 steps; snapping moves 1.6px |
 
 ### `engine.html` — Exempt (16)
 
@@ -161,7 +159,7 @@ _None._
 
 | Line | Class | Found | Reason |
 |---:|---|---|---|
-| 217 | V8 | `margin-top:-10px` | negative half of the 20px dot centres it against the track |
+| 208 | V8 | `margin-top:-10px` | negative half of the 20px dot centres it against the track |
 
 ## How to fix
 
