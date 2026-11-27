@@ -45,7 +45,7 @@ html[data-ds-shell="pitch"]{
    The flat rail's current item takes its 2px indicator from --ds-accent, which
    is --color-pitch-accent in this shell — so the rail needs no page override.
    The remaining selects/menus below still paint the engine selection token. */
-html[data-ds-shell="pitch"] #chapterbar select{border-left-color:var(--color-pitch-accent)}
+html[data-ds-shell="pitch"] .eng-proj select{border-left-color:var(--color-pitch-accent)}
 html[data-ds-shell="pitch"] #menDrop button.on{box-shadow:inset var(--border-width-strong) 0 0 var(--color-pitch-accent)}
 html[data-ds-shell="pitch"] #arrowpick button.on,
 html[data-ds-shell="pitch"] #assetBtn[aria-expanded="true"]{

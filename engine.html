@@ -141,16 +141,18 @@ header h1{font-size:var(--typography-size-lede);letter-spacing:-.01em}
 #assetPanel .athumb.none{display:inline-flex;align-items:center;justify-content:center;color:var(--mut);font-size:var(--typography-size-small)}
 #assetPanel .atxt{min-width:0;overflow:hidden;text-overflow:ellipsis}
 #assetPanel .empty{color:var(--mut);font-size:var(--typography-size-meta);font-style:italic;padding:var(--spacing-6) var(--spacing-10)}
-#chapterbar{display:flex;align-items:center;gap:var(--spacing-xs);padding:var(--spacing-xs) var(--spacing-sm);background:var(--panel);border-bottom:var(--border-width-hairline) solid var(--border);font-size:var(--typography-size-small);color:var(--mut)}
-#chapterbar[hidden]{display:none}
-#chapterbar select{font:inherit;font-size:var(--typography-size-small);color:var(--ink);background:var(--tool);border:var(--border-width-hairline) solid var(--border-strong);border-left:var(--border-width-strong) solid var(--color-engine-selection);border-radius:var(--radius-xs);padding:var(--spacing-2xs) var(--spacing-xs)}
-#chapterbar button{font:inherit;font-size:var(--typography-size-meta);font-weight:var(--weight-medium);color:var(--ink);background:var(--tool);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);padding:var(--spacing-2xs) var(--spacing-10);cursor:pointer}
-#chapterbar button:hover{border-color:var(--color-engine-text-secondary)}
-#chapterbar .sp{flex:1}
+/* engine project cluster: the chapter dropdown + its + button pinned at the
+   inline start of the tabbar row. The Surfaces menu keeps the inline end via
+   .ds-smenu margin-inline-start:auto (shell.css), so the view tabs own the
+   middle. Token-fed: no literal paint, only the shared tabbar border. */
+.eng-proj{display:flex;align-items:center;gap:var(--spacing-xs);flex:0 1 auto;min-inline-size:0}
+.eng-proj[hidden]{display:none}
+.eng-proj select{flex:1 1 auto;font:inherit;font-size:var(--typography-size-small);color:var(--ink);background:var(--tool);border:var(--border-width-hairline) solid var(--border-strong);border-left:var(--border-width-strong) solid var(--color-engine-selection);border-radius:var(--radius-xs);padding:var(--spacing-2xs) var(--spacing-xs);min-width:0;max-width:100%}
+.eng-proj button{flex:none}
 /* state: the visible chapter is the active one — selection colour marks it (declared on the base rule above) */
 /* primary affordance: one cream control per view (+ scene, or + shot/prop/cast/location) */
-#chapterbar #addScene,#addNode{background:var(--acc);border-color:var(--acc);color:var(--acc-ink);font-weight:var(--weight-bold)}
-#chapterbar #addScene:hover,#addNode:hover{background:var(--acc);border-color:var(--acc);color:var(--acc-ink);filter:brightness(1.06)}
+.tools #addScene,.tools #addNode{background:var(--acc);border-color:var(--acc);color:var(--acc-ink);font-weight:var(--weight-bold)}
+.tools #addScene:hover,.tools #addNode:hover{background:var(--acc);border-color:var(--acc);color:var(--acc-ink);filter:brightness(1.06)}
 #projBtn{border-color:var(--border-strong)}
 #anchorRow{display:flex;gap:var(--spacing-xs);align-items:center;font-size:var(--typography-size-meta);margin:var(--spacing-6) 0;flex-wrap:nowrap}
 /* anchor row: the controls are .ds-btn[data-size="xs"]; only the row spacing and
@@ -163,7 +165,7 @@ header h1{font-size:var(--typography-size-lede);letter-spacing:-.01em}
 #promptWrap{position:relative;flex:1;display:flex;flex-direction:column;min-height:0}
 #anchorRow #drawerMenuBtn{position:static;margin-left:auto}
 #drawerMenuBtn:hover,#drawerMenuBtn:focus-visible{border-color:var(--color-engine-text-secondary);color:var(--ink)}
-#drawerMenu{position:absolute;top:2.6rem;right:.6rem;background:var(--panel);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-sm);padding:var(--spacing-6);min-width:150px;box-shadow:var(--elevation-popover);z-index:3/* lint-allow: drawer menu stacks one step above drawer content; no z token holds 3 (nearest --z-content 2) and adding z.raise.deep would invent a step for one element */}
+#drawerMenu{position:absolute;top:2.6rem;right:.6rem;background:var(--panel);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-sm);padding:var(--spacing-6);min-width:150px;box-shadow:var(--elevation-popover);z-index:var(--z-overlay)/* drawer-scoped menu on the shared overlay step: above drawer content (--z-content), below drawer-level dialogs; one token scale, no magic numbers */}
 #drawerMenu[hidden]{display:none}
 #drawerMenu button{width:100%;text-align:left;background:transparent;border:0;border-radius:var(--radius-xs);padding:var(--spacing-6) var(--spacing-10);color:var(--ink);font-size:var(--typography-size-small);cursor:pointer;white-space:nowrap}
 #drawerMenu button:hover{background:var(--tool)}
@@ -323,10 +325,6 @@ input.tin.tin-pilled{color:transparent !important}
 .modal .tin::placeholder{color:var(--mut);font-style:italic}
 .modal .tin:hover{border-color:var(--color-engine-text-secondary);background:var(--tool-hover)}
 .modal .tin:focus{border-color:var(--ink);background:var(--tool-hover)}
-#assetList{border-top:var(--border-width-hairline) solid var(--border);margin-top:var(--spacing-2xs);padding-top:var(--spacing-2xs);max-height:220px;overflow:auto}
-#assetList .ah{color:var(--mut);font-size:var(--typography-size-eyebrow);padding:var(--spacing-2xs) var(--spacing-10) var(--spacing-2);text-transform:uppercase;letter-spacing:.04em}
-#assetList button{white-space:normal;text-align:left}
-#assetList button b{color:var(--teal-bright);font-weight:var(--weight-medium)}
 #assetPanel .ah{color:var(--mut);font-size:var(--typography-size-eyebrow);text-transform:uppercase;letter-spacing:.04em}
 #assetModal .asset-box{width:min(600px,94vw)}
 #assetEditList{display:flex;flex-direction:column;gap:var(--spacing-xs);max-height:56vh;overflow:auto;margin:var(--spacing-6) 0}
@@ -359,7 +357,7 @@ input.tin.tin-pilled{color:transparent !important}
 /* ---- touch layer (lane Engine-Mobile; visual language only, IA unchanged) ----
    Tokens: --tap 44px min touch target. */
 /* desktop + mobile: 44px minimum touch targets on all primary controls */
-.tools button,#chapterbar button,#chapterbar select{min-height:var(--tap)}
+.tools button,.tools select,.eng-proj button,.eng-proj select{min-height:var(--tap)}
 #drawerMenu button,#cardMenu button,#assetPanel .ajump{min-height:var(--tap)}
 /* canvas zoom controls: transport-style cluster, mobile only */
 #zoomCtl{position:absolute;z-index:var(--z-sticky-rail);right:10px;bottom:10px;display:none;flex-direction:column;gap:var(--spacing-6)}
@@ -379,8 +377,6 @@ input.tin.tin-pilled{color:transparent !important}
   .tools button{flex:none;min-height:var(--tap)}
   .hint{display:none}
   #stage{min-height:0}
-  #chapterbar{overflow-x:auto;scrollbar-width:none}
-  #chapterbar::-webkit-scrollbar{display:none}
   /* drawer -> bottom sheet with grab handle + safe-area */
   #drawer{top:auto;left:0;right:0;bottom:0;width:100%;max-height:86dvh;border-left:0;border-top:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-sm) var(--radius-sm) 0 0;transform:translateY(106%);padding-bottom:env(safe-area-inset-bottom,0px)}
   #drawer.open{transform:none}
@@ -397,19 +393,18 @@ input.tin.tin-pilled{color:transparent !important}
   #zoomCtl{display:flex}
 }
 /* --------------------------------------------------------------------------
-   Phone reflow (<=520px). The board is one column wide here, so the chapter
-   bar puts + scene in the first screen, the redundant "Chapter" field label
-   drops (the select already names the chapter), and glyph-only controls get
+   Phone reflow (<=520px). The board is one column wide here, so the tabbar
+   wraps: the project cluster + Surfaces share the first line and the view
+   tabs take a full-width scrolling row below, and glyph-only controls get
    their 40px hit floor back after flex squeeze.
    -------------------------------------------------------------------------- */
-@media (max-width:520px){/* lint-allow: 520px keeps the chapter bar single-line on 390-520 phones; no token sits between --breakpoint-xs 390 and --breakpoint-sm 639 */
-  #chapterbar>span:first-child{display:none}
-  #chapterSel{order:1;min-width:0;max-width:31vw}
-  #addScene{order:2}
-  #addChapter{order:3}
-  #chapterbar .sp{order:4}
-  #addLane{order:5}
-  #chapterbar button{white-space:nowrap}
+@media (max-width:520px){/* lint-allow: 520px keeps the tabbar usable on 390-520 phones: the view tabs take their own full-width row so the project cluster + Surfaces share the first line with room to spare; no token sits between --breakpoint-xs 390 and --breakpoint-sm 639 */
+  .eng-tabbar__row{flex-wrap:wrap;gap:var(--spacing-xs)}
+  .eng-tabbar__row>.eng-proj{order:1;flex:1 1 0%}
+  .eng-tabbar__row>.ds-smenu{order:2}
+  .eng-tabbar__row>.ds-tabs{order:3;flex:1 1 100%}
+  #chapterSel{min-width:0}
+  .eng-proj button,.tools button{white-space:nowrap}
   #histUndoBtn,#histRedoBtn,#dots,#drawerMenuBtn{min-width:var(--touch-min)}
 }
 /* --------------------------------------------------------------------------
@@ -482,12 +477,14 @@ input.tin.tin-pilled{color:transparent !important}
 <header>
 <h1>Prompt Engine</h1>
 </header>
-<main id="main" tabindex="-1"><div id="stage"><div class="eng-tabbar"><div class="eng-tabbar__row ds-shell ds-tabbar"><div class="ds-tabs" id="engTabs" data-variant="underline" role="tablist" aria-label="Views" data-ds-panel-scope="#stage"><button class="ds-tab" type="button" role="tab" data-view="scenes" aria-selected="true" tabindex="0">Scenes</button><button class="ds-tab" type="button" role="tab" data-view="shots" aria-selected="false" tabindex="-1">Shots Composer</button><button class="ds-tab" type="button" role="tab" data-view="locations" aria-selected="false" tabindex="-1">Locations</button><button class="ds-tab" type="button" role="tab" data-view="props" aria-selected="false" tabindex="-1">Props</button><button class="ds-tab" type="button" role="tab" data-view="cast" aria-selected="false" tabindex="-1">Cast</button></div><div class="ds-smenu"><button class="ds-btn ds-smenu__btn" type="button" data-ds-menu-trigger aria-controls="eng-surfaces-menu" aria-expanded="false" aria-haspopup="menu"><span class="ds-btn__label">Engine</span><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-chevron-down"/></svg></button><div class="ds-menu" id="eng-surfaces-menu" role="menu" aria-label="Surfaces" hidden><a class="ds-menu__item" role="menuitem" href="index.html">Wiki</a><a class="ds-menu__item" role="menuitem" href="pitch.html">Pitch</a><a class="ds-menu__item" role="menuitem" href="engine.html" aria-current="page">Engine</a><a class="ds-menu__item" role="menuitem" href="design-system/index.html">Design System</a></div></div></div></div><div id="chapterbar" hidden><span>Chapter</span><select id="chapterSel" aria-label="Chapter"></select><button id="addChapter" class="ds-btn">+ chapter</button><span class="sp"></span><button id="addLane" class="ds-btn">+ lane</button><button id="addScene" class="ds-btn">+ scene</button></div><div id="cvwrap"><div id="assetWrap"><button id="assetBtn" title="List assets in this tab" aria-haspopup="menu" aria-controls="assetPanel" aria-expanded="false" data-ds-menu-trigger>☰</button><div id="assetPanel" class="ds-menu" role="menu" aria-label="Assets in this tab" hidden></div></div><div class="tools">
+<main id="main" tabindex="-1"><div id="stage"><div class="eng-tabbar"><div class="eng-tabbar__row ds-shell ds-tabbar"><div class="eng-proj" id="projCluster" hidden><select id="chapterSel" aria-label="Chapter"></select><button id="addChapter" class="ds-btn">+ chapter</button></div><div class="ds-tabs" id="engTabs" data-variant="underline" role="tablist" aria-label="Views" data-ds-panel-scope="#stage"><button class="ds-tab" type="button" role="tab" data-view="scenes" aria-selected="true" tabindex="0">Scenes</button><button class="ds-tab" type="button" role="tab" data-view="shots" aria-selected="false" tabindex="-1">Shots Composer</button><button class="ds-tab" type="button" role="tab" data-view="locations" aria-selected="false" tabindex="-1">Locations</button><button class="ds-tab" type="button" role="tab" data-view="props" aria-selected="false" tabindex="-1">Props</button><button class="ds-tab" type="button" role="tab" data-view="cast" aria-selected="false" tabindex="-1">Cast</button></div><div class="ds-smenu"><button class="ds-btn ds-smenu__btn" type="button" data-ds-menu-trigger aria-controls="eng-surfaces-menu" aria-expanded="false" aria-haspopup="menu"><span class="ds-btn__label">Engine</span><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-chevron-down"/></svg></button><div class="ds-menu" id="eng-surfaces-menu" role="menu" aria-label="Surfaces" hidden><a class="ds-menu__item" role="menuitem" href="index.html">Wiki</a><a class="ds-menu__item" role="menuitem" href="pitch.html">Pitch</a><a class="ds-menu__item" role="menuitem" href="engine.html" aria-current="page">Engine</a><a class="ds-menu__item" role="menuitem" href="design-system/index.html">Design System</a></div></div></div></div><div id="cvwrap"><div id="assetWrap"><button id="assetBtn" title="List assets in this tab" aria-haspopup="menu" aria-controls="assetPanel" aria-expanded="false" data-ds-menu-trigger>☰</button><div id="assetPanel" class="ds-menu" role="menu" aria-label="Assets in this tab" hidden></div></div><div class="tools">
 <button id="histUndoBtn" class="hist ds-btn" title="Undo (Ctrl+Z)" aria-label="Undo" disabled><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3 2.5 6.5 6 10"/><path d="M3 6.5h5.5a4.5 4.5 0 0 1 0 9H7"/></svg></button>
 <button id="histRedoBtn" class="hist ds-btn" title="Redo (Ctrl+Shift+Z)" aria-label="Redo" disabled><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3l3.5 3.5L10 10"/><path d="M13 6.5H7.5a4.5 4.5 0 0 0 0 9H9"/></svg></button>
+<button id="addLane" class="ds-btn">+ lane</button>
+<button id="addScene" class="ds-btn">+ scene</button>
 <button id="addNode" class="ds-btn">+ location</button>
 <button id="projBtn" class="ds-btn" title="Project proprietary tokens — enable domains used in prompts">⚙ project</button>
-<div class="menu"><button id="dots" class="ds-btn" title="more" aria-label="More actions" aria-haspopup="menu" aria-controls="menuDrop" aria-expanded="false" data-ds-menu-trigger>⋯</button><div id="menuDrop" class="ds-menu" role="menu" aria-label="Canvas actions" hidden><button id="undoBtn" class="ds-menu__item" role="menuitem">undo</button><button id="clear" class="ds-menu__item" role="menuitem">clear canvas</button><div id="assetList" role="group" aria-label="Assets"></div></div></div>
+<div class="menu"><button id="dots" class="ds-btn" title="more" aria-label="More actions" aria-haspopup="menu" aria-controls="menuDrop" aria-expanded="false" data-ds-menu-trigger>⋯</button><div id="menuDrop" class="ds-menu" role="menu" aria-label="Canvas actions" hidden><button id="undoBtn" class="ds-menu__item" role="menuitem">undo</button><button id="clear" class="ds-menu__item" role="menuitem">clear canvas</button></div></div>
 </div><canvas id="cv" tabindex="0" role="application" aria-label="Storyboard canvas" aria-describedby="cvHelp"></canvas></div><p id="cvHelp" class="ds-sr-only">Canvas keyboard: arrow keys move the selection between cards; Enter opens the selected card; N adds a card; Delete removes it after a second press; C starts a link, then arrow keys choose the target and Enter links it; Escape cancels. Every card is also in the assets list for this tab, which opens it.</p><button id="cardMenuBtn" title="Image and link options" aria-label="Card image and link options" aria-haspopup="menu" aria-controls="cardMenu" aria-expanded="false" data-ds-menu-trigger hidden>⋯</button><div id="cardMenu" class="ds-menu" role="menu" aria-label="Card options" hidden></div></div></main>
 <input type="file" id="filePick" accept="image/*" class="filehide" tabindex="-1" aria-hidden="true">
 <input type="file" id="assetImportPick" accept=".json,application/json,image/*" class="filehide" tabindex="-1" aria-hidden="true">
@@ -1665,7 +1662,7 @@ document.getElementById('anchorCode').onclick=()=>{const t=document.getElementBy
 /* ---- overflow menu ---- */
 const dots=document.getElementById('dots'),menuDrop=document.getElementById('menuDrop');
 const dotsMenu=DS.menu(dots,menuDrop);
-menuDrop.addEventListener('ds:menuopen',()=>{try{renderAssetMenu()}catch(_e){}const f=menuDrop.querySelector('[role="menuitem"]');if(f)try{f.focus()}catch(_e2){}});
+menuDrop.addEventListener('ds:menuopen',()=>{const f=menuDrop.querySelector('[role="menuitem"]');if(f)try{f.focus()}catch(_e2){}});
 /* ---- scenes: lane canvas ---- */
 let dragS=null;
 let cam={x:0,y:0,z:1};
@@ -1940,7 +1937,10 @@ function syncUI(){
     + roving, and this re-asserts it when the view changes from a shortcut
     or a deep link (selectShot, chapter switches). */
  document.querySelectorAll('#engTabs .ds-tab').forEach(b=>{const on=b.dataset.view===view;b.setAttribute('aria-selected',on?'true':'false');b.tabIndex=on?0:-1});
- document.getElementById('chapterbar').hidden=view!=='scenes';
+ document.getElementById('projCluster').hidden=view!=='scenes';
+ const _lane=document.getElementById('addLane'),_scn=document.getElementById('addScene');
+ if(_lane)_lane.style.display=view==='scenes'?'':'none';
+ if(_scn)_scn.style.display=view==='scenes'?'':'none';
  const an=document.getElementById('addNode');
  if(view==='scenes')an.style.display='none';
  else{an.style.display='';an.textContent='+ '+(VIEW_META[view]?VIEW_META[view].one:'node').toLowerCase()}
@@ -2409,15 +2409,7 @@ function renderPromptPreview(n){const prev=document.getElementById('promptPrev')
  const o=buildJsonDom(prev,n,n,10);
  if(!o){prev.textContent='⚠ assign an anchor first (drawer → assign).';return}
  pmJsonText=JSON.stringify(o,null,2)}
-function renderAssetMenu(){const host=document.getElementById('assetList');host.innerHTML='';
- const h=document.createElement('div');h.className='ah';h.setAttribute('role','none');host.appendChild(h);
- const pick=(label,n,fn)=>{const b=document.createElement('button');b.type='button';b.className='ds-menu__item';b.setAttribute('role','menuitem');const an=n.anchor||n.scAnchor||'?';b.innerHTML='';const bb=document.createElement('b');bb.textContent=an;b.appendChild(bb);b.appendChild(document.createTextNode(' '+(label||'')));b.onclick=e=>{e.stopPropagation();try{dotsMenu.close('ui',false)}catch(_e){};fn()};host.appendChild(b)}
- if(view==='scenes'){h.textContent='assets — scenes · '+activeChapter().name;
-  for(const s of activeChapter().scenes)pick(s.title,s,()=>{selStrip=s;selected=null;openDrawer(s);draw()})}
- else{const m=VIEW_META[view];h.textContent='assets — '+(m?m.one.toLowerCase()+'s':view);
-  for(const n of nodes)pick(n.label,n,()=>{selected=n;selStrip=null;hoverNode=n;openDrawer(n);draw()})}
- if(!host.children.length+1||host.querySelectorAll('button').length===0){const d=document.createElement('div');d.className='ah';d.setAttribute('role','none');d.textContent='no assets yet';host.appendChild(d)}}
-/* ---- floating asset list (per-tab, in-canvas): same enumeration as the ⋯ menu ---- */
+/* ---- floating asset list (per-tab, in-canvas): the single asset enumeration ---- */
 function assetListEntries(){
  if(view==='scenes'){const c=(typeof activeChapter==='function')?activeChapter():null;const ss=(c&&c.scenes)||[];
   return{title:'assets — scenes · '+((c&&(c.name||('Chapter '+c.id)))||''),items:ss.map(s=>({ref:s,anchor:s.scAnchor||'?',label:s.title||'Scene'}))}}
@@ -2518,7 +2510,7 @@ function renderAssetEditor(){
   }
   row.appendChild(act);list.appendChild(row)}}
 function assetEditorRefresh(){try{if(!document.getElementById('assetModal').hidden)renderAssetEditor()}catch(e){}
- try{if(!document.getElementById('assetPanel').hidden)renderAssetPanel()}catch(e2){}try{syncAssetBtn()}catch(e3){}try{renderAssetMenu()}catch(e4){}}
+ try{if(!document.getElementById('assetPanel').hidden)renderAssetPanel()}catch(e2){}try{syncAssetBtn()}catch(e3){}}
 function assetRowDelete(t){const live=assetResolve(t);if(!live){flashHint('nothing to delete');return}
  snap();
  if(t.isScene||(view==='scenes'&&live.slots)){const ch=activeChapter();const ix=(ch.scenes||[]).indexOf(live);
@@ -2556,7 +2548,7 @@ function assetRowImportFile(t,f){const live=assetResolve(t);if(!live){flashHint(
   r.onerror=()=>flashHint('could not read file');r.readAsText(f);return}
  fileToDataURL(f).then(url=>{const again=assetResolve(t);if(!again){flashHint('asset gone');return}
   if(again.slots){flashHint('scenes take no image');return}
-  snap();again.imgUrl=url;loadImage(again);try{assetEditorRefresh()}catch(e){}try{renderAssetMenu()}catch(e2){}}).catch(()=>flashHint('could not read that image file'))}
+  snap();again.imgUrl=url;loadImage(again);try{assetEditorRefresh()}catch(e){}}).catch(()=>flashHint('could not read that image file'))}
 function assetRowRename(t){const live=assetResolve(t);if(!live){flashHint('nothing to rename');return}
  renameAsset(live); /* single rename path: renameAsset delegates to editLabel / title prompt */
  try{assetEditorRefresh()}catch(e){}}

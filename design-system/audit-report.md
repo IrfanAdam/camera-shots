@@ -12,18 +12,18 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 - Generated: 2026-11-27
 - Tokens defined: 187 (`design-system/tokens.css`)
 - Files scanned: `index.html`, `pitch.html`, `engine.html`, `design-system/index.html`
-- Result: **PASS** — 0 over budget, 19 exempt, 0 bad-allow
-- Budgets: V1 0/0 · V2 0/0 · V3 1/1 · V4 0/0 · V5 0/0 · V6 0/0 · V7 0/0 · V8 0/0 · U1 0/0 · T1 8/10 · T2 25/32 · T3 17/21 · T4w 0/22 · T4f 2/2 · T6 2/5 · T13 0/0 · T14 8/8 · T15 139/147 · T8 10/10 · T9 0/0 · T10 0/0 · T11 0/0 · C1 6/6 · C2 0/12 · C3 0/0 · C4 0/0 · C5 0/0 · C6 0/0
+- Result: **PASS** — 0 over budget, 18 exempt, 0 bad-allow
+- Budgets: V1 0/0 · V2 0/0 · V3 1/1 · V4 0/0 · V5 0/0 · V6 0/0 · V7 0/0 · V8 0/0 · U1 0/0 · T1 8/10 · T2 25/32 · T3 16/21 · T4w 0/22 · T4f 2/2 · T6 2/5 · T13 0/0 · T14 8/8 · T15 139/147 · T8 10/10 · T9 0/0 · T10 0/0 · T11 0/0 · C1 6/6 · C2 0/12 · C3 0/0 · C4 0/0 · C5 0/0 · C6 0/0
 
 ## Per-file violations
 
 | File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | V7 border width | V8 spacing | U1 dead var | exempt | bad-allow | inline `style=` | `var(--)` uses |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 254 |
-| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 0 | 27 | 500 |
-| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 0 | 2 | 884 |
+| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 0 | 27 | 504 |
+| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 15 | 0 | 2 | 867 |
 | `design-system/index.html` | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 94 | 436 |
-| **Total** | **0** | **0** | **1** | **0** | **0** | **0** | **0** | **0** | **0** | **19** | **0** | **139** | **2074** |
+| **Total** | **0** | **0** | **1** | **0** | **0** | **0** | **0** | **0** | **0** | **18** | **0** | **139** | **2061** |
 
 ## Type, consumer & theme counts
 
@@ -31,9 +31,9 @@ node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | `index.html` | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 2 | 16 |
 | `pitch.html` | 3 | 1 | 5 | 0 | 0 | 1 | 0 | 5 | 27 |
-| `engine.html` | 2 | 14 | 10 | 0 | 2 | 0 | 0 | 1 | 2 |
+| `engine.html` | 2 | 14 | 9 | 0 | 2 | 0 | 0 | 1 | 2 |
 | `design-system/index.html` | 2 | 10 | 2 | 0 | 0 | 1 | 0 | 0 | 94 |
-| **Total** | **8** | **25** | **17** | **0** | **2** | **2** | **0** | **8** | **139** |
+| **Total** | **8** | **25** | **16** | **0** | **2** | **2** | **0** | **8** | **139** |
 
 Token-set checks (not per file): **T8** 10 unconsumed tokens · **T9** 0 duplicate role values · **T10** 0 role-contract gaps · **T11** 0 type/value mismatch.
 
@@ -54,7 +54,7 @@ Each class carries the count measured on 2026-11-24 as a ceiling. A count at or 
 | U1 | 0 | 0 | ok |
 | T1 | 8 | 10 (per file index.html 3, pitch.html 3, engine.html 2, design-system/index.html 2) | under |
 | T2 | 25 | 32 (per file index.html 0, pitch.html 2, engine.html 17, design-system/index.html 13) | under |
-| T3 | 17 | 21 (per file index.html 1, pitch.html 6, engine.html 10, design-system/index.html 4) | under |
+| T3 | 16 | 21 (per file index.html 1, pitch.html 6, engine.html 10, design-system/index.html 4) | under |
 | T4w | 0 | 22 (per file index.html 0, pitch.html 0, engine.html 22, design-system/index.html 0) | under |
 | T4f | 2 | 2 (per file index.html 0, pitch.html 0, engine.html 2, design-system/index.html 0) | ok |
 | T6 | 2 | 5 (per file index.html 0, pitch.html 4, engine.html 0, design-system/index.html 1) | under |
@@ -94,7 +94,7 @@ The shared layer (`base.css`, `components.css`, `components.js`, `icons.svg`) is
 | C5 | four pages → `icons.svg` | 0 | 0 | 48 `<use href="icons.svg#…">` references, 24 symbols, 0 unresolved |
 | C6 | `components.js`, `icons.svg` | 0 | 0 | 0 paint literals in components.js (paints through var() + currentColor) and icons.svg (currentColor only) |
 
-Counters: **5** `aria-modal` node(s) checked · **56** `svg#id` reference(s) resolved.
+Counters: **5** `aria-modal` node(s) checked · **55** `svg#id` reference(s) resolved.
 
 ## Over-budget detail
 
@@ -134,32 +134,31 @@ _None._
 | 36 | V8 | `padding-block:0 4rem` | 4rem deck bottom pad is layout-scale; no spacing step sits at 64px |
 | 127 | V8 | `margin-top:1.4rem` | 22.4px CTA lift sits between the 20 and 24 steps; snapping moves 1.6px |
 
-### `engine.html` — Exempt (16)
+### `engine.html` — Exempt (15)
 
 | Line | Class | Found | Reason |
 |---:|---|---|---|
 | 1 | V1 | `#0A0A0B` | meta theme-color cannot resolve custom properties; value mirrors --color-pitch-bg (#0A0A0B) |
-| 132 | V8 | `padding:5px` | 5px menu inset sits between 4 and 6; snapping reflows the menu rows |
-| 139 | V8 | `padding:5px` | 5px panel inset sits between 4 and 6; snapping reflows the asset rows |
-| 170 | T2 | `line-height:1.5` | 2.3rem prompt-label clearance is layout-scale, beyond the 32px step |
-| 170 | V8 | `padding-top:2.3rem` | 2.3rem prompt-label clearance is layout-scale, beyond the 32px step |
-| 174 | V3 | `z-index:3` | drawer menu stacks one step above drawer content; no z token holds 3 (nearest --z-content 2) and adding z.raise.deep would invent a step for one element |
-| 262 | T6 | `@media width:760px` | 760px predates the breakpoint scale; --breakpoint-md 767.5 would reflow the projection rail 7.5px earlier |
-| 270 | T6 | `@media width:760px` | 760px must stay paired with the projection rail query above; snapping both shifts the edit panel 7.5px |
-| 292 | V8 | `margin:0 0 var(--spacing-2xs) 118px` | 118px label indent aligns to the field column, not the rhythm |
-| 293 | T2 | `line-height:1.6` | 1px chip inset is an optical hairline; no 2px step exists |
-| 293 | T3 | `letter-spacing:.04em` | 1px chip inset is an optical hairline; no 2px step exists |
-| 293 | V8 | `padding:1px var(--spacing-xs)` | 1px chip inset is an optical hairline; no 2px step exists |
-| 316 | V8 | `padding:0 0 0 3px` | 3px chip inset cancels the -3px gutter so the token stays flush |
-| 316 | V8 | `margin:0 0 0 -3px` | 3px chip inset cancels the -3px gutter so the token stays flush |
-| 387 | T6 | `@media width:860px` | 860px collapses the engine header; --breakpoint-lg 900 would hide the tool row 40px later |
-| 419 | T6 | `@media width:520px` | 520px keeps the chapter bar single-line on 390-520 phones; no token sits between --breakpoint-xs 390 and --breakpoint-sm 639 |
+| 124 | V8 | `padding:5px` | 5px menu inset sits between 4 and 6; snapping reflows the menu rows |
+| 131 | V8 | `padding:5px` | 5px panel inset sits between 4 and 6; snapping reflows the asset rows |
+| 164 | T2 | `line-height:1.5` | 2.3rem prompt-label clearance is layout-scale, beyond the 32px step |
+| 164 | V8 | `padding-top:2.3rem` | 2.3rem prompt-label clearance is layout-scale, beyond the 32px step |
+| 256 | T6 | `@media width:760px` | 760px predates the breakpoint scale; --breakpoint-md 767.5 would reflow the projection rail 7.5px earlier |
+| 264 | T6 | `@media width:760px` | 760px must stay paired with the projection rail query above; snapping both shifts the edit panel 7.5px |
+| 286 | V8 | `margin:0 0 var(--spacing-2xs) 118px` | 118px label indent aligns to the field column, not the rhythm |
+| 287 | T2 | `line-height:1.6` | 1px chip inset is an optical hairline; no 2px step exists |
+| 287 | T3 | `letter-spacing:.04em` | 1px chip inset is an optical hairline; no 2px step exists |
+| 287 | V8 | `padding:1px var(--spacing-xs)` | 1px chip inset is an optical hairline; no 2px step exists |
+| 310 | V8 | `padding:0 0 0 3px` | 3px chip inset cancels the -3px gutter so the token stays flush |
+| 310 | V8 | `margin:0 0 0 -3px` | 3px chip inset cancels the -3px gutter so the token stays flush |
+| 373 | T6 | `@media width:860px` | 860px collapses the engine header; --breakpoint-lg 900 would hide the tool cluster 40px later |
+| 401 | T6 | `@media width:520px` | 520px keeps the tabbar usable on 390-520 phones: the view tabs take their own full-width row so the project cluster + Surfaces share the first line with room to spare; no token sits between --breakpoint-xs 390 and --breakpoint-sm 639 |
 
 ### `design-system/index.html` — Exempt (1)
 
 | Line | Class | Found | Reason |
 |---:|---|---|---|
-| 208 | V8 | `margin-top:-10px` | negative half of the 20px dot centres it against the track |
+| 207 | V8 | `margin-top:-10px` | negative half of the 20px dot centres it against the track |
 
 ## How to fix
 
