@@ -15,10 +15,9 @@
 --acc:var(--color-pitch-accent);--acc-ink:var(--color-pitch-accent-ink);
 --pos:var(--color-pitch-positive);--posink:var(--color-pitch-positive-ink);
 --switchbg:var(--color-pitch-switch-bg);
-/* content axis: the DS shell cap (design-system/index.html --g-shell-max) —
-   pitch max plus the in-panel rail column and its gap, so the hero and the
-   panel content stay on one axis once the section nav joins the panel */
---p-shell-max:calc(var(--layout-max-pitch) + var(--layout-rail) + var(--spacing-2xl));
+/* content axis: the shared shell (design-system/shell.css `.ds-shell` owns the
+   measure + gutter from --layout-shell-max); the hero and the panel content
+   stay on one axis once the section nav joins the panel */
 /* print sheet */
 --paper:var(--color-primitive-white);--prtink:var(--color-print-ink);--prtbody:var(--color-print-body);
 --prtfine:var(--color-print-fine);--prtacc:var(--color-print-accent);--prtrule:var(--color-print-rule);
@@ -34,7 +33,7 @@ a{color:inherit}
 :focus:not(:focus-visible){outline:none}
 /* chart hit-rects sit flush inside the plot: same ring, drawn inward (offset inverted) */
 .fchart rect[data-m]:focus-visible{outline:var(--focus-width) solid var(--color-pitch-accent);outline-offset:calc(-1*var(--focus-offset))}
-.w{max-width:var(--p-shell-max);margin:0 auto;padding:0 var(--spacing-20) 4rem} /* lint-allow: 4rem deck bottom pad is layout-scale; no spacing step sits at 64px */
+.w{padding-block:0 4rem} /* lint-allow: 4rem deck bottom pad is layout-scale; no spacing step sits at 64px */
 /* shell: single column — sticky header (brand + underline doctabs) on top,
    then the panels. Each doctab panel carries its own section nav as the first
    cell of a .p-panelbody grid (gallery pattern: hero → underline mains →
@@ -62,7 +61,7 @@ a{color:inherit}
    tab row keeps a persistent Surfaces menu at the inline end (DS tabbar
    pattern), so the cross-surface jump stays reachable on scroll. */
 .top{position:sticky;top:0;z-index:var(--z-sticky);background:var(--color-pitch-overlay-bg);backdrop-filter:blur(8px);border-bottom:var(--border-width-hairline) solid var(--rule);padding-top:env(safe-area-inset-top,0px)}
-.topin{display:flex;flex-direction:column;gap:var(--spacing-2);max-width:var(--p-shell-max);margin:0 auto;padding:var(--spacing-10) var(--spacing-20) var(--spacing-2xs)}
+.topin{display:flex;flex-direction:column;gap:var(--spacing-2);padding-block:var(--spacing-10) var(--spacing-2xs)}
 .brandrow{display:flex;align-items:center;justify-content:space-between;gap:var(--spacing-sm)}
 .brand{font-size:var(--typography-size-body);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-snug);text-decoration:none}
 .brand small{display:block;color:var(--mut);font-weight:var(--weight-regular);font-size:var(--typography-size-meta)}
@@ -76,17 +75,11 @@ a{color:inherit}
    parent tabs are underline, pills are secondary). The row starts at the same
    left edge as the section text (no centring) */
 .doctabs{min-width:0}
-/* sticky tab row: the DS tabbar pattern — the underline parent tablist takes
-   the free axis (and scrolls it on a phone), the Surfaces menu keeps its own
-   width at the inline end, so it stays reachable after the hero links scroll
-   away. The panel is the shipped .ds-menu, CSS-anchored to its own box. */
-.docbar{display:flex;align-items:center;gap:var(--spacing-md)}
-.docbar .doctabs{flex:1 1 auto;min-inline-size:0}
-.p-surfaces{position:relative;flex:0 0 auto;margin-inline-start:auto}
-.p-surfaces__btn svg{inline-size:var(--icon-size-sm);block-size:var(--icon-size-sm)}
-.p-surfaces .ds-menu{inset-inline-end:0;inset-block-start:calc(100% + var(--spacing-2xs))}
-.p-surfaces .ds-menu__item{text-decoration:none}
-.p-surfaces .ds-menu__item[aria-current="page"]{font-weight:var(--weight-semibold)}
+/* sticky tab row: the shared shell tabbar (design-system/shell.css `.ds-tabbar`
+   + `.ds-smenu`) — the underline parent tablist takes the free axis (and
+   scrolls it on a phone), the Surfaces menu keeps its own width at the inline
+   end, so it stays reachable after the hero links scroll away. The panel is
+   the shipped .ds-menu, CSS-anchored to its own box. */
 /* in-panel TOC: each doctab panel owns one flat DS section rail (nav.toc);
    only the visible panel's TOC shows, and the export cluster rides under it */
 .sidexport{display:flex;flex-direction:column;gap:var(--spacing-xs);border-top:var(--border-width-hairline) solid var(--rule);margin-block-start:auto;padding:var(--spacing-sm) var(--spacing-md) var(--spacing-sm) calc(var(--border-width-strong) + var(--layout-rail-inset))}
@@ -323,12 +316,13 @@ html{scroll-behavior:auto}
 .drawer,.backdrop,.btn{transition:none!important}
 *{animation:none!important}
 }
-</style></head>
+</style>
+<link rel="stylesheet" href="design-system/shell.css"></head>
 <body data-print-doc="story">
 <div class="shell">
 <div class="col">
 <header class="top">
-<div class="topin">
+<div class="topin ds-shell">
 <div class="brandrow">
 <a class="brand" href="#story" onclick="switchTab('story');return false;">Camera Shots<small>intent before pixels</small></a>
 <div class="brandtools">
@@ -340,15 +334,15 @@ html{scroll-behavior:auto}
 <button type="button" class="ds-navtoggle" data-ds-nav-toggle="nav-story" aria-controls="nav-story" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-menu"></use></svg></button>
 </div>
 </div>
-<div class="docbar">
+<div class="ds-tabbar">
 <nav class="doctabs ds-tabs" data-variant="underline" role="tablist" aria-label="Company Documents">
 <button class="ds-tab" id="tab-btn-story" role="tab" data-doc="story" aria-selected="true" aria-controls="panel-doc-01" tabindex="0" onclick="switchTab('story')">Product</button>
 <button class="ds-tab" id="tab-btn-investors" role="tab" data-doc="investors" aria-selected="false" aria-controls="panel-doc-03" tabindex="-1" onclick="switchTab('investors')">Investors</button>
 <button class="ds-tab" id="tab-btn-wiki" role="tab" data-doc="wiki" aria-selected="false" aria-controls="panel-doc-02" tabindex="-1" onclick="switchTab('wiki')">Wiki</button>
 <button class="ds-tab" id="tab-btn-mvp" role="tab" data-doc="mvp" aria-selected="false" aria-controls="panel-doc-04" tabindex="-1" onclick="switchTab('mvp')">MVP</button>
 </nav>
-<div class="p-surfaces">
-<button class="ds-btn p-surfaces__btn" type="button" data-ds-menu-trigger aria-controls="p-surfaces-menu" aria-expanded="false" aria-haspopup="menu"><span class="ds-btn__label">Surfaces</span><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-chevron-down"/></svg></button>
+<div class="ds-smenu">
+<button class="ds-btn ds-smenu__btn" type="button" data-ds-menu-trigger aria-controls="p-surfaces-menu" aria-expanded="false" aria-haspopup="menu"><span class="ds-btn__label">Surfaces</span><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-chevron-down"/></svg></button>
 <div class="ds-menu" id="p-surfaces-menu" role="menu" aria-label="Surfaces" hidden>
 <a class="ds-menu__item" role="menuitem" href="index.html">Wiki</a>
 <a class="ds-menu__item" role="menuitem" href="pitch.html" aria-current="page">Pitch</a>
@@ -359,7 +353,7 @@ html{scroll-behavior:auto}
 </div>
 </div>
 </header>
-<div class="w">
+<div class="w ds-shell">
 <div class="panels">
 
 <!-- ============ TAB 1: PRODUCT ============ -->

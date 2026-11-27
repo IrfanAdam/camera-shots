@@ -1,0 +1,66 @@
+/* ==========================================================================
+   shell.css — the single source of truth for the cross-surface page shell.
+
+   One shared stylesheet owning three things every shipped page repeats:
+
+     §S1  the content-axis measure  — `--layout-shell-max` (tokens.json), the
+          pitch cap + the in-panel rail column + one gap. Pages adopt
+          `.ds-shell` on their content column / header inner instead of
+          carrying a page-local copy of the calc.
+     §S2  the sticky Surfaces tabbar — `.ds-tabbar`: the underline parent
+          tablist takes the free axis, the Surfaces menu keeps its own width
+          at the inline end. Parent tabs stay underline, secondary tabs stay
+          pill (components.css §5 owns that grammar; this file only owns the
+          row that carries them).
+     §S3  the sticky Surfaces menu  — `.ds-smenu`: the CSS-anchored box for
+          the shipped `.ds-menu` panel, so no MenuButton anchor math runs.
+          Pages bind it with DS.menu (or the auto-init, where the page opts
+          in); the page script owns wiring, this file owns geometry.
+
+   OPT IN
+   ------
+     <link rel="stylesheet" href="design-system/tokens.css">
+     ... the page's own base/component/page <style> ...
+     <link rel="stylesheet" href="design-system/shell.css">   <!-- LAST -->
+
+   ORDER MATTERS: load it after the page's inline <style>. These rules carry
+   no paint and no new values — every length resolves to a token from
+   tokens.css, every zero is structural — so the only thing the cascade order
+   decides is that the shared geometry wins over a leftover page-local copy
+   during a migration. There are no leftovers: each page deleted its own.
+
+   CONTRACT
+   --------
+   Geometry only, theme-agnostic: no colour, no type voice, no component skin.
+   A page keeps its own block-axis rhythm (hero pads, toolbar density, print);
+   the inline axis is the shared part. The ≤--breakpoint-lg posture is shared
+   too: below the rail breakpoint the shell goes full-bleed with one gutter,
+   the same rule the wiki and the gallery already carried separately.
+   ========================================================================== */
+
+/* §S1 · content column — one measure, one inline gutter, centred.
+   Adopt on the page's own column / header inner; keep block padding local. */
+.ds-shell{
+  max-inline-size:var(--layout-shell-max);
+  margin-inline:auto;
+  padding-inline:var(--spacing-2xl);
+}
+
+/* §S2 · sticky Surfaces tabbar — flex row, underline tablist takes the free
+   axis (and scrolls it on a phone, per components.css §5), the menu keeps
+   its own width at the inline end. */
+.ds-tabbar{display:flex;align-items:center;gap:var(--spacing-md)}
+.ds-tabbar>.ds-tabs{flex:1 1 auto;min-inline-size:0}
+
+/* §S3 · sticky Surfaces menu — CSS-anchored box for the shipped .ds-menu. */
+.ds-smenu{position:relative;flex:0 0 auto;margin-inline-start:auto}
+.ds-smenu__btn svg{inline-size:var(--icon-size-sm);block-size:var(--icon-size-sm)}
+.ds-smenu .ds-menu{inset-inline-end:0;inset-block-start:calc(100% + var(--spacing-2xs))}
+.ds-smenu .ds-menu__item{text-decoration:none}
+.ds-smenu .ds-menu__item[aria-current="page"]{font-weight:var(--weight-semibold)}
+
+/* ≤--breakpoint-lg: the rail breakpoint. The shell drops its cap and keeps
+   one gutter — the full-bleed posture every page already used here. */
+@media(max-width:900px){
+  .ds-shell{max-inline-size:none;padding-inline:var(--spacing-lg)}
+}

@@ -28,11 +28,12 @@
   --g-swatch-edge: color-mix(in srgb, var(--color-pitch-muted-2) 42%, transparent);
   /* anchor landing distance under the sticky category bar */
   --g-anchor-offset: calc(var(--control-height-default) + var(--spacing-2xl));
-  /* the shell's content axis: full width up to the pitch content cap, widened
-     by exactly the in-panel rail column and its gap, so adding the section nav
-     to a panel does not squeeze the content column. One value feeds both the
-     masthead wrap and .g-main, so the hero and the panels stay on one axis. */
-  --g-shell-max: calc(var(--layout-max-pitch) + var(--layout-rail) + var(--spacing-2xl));
+  /* the shell's content axis lives in design-system/shell.css (`.ds-shell`
+     from --layout-shell-max): full width up to the pitch content cap,
+     widened by exactly the in-panel rail column and its gap, so adding the
+     section nav to a panel does not squeeze the content column. One shared
+     value feeds both the masthead wrap and .g-main, so the hero and the
+     panels stay on one axis. */
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -49,10 +50,10 @@ code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-
 ::selection{background:var(--color-engine-selection);color:var(--color-primitive-black)}
 
 .wrap{max-width:1100px;margin:0 auto;padding:0 var(--spacing-lg)}
-/* hero shares the content axis: same max and same inline padding as .g-main,
-   so the blurb, the sub-nav row, the underline bar and the panels all start
-   on one vertical line. */
-.g-shell > .masthead > .wrap{max-width:var(--g-shell-max);padding-inline:var(--spacing-2xl)}
+/* hero shares the content axis: the shared shell (design-system/shell.css
+   `.ds-shell`, same max and same inline padding as .g-main), so the blurb,
+   the sub-nav row, the underline bar and the panels all start on one
+   vertical line. */
 
 /* ---------- masthead ---------- */
 .masthead{grid-area:masthead;border-bottom:var(--border-width-hairline) solid var(--g-rule);padding:var(--spacing-2xl) 0 var(--spacing-xl)}
@@ -86,14 +87,17 @@ code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-
 .g-rail-list{display:flex;flex-direction:column;gap:var(--spacing-2)}
 .g-main{
   grid-area:main;min-inline-size:0;
-  inline-size:100%;max-inline-size:var(--g-shell-max);margin-inline:auto;
-  padding:var(--spacing-xl) var(--spacing-2xl) var(--spacing-2xl);
+  inline-size:100%;
+  padding-block:var(--spacing-xl) var(--spacing-2xl);
 }
 
-/* sticky underline category bar, left-aligned to the content axis.
-   The underline tablist (components.css §5) paints its own rule, so the
-   bar's ::after stays parked for the pill shape only — with underline tabs
-   it would double the rule. */
+/* sticky underline category bar, left-aligned to the content axis — one
+   rule, not two (the duplicate .g-tabbar block was folded here). The flex
+   row itself is the shared shell tabbar (design-system/shell.css
+   `.ds-tabbar`): the underline tablist takes the free axis and the Surfaces
+   menu keeps its own width at the inline end. The underline tablist
+   (components.css §5) paints its own rule, so the bar's ::after stays parked
+   for the pill shape only — with underline tabs it would double the rule. */
 .g-tabbar{
   --_pad-x:var(--spacing-2xl);
   position:sticky;inset-block-start:0;z-index:var(--z-sticky);
@@ -107,19 +111,13 @@ code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-
 }
 .g-tabbar:has(.ds-tabs[data-variant="underline"])::after{display:none}
 
-/* persistent surfaces menu at the right end of the sticky category bar.
-   The bar is flex: the underline tablist takes the free axis (and scrolls it
-   on a phone), the menu keeps its own width at the inline end, so it stays
-   reachable after the masthead — and its Surfaces links — scroll away. The
-   panel is the shipped .ds-menu, CSS-anchored to its own .g-surfaces box, so
-   no MenuButton anchor math runs; the only new geometry is one spacing step. */
-.g-tabbar{display:flex;align-items:center;gap:var(--spacing-md)}
-.g-tabbar .ds-tabs{flex:1 1 auto;min-inline-size:0}
-.g-surfaces{position:relative;flex:0 0 auto;margin-inline-start:auto}
-.g-surfaces__btn svg{inline-size:var(--icon-size-sm);block-size:var(--icon-size-sm)}
-.g-surfaces .ds-menu{inset-inline-end:0;inset-block-start:calc(100% + var(--spacing-2xs))}
-.g-surfaces .ds-menu__item{text-decoration:none}
-.g-surfaces .ds-menu__item[aria-current="page"]{font-weight:var(--weight-semibold)}
+/* persistent surfaces menu at the right end of the sticky category bar — the
+   shared shell menu (design-system/shell.css `.ds-smenu`). The bar is flex:
+   the underline tablist takes the free axis (and scrolls it on a phone), the
+   menu keeps its own width at the inline end, so it stays reachable after
+   the masthead — and its Surfaces links — scroll away. The panel is the
+   shipped .ds-menu, CSS-anchored to its own box, so no MenuButton anchor
+   math runs; the only new geometry is one spacing step. */
 
 /* one panel at a time (the shipped .ds-tabpanel[hidden] hides the rest);
    a panel or sub-anchor lands below the sticky bar instead of under it */
@@ -357,7 +355,7 @@ footer code{color:var(--g-ink)}
      category row is the primary tab strip. Without JS the panel nav stays a
      static list at the top of its panel. */
   .g-shell{display:flex;flex-direction:column}
-  .g-main{grid-area:auto;padding:0 var(--spacing-lg) var(--spacing-2xl)}
+  .g-main{grid-area:auto;padding-block:0 var(--spacing-2xl)}
   .g-tabbar{
     --_pad-x:var(--spacing-lg);
     margin:0 calc(var(--_pad-x) * -1) var(--spacing-md);
@@ -391,6 +389,7 @@ footer code{color:var(--g-ink)}
 <link rel="stylesheet" href="pitch-shell.css">
 <link rel="stylesheet" href="gallery-pitch.css">
 <link rel="stylesheet" href="gallery-workbench.css">
+<link rel="stylesheet" href="shell.css">
 <script src="gallery-workbench.js" defer></script>
 <script src="gallery-specimens.js" defer></script>
 </head>
@@ -400,7 +399,7 @@ footer code{color:var(--g-ink)}
 
 <div class="g-shell">
   <header class="masthead">
-    <div class="wrap">
+    <div class="wrap ds-shell">
       <div class="mast-top">
         <p class="kicker">Design system · rendered from tokens.css · pitch shell</p>
         <div class="mast-menu"><button class="ds-navtoggle" data-ds-nav-toggle="nav-color" aria-controls="nav-color" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-menu"/></svg></button></div>
@@ -415,16 +414,16 @@ footer code{color:var(--g-ink)}
     </div>
   </header>
 
-  <main id="main" class="g-main" tabindex="-1">
-    <div class="g-tabbar">
+  <main id="main" class="g-main ds-shell" tabindex="-1">
+    <div class="g-tabbar ds-tabbar">
       <div class="ds-tabs" id="ds-cats" data-variant="underline" role="tablist" aria-label="Design system categories" data-ds-panel-scope="#main">
         <button class="ds-tab" type="button" role="tab" id="tab-color" aria-controls="color" aria-selected="true" tabindex="0">Color</button>
         <button class="ds-tab" type="button" role="tab" id="tab-type" aria-controls="type" aria-selected="false" tabindex="-1">Type</button>
         <button class="ds-tab" type="button" role="tab" id="tab-space-consistency" aria-controls="space-consistency" aria-selected="false" tabindex="-1">Space &amp; consistency</button>
         <button class="ds-tab" type="button" role="tab" id="tab-specimens" aria-controls="specimens" aria-selected="false" tabindex="-1">Components</button>
       </div>
-      <div class="g-surfaces">
-        <button class="ds-btn g-surfaces__btn" type="button" data-ds-menu-trigger aria-controls="g-surfaces-menu" aria-expanded="false" aria-haspopup="menu"><span class="ds-btn__label">Surfaces</span><svg aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-chevron-down"/></svg></button>
+      <div class="ds-smenu">
+        <button class="ds-btn ds-smenu__btn" type="button" data-ds-menu-trigger aria-controls="g-surfaces-menu" aria-expanded="false" aria-haspopup="menu"><span class="ds-btn__label">Surfaces</span><svg aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-chevron-down"/></svg></button>
         <div class="ds-menu" id="g-surfaces-menu" role="menu" aria-label="Surfaces" hidden>
           <a class="ds-menu__item" role="menuitem" href="../index.html">Wiki</a>
           <a class="ds-menu__item" role="menuitem" href="../pitch.html">Pitch</a>

@@ -43,12 +43,12 @@ a:hover{color:var(--ink);text-decoration-color:var(--acc)}
 /* the drawer's own close control has nothing to dismiss in a static column */
 .w-panelbody>.ds-rail .ds-navclose{display:none}
 .top{position:sticky;top:0;z-index:var(--z-sticky);background:var(--color-pitch-overlay-bg);border-bottom:var(--border-width-hairline) solid var(--rule);padding-top:calc(var(--spacing-10) + env(safe-area-inset-top,0px));padding-bottom:var(--spacing-10)}
-/* content axis: the DS shell measure (design-system --g-shell-max): pitch cap +
-   rail column + one gap, so the wiki hero, tab rows and panels sit on the
-   same axis as the design-system page. Page-local copy; pitch-shell.css stays
-   the canonical source for paint. */
-.top__in{display:flex;justify-content:space-between;align-items:baseline;gap:var(--spacing-md);flex-wrap:wrap;max-inline-size:calc(var(--layout-max-pitch) + var(--layout-rail) + var(--spacing-2xl));margin-inline:auto;padding-inline:var(--spacing-2xl)}
-.page__main{min-inline-size:0;width:100%;max-inline-size:calc(var(--layout-max-pitch) + var(--layout-rail) + var(--spacing-2xl));margin-inline:auto;padding-inline:var(--spacing-2xl);padding-block-end:var(--spacing-xl)}
+/* content axis: the shared shell (design-system/shell.css `.ds-shell` owns the
+   measure + gutter from --layout-shell-max): pitch cap + rail column + one
+   gap, so the wiki hero, tab rows and panels sit on the same axis as the
+   design-system page. */
+.top__in{display:flex;justify-content:space-between;align-items:baseline;gap:var(--spacing-md);flex-wrap:wrap}
+.page__main{min-inline-size:0;width:100%;padding-block-end:var(--spacing-xl)}
 .by{font-family:var(--typography-family-mono);letter-spacing:var(--tracking-eyebrow);color:var(--mut);font-size:var(--typography-size-small);white-space:nowrap}
 /* `margin-inline-start:auto` keeps the byline + menu button on the end edge
    even when the title wraps the row (mobile), so the hamburger stays under the
@@ -116,16 +116,12 @@ p{font-size:var(--typography-size-body);color:var(--body)}.ad{margin-top:var(--s
 .surfaces__label{font-family:var(--typography-family-mono);font-size:var(--typography-size-eyebrow);font-weight:var(--weight-bold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase}
 .surfaces a{display:inline-flex;align-items:center;min-block-size:var(--spacing-lg);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:0.16em}
 .surfaces [aria-current="page"]{display:inline-flex;align-items:center;min-block-size:var(--spacing-lg);color:var(--ink);font-weight:var(--weight-medium)}
-/* persistent surfaces menu at the inline end of the sticky header — the DS
-   sticky-bar pattern (design-system .g-surfaces): the hero Surfaces links
-   scroll away, this one stays reachable. The panel is the shipped .ds-menu,
-   CSS-anchored to its own box, so no MenuButton anchor math runs; the page
-   script binds it with DS.menu (data-ds-manual opts out of auto-init). */
-.w-surfaces{position:relative;flex:0 0 auto}
-.w-surfaces__btn svg{inline-size:var(--icon-size-sm);block-size:var(--icon-size-sm)}
-.w-surfaces .ds-menu{inset-inline-end:0;inset-block-start:calc(100% + var(--spacing-2xs))}
-.w-surfaces .ds-menu__item{text-decoration:none}
-.w-surfaces .ds-menu__item[aria-current="page"]{font-weight:var(--weight-semibold)}
+/* persistent surfaces menu at the inline end of the sticky header — the shared
+   shell tabbar/menu (design-system/shell.css `.ds-smenu`): the hero Surfaces
+   links scroll away, this one stays reachable. The panel is the shipped
+   .ds-menu, CSS-anchored to its own box, so no MenuButton anchor math runs;
+   the page script binds it with DS.menu (data-ds-manual opts out of
+   auto-init). */
 footer{margin:var(--spacing-xl) 0 var(--spacing-md);color:var(--mut);font-size:var(--typography-size-meta)}
 /* ≤--breakpoint-lg: the rail leaves the grid and becomes the off-canvas menu
    (components.css §21) reached from the header's menu button, so the page only
@@ -134,7 +130,6 @@ footer{margin:var(--spacing-xl) 0 var(--spacing-md);color:var(--mut);font-size:v
 @media(max-width:900px){
 .page{display:flex;flex-direction:column}
 .top__in{align-items:center}
-.top__in,.page__main{max-inline-size:none;padding-inline:var(--spacing-lg)}
 /* one column: the rail is either the drawer (JS stamps the mode) or, with
    no JS, a plain list stacked above the card panel */
 .w-panelbody{display:block}
@@ -172,11 +167,12 @@ footer{margin:var(--spacing-xl) 0 var(--spacing-md);color:var(--mut);font-size:v
 </style>
 <!-- pitch shell: LAST so its role map and pitch alias layer win over this page's
      definitions; proven in design-system/pitch-shell.css -->
-<link rel="stylesheet" href="design-system/pitch-shell.css"></head><body>
+<link rel="stylesheet" href="design-system/pitch-shell.css">
+<link rel="stylesheet" href="design-system/shell.css"></head><body>
 <a class="ds-skip-link" href="#main">Skip to content</a>
 <div class="page">
-<header class="top"><div class="top__in"><h1>Cinematography and Direction Wiki</h1><div class="hright"><span class="by">by irfan</span><div class="w-surfaces"><button class="ds-btn w-surfaces__btn" type="button" data-ds-menu-trigger aria-controls="w-surfaces-menu" aria-expanded="false" aria-haspopup="menu"><span class="ds-btn__label">Surfaces</span><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-chevron-down"></use></svg></button><div class="ds-menu" id="w-surfaces-menu" role="menu" aria-label="Surfaces" hidden><a class="ds-menu__item" role="menuitem" href="index.html" aria-current="page">Wiki</a><a class="ds-menu__item" role="menuitem" href="pitch.html">Pitch</a><a class="ds-menu__item" role="menuitem" href="engine.html">Engine</a><a class="ds-menu__item" role="menuitem" href="design-system/index.html">Design System</a></div></div><button type="button" class="ds-navtoggle" data-ds-nav-toggle="nav-drawer" aria-controls="nav-drawer" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-menu"></use></svg></button></div></div></header>
-<div class="page__main">
+<header class="top"><div class="top__in ds-shell"><h1>Cinematography and Direction Wiki</h1><div class="hright"><span class="by">by irfan</span><div class="ds-smenu"><button class="ds-btn ds-smenu__btn" type="button" data-ds-menu-trigger aria-controls="w-surfaces-menu" aria-expanded="false" aria-haspopup="menu"><span class="ds-btn__label">Surfaces</span><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-chevron-down"></use></svg></button><div class="ds-menu" id="w-surfaces-menu" role="menu" aria-label="Surfaces" hidden><a class="ds-menu__item" role="menuitem" href="index.html" aria-current="page">Wiki</a><a class="ds-menu__item" role="menuitem" href="pitch.html">Pitch</a><a class="ds-menu__item" role="menuitem" href="engine.html">Engine</a><a class="ds-menu__item" role="menuitem" href="design-system/index.html">Design System</a></div></div><button type="button" class="ds-navtoggle" data-ds-nav-toggle="nav-drawer" aria-controls="nav-drawer" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-menu"></use></svg></button></div></div></header>
+<div class="page__main ds-shell">
 <main id="main" tabindex="-1">
 <p class="sub">A working reference for how films are shot and directed. Pick a concept, see what it does for the story, watch it explained, and copy the prompt phrase to use it.</p>
 <p class="surfaces"><span class="surfaces__label">Surfaces</span><span aria-current="page">Wiki</span><a href="pitch.html">Pitch</a><a href="engine.html">Engine</a><a href="design-system/index.html">Design System</a></p>
