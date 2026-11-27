@@ -279,7 +279,7 @@
 
   /* layout.drawer */
   --layout-drawer-engine-width: min(360px, 92vw);
-  --layout-drawer-pitch-width: min(720px, 100vw);
+  --layout-drawer-pitch-width: min(800px, 100vw);
 
   /* layout.nav */
   --layout-nav-drawer-width: min(20rem, 86vw);

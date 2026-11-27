@@ -134,7 +134,7 @@ _None._
 | 36 | V8 | `padding-block:0 4rem` | 4rem deck bottom pad is layout-scale; no spacing step sits at 64px |
 | 124 | V8 | `padding:2.6rem 0 1.6rem` | hero section pad is layout-scale; 41.6px and 25.6px have no step within 0.9px |
 | 130 | V8 | `margin-top:1.4rem` | 22.4px CTA lift sits between the 20 and 24 steps; snapping moves 1.6px |
-| 267 | V8 | `padding:1.6rem 0 var(--spacing-md)` | 25.6px compact-hero pad sits between the 24 and 32 steps |
+| 268 | V8 | `padding:1.6rem 0 var(--spacing-md)` | 25.6px compact-hero pad sits between the 24 and 32 steps |
 
 ### `engine.html` — Exempt (16)
 

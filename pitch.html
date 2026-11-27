@@ -165,12 +165,13 @@ table{width:100%;border-collapse:collapse;font-size:var(--typography-size-small)
 thead th{text-align:left;font-size:var(--typography-size-eyebrow);text-transform:uppercase;letter-spacing:.1em;color:var(--mut);font-family:var(--typography-family-mono);background:var(--s2);padding:var(--spacing-sm) var(--spacing-14);white-space:nowrap}
 tbody td{padding:var(--spacing-sm) var(--spacing-14);border-top:var(--border-width-hairline) solid var(--rule);vertical-align:top;color:var(--body)}
 tbody td:first-child{white-space:nowrap;font-weight:var(--weight-semibold);color:var(--ink)}
-/* funding drawer month table: 8 columns in a 720px drawer — compact meta
-   type + tighter cells so all columns fit without a sideways scroll.
-   Phones keep the stacked-card rows from the ≤639 block below. */
-#fund-drawer .tbl table{font-size:var(--typography-size-meta)}
-#fund-drawer .tbl thead th{padding:var(--spacing-6) var(--spacing-xs)}
-#fund-drawer .tbl tbody td{padding:var(--spacing-6) var(--spacing-xs)}
+/* funding drawer month table: 8 columns in an 800px drawer — compact timecode
+   type + tighter cells so all columns fit without a sideways scroll and all
+   18 rows scan with less scrolling. Phones keep the stacked-card rows
+   from the ≤639 block below. */
+#fund-drawer .tbl table{font-size:var(--typography-size-timecode);white-space:nowrap}
+#fund-drawer .tbl thead th{padding:var(--spacing-2) var(--spacing-2xs)}
+#fund-drawer .tbl tbody td{padding:var(--spacing-2) var(--spacing-2xs)}
 /* allocation bars */
 .alloc{margin-top:var(--spacing-18);display:flex;flex-direction:column;gap:var(--spacing-14);max-width:40rem}
 .alloc .lab{display:flex;justify-content:space-between;font-size:var(--typography-size-small);margin-bottom:var(--spacing-6)}
@@ -1098,8 +1099,26 @@ function fundSeries(sc){
 function fundBreakeven(sc){for(var m=1;m<=18;m++){if(mrrAt(sc,m)>=burnAt(sc,m))return m}return null}
 function inr(n){return "\u20B9"+Math.round(n).toLocaleString("en-IN")}
 function usd(n){return "$"+Math.round(n/window.HEAL_FX_rate()).toLocaleString("en-US")}
+/* compact drawer figures: one consistent k/M scheme for both currencies —
+   1-decimal rounding, trailing .0 stripped ($59k style). Full exact values
+   stay in each cell's title tooltip and in the .md export. */
+function cTrim(v){return v>=100?String(Math.round(v)):v.toFixed(1).replace(/\.0$/,"")}
+function compact(n,sym,rate){var v=n/rate,neg=v<0,a=Math.abs(v);
+  var s=a>=1e6?cTrim(a/1e6)+"M":a>=1e3?cTrim(a/1e3)+"k":String(Math.round(a));
+  return (neg?"\u2212":"")+sym+s}
+function cinr(n){return compact(n,"\u20B9",1)}
+function cusd(n){return compact(n,"$",window.HEAL_FX_rate())}
 function fxSpan(n){return '<span data-fx data-inr="'+inr(n)+'" data-usd="'+usd(n)+'">'+(fundCur==="usd"?usd(n):inr(n))+"</span>"}
-function applyFx(root){[].slice.call((root||document).querySelectorAll("[data-fx]")).forEach(function(s){var v=fundCur==="usd"?s.getAttribute("data-usd"):s.getAttribute("data-inr");if(v)s.textContent=v})}
+/* compact drawer span: shows k/M, carries exact INR+USD for the toggle, and
+   exposes the exact full value of the visible currency as a hover tooltip */
+function fxSpanC(n){var c=fundCur==="usd"?cusd(n):cinr(n),t=fundCur==="usd"?usd(n):inr(n);
+  return '<span data-fxc data-inr="'+inr(n)+'" data-usd="'+usd(n)+'" data-cinr="'+cinr(n)+'" data-cusd="'+cusd(n)+'" title="'+t+'">'+c+"</span>"}
+function applyFx(root){[].slice.call((root||document).querySelectorAll("[data-fx],[data-fxc]")).forEach(function(s){
+  var c=s.hasAttribute("data-fxc");
+  var v=fundCur==="usd"?s.getAttribute(c?"data-cusd":"data-usd"):s.getAttribute(c?"data-cinr":"data-inr");
+  if(v)s.textContent=v;
+  if(c)s.setAttribute("title",s.getAttribute(fundCur==="usd"?"data-usd":"data-inr"));
+})}
 function fundRender(id){
   if(!FUND.SC[id])id="ok";fundSc=id;
   var sc=FUND.SC[id];
@@ -1112,9 +1131,9 @@ function fundRender(id){
   var kpis=document.getElementById("fund-kpis");
   if(kpis)kpis.innerHTML=
     '<div class="metric"><div class="v">'+(be?("M"+be):"Beyond M18")+'</div><div class="l">Breakeven (MRR \u2265 burn)</div><div class="q">scenario model — plan, not promise</div></div>'+
-    '<div class="metric"><div class="v">'+fxSpan(endMRR)+'</div><div class="l">MRR at F18 (scenario)</div><div class="q">scenario model — plan, not promise</div></div>'+
+    '<div class="metric"><div class="v">'+fxSpanC(endMRR)+'</div><div class="l">MRR at F18 (scenario)</div><div class="q">scenario model — plan, not promise</div></div>'+
     '<div class="metric"><div class="v">'+pct+'%'+'</div><div class="l">Funding consumed (% of raise)</div><div class="q">scenario — plan, not promise</div></div>'+
-    '<div class="metric"><div class="v">'+fxSpan(leftEnd)+'</div><div class="l">Ring-fenced left (surplus not spent)</div><div class="q">two buckets — operating pool only</div></div>';
+    '<div class="metric"><div class="v">'+fxSpanC(leftEnd)+'</div><div class="l">Ring-fenced left (surplus not spent)</div><div class="q">two buckets — operating pool only</div></div>';
   var assump=document.getElementById("fund-assump");
   if(assump)assump.textContent=ASSUMPS[sc.label]||"";
   var rows=document.getElementById("fund-rows");
@@ -1123,10 +1142,10 @@ function fundRender(id){
     for(var i=0;i<rowsData.length;i++){
       var d=rowsData[i],pos=d.net>=0;
       var mcell=(be!==null&&d.m===be)?('M'+d.m+' <span class="fund-be">breakeven</span>'):("M"+d.m);
-      html+="<tr><td>"+mcell+"</td><td>"+fxSpan(d.b)+"</td><td>"+fxSpan(d.r)+"</td>"+
-        '<td class="'+(pos?"fund-net-pos":"fund-net-neg")+'">'+(pos?"+":"\u2212")+fxSpan(pos?d.net:-d.net)+(pos?" surplus":" burn")+"</td>"+
-        "<td>"+fxSpan(d.used)+"</td><td>"+fxSpan(d.left)+"</td><td>"+d.team+"</td>"+
-        '<td class="'+(pos?"fund-net-pos":"fund-net-neg")+'">'+(pos?"+":"\u2212")+fxSpan(pos?d.phead:-d.phead)+"</td></tr>";
+      html+="<tr><td>"+mcell+"</td><td>"+fxSpanC(d.b)+"</td><td>"+fxSpanC(d.r)+"</td>"+
+        '<td class="'+(pos?"fund-net-pos":"fund-net-neg")+'">'+(pos?"+":"\u2212")+fxSpanC(pos?d.net:-d.net)+(pos?" surplus":" burn")+"</td>"+
+        "<td>"+fxSpanC(d.used)+"</td><td>"+fxSpanC(d.left)+"</td><td>"+d.team+"</td>"+
+        '<td class="'+(pos?"fund-net-pos":"fund-net-neg")+'">'+(pos?"+":"\u2212")+fxSpanC(pos?d.phead:-d.phead)+"</td></tr>";
     }
     rows.innerHTML=html;
   }
@@ -1143,12 +1162,12 @@ function fundRender(id){
     function ax(v){
       if(fundCur==="usd"){var d=v/window.HEAL_FX_rate(),a=Math.abs(d);
         if(a>=1e6)return "$"+(d/1e6).toFixed(1).replace(/\.0$/,"")+"M";
-        if(a>=1e3)return "$"+Math.round(d/1e3)+"k";
+        if(a>=1e3)return "$"+(d/1e3).toFixed(1).replace(/\.0$/,"")+"k";
         return "$"+Math.round(d)}
       var a2=Math.abs(v);
-      if(a2>=1e7)return "₹"+(v/1e7).toFixed(1).replace(/\.0$/,"")+" Cr";
-      if(a2>=1e5)return "₹"+Math.round(v/1e5)+"L";
-      return "₹"+Math.round(v/1000)+"k";
+      if(a2>=1e6)return "₹"+(v/1e6).toFixed(1).replace(/\.0$/,"")+"M";
+      if(a2>=1e3)return "₹"+Math.round(v/1e3)+"k";
+      return "₹"+Math.round(v);
     }
     var mp=[],bp2=[];
     for(i=0;i<18;i++){mp.push(X(i).toFixed(1)+","+Y(mrr[i]).toFixed(1));bp2.push(X(i).toFixed(1)+","+Y(brn[i]).toFixed(1))}
