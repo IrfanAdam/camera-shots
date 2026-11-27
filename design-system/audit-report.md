@@ -9,21 +9,21 @@ node scripts/lint-tokens.mjs          # table + regenerate this report
 node scripts/lint-tokens.mjs --check  # CI gate: no write, exit 1 on failure
 ```
 
-- Generated: 2026-11-26
+- Generated: 2026-11-27
 - Tokens defined: 188 (`design-system/tokens.css`)
 - Files scanned: `index.html`, `pitch.html`, `engine.html`, `design-system/index.html`
-- Result: **PASS** — 0 over budget, 21 exempt, 0 bad-allow
-- Budgets: V1 0/0 · V2 0/0 · V3 1/1 · V4 0/0 · V5 0/0 · V6 0/0 · V7 0/0 · V8 0/0 · U1 0/0 · T1 8/10 · T2 25/32 · T3 18/21 · T4w 0/22 · T4f 2/2 · T6 2/5 · T13 0/0 · T14 8/8 · T15 140/147 · T8 9/9 · T9 0/0 · T10 0/0 · T11 0/0 · C1 6/6 · C2 0/12 · C3 0/0 · C4 0/0 · C5 0/0 · C6 0/0
+- Result: **FAIL** — 1 over budget, 21 exempt, 0 bad-allow
+- Budgets: V1 0/0 · V2 0/0 · V3 1/1 · V4 0/0 · V5 0/0 · V6 0/0 · V7 0/0 · V8 0/0 · U1 0/0 · T1 8/10 · T2 25/32 · T3 18/21 · T4w 0/22 · T4f 2/2 · T6 2/5 · T13 0/0 · T14 8/8 · T15 140/147 · T8 9/9 · T9 0/0 · T10 0/0 · T11 0/0 · C1 6/6 · C2 1/12 · C3 0/0 · C4 0/0 · C5 0/0 · C6 0/0
 
 ## Per-file violations
 
 | File | V1 color | V2 motion | V3 z-index | V4 radius | V5 inline paint | V6 svg paint | V7 border width | V8 spacing | U1 dead var | exempt | bad-allow | inline `style=` | `var(--)` uses |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 282 |
-| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 | 0 | 27 | 505 |
-| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 0 | 2 | 880 |
-| `design-system/index.html` | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 95 | 460 |
-| **Total** | **0** | **0** | **1** | **0** | **0** | **0** | **0** | **0** | **0** | **21** | **0** | **140** | **2127** |
+| `index.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 287 |
+| `pitch.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 | 0 | 27 | 513 |
+| `engine.html` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 | 0 | 2 | 894 |
+| `design-system/index.html` | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 95 | 465 |
+| **Total** | **0** | **0** | **1** | **0** | **0** | **0** | **0** | **0** | **0** | **21** | **0** | **140** | **2159** |
 
 ## Type, consumer & theme counts
 
@@ -66,7 +66,7 @@ Each class carries the count measured on 2026-11-24 as a ceiling. A count at or 
 | T10 | 0 | 0 | ok |
 | T11 | 0 | 0 | ok |
 | C1 | 6 | 6 (per file design-system/base.css 0, design-system/components.css 6) | ok |
-| C2 | 0 | 12 (per file index.html 0, pitch.html 4, engine.html 8, design-system/index.html 0) | under |
+| C2 | 1 | 12 (per file index.html 0, pitch.html 4, engine.html 8, design-system/index.html 0) | OVER +1 |
 | C3 | 0 | 0 | ok |
 | C4 | 0 | 0 | ok |
 | C5 | 0 | 0 | ok |
@@ -88,17 +88,21 @@ The shared layer (`base.css`, `components.css`, `components.js`, `icons.svg`) is
 | Class | Source | Now | Ceiling | Note |
 |---|---|---:|---:|---|
 | C1 | `design-system/base.css`, `design-system/components.css` | 6 | 6 | components.css 6 listed values (560px, 94vw, 88vh, 92vw, rgb(0 0 0 / .6), 40rem), each with a reason and a ceiling of 1; base.css 0 — its only literals are 0, 100%, 50%, the calc() sign multiplier and an iteration count — per file: design-system/base.css 0 · design-system/components.css 6 |
-| C2 | `index.html`, `pitch.html`, `engine.html`, `design-system/index.html` | 0 | 12 | pitch 4 + engine 8, measured on the committed HEAD blob. Engine: html,body · body · header · .dp h3 · #arrowpick button · #chapterbar select · #anchorRow code · #drawerX. Pitch: .plan-nav · .plan-nav .pill · #plan-weeks .wrow · .mrail (inside @media(max-width:900px)). Identical-declaration matching would catch 0 of these — every later block adds a declaration — per file: index.html 0 · pitch.html 4 · engine.html 8 · design-system/index.html 0 |
+| C2 | `index.html`, `pitch.html`, `engine.html`, `design-system/index.html` | 1 | 12 | pitch 4 + engine 8, measured on the committed HEAD blob. Engine: html,body · body · header · .dp h3 · #arrowpick button · #chapterbar select · #anchorRow code · #drawerX. Pitch: .plan-nav · .plan-nav .pill · #plan-weeks .wrow · .mrail (inside @media(max-width:900px)). Identical-declaration matching would catch 0 of these — every later block adds a declaration — per file: index.html 0 · pitch.html 4 · engine.html 8 · design-system/index.html 0 |
 | C3 | all four HTML surfaces | 0 | 0 | 2 aria-modal nodes checked (both pitch drawers: role=dialog + aria-label + hidden when closed), 0 bad |
 | C4 | both stylesheets + four pages | 0 | 0 | 0 classes defined at top level in two sources; the 14 `.spec-cell .ds-*` rules in the gallery are scoped stage overrides and do not count as definitions |
 | C5 | four pages → `icons.svg` | 0 | 0 | 48 `<use href="icons.svg#…">` references, 24 symbols, 0 unresolved |
 | C6 | `components.js`, `icons.svg` | 0 | 0 | 0 paint literals in components.js (paints through var() + currentColor) and icons.svg (currentColor only) |
 
-Counters: **5** `aria-modal` node(s) checked · **52** `svg#id` reference(s) resolved.
+Counters: **5** `aria-modal` node(s) checked · **56** `svg#id` reference(s) resolved.
 
 ## Over-budget detail
 
-_No class is over budget._
+### `design-system/index.html` — C2 1/0 (+1)
+
+| Line | Found | Note |
+|---:|---|---|
+| 116 | `.g-tabbar @ top level` | duplicate selector (first declared line 97) |
 
 ## Token-set baseline
 
@@ -131,10 +135,10 @@ _None._
 
 | Line | Class | Found | Reason |
 |---:|---|---|---|
-| 33 | V8 | `padding:0 var(--spacing-20) 4rem` | 4rem deck bottom pad is layout-scale; no spacing step sits at 64px |
-| 115 | V8 | `padding:2.6rem 0 1.6rem` | hero section pad is layout-scale; 41.6px and 25.6px have no step within 0.9px |
-| 121 | V8 | `margin-top:1.4rem` | 22.4px CTA lift sits between the 20 and 24 steps; snapping moves 1.6px |
-| 245 | V8 | `padding:1.6rem 0 var(--spacing-md)` | 25.6px compact-hero pad sits between the 24 and 32 steps |
+| 37 | V8 | `padding:0 var(--spacing-20) 4rem` | 4rem deck bottom pad is layout-scale; no spacing step sits at 64px |
+| 131 | V8 | `padding:2.6rem 0 1.6rem` | hero section pad is layout-scale; 41.6px and 25.6px have no step within 0.9px |
+| 137 | V8 | `margin-top:1.4rem` | 22.4px CTA lift sits between the 20 and 24 steps; snapping moves 1.6px |
+| 261 | V8 | `padding:1.6rem 0 var(--spacing-md)` | 25.6px compact-hero pad sits between the 24 and 32 steps |
 
 ### `engine.html` — Exempt (16)
 
@@ -148,20 +152,20 @@ _None._
 | 174 | V3 | `z-index:3` | drawer menu stacks one step above drawer content; no z token holds 3 (nearest --z-content 2) and adding z.raise.deep would invent a step for one element |
 | 262 | T6 | `@media width:760px` | 760px predates the breakpoint scale; --breakpoint-md 767.5 would reflow the projection rail 7.5px earlier |
 | 270 | T6 | `@media width:760px` | 760px must stay paired with the projection rail query above; snapping both shifts the edit panel 7.5px |
-| 293 | V8 | `margin:0 0 var(--spacing-2xs) 118px` | 118px label indent aligns to the field column, not the rhythm |
-| 294 | T2 | `line-height:1.6` | 1px chip inset is an optical hairline; no 2px step exists |
-| 294 | T3 | `letter-spacing:.04em` | 1px chip inset is an optical hairline; no 2px step exists |
-| 294 | V8 | `padding:1px var(--spacing-xs)` | 1px chip inset is an optical hairline; no 2px step exists |
-| 317 | V8 | `padding:0 0 0 3px` | 3px chip inset cancels the -3px gutter so the token stays flush |
-| 317 | V8 | `margin:0 0 0 -3px` | 3px chip inset cancels the -3px gutter so the token stays flush |
-| 388 | T6 | `@media width:860px` | 860px collapses the engine header; --breakpoint-lg 900 would hide the tool row 40px later |
-| 420 | T6 | `@media width:520px` | 520px keeps the chapter bar single-line on 390-520 phones; no token sits between --breakpoint-xs 390 and --breakpoint-sm 639 |
+| 292 | V8 | `margin:0 0 var(--spacing-2xs) 118px` | 118px label indent aligns to the field column, not the rhythm |
+| 293 | T2 | `line-height:1.6` | 1px chip inset is an optical hairline; no 2px step exists |
+| 293 | T3 | `letter-spacing:.04em` | 1px chip inset is an optical hairline; no 2px step exists |
+| 293 | V8 | `padding:1px var(--spacing-xs)` | 1px chip inset is an optical hairline; no 2px step exists |
+| 316 | V8 | `padding:0 0 0 3px` | 3px chip inset cancels the -3px gutter so the token stays flush |
+| 316 | V8 | `margin:0 0 0 -3px` | 3px chip inset cancels the -3px gutter so the token stays flush |
+| 387 | T6 | `@media width:860px` | 860px collapses the engine header; --breakpoint-lg 900 would hide the tool row 40px later |
+| 419 | T6 | `@media width:520px` | 520px keeps the chapter bar single-line on 390-520 phones; no token sits between --breakpoint-xs 390 and --breakpoint-sm 639 |
 
 ### `design-system/index.html` — Exempt (1)
 
 | Line | Class | Found | Reason |
 |---:|---|---|---|
-| 205 | V8 | `margin-top:-10px` | negative half of the 20px dot centres it against the track |
+| 219 | V8 | `margin-top:-10px` | negative half of the 20px dot centres it against the track |
 
 ## How to fix
 

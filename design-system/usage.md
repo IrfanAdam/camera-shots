@@ -14,12 +14,12 @@ Surfaces: `index.html` · `pitch.html` · `engine.html` · `design-system/index.
 | tokens defined | 188 |
 | tokens with a product ref | 157 |
 | tokens with no product ref | 31 |
-| custom-property refs | 3014 |
-| … token / role-var `--ds-*` / local / canvas read | 2097 / 178 / 677 / 62 |
-| … local split: component `--_*` / page alias | 36 / 641 |
+| custom-property refs | 3046 |
+| … token / role-var `--ds-*` / local / canvas read | 2127 / 178 / 679 / 62 |
+| … local split: component `--_*` / page alias | 36 / 643 |
 | component records | 39 (34 styled in components.css) |
-| component instances | 1107 (186 product, 921 gallery) |
-| … authored in JS (flagged dynamic) | 38 |
+| component instances | 1143 (215 product, 928 gallery) |
+| … authored in JS (flagged dynamic) | 39 |
 | numbered blocks | 21 (16 with a product instance) |
 
 ## Tokens with no product reference (31)
@@ -60,62 +60,64 @@ Structural and utility records with no product instance: `.ds-icon` (56 gallery)
 
 ### wiki — `index.html` (read)
 
-28 component instances, 282 custom-property refs in the page source, 59 tokens named by the page and by stylesheets only it loads (59 direct, 0 from its own sheets).
+35 component instances, 287 custom-property refs in the page source, 60 tokens named by the page and by stylesheets only it loads (60 direct, 0 from its own sheets).
 
 | component | instances | share of surface |
 |---|---|---|
-| `.ds-btn` | 4 | 14% |
-| `.ds-rail` | 4 | 14% |
-| `.ds-sr-only` | 4 | 14% |
-| `.ds-copy` | 2 | 7% |
-| `.ds-nav-item` | 2 | 7% |
-| `.ds-pager` | 2 | 7% |
-| `.ds-tab` | 2 | 7% |
-| `.ds-tabs` | 2 | 7% |
-| `.ds-badge` | 1 | 4% |
-| `.ds-input` | 1 | 4% |
+| `.ds-btn` | 6 | 17% |
+| `.ds-menu` | 5 | 14% |
+| `.ds-rail` | 4 | 11% |
+| `.ds-sr-only` | 4 | 11% |
+| `.ds-copy` | 2 | 6% |
+| `.ds-nav-item` | 2 | 6% |
+| `.ds-pager` | 2 | 6% |
+| `.ds-tab` | 2 | 6% |
+| `.ds-tabs` | 2 | 6% |
+| `.ds-badge` | 1 | 3% |
 
-Showing 10 of 14 components.
+Showing 10 of 15 components.
 
 ### pitch — `pitch.html` (persuade)
 
-75 component instances, 505 custom-property refs in the page source, 87 tokens named by the page and by stylesheets only it loads (87 direct, 0 from its own sheets).
+83 component instances, 513 custom-property refs in the page source, 87 tokens named by the page and by stylesheets only it loads (87 direct, 0 from its own sheets).
 
 | component | instances | share of surface |
 |---|---|---|
-| `.ds-rail` | 36 | 48% |
-| `.ds-nav-item` | 28 | 37% |
-| `.ds-tab` | 8 | 11% |
-| `.ds-tabs` | 2 | 3% |
+| `.ds-rail` | 36 | 43% |
+| `.ds-nav-item` | 28 | 34% |
+| `.ds-tab` | 8 | 10% |
+| `.ds-menu` | 5 | 6% |
+| `.ds-tabs` | 3 | 4% |
+| `.ds-btn` | 2 | 2% |
 | `.ds-navtoggle` | 1 | 1% |
 
 ### engine — `engine.html` (operate)
 
-83 component instances, 940 custom-property refs in the page source, 94 tokens named by the page and by stylesheets only it loads (94 direct, 10 from its own sheets).
+97 component instances, 954 custom-property refs in the page source, 99 tokens named by the page and by stylesheets only it loads (99 direct, 10 from its own sheets).
 
 | component | instances | share of surface |
 |---|---|---|
-| `.ds-btn` | 29 | 35% |
-| `.ds-menu` | 13 | 16% |
-| `.ds-nav-item` | 12 | 14% |
-| `.ds-rail` | 12 | 14% |
-| `.ds-switch` | 6 | 7% |
-| `.ds-dialog` | 4 | 5% |
+| `.ds-btn` | 31 | 32% |
+| `.ds-menu` | 18 | 19% |
+| `.ds-rail` | 12 | 12% |
+| `.ds-nav-item` | 9 | 9% |
+| `.ds-tab` | 7 | 7% |
+| `.ds-switch` | 6 | 6% |
+| `.ds-dialog` | 4 | 4% |
+| `.ds-tabs` | 3 | 3% |
 | `.ds-chip` | 1 | 1% |
 | `.ds-drawer` | 1 | 1% |
-| `.ds-icon-btn` | 1 | 1% |
-| `.ds-navtoggle` | 1 | 1% |
 
-Showing 10 of 13 components.
+Showing 10 of 15 components.
 
 ### gallery — `design-system/index.html` (docs, quarantined)
 
-921 component instances, 463 custom-property refs in the page source, 133 tokens named by the page and by stylesheets only it loads (131 direct, 26 from its own sheets).
+928 component instances, 468 custom-property refs in the page source, 133 tokens named by the page and by stylesheets only it loads (131 direct, 26 from its own sheets).
 
 | component | instances | share of surface |
 |---|---|---|
 | `.ds-tab` | 148 | 16% |
-| `.ds-btn` | 84 | 9% |
+| `.ds-btn` | 86 | 9% |
 | `.ds-rail` | 66 | 7% |
 | `.ds-switch` | 64 | 7% |
 | `.ds-nav-item` | 62 | 7% |

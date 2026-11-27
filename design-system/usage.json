@@ -39,39 +39,39 @@
     "tokensAliasNoRef": 3,
     "tokensNoRef": 9,
     "tokensAlias": 8,
-    "customPropertyRefs": 3014,
+    "customPropertyRefs": 3046,
     "customPropertyRefsByKind": {
-      "token": 2097,
+      "token": 2127,
       "roleVar": 178,
-      "localVar": 677,
+      "localVar": 679,
       "canvas": 62
     },
     "localVarDetail": {
       "componentLocal": 36,
-      "pageAlias": 641
+      "pageAlias": 643
     },
-    "tokenRefs": 2159,
+    "tokenRefs": 2189,
     "tokenRefsByFile": {
       "design-system/base.css": 26,
       "design-system/components.css": 350,
       "design-system/gallery-pitch.css": 100,
-      "design-system/index.html": 374,
+      "design-system/index.html": 379,
       "design-system/pitch-shell.css": 41,
       "engine-pitch.css": 24,
-      "engine.html": 693,
-      "index.html": 175,
-      "pitch.html": 376
+      "engine.html": 704,
+      "index.html": 183,
+      "pitch.html": 382
     },
     "refsByFile": {
       "design-system/base.css": 31,
       "design-system/components.css": 538,
       "design-system/gallery-pitch.css": 181,
-      "design-system/index.html": 463,
+      "design-system/index.html": 468,
       "design-system/pitch-shell.css": 50,
       "engine-pitch.css": 24,
-      "engine.html": 940,
-      "index.html": 282,
-      "pitch.html": 505
+      "engine.html": 954,
+      "index.html": 287,
+      "pitch.html": 513
     },
     "canvasReads": 62,
     "components": 39,
@@ -80,14 +80,14 @@
     "componentsStyledWithProductInstances": 19,
     "componentsWithoutProductInstances": 18,
     "componentsWithoutProductInstancesStyled": 15,
-    "componentInstances": 1107,
-    "componentInstancesProduct": 186,
-    "componentInstancesDynamic": 38,
+    "componentInstances": 1143,
+    "componentInstancesProduct": 215,
+    "componentInstancesDynamic": 39,
     "componentInstancesBySurface": {
-      "wiki": 28,
-      "pitch": 75,
-      "engine": 83,
-      "gallery": 921
+      "wiki": 35,
+      "pitch": 83,
+      "engine": 97,
+      "gallery": 928
     },
     "blocks": 21,
     "blocksWithProductInstances": 16,
@@ -194,13 +194,13 @@
       "bySurface": {
         "wiki": 45,
         "pitch": 62,
-        "engine": 98,
+        "engine": 99,
         "gallery": 64
       },
       "direct": {
         "wiki": 8,
         "pitch": 30,
-        "engine": 62,
+        "engine": 63,
         "gallery": 21
       },
       "cssFiles": {
@@ -256,7 +256,7 @@
         },
         {
           "file": "engine.html",
-          "count": 62
+          "count": 63
         },
         {
           "file": "index.html",
@@ -267,8 +267,8 @@
           "count": 30
         }
       ],
-      "refCount": 164,
-      "productRefCount": 205,
+      "refCount": 165,
+      "productRefCount": 206,
       "galleryRefs": 64,
       "reach": "product",
       "hasProductRef": true
@@ -4247,16 +4247,16 @@
       "aliasOf": null,
       "aliasedBy": [],
       "bySurface": {
-        "wiki": 0,
-        "pitch": 2,
-        "engine": 0,
-        "gallery": 2
+        "wiki": 2,
+        "pitch": 4,
+        "engine": 2,
+        "gallery": 4
       },
       "direct": {
-        "wiki": 0,
-        "pitch": 2,
-        "engine": 0,
-        "gallery": 2
+        "wiki": 2,
+        "pitch": 4,
+        "engine": 2,
+        "gallery": 4
       },
       "cssFiles": {},
       "roleMapCells": 0,
@@ -4265,16 +4265,24 @@
       "refs": [
         {
           "file": "design-system/index.html",
+          "count": 4
+        },
+        {
+          "file": "engine.html",
+          "count": 2
+        },
+        {
+          "file": "index.html",
           "count": 2
         },
         {
           "file": "pitch.html",
-          "count": 2
+          "count": 4
         }
       ],
-      "refCount": 4,
-      "productRefCount": 2,
-      "galleryRefs": 2,
+      "refCount": 12,
+      "productRefCount": 8,
+      "galleryRefs": 4,
       "reach": "product",
       "hasProductRef": true
     },
@@ -4375,15 +4383,15 @@
       "aliasOf": null,
       "aliasedBy": [],
       "bySurface": {
-        "wiki": 0,
-        "pitch": 2,
-        "engine": 0,
+        "wiki": 2,
+        "pitch": 1,
+        "engine": 1,
         "gallery": 1
       },
       "direct": {
-        "wiki": 0,
-        "pitch": 2,
-        "engine": 0,
+        "wiki": 2,
+        "pitch": 1,
+        "engine": 1,
         "gallery": 1
       },
       "cssFiles": {},
@@ -4396,12 +4404,20 @@
           "count": 1
         },
         {
-          "file": "pitch.html",
+          "file": "engine.html",
+          "count": 1
+        },
+        {
+          "file": "index.html",
           "count": 2
+        },
+        {
+          "file": "pitch.html",
+          "count": 1
         }
       ],
-      "refCount": 3,
-      "productRefCount": 2,
+      "refCount": 5,
+      "productRefCount": 4,
       "galleryRefs": 1,
       "reach": "product",
       "hasProductRef": true
@@ -4415,13 +4431,13 @@
       "aliasOf": null,
       "aliasedBy": [],
       "bySurface": {
-        "wiki": 3,
+        "wiki": 1,
         "pitch": 1,
         "engine": 1,
         "gallery": 1
       },
       "direct": {
-        "wiki": 2,
+        "wiki": 0,
         "pitch": 0,
         "engine": 0,
         "gallery": 0
@@ -4438,14 +4454,10 @@
         {
           "file": "design-system/components.css",
           "count": 1
-        },
-        {
-          "file": "index.html",
-          "count": 2
         }
       ],
-      "refCount": 3,
-      "productRefCount": 5,
+      "refCount": 1,
+      "productRefCount": 3,
       "galleryRefs": 1,
       "reach": "product",
       "hasProductRef": true
@@ -4499,15 +4511,15 @@
       "aliasOf": null,
       "aliasedBy": [],
       "bySurface": {
-        "wiki": 3,
-        "pitch": 3,
-        "engine": 1,
+        "wiki": 5,
+        "pitch": 4,
+        "engine": 2,
         "gallery": 4
       },
       "direct": {
-        "wiki": 2,
-        "pitch": 2,
-        "engine": 0,
+        "wiki": 4,
+        "pitch": 3,
+        "engine": 1,
         "gallery": 1
       },
       "cssFiles": {
@@ -4533,16 +4545,20 @@
           "count": 1
         },
         {
+          "file": "engine.html",
+          "count": 1
+        },
+        {
           "file": "index.html",
-          "count": 2
+          "count": 4
         },
         {
           "file": "pitch.html",
-          "count": 2
+          "count": 3
         }
       ],
-      "refCount": 8,
-      "productRefCount": 7,
+      "refCount": 12,
+      "productRefCount": 11,
       "galleryRefs": 4,
       "reach": "product",
       "hasProductRef": true
@@ -6207,13 +6223,13 @@
         "--layout-rail-inset"
       ],
       "bySurface": {
-        "wiki": 2,
+        "wiki": 1,
         "pitch": 5,
         "engine": 7,
         "gallery": 1
       },
       "direct": {
-        "wiki": 1,
+        "wiki": 0,
         "pitch": 4,
         "engine": 6,
         "gallery": 0
@@ -6236,16 +6252,12 @@
           "count": 6
         },
         {
-          "file": "index.html",
-          "count": 1
-        },
-        {
           "file": "pitch.html",
           "count": 4
         }
       ],
-      "refCount": 12,
-      "productRefCount": 14,
+      "refCount": 11,
+      "productRefCount": 13,
       "galleryRefs": 1,
       "reach": "product",
       "hasProductRef": true
@@ -6259,15 +6271,15 @@
       "aliasOf": null,
       "aliasedBy": [],
       "bySurface": {
-        "wiki": 5,
-        "pitch": 9,
-        "engine": 3,
+        "wiki": 7,
+        "pitch": 10,
+        "engine": 4,
         "gallery": 15
       },
       "direct": {
-        "wiki": 2,
-        "pitch": 6,
-        "engine": 0,
+        "wiki": 4,
+        "pitch": 7,
+        "engine": 1,
         "gallery": 11
       },
       "cssFiles": {
@@ -6294,16 +6306,20 @@
           "count": 11
         },
         {
+          "file": "engine.html",
+          "count": 1
+        },
+        {
           "file": "index.html",
-          "count": 2
+          "count": 4
         },
         {
           "file": "pitch.html",
-          "count": 6
+          "count": 7
         }
       ],
-      "refCount": 23,
-      "productRefCount": 17,
+      "refCount": 27,
+      "productRefCount": 21,
       "galleryRefs": 15,
       "reach": "product",
       "hasProductRef": true
@@ -6319,16 +6335,16 @@
         "--spacing-base"
       ],
       "bySurface": {
-        "wiki": 14,
-        "pitch": 22,
-        "engine": 45,
-        "gallery": 33
+        "wiki": 15,
+        "pitch": 23,
+        "engine": 46,
+        "gallery": 34
       },
       "direct": {
-        "wiki": 4,
-        "pitch": 13,
-        "engine": 35,
-        "gallery": 13
+        "wiki": 5,
+        "pitch": 14,
+        "engine": 36,
+        "gallery": 14
       },
       "cssFiles": {
         "design-system/base.css": 1,
@@ -6359,24 +6375,24 @@
         },
         {
           "file": "design-system/index.html",
-          "count": 13
+          "count": 14
         },
         {
           "file": "engine.html",
-          "count": 35
+          "count": 36
         },
         {
           "file": "index.html",
-          "count": 4
+          "count": 5
         },
         {
           "file": "pitch.html",
-          "count": 13
+          "count": 14
         }
       ],
-      "refCount": 85,
-      "productRefCount": 81,
-      "galleryRefs": 33,
+      "refCount": 89,
+      "productRefCount": 84,
+      "galleryRefs": 34,
       "reach": "product",
       "hasProductRef": true
     },
@@ -6509,13 +6525,13 @@
       "aliasOf": null,
       "aliasedBy": [],
       "bySurface": {
-        "wiki": 15,
+        "wiki": 16,
         "pitch": 22,
         "engine": 12,
         "gallery": 35
       },
       "direct": {
-        "wiki": 3,
+        "wiki": 4,
         "pitch": 11,
         "engine": 0,
         "gallery": 16
@@ -6555,15 +6571,15 @@
         },
         {
           "file": "index.html",
-          "count": 3
+          "count": 4
         },
         {
           "file": "pitch.html",
           "count": 11
         }
       ],
-      "refCount": 49,
-      "productRefCount": 49,
+      "refCount": 50,
+      "productRefCount": 50,
       "galleryRefs": 35,
       "reach": "product",
       "hasProductRef": true
@@ -6579,16 +6595,16 @@
         "--spacing-gutter-pro"
       ],
       "bySurface": {
-        "wiki": 23,
-        "pitch": 29,
-        "engine": 25,
-        "gallery": 41
+        "wiki": 24,
+        "pitch": 30,
+        "engine": 27,
+        "gallery": 42
       },
       "direct": {
-        "wiki": 7,
-        "pitch": 13,
-        "engine": 9,
-        "gallery": 17
+        "wiki": 8,
+        "pitch": 14,
+        "engine": 11,
+        "gallery": 18
       },
       "cssFiles": {
         "design-system/components.css": 16,
@@ -6618,24 +6634,24 @@
         },
         {
           "file": "design-system/index.html",
-          "count": 17
+          "count": 18
         },
         {
           "file": "engine.html",
-          "count": 9
+          "count": 11
         },
         {
           "file": "index.html",
-          "count": 7
+          "count": 8
         },
         {
           "file": "pitch.html",
-          "count": 13
+          "count": 14
         }
       ],
-      "refCount": 70,
-      "productRefCount": 77,
-      "galleryRefs": 41,
+      "refCount": 75,
+      "productRefCount": 81,
+      "galleryRefs": 42,
       "reach": "product",
       "hasProductRef": true
     },
@@ -6650,13 +6666,13 @@
       "bySurface": {
         "wiki": 24,
         "pitch": 41,
-        "engine": 46,
+        "engine": 47,
         "gallery": 38
       },
       "direct": {
         "wiki": 8,
         "pitch": 26,
-        "engine": 30,
+        "engine": 31,
         "gallery": 17
       },
       "cssFiles": {
@@ -6695,7 +6711,7 @@
         },
         {
           "file": "engine.html",
-          "count": 30
+          "count": 31
         },
         {
           "file": "index.html",
@@ -6706,8 +6722,8 @@
           "count": 26
         }
       ],
-      "refCount": 102,
-      "productRefCount": 111,
+      "refCount": 103,
+      "productRefCount": 112,
       "galleryRefs": 38,
       "reach": "product",
       "hasProductRef": true
@@ -7967,13 +7983,13 @@
       "aliasOf": null,
       "aliasedBy": [],
       "bySurface": {
-        "wiki": 11,
+        "wiki": 10,
         "pitch": 10,
         "engine": 18,
         "gallery": 21
       },
       "direct": {
-        "wiki": 3,
+        "wiki": 2,
         "pitch": 2,
         "engine": 10,
         "gallery": 10
@@ -8011,15 +8027,15 @@
         },
         {
           "file": "index.html",
-          "count": 3
+          "count": 2
         },
         {
           "file": "pitch.html",
           "count": 2
         }
       ],
-      "refCount": 36,
-      "productRefCount": 39,
+      "refCount": 35,
+      "productRefCount": 38,
       "galleryRefs": 21,
       "reach": "product",
       "hasProductRef": true
@@ -8083,16 +8099,16 @@
       "aliasOf": null,
       "aliasedBy": [],
       "bySurface": {
-        "wiki": 4,
-        "pitch": 10,
-        "engine": 3,
-        "gallery": 11
+        "wiki": 5,
+        "pitch": 11,
+        "engine": 4,
+        "gallery": 12
       },
       "direct": {
-        "wiki": 0,
-        "pitch": 7,
-        "engine": 0,
-        "gallery": 5
+        "wiki": 1,
+        "pitch": 8,
+        "engine": 1,
+        "gallery": 6
       },
       "cssFiles": {
         "design-system/components.css": 3,
@@ -8116,20 +8132,28 @@
         },
         {
           "file": "design-system/index.html",
-          "count": 5
+          "count": 6
         },
         {
           "file": "design-system/pitch-shell.css",
           "count": 1
         },
         {
+          "file": "engine.html",
+          "count": 1
+        },
+        {
+          "file": "index.html",
+          "count": 1
+        },
+        {
           "file": "pitch.html",
-          "count": 7
+          "count": 8
         }
       ],
-      "refCount": 18,
-      "productRefCount": 17,
-      "galleryRefs": 11,
+      "refCount": 22,
+      "productRefCount": 20,
+      "galleryRefs": 12,
       "reach": "product",
       "hasProductRef": true
     },
@@ -8864,31 +8888,35 @@
       "blockTitle": "button",
       "kind": "component",
       "defined": true,
-      "instances": 117,
+      "instances": 125,
       "bySurface": {
-        "wiki": 4,
-        "pitch": 0,
-        "engine": 29,
-        "gallery": 84
+        "wiki": 6,
+        "pitch": 2,
+        "engine": 31,
+        "gallery": 86
       },
       "dynamic": 10,
-      "staticInstances": 107,
-      "productInstances": 33,
+      "staticInstances": 115,
+      "productInstances": 39,
       "productDynamic": 10,
-      "productStaticInstances": 23,
-      "galleryInstances": 84,
+      "productStaticInstances": 29,
+      "galleryInstances": 86,
       "files": [
         {
           "file": "design-system/index.html",
-          "count": 84
+          "count": 86
         },
         {
           "file": "engine.html",
-          "count": 29
+          "count": 31
         },
         {
           "file": "index.html",
-          "count": 4
+          "count": 6
+        },
+        {
+          "file": "pitch.html",
+          "count": 2
         }
       ],
       "modifiers": [],
@@ -9416,27 +9444,35 @@
       "blockTitle": "menu",
       "kind": "component",
       "defined": true,
-      "instances": 33,
+      "instances": 53,
       "bySurface": {
-        "wiki": 0,
-        "pitch": 0,
-        "engine": 13,
-        "gallery": 20
+        "wiki": 5,
+        "pitch": 5,
+        "engine": 18,
+        "gallery": 25
       },
       "dynamic": 2,
-      "staticInstances": 31,
-      "productInstances": 13,
+      "staticInstances": 51,
+      "productInstances": 28,
       "productDynamic": 2,
-      "productStaticInstances": 11,
-      "galleryInstances": 20,
+      "productStaticInstances": 26,
+      "galleryInstances": 25,
       "files": [
         {
           "file": "design-system/index.html",
-          "count": 20
+          "count": 25
         },
         {
           "file": "engine.html",
-          "count": 13
+          "count": 18
+        },
+        {
+          "file": "index.html",
+          "count": 5
+        },
+        {
+          "file": "pitch.html",
+          "count": 5
         }
       ],
       "modifiers": [],
@@ -9450,6 +9486,7 @@
       "densities": [],
       "pseudo": [],
       "aria": [
+        "aria-current",
         "aria-label"
       ],
       "hasProductInstance": true
@@ -9461,17 +9498,17 @@
       "blockTitle": "pager / nav item / theme toggle",
       "kind": "component",
       "defined": true,
-      "instances": 104,
+      "instances": 101,
       "bySurface": {
         "wiki": 2,
         "pitch": 28,
-        "engine": 12,
+        "engine": 9,
         "gallery": 62
       },
-      "dynamic": 5,
+      "dynamic": 2,
       "staticInstances": 99,
-      "productInstances": 42,
-      "productDynamic": 5,
+      "productInstances": 39,
+      "productDynamic": 2,
       "productStaticInstances": 37,
       "galleryInstances": 62,
       "files": [
@@ -9481,7 +9518,7 @@
         },
         {
           "file": "engine.html",
-          "count": 12
+          "count": 9
         },
         {
           "file": "index.html",
@@ -10097,23 +10134,27 @@
       "blockTitle": "tabs",
       "kind": "component",
       "defined": true,
-      "instances": 158,
+      "instances": 165,
       "bySurface": {
         "wiki": 2,
         "pitch": 8,
-        "engine": 0,
+        "engine": 7,
         "gallery": 148
       },
-      "dynamic": 2,
-      "staticInstances": 156,
-      "productInstances": 10,
-      "productDynamic": 2,
-      "productStaticInstances": 8,
+      "dynamic": 4,
+      "staticInstances": 161,
+      "productInstances": 17,
+      "productDynamic": 4,
+      "productStaticInstances": 13,
       "galleryInstances": 148,
       "files": [
         {
           "file": "design-system/index.html",
           "count": 148
+        },
+        {
+          "file": "engine.html",
+          "count": 7
         },
         {
           "file": "index.html",
@@ -10147,7 +10188,6 @@
       ],
       "aria": [
         "aria-controls",
-        "aria-current",
         "aria-selected"
       ],
       "hasProductInstance": true
@@ -10274,18 +10314,18 @@
       "blockTitle": "tabs",
       "kind": "component",
       "defined": true,
-      "instances": 49,
+      "instances": 53,
       "bySurface": {
         "wiki": 2,
-        "pitch": 2,
-        "engine": 0,
+        "pitch": 3,
+        "engine": 3,
         "gallery": 45
       },
-      "dynamic": 0,
-      "staticInstances": 49,
-      "productInstances": 4,
-      "productDynamic": 0,
-      "productStaticInstances": 4,
+      "dynamic": 2,
+      "staticInstances": 51,
+      "productInstances": 8,
+      "productDynamic": 2,
+      "productStaticInstances": 6,
       "galleryInstances": 45,
       "files": [
         {
@@ -10293,12 +10333,16 @@
           "count": 45
         },
         {
+          "file": "engine.html",
+          "count": 3
+        },
+        {
           "file": "index.html",
           "count": 2
         },
         {
           "file": "pitch.html",
-          "count": 2
+          "count": 3
         }
       ],
       "modifiers": [],
@@ -10535,13 +10579,13 @@
       "classes": [
         "ds-btn"
       ],
-      "instances": 117,
-      "productInstances": 33,
+      "instances": 125,
+      "productInstances": 39,
       "bySurface": {
-        "wiki": 4,
-        "pitch": 0,
-        "engine": 29,
-        "gallery": 84
+        "wiki": 6,
+        "pitch": 2,
+        "engine": 31,
+        "gallery": 86
       },
       "hasProductInstance": true
     },
@@ -10607,12 +10651,12 @@
         "ds-tabs",
         "ds-tabsub"
       ],
-      "instances": 287,
-      "productInstances": 14,
+      "instances": 298,
+      "productInstances": 25,
       "bySurface": {
         "wiki": 4,
-        "pitch": 10,
-        "engine": 0,
+        "pitch": 11,
+        "engine": 10,
         "gallery": 273
       },
       "hasProductInstance": true
@@ -10736,13 +10780,13 @@
       "classes": [
         "ds-menu"
       ],
-      "instances": 33,
-      "productInstances": 13,
+      "instances": 53,
+      "productInstances": 28,
       "bySurface": {
-        "wiki": 0,
-        "pitch": 0,
-        "engine": 13,
-        "gallery": 20
+        "wiki": 5,
+        "pitch": 5,
+        "engine": 18,
+        "gallery": 25
       },
       "hasProductInstance": true
     },
@@ -10818,12 +10862,12 @@
         "ds-pager",
         "ds-theme-toggle"
       ],
-      "instances": 114,
-      "productInstances": 44,
+      "instances": 111,
+      "productInstances": 41,
       "bySurface": {
         "wiki": 4,
         "pitch": 28,
-        "engine": 12,
+        "engine": 9,
         "gallery": 70
       },
       "hasProductInstance": true
@@ -10890,14 +10934,14 @@
         "design-system/pitch-shell.css"
       ],
       "refs": {
-        "customProperties": 282,
-        "tokens": 175,
+        "customProperties": 287,
+        "tokens": 183,
         "roleVars": 0,
-        "localVars": 107,
+        "localVars": 104,
         "canvas": 0
       },
       "tokens": {
-        "count": 59,
+        "count": 60,
         "list": [
           "--border-width-accent",
           "--border-width-hairline",
@@ -10920,7 +10964,8 @@
           "--color-status-success",
           "--color-wiki-light-amber",
           "--control-height-touch",
-          "--layout-max-wiki",
+          "--icon-size-sm",
+          "--layout-max-pitch",
           "--layout-rail",
           "--layout-rail-inset",
           "--motion-duration-hover",
@@ -10933,7 +10978,6 @@
           "--spacing-10",
           "--spacing-14",
           "--spacing-2",
-          "--spacing-20",
           "--spacing-2xl",
           "--spacing-2xs",
           "--spacing-6",
@@ -10957,18 +11001,23 @@
           "--weight-bold",
           "--weight-heavy",
           "--weight-medium",
+          "--weight-semibold",
           "--z-sticky"
         ],
-        "direct": 59,
+        "direct": 60,
         "ownCss": 0
       },
       "components": {
-        "count": 14,
-        "instances": 28,
+        "count": 15,
+        "instances": 35,
         "list": [
           {
             "class": "ds-btn",
-            "instances": 4
+            "instances": 6
+          },
+          {
+            "class": "ds-menu",
+            "instances": 5
           },
           {
             "class": "ds-rail",
@@ -11033,10 +11082,10 @@
         "design-system/components.css"
       ],
       "refs": {
-        "customProperties": 505,
-        "tokens": 376,
+        "customProperties": 513,
+        "tokens": 382,
         "roleVars": 0,
-        "localVars": 129,
+        "localVars": 131,
         "canvas": 0
       },
       "tokens": {
@@ -11134,8 +11183,8 @@
         "ownCss": 0
       },
       "components": {
-        "count": 5,
-        "instances": 75,
+        "count": 7,
+        "instances": 83,
         "list": [
           {
             "class": "ds-rail",
@@ -11150,7 +11199,15 @@
             "instances": 8
           },
           {
+            "class": "ds-menu",
+            "instances": 5
+          },
+          {
             "class": "ds-tabs",
+            "instances": 3
+          },
+          {
+            "class": "ds-btn",
             "instances": 2
           },
           {
@@ -11170,14 +11227,14 @@
         "engine-pitch.css"
       ],
       "refs": {
-        "customProperties": 940,
-        "tokens": 633,
+        "customProperties": 954,
+        "tokens": 644,
         "roleVars": 0,
-        "localVars": 247,
+        "localVars": 250,
         "canvas": 60
       },
       "tokens": {
-        "count": 94,
+        "count": 99,
         "list": [
           "--border-width-hairline",
           "--border-width-strong",
@@ -11218,7 +11275,10 @@
           "--elevation-sheet",
           "--focus-offset",
           "--focus-width",
+          "--icon-size-sm",
           "--layout-drawer-engine-width",
+          "--layout-max-pitch",
+          "--layout-rail",
           "--layout-sidebar-engine",
           "--line-height-normal",
           "--motion-duration-base",
@@ -11243,6 +11303,7 @@
           "--spacing-18",
           "--spacing-2",
           "--spacing-20",
+          "--spacing-2xl",
           "--spacing-2xs",
           "--spacing-6",
           "--spacing-md",
@@ -11260,6 +11321,7 @@
           "--typography-size-ui",
           "--weight-bold",
           "--weight-medium",
+          "--weight-semibold",
           "--z-bar",
           "--z-canvas",
           "--z-content",
@@ -11274,28 +11336,32 @@
           "--z-sticky-rail",
           "--z-toast"
         ],
-        "direct": 94,
+        "direct": 99,
         "ownCss": 10
       },
       "components": {
-        "count": 13,
-        "instances": 83,
+        "count": 15,
+        "instances": 97,
         "list": [
           {
             "class": "ds-btn",
-            "instances": 29
+            "instances": 31
           },
           {
             "class": "ds-menu",
-            "instances": 13
-          },
-          {
-            "class": "ds-nav-item",
-            "instances": 12
+            "instances": 18
           },
           {
             "class": "ds-rail",
             "instances": 12
+          },
+          {
+            "class": "ds-nav-item",
+            "instances": 9
+          },
+          {
+            "class": "ds-tab",
+            "instances": 7
           },
           {
             "class": "ds-switch",
@@ -11304,6 +11370,10 @@
           {
             "class": "ds-dialog",
             "instances": 4
+          },
+          {
+            "class": "ds-tabs",
+            "instances": 3
           },
           {
             "class": "ds-chip",
@@ -11347,8 +11417,8 @@
         "design-system/gallery-pitch.css"
       ],
       "refs": {
-        "customProperties": 463,
-        "tokens": 372,
+        "customProperties": 468,
+        "tokens": 377,
         "roleVars": 0,
         "localVars": 89,
         "canvas": 2
@@ -11495,7 +11565,7 @@
       },
       "components": {
         "count": 34,
-        "instances": 921,
+        "instances": 928,
         "list": [
           {
             "class": "ds-tab",
@@ -11503,7 +11573,7 @@
           },
           {
             "class": "ds-btn",
-            "instances": 84
+            "instances": 86
           },
           {
             "class": "ds-rail",
@@ -11542,6 +11612,10 @@
             "instances": 30
           },
           {
+            "class": "ds-menu",
+            "instances": 25
+          },
+          {
             "class": "ds-dialog",
             "instances": 24
           },
@@ -11563,10 +11637,6 @@
           },
           {
             "class": "ds-chip",
-            "instances": 20
-          },
-          {
-            "class": "ds-menu",
             "instances": 20
           },
           {
