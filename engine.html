@@ -43,8 +43,15 @@ html,body{height:100%;overflow-x:clip}
 body{background:var(--bg);color:var(--ink);font:var(--typography-size-body)/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:auto;display:flex;flex-direction:column;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
 header{display:flex;align-items:center;gap:var(--spacing-sm);padding:var(--spacing-sm) var(--spacing-md);padding-top:calc(var(--spacing-sm) + env(safe-area-inset-top,0px));padding-left:calc(var(--spacing-md) + env(safe-area-inset-left,0px));padding-right:calc(var(--spacing-md) + env(safe-area-inset-right,0px));background:var(--panel);border-bottom:var(--border-width-hairline) solid var(--border);flex-wrap:wrap}
 header h1{font-size:var(--typography-size-lede);letter-spacing:-.01em}
-header .by{color:var(--mut);font-size:var(--typography-size-meta)}
-.tools{margin-left:auto;display:flex;gap:var(--spacing-xs);flex-wrap:wrap}
+/* canvas action cluster: floating overlay pinned top-right inside the canvas
+   frame (the header keeps the title only). Token-fed chrome: the same
+   blurred overlay panel the asset chip uses, so it reads as one layer. */
+#cvwrap{position:relative;flex:1;display:flex;min-width:0;min-height:0;margin:var(--spacing-xs)}
+#cvwrap .tools{position:absolute;top:var(--spacing-sm);right:var(--spacing-sm);z-index:var(--z-sticky);display:flex;gap:var(--spacing-xs);flex-wrap:wrap;justify-content:flex-end;max-width:calc(100% - 2 * var(--spacing-sm));margin:0;background:var(--color-engine-overlay-panel);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-sm);padding:var(--spacing-6);backdrop-filter:blur(4px)}
+/* asset list chip: floating overlay pinned left inside the canvas frame, with
+   its panel dropping below it. The wrap owns the coordinates so the panel
+   stays glued to the chip at every canvas size. */
+#assetWrap{position:absolute;top:var(--spacing-sm);left:var(--spacing-sm);z-index:var(--z-sticky)}
 .tools button{font:inherit;font-size:var(--typography-size-small);font-weight:var(--weight-medium);color:var(--ink);background:var(--tool);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);padding:var(--spacing-6) var(--spacing-sm);cursor:pointer;min-height:var(--tap-min)}
 .tools button:hover{border-color:var(--color-engine-text-secondary)}
 .tools button.warn:hover{border-color:var(--danger)}
@@ -52,7 +59,7 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 .tools button:disabled:hover{border-color:var(--border-strong)}
 .tools button.hist{padding:var(--spacing-6) var(--spacing-xs);display:inline-flex;align-items:center;justify-content:flex-start}
 .tools button.hist svg{display:block}
-#cv{flex:1;width:auto;display:block;margin:var(--spacing-xs);background:var(--color-engine-canvas);border:var(--border-width-hairline) solid var(--border-strong);cursor:grab;touch-action:none}
+#cv{flex:1;width:auto;min-width:0;display:block;margin:0;background:var(--color-engine-canvas);border:var(--border-width-hairline) solid var(--border-strong);cursor:grab;touch-action:none}
 /* the canvas is a focusable application region (keyboard layer, Task 25): its
    ring is drawn inside the frame so a full-bleed stage can never clip it, and it
    is the pitch cream — the same accent as every other control's ring */
@@ -108,23 +115,8 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 #drawerEmpty[hidden]{display:none}
 #drawerEmpty p{margin:0 0 var(--spacing-10)}
 #main{flex:1;display:flex;min-height:0}
-/* views rail — the contract rail (§20 .ds-rail): no fill, no radius, no card.
-   Only the current section carries the 2px inline-start accent; every item
-   keeps the same 2px transparent slot so the text axis never moves. The
-   hairline sits on the rail's right edge (inline-end) and the rail is flush to
-   the viewport's left edge — padding-inline:0, so the item's slot starts at
-   x=0 and the item's own inset (layout.rail.inset) is what moves the text in.
-   Width is the grammar token --layout-rail (208px): measured at 1440 it leaves
-   the canvas 1232×819 and the tool row untouched.
-   The box, the padding, the hairline and the 2px slot are the component's own
-   (§20), so nothing here restates them — this id rule keeps only the one
-   property the in-flow flex row needs. It must NOT redeclare width/position:
-   the drawer at ≤900 is the same element and an id would outrank §21.
-   #nav-drawer is also the drawer id the header toggle controls; --_rail-top is
-   measured from the header at runtime (the header wraps), so the rail ends on
-   the viewport bottom and its foot can pin there. */
-#nav-drawer{flex:none}
-.side-div{height:1px;background:var(--border);margin:var(--spacing-6) var(--spacing-2xs)}
+/* the side rail is gone: the underline tab row is the only view switcher,
+   so the stage owns the full width. */
 #stage{flex:1;display:flex;flex-direction:column;min-width:0;position:relative;background:var(--panel)}
 #cardMenuBtn{position:absolute;z-index:var(--z-sticky);min-width:var(--tap-min);min-height:var(--tap-min);width:var(--tap-min);height:var(--tap-min);padding:0;border-radius:var(--radius-xs);border:var(--border-width-hairline) solid var(--color-engine-wash-25);background:var(--color-engine-overlay-scrim);color:var(--ink);font-size:var(--typography-size-body);line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
 #cardMenuBtn:hover,#cardMenuBtn:focus-visible{border-color:var(--color-engine-text-secondary)}
@@ -133,10 +125,10 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 #cardMenu button{background:transparent;border:0;color:var(--ink);font:inherit;font-size:var(--typography-size-small);text-align:left;padding:var(--spacing-xs) var(--spacing-10);border-radius:var(--radius-xs);cursor:pointer}
 #cardMenu button:hover,#cardMenu button:focus-visible{background:var(--tool)}
 #cardMenu[hidden]{display:none}
-#assetBtn{position:static;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;min-height:var(--touch-min);font:inherit;font-size:var(--typography-size-meta);font-weight:var(--weight-medium);color:var(--mut);background:var(--color-engine-overlay-panel);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);padding:var(--spacing-6) var(--spacing-10);cursor:pointer;backdrop-filter:blur(4px)}
+#assetBtn{display:inline-flex;align-items:center;justify-content:center;min-height:var(--touch-min);font:inherit;font-size:var(--typography-size-meta);font-weight:var(--weight-medium);color:var(--mut);background:var(--color-engine-overlay-panel);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);padding:var(--spacing-6) var(--spacing-10);cursor:pointer;backdrop-filter:blur(4px)}
 #assetBtn:hover,#assetBtn:focus-visible{color:var(--ink);border-color:var(--color-engine-text-secondary)}
 #assetBtn[aria-expanded="true"]{color:var(--sel);border-color:var(--sel)}
-#assetPanel{position:absolute;z-index:var(--z-overlay);top:48px;left:10px;width:min(260px,70vw);min-inline-size:0;max-height:min(320px,60vh);overflow:auto;background:var(--panel);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-sm);box-shadow:var(--elevation-sheet);padding:5px} /* lint-allow: 5px panel inset sits between 4 and 6; snapping reflows the asset rows */
+#assetPanel{position:absolute;z-index:var(--z-overlay);top:calc(100% + var(--spacing-6));left:0;width:min(260px,70vw);min-inline-size:0;max-height:min(320px,60vh);overflow:auto;background:var(--panel);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-sm);box-shadow:var(--elevation-sheet);padding:5px} /* lint-allow: 5px panel inset sits between 4 and 6; snapping reflows the asset rows */
 #assetPanel[hidden]{display:none}
 #assetPanel .ahead{display:flex;align-items:center;gap:var(--spacing-6);padding:var(--spacing-2xs) var(--spacing-2xs) var(--spacing-2xs) var(--spacing-10)}
 #assetPanel .ahead .ah{flex:1;min-width:0}
@@ -367,29 +359,23 @@ input.tin.tin-pilled{color:transparent !important}
 /* ---- touch layer (lane Engine-Mobile; visual language only, IA unchanged) ----
    Tokens: --tap 44px min touch target. */
 /* desktop + mobile: 44px minimum touch targets on all primary controls */
-.tools button,#chapterbar button,#chapterbar select,#nav-drawer .ds-nav-item{min-height:var(--tap)}
+.tools button,#chapterbar button,#chapterbar select{min-height:var(--tap)}
 #drawerMenu button,#cardMenu button,#assetPanel .ajump{min-height:var(--tap)}
 /* canvas zoom controls: transport-style cluster, mobile only */
 #zoomCtl{position:absolute;z-index:var(--z-sticky-rail);right:10px;bottom:10px;display:none;flex-direction:column;gap:var(--spacing-6)}
 #zoomCtl button{width:var(--tap);height:var(--tap);border-radius:var(--radius-xs);border:var(--border-width-hairline) solid var(--border-strong);background:var(--color-engine-overlay-panel);color:var(--ink);font-size:18px;font-weight:var(--weight-bold);cursor:pointer;backdrop-filter:blur(4px)}
 #zoomCtl button:hover{border-color:var(--color-engine-text-secondary)}
 #sheetGrab{display:none}
-/* ---- phone / narrow nav (<=900, the --breakpoint-lg step) ----
-   There is exactly ONE mobile nav mechanism: the same #nav-drawer rail is an
-   off-canvas drawer driven by DS.nav (§21 in components.css). The previous
-   lane's pill strip is gone — it restated the rail as a second, page-local
-   horizontal nav and outranked §21 by id. #main still stacks here so the stage
-   owns the full width; the rail leaves the flow by the component's own fixed
-   positioning, so nothing below may give it `position`/`width` again. */
+/* ---- phone layout (<=900, the --breakpoint-lg step) ----
+   No side rail and no drawer: the underline tab row is the view switcher at
+   every width. #main still stacks here; the stage owns the full width. */
 @media (max-width:900px){/* 900px is --breakpoint-lg exactly; T6-clean */
   #main{flex-direction:column}
 }
-@media (max-width:860px){/* lint-allow: 860px collapses the engine header; --breakpoint-lg 900 would hide the tool row 40px later */
+@media (max-width:860px){/* lint-allow: 860px collapses the engine header; --breakpoint-lg 900 would hide the tool cluster 40px later */
   header{gap:var(--spacing-xs);padding:var(--spacing-xs) var(--spacing-sm);padding-top:calc(var(--spacing-xs) + env(safe-area-inset-top,0px))}
   header h1{font-size:var(--typography-size-body)}
-  header .by{display:none}
-  .tools{flex-wrap:nowrap;overflow-x:auto;max-width:100%;scrollbar-width:none}
-  .tools::-webkit-scrollbar{display:none}
+  #cvwrap .tools{flex-direction:column;max-width:calc(100% - 2 * var(--spacing-sm))}
   .tools button{flex:none;min-height:var(--tap)}
   .hint{display:none}
   #stage{min-height:0}
@@ -494,31 +480,15 @@ input.tin.tin-pilled{color:transparent !important}
 <link rel="stylesheet" href="design-system/shell.css"></head><body>
 <a class="ds-skip-link" href="#main">Skip to content</a>
 <header>
-<button class="ds-navtoggle" data-ds-nav-toggle="nav-drawer" aria-controls="nav-drawer" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-menu"></use></svg></button>
-<h1>Prompt Engine</h1><span class="by">storyboard the beats, not the pixels</span>
-<div class="tools">
+<h1>Prompt Engine</h1>
+</header>
+<main id="main" tabindex="-1"><div id="stage"><div class="eng-tabbar"><div class="eng-tabbar__row ds-shell ds-tabbar"><div class="ds-tabs" id="engTabs" data-variant="underline" role="tablist" aria-label="Views" data-ds-panel-scope="#stage"><button class="ds-tab" type="button" role="tab" data-view="scenes" aria-selected="true" tabindex="0">Scenes</button><button class="ds-tab" type="button" role="tab" data-view="shots" aria-selected="false" tabindex="-1">Shots Composer</button><button class="ds-tab" type="button" role="tab" data-view="locations" aria-selected="false" tabindex="-1">Locations</button><button class="ds-tab" type="button" role="tab" data-view="props" aria-selected="false" tabindex="-1">Props</button><button class="ds-tab" type="button" role="tab" data-view="cast" aria-selected="false" tabindex="-1">Cast</button></div><div class="ds-smenu"><button class="ds-btn ds-smenu__btn" type="button" data-ds-menu-trigger aria-controls="eng-surfaces-menu" aria-expanded="false" aria-haspopup="menu"><span class="ds-btn__label">Engine</span><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-chevron-down"/></svg></button><div class="ds-menu" id="eng-surfaces-menu" role="menu" aria-label="Surfaces" hidden><a class="ds-menu__item" role="menuitem" href="index.html">Wiki</a><a class="ds-menu__item" role="menuitem" href="pitch.html">Pitch</a><a class="ds-menu__item" role="menuitem" href="engine.html" aria-current="page">Engine</a><a class="ds-menu__item" role="menuitem" href="design-system/index.html">Design System</a></div></div></div></div><div id="chapterbar" hidden><span>Chapter</span><select id="chapterSel" aria-label="Chapter"></select><button id="addChapter" class="ds-btn">+ chapter</button><span class="sp"></span><button id="addLane" class="ds-btn">+ lane</button><button id="addScene" class="ds-btn">+ scene</button></div><div id="cvwrap"><div id="assetWrap"><button id="assetBtn" title="List assets in this tab" aria-haspopup="menu" aria-controls="assetPanel" aria-expanded="false" data-ds-menu-trigger>☰</button><div id="assetPanel" class="ds-menu" role="menu" aria-label="Assets in this tab" hidden></div></div><div class="tools">
 <button id="histUndoBtn" class="hist ds-btn" title="Undo (Ctrl+Z)" aria-label="Undo" disabled><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3 2.5 6.5 6 10"/><path d="M3 6.5h5.5a4.5 4.5 0 0 1 0 9H7"/></svg></button>
 <button id="histRedoBtn" class="hist ds-btn" title="Redo (Ctrl+Shift+Z)" aria-label="Redo" disabled><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3l3.5 3.5L10 10"/><path d="M13 6.5H7.5a4.5 4.5 0 0 0 0 9H9"/></svg></button>
 <button id="addNode" class="ds-btn">+ location</button>
 <button id="projBtn" class="ds-btn" title="Project proprietary tokens — enable domains used in prompts">⚙ project</button>
 <div class="menu"><button id="dots" class="ds-btn" title="more" aria-label="More actions" aria-haspopup="menu" aria-controls="menuDrop" aria-expanded="false" data-ds-menu-trigger>⋯</button><div id="menuDrop" class="ds-menu" role="menu" aria-label="Canvas actions" hidden><button id="undoBtn" class="ds-menu__item" role="menuitem">undo</button><button id="clear" class="ds-menu__item" role="menuitem">clear canvas</button><div id="assetList" role="group" aria-label="Assets"></div></div></div>
-</div>
-</header>
-<main id="main" tabindex="-1"><nav class="ds-rail" id="nav-drawer" data-ds-nav aria-label="Views">
-<button data-view="scenes" class="ds-nav-item ds-rail__item on" data-variant="rail" aria-current="page">Scenes</button>
-<button data-view="shots" class="ds-nav-item ds-rail__item" data-variant="rail">Shots Composer</button>
-<div class="side-div"></div>
-<button data-view="locations" class="ds-nav-item ds-rail__item" data-variant="rail">Locations</button>
-<button data-view="props" class="ds-nav-item ds-rail__item" data-variant="rail">Props</button>
-<button data-view="cast" class="ds-nav-item ds-rail__item" data-variant="rail">Cast</button>
-<div class="ds-rail__foot">
-<p class="ds-rail__label">Surfaces</p>
-<a class="ds-nav-item ds-rail__item" href="index.html">Wiki</a>
-<a class="ds-nav-item ds-rail__item" href="pitch.html">Pitch</a>
-<span class="ds-nav-item ds-rail__item" aria-current="page">Engine</span>
-<a class="ds-nav-item ds-rail__item" href="design-system/index.html">Design System</a>
-</div>
-</nav><div id="stage"><div class="eng-tabbar"><div class="eng-tabbar__row ds-shell ds-tabbar"><div class="ds-tabs" id="engTabs" data-variant="underline" role="tablist" aria-label="Views" data-ds-panel-scope="#stage"><button class="ds-tab" type="button" role="tab" data-view="scenes" aria-selected="true" tabindex="0">Scenes</button><button class="ds-tab" type="button" role="tab" data-view="shots" aria-selected="false" tabindex="-1">Shots Composer</button><button class="ds-tab" type="button" role="tab" data-view="locations" aria-selected="false" tabindex="-1">Locations</button><button class="ds-tab" type="button" role="tab" data-view="props" aria-selected="false" tabindex="-1">Props</button><button class="ds-tab" type="button" role="tab" data-view="cast" aria-selected="false" tabindex="-1">Cast</button></div><button id="assetBtn" title="List assets in this tab" aria-haspopup="menu" aria-controls="assetPanel" aria-expanded="false" data-ds-menu-trigger>☰</button><div class="ds-smenu"><button class="ds-btn ds-smenu__btn" type="button" data-ds-menu-trigger aria-controls="eng-surfaces-menu" aria-expanded="false" aria-haspopup="menu"><span class="ds-btn__label">Engine</span><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-chevron-down"/></svg></button><div class="ds-menu" id="eng-surfaces-menu" role="menu" aria-label="Surfaces" hidden><a class="ds-menu__item" role="menuitem" href="index.html">Wiki</a><a class="ds-menu__item" role="menuitem" href="pitch.html">Pitch</a><a class="ds-menu__item" role="menuitem" href="engine.html" aria-current="page">Engine</a><a class="ds-menu__item" role="menuitem" href="design-system/index.html">Design System</a></div></div></div></div><div id="chapterbar" hidden><span>Chapter</span><select id="chapterSel" aria-label="Chapter"></select><button id="addChapter" class="ds-btn">+ chapter</button><span class="sp"></span><button id="addLane" class="ds-btn">+ lane</button><button id="addScene" class="ds-btn">+ scene</button></div><canvas id="cv" tabindex="0" role="application" aria-label="Storyboard canvas" aria-describedby="cvHelp"></canvas><p id="cvHelp" class="ds-sr-only">Canvas keyboard: arrow keys move the selection between cards; Enter opens the selected card; N adds a card; Delete removes it after a second press; C starts a link, then arrow keys choose the target and Enter links it; Escape cancels. Every card is also in the assets list for this tab, which opens it.</p><div id="assetPanel" class="ds-menu" role="menu" aria-label="Assets in this tab" hidden></div><button id="cardMenuBtn" title="Image and link options" aria-label="Card image and link options" aria-haspopup="menu" aria-controls="cardMenu" aria-expanded="false" data-ds-menu-trigger hidden>⋯</button><div id="cardMenu" class="ds-menu" role="menu" aria-label="Card options" hidden></div></div></main>
+</div><canvas id="cv" tabindex="0" role="application" aria-label="Storyboard canvas" aria-describedby="cvHelp"></canvas></div><p id="cvHelp" class="ds-sr-only">Canvas keyboard: arrow keys move the selection between cards; Enter opens the selected card; N adds a card; Delete removes it after a second press; C starts a link, then arrow keys choose the target and Enter links it; Escape cancels. Every card is also in the assets list for this tab, which opens it.</p><button id="cardMenuBtn" title="Image and link options" aria-label="Card image and link options" aria-haspopup="menu" aria-controls="cardMenu" aria-expanded="false" data-ds-menu-trigger hidden>⋯</button><div id="cardMenu" class="ds-menu" role="menu" aria-label="Card options" hidden></div></div></main>
 <input type="file" id="filePick" accept="image/*" class="filehide" tabindex="-1" aria-hidden="true">
 <input type="file" id="assetImportPick" accept=".json,application/json,image/*" class="filehide" tabindex="-1" aria-hidden="true">
 <div id="arrowpick" role="group" aria-label="Connector ends" hidden>
@@ -554,7 +524,7 @@ input.tin.tin-pilled{color:transparent !important}
 <div id="assetEditList"></div>
 <div class="frow"><button id="assetClose" class="ds-btn modalClose">done</button><span class="note" id="assetNote"></span></div>
 </div></div>
-<footer class="hint" id="hint">hover a card for dots · drag dot-to-dot to link · click a card for detail · Ctrl+Z undoes · double-click renames</footer>
+<footer class="hint"><span id="engTag">storyboard the beats, not the pixels</span> · <span id="hint">hover a card for dots · drag dot-to-dot to link · click a card for detail · Ctrl+Z undoes · double-click renames</span></footer>
 <script src="design-system/components.js"></script>
 <script>
 /* DS paint reader. Every canvas/DOM paint below resolves from
@@ -1719,10 +1689,7 @@ function fitBoardOnce(){
  for(const n of nodes){const sx=(n.x-cam.x)*cam.z,sy=(n.y-cam.y)*cam.z;
   if(sx+n.w*cam.z>0&&sx<W&&sy+n.h*cam.z>0&&sy<H){vis=true;break}}
  if(vis)return false;
- let bottom=0;try{/* the rail is an off-canvas drawer on a phone (hidden when closed), so this
-  only sees a box when the desktop rail is in flow; keep the guard cheap */
-  const s=document.getElementById('nav-drawer'),cr=cv.getBoundingClientRect(),sr=s.getBoundingClientRect();
-  if(sr.height&&sr.top>cr.top&&sr.top<cr.bottom)bottom=cr.bottom-sr.top}catch(e){}
+ let bottom=0;
  let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;
  for(const n of nodes){x0=Math.min(x0,n.x);y0=Math.min(y0,n.y);x1=Math.max(x1,n.x+n.w);y1=Math.max(y1,n.y+n.h)}
  const bw=Math.max(1,x1-x0),bh=Math.max(1,y1-y0),availW=Math.max(1,W-PAD*4),availH=Math.max(1,H-PAD*2-bottom);
@@ -1969,10 +1936,9 @@ function rebuildChapters(){const c=activeChapter(),sel=document.getElementById('
  for(const ch of SCENES.chapters){const o=document.createElement('option');o.value=ch.id;o.textContent=(ch.chAnchor&&!nb?ch.chAnchor+' · ':'')+(ch.name||('Chapter '+ch.id));if(ch.id===SCENES.active)o.selected=true;sel.appendChild(o)}
  document.getElementById('addLane').textContent='+ lane ('+((selStrip&&selStrip.lanes)||'—')+')'}
 function syncUI(){
- document.querySelectorAll('#nav-drawer button').forEach(b=>{const on=b.dataset.view===view;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
- /* the underline parent tablist mirrors the rail: DS.tabs owns the tab state on
-    pointer/keyboard, and this line re-asserts it when the view changes from the
-    rail, a shortcut or a deep link (selectShot, chapter switches). */
+ /* the underline parent tablist owns the view state: DS.tabs owns selection
+    + roving, and this re-asserts it when the view changes from a shortcut
+    or a deep link (selectShot, chapter switches). */
  document.querySelectorAll('#engTabs .ds-tab').forEach(b=>{const on=b.dataset.view===view;b.setAttribute('aria-selected',on?'true':'false');b.tabIndex=on?0:-1});
  document.getElementById('chapterbar').hidden=view!=='scenes';
  const an=document.getElementById('addNode');
@@ -1983,7 +1949,6 @@ function syncUI(){
  hintEl.textContent=view==='scenes'?'wheel zooms · drag background pans · drag scene · resize corner · + fills lane slot · hover for dots · drag dot-to-dot to link · click still opens Shots':HINT_DEFAULT}
 function setView(v){if(v!==view){if(view==='scenes'){const oc=activeChapter();if(oc)oc.conns=conns}saveView();view=v;selStrip=null;selConn=null;pending=null;selected=null;hidePicker();closeShotPicker();closeCardMenu();
  if(v==='scenes'){const nc=activeChapter();conns=(nc&&nc.conns)||[]}else if(VIEW_META[v])loadView(v)}syncUI();persist();draw()}
-document.querySelectorAll('#nav-drawer button').forEach(b=>{b.onclick=()=>setView(b.dataset.view)});
 /* parent-tab → view: DS.tabs (auto-init) owns selection + roving on #engTabs;
    the page only reacts to its ds:tabchange and runs the same setView path. */
 document.getElementById('engTabs').addEventListener('ds:tabchange',e=>{const t=e.detail&&e.detail.tab;const v=t&&t.dataset.view;if(v&&v!==view)setView(v)});
@@ -2652,16 +2617,6 @@ document.addEventListener('pointerdown',e=>{if(assetDelArmedId&&!(e.target&&e.ta
  const gEnd=e=>{if(gy==null)return;const dy=e.clientY-gy;gy=null;drawer.style.transform='';if(dy>96){try{closeDrawer()}catch(_){drawer.classList.remove('open')}}};
  grab.addEventListener('pointerup',gEnd);
  grab.addEventListener('pointercancel',()=>{gy=null;drawer.style.transform=''});
-})();
-/* the rail is a viewport-height column that starts below the flow header, so
-   hand the contract's --_rail-top the header's measured height (it wraps at
-   narrow widths — a token cannot know it). The rail is then exactly the
-   viewport remainder and its Surfaces foot pins to the viewport bottom. In
-   drawer mode §21 owns inset/block-size and ignores this value. */
-(function(){
- const hd=document.querySelector('header'),nv=document.getElementById('nav-drawer');
- function syncRailTop(){if(hd&&nv)nv.style.setProperty('--_rail-top',hd.offsetHeight+'px')}
- syncRailTop();addEventListener('resize',syncRailTop);
 })();
 attachZoom();
 restore();fit();try{fitBoardOnce()}catch(e){}

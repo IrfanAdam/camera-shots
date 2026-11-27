@@ -34,10 +34,10 @@ a{color:inherit}
 /* chart hit-rects sit flush inside the plot: same ring, drawn inward (offset inverted) */
 .fchart rect[data-m]:focus-visible{outline:var(--focus-width) solid var(--color-pitch-accent);outline-offset:calc(-1*var(--focus-offset))}
 .w{padding-block:0 4rem} /* lint-allow: 4rem deck bottom pad is layout-scale; no spacing step sits at 64px */
-/* shell: single column — sticky header (title + hero + underline doc tabs)
-   on top, then the panels. Each doc panel carries its own section nav as the
-   first cell of a .p-panelbody grid (gallery pattern: title → hero →
-   underline mains → in-panel nav). No page-side rail. */
+/* shell: single column — static header (title + hero) on top, the sticky
+   tab row alone beneath it, then the panels. Each doc panel carries its own
+   section nav as the first cell of a .p-panelbody grid (gallery pattern:
+   title → hero → underline mains → in-panel nav). No page-side rail. */
 .shell{display:block}
 .col{display:flex;flex-direction:column;min-width:0}
 /* in-panel body (≥901): the panel's own section nav is the first grid cell
@@ -56,20 +56,20 @@ a{color:inherit}
 .p-panelbody>.ds-rail .ds-navclose{display:none}
 /* the export cluster follows the TOC instead of hanging on the viewport bottom */
 .p-panelbody>.ds-rail>.sidexport{position:static;inset-block-end:auto;margin-block-start:var(--spacing-lg);padding-block-end:0;background:transparent}
-/* header: the shared sticky page header (design-system/shell.css §S4
-   `.ds-stick`) — title block, then the hero, then the tab row; one stuck
-   transition owned by the shell. The rail carries sections only; the hero
-   keeps its inline Surfaces links and the tab row keeps a persistent
-   Surfaces menu at the inline end (DS tabbar pattern), so the cross-surface
-   jump stays reachable on scroll. */
+/* header: the static page header — title block, then the hero. Below it the
+   shared sticky tab row (design-system/shell.css §S4 `.ds-stick`, the tabbar
+   alone; one stuck transition owned by the shell). The rail carries sections
+   only; the hero keeps its inline Surfaces links and the tab row keeps a
+   persistent Surfaces menu at the inline end (DS tabbar pattern), so the
+   cross-surface jump stays reachable on scroll. */
 .hdricons{display:flex;align-items:center;gap:var(--spacing-2xs)}
 @media(min-width:901px){.hdricons{display:none}}
 .hicon{display:flex;align-items:center;justify-content:center;min-width:var(--control-height-default);min-height:var(--control-height-default);width:var(--control-height-default);height:var(--control-height-default);border-radius:var(--radius-xs);background:transparent;border:0;color:var(--mut);font-size:var(--typography-size-ui);cursor:pointer;font-family:inherit}
 .hicon:hover{color:var(--ink);background:var(--s2)}
 .hicon svg{display:block;width:var(--icon-size-sm);height:var(--icon-size-sm)}
-/* the tab row rides inside the shared sticky header (design-system/shell.css
-   §S4 `.ds-stick` + §S2 `.ds-tabbar` + §S3 `.ds-smenu`) below the hero — the
-   underline parent tablist takes the free axis (and scrolls it on a phone),
+/* the tab row alone sticks (design-system/shell.css §S4 `.ds-stick` +
+   §S2 `.ds-tabbar` + §S3 `.ds-smenu`) below the static hero — the underline
+   parent tablist takes the free axis (and scrolls it on a phone),
    the Surfaces menu keeps its own width at the inline end, so it stays
    reachable beside the tabs. The panel is the shipped .ds-menu, CSS-anchored to its
    own box. No page-local restyle: tab size/border come from components.css
@@ -307,7 +307,7 @@ section{scroll-margin-top:var(--p-stick,9.5rem)}
 #plan-weeks{padding-block-end:var(--spacing-2xl)}
 /* print: active article only (in-panel navs stay on screen) */
 @media print{
-.ds-stick__title,.ds-stick .ds-tabbar,.p-panelbody>.ds-rail,.ctarow,.drawer,.backdrop,footer,.viewtoggle{display:none}
+.ds-stick,.p-panelbody>.ds-rail,.ctarow,.drawer,.backdrop,footer,.viewtoggle{display:none}
 .shell,.col{display:block}
 body{background:var(--paper);color:var(--prtink)}
 .w{max-width:100%;padding:0}
@@ -330,10 +330,10 @@ html{scroll-behavior:auto}
 <body data-print-doc="story">
 <div class="shell">
 <div class="col">
-<header class="ds-stick">
+<header>
 <div class="ds-shell">
 <div class="ds-stick__title">
-<a class="ds-stick__brand" href="#story" onclick="switchTab('story');return false;">Camera Shots<small>intent before pixels</small></a>
+<a class="ds-stick__brand" href="#story" onclick="switchTab('story');return false;">Camera Shots</a>
 <div class="ds-stick__tools">
 <span class="hdricons no-print">
 <button class="hicon" id="h-exp" type="button" title="Download .md of this tab" aria-label="Download active tab markdown"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button>
@@ -353,6 +353,10 @@ html{scroll-behavior:auto}
 <div class="ctarow"><a class="btn primary" href="engine.html">Open the engine</a><a class="btn ghost" href="index.html">Browse the wiki</a></div>
 </div>
 </section>
+</div>
+</header>
+<div class="ds-stick">
+<div class="ds-shell">
 <div class="ds-tabbar">
 <nav class="ds-tabs" data-variant="underline" role="tablist" aria-label="Company Documents">
 <button class="ds-tab" id="tab-btn-story" role="tab" data-doc="story" aria-selected="true" aria-controls="panel-doc-01" tabindex="0" onclick="switchTab('story')">Product</button>
@@ -371,7 +375,7 @@ html{scroll-behavior:auto}
 </div>
 </div>
 </div>
-</header>
+</div>
 <div class="w ds-shell">
 <div class="panels">
 
@@ -813,7 +817,7 @@ html{scroll-behavior:auto}
 </div>
 </div><!-- /panels -->
 
-<footer>Camera Shots — a wiki and a prompt engine for deliberate AI cinema. by irfan · <a href="index.html">wiki</a> · <a href="engine.html">engine</a> · <a href="design-system/index.html">design system</a></footer>
+<footer>Camera Shots — intent before pixels: a wiki and a prompt engine for deliberate AI cinema. by irfan · <a href="index.html">wiki</a> · <a href="engine.html">engine</a> · <a href="design-system/index.html">design system</a></footer>
 </div><!-- /w -->
 </div><!-- /col -->
 </div><!-- /shell -->
@@ -926,12 +930,11 @@ bindDrawer(current);
   document.addEventListener('pointerdown',function(e){if(!p.hasAttribute('hidden')&&!t.contains(e.target)&&!p.contains(e.target))close()});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!p.hasAttribute('hidden')){close();t.focus()}});
 })();
-/* shared sticky-header stuck state (design-system/shell.css §S4): the bar
-   holds the title block, the hero and the tab row, in that order; it starts
-   transparent and borderless, and past the top it condenses (translucent
-   ground + hairline + tighter title pad), transitioned by the shell.
-   rAF-throttled scroll read, no layout work. The landing offset follows the
-   measured bar height (hero included), so TOC jumps land under the bar. */
+/* shared sticky-tab stuck state (design-system/shell.css §S4): only the tab
+   row sticks, below the static title + hero; it starts transparent and
+   borderless, and past the top it condenses (translucent ground + hairline),
+   transitioned by the shell. rAF-throttled scroll read, no layout work. The
+   landing offset follows the measured tab bar, so TOC jumps land under it. */
 (function(){
   var bar=document.querySelector('.ds-stick');if(!bar)return;
   var tick=false;

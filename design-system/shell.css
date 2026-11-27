@@ -16,12 +16,12 @@
           the shipped `.ds-menu` panel, so no MenuButton anchor math runs.
           Pages bind it with DS.menu (or the auto-init, where the page opts
           in); the page script owns wiring, this file owns geometry.
-     §S4  the sticky page header    — `.ds-stick`: title block above the tab
-          row, one stuck transition. The bar starts transparent/borderless
-          over the hero; `.is-stuck` (toggled by the page's own scroll
+     §S4  the sticky tab row        — `.ds-stick`: the tabbar alone, stuck
+          below the static title + hero. The bar starts transparent/
+          borderless; `.is-stuck` (toggled by the page's own scroll
           listener) condenses it to translucent role ground + blur +
-          hairline + tighter title padding, transitioned. Pages adopt the
-          markup, never a local copy of the chrome.
+          hairline, transitioned. Pages adopt the markup, never a local
+          copy of the chrome.
 
    OPT IN
    ------
