@@ -14,11 +14,11 @@ Surfaces: `index.html` · `pitch.html` · `engine.html` · `design-system/index.
 | tokens defined | 188 |
 | tokens with a product ref | 157 |
 | tokens with no product ref | 31 |
-| custom-property refs | 3011 |
-| … token / role-var `--ds-*` / local / canvas read | 2094 / 178 / 677 / 62 |
+| custom-property refs | 3014 |
+| … token / role-var `--ds-*` / local / canvas read | 2097 / 178 / 677 / 62 |
 | … local split: component `--_*` / page alias | 36 / 641 |
 | component records | 39 (34 styled in components.css) |
-| component instances | 1087 (186 product, 901 gallery) |
+| component instances | 1107 (186 product, 921 gallery) |
 | … authored in JS (flagged dynamic) | 38 |
 | numbered blocks | 21 (16 with a product instance) |
 
@@ -52,7 +52,7 @@ A block can be documented, styled and exercised in the gallery while no product 
 | 16 | progress | `ds-progress` | 24 |
 | 17 | tooltip | `ds-tooltip` | 4 |
 
-At class level, 15 styled records have no product instance: `.ds-card` (32 gallery), `.ds-empty` (12 gallery), `.ds-field` (24 gallery), `.ds-label` (24 gallery), `.ds-navclose` (0 gallery), `.ds-navscrim` (0 gallery), `.ds-note` (8 gallery), `.ds-progress` (24 gallery), `.ds-select` (4 gallery), `.ds-surface` (12 gallery), `.ds-tabpanel` (47 gallery), `.ds-tabsub` (36 gallery), `.ds-textarea` (4 gallery), `.ds-theme-toggle` (4 gallery), `.ds-tooltip` (4 gallery).
+At class level, 15 styled records have no product instance: `.ds-card` (32 gallery), `.ds-empty` (12 gallery), `.ds-field` (24 gallery), `.ds-label` (24 gallery), `.ds-navclose` (0 gallery), `.ds-navscrim` (0 gallery), `.ds-note` (8 gallery), `.ds-progress` (24 gallery), `.ds-select` (4 gallery), `.ds-surface` (12 gallery), `.ds-tabpanel` (44 gallery), `.ds-tabsub` (36 gallery), `.ds-textarea` (4 gallery), `.ds-theme-toggle` (4 gallery), `.ds-tooltip` (4 gallery).
 
 Structural and utility records with no product instance: `.ds-icon` (56 gallery), `.ds-scroll-x` (0 gallery), `.ds-scroll-y` (0 gallery).
 
@@ -110,20 +110,20 @@ Showing 10 of 13 components.
 
 ### gallery — `design-system/index.html` (docs, quarantined)
 
-901 component instances, 463 custom-property refs in the page source, 133 tokens named by the page and by stylesheets only it loads (131 direct, 25 from its own sheets).
+921 component instances, 463 custom-property refs in the page source, 133 tokens named by the page and by stylesheets only it loads (131 direct, 26 from its own sheets).
 
 | component | instances | share of surface |
 |---|---|---|
-| `.ds-tab` | 151 | 17% |
+| `.ds-tab` | 148 | 16% |
 | `.ds-btn` | 84 | 9% |
+| `.ds-rail` | 66 | 7% |
 | `.ds-switch` | 64 | 7% |
+| `.ds-nav-item` | 62 | 7% |
 | `.ds-icon` | 56 | 6% |
-| `.ds-nav-item` | 51 | 6% |
-| `.ds-rail` | 51 | 6% |
-| `.ds-tabpanel` | 47 | 5% |
 | `.ds-tabs` | 45 | 5% |
+| `.ds-tabpanel` | 44 | 5% |
 | `.ds-tabsub` | 36 | 4% |
-| `.ds-card` | 32 | 4% |
+| `.ds-card` | 32 | 3% |
 
 Showing 10 of 34 components.
 

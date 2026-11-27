@@ -39,9 +39,9 @@
     "tokensAliasNoRef": 3,
     "tokensNoRef": 9,
     "tokensAlias": 8,
-    "customPropertyRefs": 3011,
+    "customPropertyRefs": 3014,
     "customPropertyRefsByKind": {
-      "token": 2094,
+      "token": 2097,
       "roleVar": 178,
       "localVar": 677,
       "canvas": 62
@@ -50,11 +50,11 @@
       "componentLocal": 36,
       "pageAlias": 641
     },
-    "tokenRefs": 2156,
+    "tokenRefs": 2159,
     "tokenRefsByFile": {
       "design-system/base.css": 26,
       "design-system/components.css": 350,
-      "design-system/gallery-pitch.css": 97,
+      "design-system/gallery-pitch.css": 100,
       "design-system/index.html": 374,
       "design-system/pitch-shell.css": 41,
       "engine-pitch.css": 24,
@@ -65,7 +65,7 @@
     "refsByFile": {
       "design-system/base.css": 31,
       "design-system/components.css": 538,
-      "design-system/gallery-pitch.css": 178,
+      "design-system/gallery-pitch.css": 181,
       "design-system/index.html": 463,
       "design-system/pitch-shell.css": 50,
       "engine-pitch.css": 24,
@@ -80,14 +80,14 @@
     "componentsStyledWithProductInstances": 19,
     "componentsWithoutProductInstances": 18,
     "componentsWithoutProductInstancesStyled": 15,
-    "componentInstances": 1087,
+    "componentInstances": 1107,
     "componentInstancesProduct": 186,
     "componentInstancesDynamic": 38,
     "componentInstancesBySurface": {
       "wiki": 28,
       "pitch": 75,
       "engine": 83,
-      "gallery": 901
+      "gallery": 921
     },
     "blocks": 21,
     "blocksWithProductInstances": 16,
@@ -6651,7 +6651,7 @@
         "wiki": 24,
         "pitch": 41,
         "engine": 46,
-        "gallery": 36
+        "gallery": 38
       },
       "direct": {
         "wiki": 8,
@@ -6662,7 +6662,7 @@
       "cssFiles": {
         "design-system/base.css": 1,
         "design-system/components.css": 15,
-        "design-system/gallery-pitch.css": 3
+        "design-system/gallery-pitch.css": 5
       },
       "roleMapCells": 0,
       "usedByBlocks": [
@@ -6687,7 +6687,7 @@
         },
         {
           "file": "design-system/gallery-pitch.css",
-          "count": 3
+          "count": 5
         },
         {
           "file": "design-system/index.html",
@@ -6706,9 +6706,9 @@
           "count": 26
         }
       ],
-      "refCount": 100,
+      "refCount": 102,
       "productRefCount": 111,
-      "galleryRefs": 36,
+      "galleryRefs": 38,
       "reach": "product",
       "hasProductRef": true
     },
@@ -7275,7 +7275,7 @@
         "wiki": 4,
         "pitch": 6,
         "engine": 5,
-        "gallery": 6
+        "gallery": 7
       },
       "direct": {
         "wiki": 2,
@@ -7285,6 +7285,7 @@
       },
       "cssFiles": {
         "design-system/base.css": 1,
+        "design-system/gallery-pitch.css": 1,
         "design-system/pitch-shell.css": 1
       },
       "roleMapCells": 0,
@@ -7293,6 +7294,10 @@
       "refs": [
         {
           "file": "design-system/base.css",
+          "count": 1
+        },
+        {
+          "file": "design-system/gallery-pitch.css",
           "count": 1
         },
         {
@@ -7316,9 +7321,9 @@
           "count": 6
         }
       ],
-      "refCount": 18,
+      "refCount": 19,
       "productRefCount": 15,
-      "galleryRefs": 6,
+      "galleryRefs": 7,
       "reach": "product",
       "hasProductRef": true
     },
@@ -9456,23 +9461,23 @@
       "blockTitle": "pager / nav item / theme toggle",
       "kind": "component",
       "defined": true,
-      "instances": 93,
+      "instances": 104,
       "bySurface": {
         "wiki": 2,
         "pitch": 28,
         "engine": 12,
-        "gallery": 51
+        "gallery": 62
       },
       "dynamic": 5,
-      "staticInstances": 88,
+      "staticInstances": 99,
       "productInstances": 42,
       "productDynamic": 5,
       "productStaticInstances": 37,
-      "galleryInstances": 51,
+      "galleryInstances": 62,
       "files": [
         {
           "file": "design-system/index.html",
-          "count": 51
+          "count": 62
         },
         {
           "file": "engine.html",
@@ -9760,23 +9765,23 @@
       "blockTitle": "rail — flat vertical section nav",
       "kind": "component",
       "defined": true,
-      "instances": 103,
+      "instances": 118,
       "bySurface": {
         "wiki": 4,
         "pitch": 36,
         "engine": 12,
-        "gallery": 51
+        "gallery": 66
       },
       "dynamic": 2,
-      "staticInstances": 101,
+      "staticInstances": 116,
       "productInstances": 52,
       "productDynamic": 2,
       "productStaticInstances": 50,
-      "galleryInstances": 51,
+      "galleryInstances": 66,
       "files": [
         {
           "file": "design-system/index.html",
-          "count": 51
+          "count": 66
         },
         {
           "file": "engine.html",
@@ -10092,23 +10097,23 @@
       "blockTitle": "tabs",
       "kind": "component",
       "defined": true,
-      "instances": 161,
+      "instances": 158,
       "bySurface": {
         "wiki": 2,
         "pitch": 8,
         "engine": 0,
-        "gallery": 151
+        "gallery": 148
       },
       "dynamic": 2,
-      "staticInstances": 159,
+      "staticInstances": 156,
       "productInstances": 10,
       "productDynamic": 2,
       "productStaticInstances": 8,
-      "galleryInstances": 151,
+      "galleryInstances": 148,
       "files": [
         {
           "file": "design-system/index.html",
-          "count": 151
+          "count": 148
         },
         {
           "file": "index.html",
@@ -10232,23 +10237,23 @@
       "blockTitle": "tabs",
       "kind": "component",
       "defined": true,
-      "instances": 47,
+      "instances": 44,
       "bySurface": {
         "wiki": 0,
         "pitch": 0,
         "engine": 0,
-        "gallery": 47
+        "gallery": 44
       },
       "dynamic": 0,
-      "staticInstances": 47,
+      "staticInstances": 44,
       "productInstances": 0,
       "productDynamic": 0,
       "productStaticInstances": 0,
-      "galleryInstances": 47,
+      "galleryInstances": 44,
       "files": [
         {
           "file": "design-system/index.html",
-          "count": 47
+          "count": 44
         }
       ],
       "modifiers": [],
@@ -10602,13 +10607,13 @@
         "ds-tabs",
         "ds-tabsub"
       ],
-      "instances": 293,
+      "instances": 287,
       "productInstances": 14,
       "bySurface": {
         "wiki": 4,
         "pitch": 10,
         "engine": 0,
-        "gallery": 279
+        "gallery": 273
       },
       "hasProductInstance": true
     },
@@ -10813,13 +10818,13 @@
         "ds-pager",
         "ds-theme-toggle"
       ],
-      "instances": 103,
+      "instances": 114,
       "productInstances": 44,
       "bySurface": {
         "wiki": 4,
         "pitch": 28,
         "engine": 12,
-        "gallery": 59
+        "gallery": 70
       },
       "hasProductInstance": true
     },
@@ -10845,13 +10850,13 @@
       "classes": [
         "ds-rail"
       ],
-      "instances": 103,
+      "instances": 118,
       "productInstances": 52,
       "bySurface": {
         "wiki": 4,
         "pitch": 36,
         "engine": 12,
-        "gallery": 51
+        "gallery": 66
       },
       "hasProductInstance": true
     },
@@ -11486,43 +11491,43 @@
           "--z-sticky"
         ],
         "direct": 131,
-        "ownCss": 25
+        "ownCss": 26
       },
       "components": {
         "count": 34,
-        "instances": 901,
+        "instances": 921,
         "list": [
           {
             "class": "ds-tab",
-            "instances": 151
+            "instances": 148
           },
           {
             "class": "ds-btn",
             "instances": 84
           },
           {
+            "class": "ds-rail",
+            "instances": 66
+          },
+          {
             "class": "ds-switch",
             "instances": 64
+          },
+          {
+            "class": "ds-nav-item",
+            "instances": 62
           },
           {
             "class": "ds-icon",
             "instances": 56
           },
           {
-            "class": "ds-nav-item",
-            "instances": 51
-          },
-          {
-            "class": "ds-rail",
-            "instances": 51
+            "class": "ds-tabs",
+            "instances": 45
           },
           {
             "class": "ds-tabpanel",
-            "instances": 47
-          },
-          {
-            "class": "ds-tabs",
-            "instances": 45
+            "instances": 44
           },
           {
             "class": "ds-tabsub",
@@ -11804,7 +11809,7 @@
         {
           "class": "ds-tabpanel",
           "kind": "component",
-          "galleryInstances": 47
+          "galleryInstances": 44
         },
         {
           "class": "ds-tabsub",
