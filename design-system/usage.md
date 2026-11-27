@@ -12,17 +12,17 @@ Surfaces: `index.html` · `pitch.html` · `engine.html` · `design-system/index.
 |---|---|
 | surfaces | 4 (3 product + 1 quarantined) |
 | tokens defined | 188 |
-| tokens with a product ref | 157 |
-| tokens with no product ref | 31 |
-| custom-property refs | 3027 |
-| … token / role-var `--ds-*` / local / canvas read | 2111 / 179 / 675 / 62 |
-| … local split: component `--_*` / page alias | 36 / 639 |
+| tokens with a product ref | 156 |
+| tokens with no product ref | 32 |
+| custom-property refs | 3003 |
+| … token / role-var `--ds-*` / local / canvas read | 2091 / 179 / 671 / 62 |
+| … local split: component `--_*` / page alias | 36 / 635 |
 | component records | 42 (34 styled in components.css) |
 | component instances | 1161 (228 product, 933 gallery) |
 | … authored in JS (flagged dynamic) | 39 |
 | numbered blocks | 21 (16 with a product instance) |
 
-## Tokens with no product reference (31)
+## Tokens with no product reference (32)
 
 A gallery swatch proves a token renders; it does not prove a product uses it.
 None of these has a direct reference from a product page or product stylesheet,
@@ -30,7 +30,7 @@ grouped by why:
 
 | group | count | what it means | tokens |
 |---|---|---|---|
-| gallery-only | 22 | referenced by the gallery page or a gallery-only stylesheet | `--color-engine-accent`, `--color-engine-accent-ink`, `--color-engine-track-audio`, `--color-wiki-dark-accent`, `--color-wiki-dark-accent-wash`, `--color-wiki-dark-amber`, `--color-wiki-dark-bg`, `--color-wiki-dark-card`, `--color-wiki-dark-ink`, `--color-wiki-dark-muted`, `--color-wiki-dark-rule`, `--color-wiki-light-accent`, `--color-wiki-light-accent-wash`, `--color-wiki-light-card`, `--color-wiki-light-muted`, `--color-wiki-light-rule`, `--elevation-float`, `--elevation-inset`, `--elevation-ring`, `--icon-size-lg`, `--radius-lg`, `--spacing-gutter-pro` |
+| gallery-only | 23 | referenced by the gallery page or a gallery-only stylesheet | `--color-engine-accent`, `--color-engine-accent-ink`, `--color-engine-track-audio`, `--color-wiki-dark-accent`, `--color-wiki-dark-accent-wash`, `--color-wiki-dark-amber`, `--color-wiki-dark-bg`, `--color-wiki-dark-card`, `--color-wiki-dark-ink`, `--color-wiki-dark-muted`, `--color-wiki-dark-rule`, `--color-wiki-light-accent`, `--color-wiki-light-accent-wash`, `--color-wiki-light-card`, `--color-wiki-light-muted`, `--color-wiki-light-rule`, `--elevation-float`, `--elevation-inset`, `--elevation-ring`, `--icon-size-lg`, `--radius-lg`, `--spacing-gutter-pro`, `--typography-size-h1` |
 | role-map only | 0 | referenced by a theme-map cell, by no var() anywhere | — |
 | breakpoint | 5 | a media-query criterion; var() is invalid there | `--breakpoint-lg`, `--breakpoint-md`, `--breakpoint-sm`, `--breakpoint-xl`, `--breakpoint-xs` |
 | alias, unreferenced | 3 | a var(--alias) definition nothing references | `--color-pro-tool-hover`, `--color-wiki-dark-accent-ink`, `--spacing-base` |
@@ -60,7 +60,7 @@ Structural and utility records with no product instance: `.ds-icon` (56 gallery)
 
 ### wiki — `index.html` (read)
 
-39 component instances, 274 custom-property refs in the page source, 56 tokens named by the page and by stylesheets only it loads (56 direct, 0 from its own sheets).
+39 component instances, 254 custom-property refs in the page source, 56 tokens named by the page and by stylesheets only it loads (56 direct, 0 from its own sheets).
 
 | component | instances | share of surface |
 |---|---|---|
@@ -79,7 +79,7 @@ Showing 10 of 17 components.
 
 ### pitch — `pitch.html` (persuade)
 
-88 component instances, 519 custom-property refs in the page source, 87 tokens named by the page and by stylesheets only it loads (87 direct, 0 from its own sheets).
+88 component instances, 515 custom-property refs in the page source, 87 tokens named by the page and by stylesheets only it loads (87 direct, 0 from its own sheets).
 
 | component | instances | share of surface |
 |---|---|---|
