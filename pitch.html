@@ -34,8 +34,8 @@ a{color:inherit}
 /* chart hit-rects sit flush inside the plot: same ring, drawn inward (offset inverted) */
 .fchart rect[data-m]:focus-visible{outline:var(--focus-width) solid var(--color-pitch-accent);outline-offset:calc(-1*var(--focus-offset))}
 .w{padding-block:0 4rem} /* lint-allow: 4rem deck bottom pad is layout-scale; no spacing step sits at 64px */
-/* shell: single column — sticky header (brand + underline doctabs) on top,
-   then the panels. Each doctab panel carries its own section nav as the first
+/* shell: single column — sticky header (brand + underline doc tabs) on top,
+   then the panels. Each doc panel carries its own section nav as the first
    cell of a .p-panelbody grid (gallery pattern: hero → underline mains →
    in-panel nav). No page-side rail. */
 .shell{display:block}
@@ -71,16 +71,13 @@ a{color:inherit}
 .hicon{display:flex;align-items:center;justify-content:center;min-width:var(--control-height-default);min-height:var(--control-height-default);width:var(--control-height-default);height:var(--control-height-default);border-radius:var(--radius-xs);background:transparent;border:0;color:var(--mut);font-size:var(--typography-size-ui);cursor:pointer;font-family:inherit}
 .hicon:hover{color:var(--ink);background:var(--s2)}
 .hicon svg{display:block;width:var(--icon-size-sm);height:var(--icon-size-sm)}
-/* doc tabs: DS underline tablist on the content axis (components.css §5 —
-   parent tabs are underline, pills are secondary). The row starts at the same
-   left edge as the section text (no centring) */
-.doctabs{min-width:0}
 /* sticky tab row: the shared shell tabbar (design-system/shell.css `.ds-tabbar`
    + `.ds-smenu`) — the underline parent tablist takes the free axis (and
    scrolls it on a phone), the Surfaces menu keeps its own width at the inline
    end, so it stays reachable after the hero links scroll away. The panel is
-   the shipped .ds-menu, CSS-anchored to its own box. */
-/* in-panel TOC: each doctab panel owns one flat DS section rail (nav.toc);
+   the shipped .ds-menu, CSS-anchored to its own box. No page-local restyle:
+   tab size/border come from components.css §5, identical to the DS gallery. */
+/* in-panel TOC: each doc panel owns one flat DS section rail (nav.toc);
    only the visible panel's TOC shows, and the export cluster rides under it */
 .sidexport{display:flex;flex-direction:column;gap:var(--spacing-xs);border-top:var(--border-width-hairline) solid var(--rule);margin-block-start:auto;padding:var(--spacing-sm) var(--spacing-md) var(--spacing-sm) calc(var(--border-width-strong) + var(--layout-rail-inset))}
 /* bottom cluster: the export block rides under the TOC inside the panel's own
@@ -121,11 +118,14 @@ h2{font-size:var(--typography-size-h2);letter-spacing:var(--tracking-tight);line
 .tgap.tgap{margin-top:var(--spacing-18)}
 p.body{color:var(--body);font-size:var(--typography-size-body);max-width:40rem;margin-top:var(--spacing-10)}
 p.body a,li a,.lede a{text-decoration:underline;text-decoration-color:var(--mut2);text-underline-offset:2px}
-.hero{padding:2.6rem 0 1.6rem;max-width:40rem} /* lint-allow: hero section pad is layout-scale; 41.6px and 25.6px have no step within 0.9px */
-.eyebrow{display:inline-flex;align-items:center;gap:var(--spacing-xs);font-size:var(--typography-size-eyebrow);font-weight:var(--weight-bold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--mut);font-family:var(--typography-family-mono);border:var(--border-width-hairline) solid var(--rule);background:var(--s1);border-radius:var(--radius-xs);padding:var(--spacing-6) var(--spacing-14)}
-.hero h1{font-size:var(--typography-size-display);line-height:var(--line-height-display);letter-spacing:-.03em;margin:var(--spacing-18) 0 var(--spacing-sm)}
-.hero h1 span{color:var(--acc)}
-.sub{color:var(--mut);font-size:var(--typography-size-ui);max-width:34rem}
+/* hero: the common DS mast pattern (design-system/index.html .masthead:
+   kicker/title/lede + meta row) — same structure, same token values, pitch
+   aliases. Pitch content unchanged: eyebrow→kicker, sub→lede. */
+.masthead{border-bottom:var(--border-width-hairline) solid var(--rule);padding:var(--spacing-2xl) 0 var(--spacing-xl)}
+.kicker{font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;font-weight:var(--weight-medium);color:var(--mut)}
+.masthead h1{font-size:var(--typography-size-display);line-height:var(--line-height-display);letter-spacing:var(--tracking-tight);font-weight:var(--weight-bold);max-width:18ch;margin:0}
+.masthead h1 span{color:var(--acc)}
+.mast-lede{margin-top:var(--spacing-md);max-width:56ch;color:var(--mut);font-size:var(--typography-size-body)}
 .meta{color:var(--mut);font-size:var(--typography-size-meta);margin-top:var(--spacing-md)}
 .ctarow{display:flex;gap:var(--spacing-10);flex-wrap:wrap;margin-top:1.4rem} /* lint-allow: 22.4px CTA lift sits between the 20 and 24 steps; snapping moves 1.6px */
 .btn{display:inline-block;min-height:var(--control-height-reading);text-decoration:none;font-weight:var(--weight-semibold);font-size:.9rem;border-radius:var(--radius-xs);padding:var(--spacing-10) var(--spacing-20);border:var(--border-width-hairline) solid var(--rule);background:transparent;color:var(--ink);cursor:pointer;font-family:inherit}
@@ -261,11 +261,8 @@ footer{margin:var(--spacing-2xl) 0 var(--spacing-md);color:var(--mut);font-size:
    above the content. A stamped drawer is left alone: components.css §21 owns
    it at this width. */
 .p-panelbody>.ds-rail:not([data-ds-nav-mode="drawer"]){position:static;inset-block-start:auto;align-self:auto;block-size:auto;padding-block-start:0;overflow:visible}
-.doctabs[data-variant="underline"]{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
-.doctabs[data-variant="underline"]::-webkit-scrollbar{display:none}
 .grid{grid-template-columns:1fr}
 .metrics{grid-template-columns:1fr 1fr}
-.hero{padding:1.6rem 0 var(--spacing-md)} /* lint-allow: 25.6px compact-hero pad sits between the 24 and 32 steps */
 }
 @media(max-width:639px){
 .tbl thead{display:none}
@@ -321,9 +318,9 @@ body{background:var(--paper);color:var(--prtink)}
 .panel{display:none}
 .panel.on{display:block;animation:none}
 .card,.step,.metric,.tbl{background:var(--paper)!important;border:var(--border-width-hairline) solid var(--prtrule)!important;color:var(--prtink)!important}
-.card p,.step p,.lede,.sub,.metric .l,.metric .q{color:var(--prtbody)}
+.card p,.step p,.lede,.metric .l,.metric .q{color:var(--prtbody)}
 p.body,ul.tight li,tbody td{color:var(--prtfine)}
-.k,.hero h1 span,.step h3 a,.draft,.lnum{color:var(--prtacc)}
+.k,.masthead h1 span,.step h3 a,.draft,.lnum{color:var(--prtacc)}
 article{gap:var(--spacing-lg)}
 }
 @media(prefers-reduced-motion:reduce){
@@ -351,7 +348,7 @@ html{scroll-behavior:auto}
 </div>
 </div>
 <div class="ds-tabbar">
-<nav class="doctabs ds-tabs" data-variant="underline" role="tablist" aria-label="Company Documents">
+<nav class="ds-tabs" data-variant="underline" role="tablist" aria-label="Company Documents">
 <button class="ds-tab" id="tab-btn-story" role="tab" data-doc="story" aria-selected="true" aria-controls="panel-doc-01" tabindex="0" onclick="switchTab('story')">Product</button>
 <button class="ds-tab" id="tab-btn-investors" role="tab" data-doc="investors" aria-selected="false" aria-controls="panel-doc-03" tabindex="-1" onclick="switchTab('investors')">Investors</button>
 <button class="ds-tab" id="tab-btn-wiki" role="tab" data-doc="wiki" aria-selected="false" aria-controls="panel-doc-02" tabindex="-1" onclick="switchTab('wiki')">Wiki</button>
@@ -392,10 +389,10 @@ html{scroll-behavior:auto}
 <div class="p-panelcontent">
 <article>
 <section id="s-hero">
-<header class="hero">
-<span class="eyebrow">Craft-led AI cinema</span>
+<header class="masthead">
+<p class="kicker">Craft-led AI cinema</p>
 <h1>Start with intent. <span>Let the pixels follow.</span></h1>
-<p class="sub">Most AI video starts with a sentence and hopes for cinema. This engine flips it: storyboard the beats, pin the look, and compose deliberate prompt tokens — highly accurate generations, no black box, just craft you control.</p>
+<p class="mast-lede">Most AI video starts with a sentence and hopes for cinema. This engine flips it: storyboard the beats, pin the look, and compose deliberate prompt tokens — highly accurate generations, no black box, just craft you control.</p>
 <p class="meta">An engine that storyboards &middot; tokens you can reuse anywhere &middot; a wiki when you need the language</p>
 <p class="surfaces"><span class="surfaces__label">Surfaces</span><a href="index.html">Wiki</a><span aria-current="page">Pitch</span><a href="engine.html">Engine</a><a href="design-system/index.html">Design System</a></p>
 <div class="ctarow"><a class="btn primary" href="engine.html">Open the engine</a><a class="btn ghost" href="index.html">Browse the wiki</a></div>
@@ -494,7 +491,6 @@ html{scroll-behavior:auto}
 <div class="p-panelcontent">
 <article>
 <section id="d3-thesis">
-<span class="draft">Draft — figures being finalised</span>
 <p class="k">Thesis</p>
 <h2>Capacity is commoditized. Control is the gap.</h2>
 <p class="lede">Every lab now generates passable footage — but nobody owns the intent layer: the shot grammar, continuity, and reusable craft that turn clips into cinema. The bet is that whoever owns deliberate intent sits above the model wars, not inside them.</p>
@@ -506,7 +502,6 @@ html{scroll-behavior:auto}
 </div>
 </section>
 <section id="d3-market">
-<span class="draft">Draft — refining</span>
 <p class="k">Why now</p>
 <h2>A vacant slot, a committed industry, a converging battle.</h2>
 <p class="lede">Three market figures, newest first — narrow AI-video-generator scope, text-to-video scope, then the broad platform stack:</p>
@@ -531,7 +526,6 @@ html{scroll-behavior:auto}
 </div>
 </section>
 <section id="d3-model">
-<span class="draft">Draft — prices being finalised</span>
 <p class="k">Model</p>
 <h2>Tokens for makers. Subscriptions for filmmakers.</h2>
 <p class="lede">Individual filmmakers subscribe. Model-agnostic by design — no GPUs, no inference bills, no compute-cost exposure. A team tier is a later option and is not part of this raise's plan.</p>
@@ -572,7 +566,6 @@ html{scroll-behavior:auto}
 </ul>
 </section>
 <section id="d3-allocation">
-<span class="draft">Draft — 50/20/20/10 default</span>
 <p class="k">Allocation</p>
 <h2>Half to product, the rest to proof.</h2>
 <div class="alloc">
@@ -587,10 +580,8 @@ html{scroll-behavior:auto}
 <li><b>Growth &amp; community: 20%</b> &rarr; community prep through G2; acquisition spend after G3</li>
 <li><b>Ops &amp; buffer: 10%</b> &rarr; contingency for loop-backs</li>
 </ul>
-<p class="draft-note">DRAFT default split, sums to 100%. Final allocation being finalised — scenario, plan not promise.</p>
 </section>
 <section id="d3-runway">
-<span class="draft">Draft — figures being finalised</span>
 <p class="k">Runway</p>
 <h2>Funded to gates, not to vibes.</h2>
 <p class="body">The raise funds the roadmap above through G0 to G3: composer depth first, continuity at length second, the one-motion loop third, then paid conversion. Burn is kept low by design — a static product with no inference spend — so runway is measured from close against a stated run-rate, both being finalised.</p>
@@ -718,7 +709,6 @@ html{scroll-behavior:auto}
 <div class="p-panelcontent">
 <article>
 <section id="d4-header">
-<span class="draft">Draft — refining</span>
 <p class="k">MVP scope</p>
 <h2>An intent layer, not a generator.</h2>
 <p class="lede">The loop: learn a shot term in the wiki → board it as a shot with anchors → export a model-agnostic tokenised prompt. Cut-off: anything that renders, trains, bills, or syncs is out.</p>
@@ -734,11 +724,11 @@ html{scroll-behavior:auto}
 <tr><td>R-03</td><td>Luma targets HDR/EXR post-production workflows.</td><td>Tokenised prompts must survive a colour/post pass — keep look tokens separate from blocking tokens. (verified)</td></tr>
 <tr><td>R-04</td><td>Kling stands out on motion quality.</td><td>Movement tokens (dolly, lock, track) deserve first-class fields, not prose. (verified)</td></tr>
 <tr><td>R-05</td><td>Prompt-craft-as-cinematography is becoming the scarce skill.</td><td>The wiki is the moat: teach the language, then sell the composing loop. (verified)</td></tr>
-<tr><td>R-06</td><td>Manual character-consistency token toil costs ~60% regeneration.</td><td>A continuity ledger that pins cast/look across shots is core, not nice-to-have. <span class="draft">DRAFT — rate TBD</span></td></tr>
+<tr><td>R-06</td><td>Manual character-consistency token toil costs ~60% regeneration.</td><td>A continuity ledger that pins cast/look across shots is core, not nice-to-have.</td></tr>
 <tr><td>R-07</td><td>Continuity and drift remain open problems across generators.</td><td>Anchor-first composing (lens/light/palette/direction locked per shot) is the differentiator. (verified)</td></tr>
-<tr><td>R-08</td><td>Runway's previs work concedes planning to separate tools.</td><td>Own the pre-generation slot: shot lists and boards that hand off cleanly. <span class="draft">DRAFT — scope TBD</span></td></tr>
-<tr><td>R-09</td><td>Krea-style reusable Skills point to portable prompt units.</td><td>Versioned token library (FR-02) matches where the market is heading. <span class="draft">DRAFT — packaging TBD</span></td></tr>
-<tr><td>R-10</td><td>Boords/FrameForge cover boarding but not generatable tokens.</td><td>The gap is wiki → token → export in one loop; boarding alone is not the product. <span class="draft">DRAFT — depth TBD</span></td></tr>
+<tr><td>R-08</td><td>Runway's previs work concedes planning to separate tools.</td><td>Own the pre-generation slot: shot lists and boards that hand off cleanly.</td></tr>
+<tr><td>R-09</td><td>Krea-style reusable Skills point to portable prompt units.</td><td>Versioned token library (FR-02) matches where the market is heading.</td></tr>
+<tr><td>R-10</td><td>Boords/FrameForge cover boarding but not generatable tokens.</td><td>The gap is wiki → token → export in one loop; boarding alone is not the product.</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -896,7 +886,7 @@ investors:[["d3-thesis","Thesis"],["d3-market","Why Now"],["d3-model","Model"],[
 wiki:[["d2-purpose","Purpose"],["d2-principles","Principles"],["d2-architecture","Arch"],["d2-narrative","Narrative"],["d2-usecases","Use cases"],["d2-stack","Stack"],["d2-security","Security"],["d2-adr","ADRs"]],
 mvp:[["d4-research","Research"],["d4-scope","Scope"],["d4-requirements","Reqs"],["d4-nfr","NFRs"],["d4-backlog","Backlog"]]
 };
-var tabs=[].slice.call(document.querySelectorAll(".doctabs .ds-tab"));
+var tabs=[].slice.call(document.querySelectorAll(".ds-tabbar .ds-tab"));
 var tocs=[].slice.call(document.querySelectorAll(".toc[data-toc]"));
 var navToggle=document.querySelector("[data-ds-nav-toggle]");
 var navApi=null;
@@ -984,7 +974,7 @@ tabs.forEach(function(t){
 });
 /* tablist keyboard: arrows move the roving stop, Home/End jump, activation follows
    focus (the pattern a roving tabindex owes a keyboard user) */
-var tablist=document.querySelector(".doctabs");
+var tablist=document.querySelector(".ds-tabbar .ds-tabs");
 if(tablist)tablist.addEventListener("keydown",function(e){
   var i=tabs.indexOf(document.activeElement);if(i<0)return;
   var n=null;
@@ -1215,7 +1205,7 @@ pills.forEach(function(p){
   p.addEventListener("click",function(){fundRender(p.getAttribute("data-fsc"))});
 });
 /* scenario tablist keyboard: arrows move the roving stop, Home/End jump,
-   activation follows focus (the same pattern the doctabs own) */
+   activation follows focus (the same pattern the doc tab row owns) */
 var fundTabs=document.getElementById("fund-pills");
 if(fundTabs)fundTabs.addEventListener("keydown",function(e){
   var ts=[].slice.call(fundTabs.querySelectorAll('[role="tab"]'));

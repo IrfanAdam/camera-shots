@@ -384,6 +384,22 @@
     attr(panel, 'tabindex', panel.getAttribute('tabindex') === null ? '-1' : panel.getAttribute('tabindex'));
     if (isOpen === false) hide(panel);
 
+    /* Surfaces menus name their current surface: a `.ds-smenu__btn` trigger
+       takes its label from the panel item carrying [aria-current], so the
+       trigger reads Wiki / Pitch / Engine / Design System instead of the
+       generic word. One shared rule — every page binds through MenuButton,
+       so all four inherit it; any other menu keeps its own trigger label. */
+    try {
+      if (trigger.classList && trigger.classList.contains('ds-smenu__btn')) {
+        var currentItem = panel.querySelector('[aria-current]');
+        var labelSlot = trigger.querySelector('.ds-btn__label');
+        if (currentItem && labelSlot) {
+          var surfaceName = (currentItem.textContent || '').replace(/\s+/g, ' ').trim();
+          if (surfaceName) labelSlot.textContent = surfaceName;
+        }
+      }
+    } catch (labelErr) { /* label stays generic */ }
+
     function items() {
       var list = panel.querySelectorAll('[role="menuitem"],[role="menuitemcheckbox"],[role="menuitemradio"]');
       return Array.prototype.filter.call(list, function (it) {

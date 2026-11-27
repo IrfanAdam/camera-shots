@@ -22,8 +22,8 @@ body{background:var(--bg);color:var(--ink)}
 a{color:var(--acc)}
 a:visited{color:var(--acc)}
 a:hover{color:var(--ink);text-decoration-color:var(--acc)}
-/* page shell: single column — sticky header (title + menu) on top, then the
-   tab strips, then the panel. The ENTRIES nav lives inside the panel region as
+/* page shell: single column — masthead hero on top, then the tab strips, then
+   the panel. The ENTRIES nav lives inside the panel region as
    the first cell of a .w-panelbody grid (gallery pattern: hero → underline
    mains → in-panel nav). No page-side rail. */
 .page{display:flex;flex-direction:column}
@@ -42,20 +42,20 @@ a:hover{color:var(--ink);text-decoration-color:var(--acc)}
 .w-panelbody>.ds-rail,.w-panelbody>.ds-rail[hidden]{position:sticky;inset-block-start:5rem;inset-block-end:auto;inset-inline:auto;transform:none;z-index:auto;transition:none;display:flex;align-self:start;inline-size:var(--layout-rail);block-size:auto;max-block-size:calc(100dvh - 5rem - var(--spacing-lg));padding-block-start:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;background:transparent;border-inline-end-color:var(--rule)}
 /* the drawer's own close control has nothing to dismiss in a static column */
 .w-panelbody>.ds-rail .ds-navclose{display:none}
-.top{position:sticky;top:0;z-index:var(--z-sticky);background:var(--color-pitch-overlay-bg);border-bottom:var(--border-width-hairline) solid var(--rule);padding-top:calc(var(--spacing-10) + env(safe-area-inset-top,0px));padding-bottom:var(--spacing-10)}
+/* head: the common DS mast pattern (design-system/index.html .masthead:
+   kicker/title/lede + meta row) — same structure, same token values, wiki
+   aliases. Wiki content unchanged: byline→kicker, sub→lede. */
+.masthead{border-bottom:var(--border-width-hairline) solid var(--rule);padding:var(--spacing-2xl) 0 var(--spacing-xl)}
+.mast-top{display:flex;align-items:center;justify-content:space-between;gap:var(--spacing-md);flex-wrap:wrap;margin-bottom:var(--spacing-xl)}
+.mast-menu{display:flex;align-items:center;margin-inline-start:auto}
+.kicker{font-size:var(--typography-size-eyebrow);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;font-weight:var(--weight-medium);color:var(--mut)}
+.masthead h1{font-size:var(--typography-size-display);line-height:var(--line-height-display);letter-spacing:var(--tracking-tight);font-weight:var(--weight-bold);max-width:18ch}
+.mast-lede{margin-top:var(--spacing-md);max-width:56ch;color:var(--mut);font-size:var(--typography-size-body)}
 /* content axis: the shared shell (design-system/shell.css `.ds-shell` owns the
    measure + gutter from shell.css --ds-shell-max): pitch cap + rail column + one
    gap, so the wiki hero, tab rows and panels sit on the same axis as the
    design-system page. */
-.top__in{display:flex;justify-content:space-between;align-items:baseline;gap:var(--spacing-md);flex-wrap:wrap}
 .page__main{min-inline-size:0;width:100%;padding-block-end:var(--spacing-xl)}
-.by{font-family:var(--typography-family-mono);letter-spacing:var(--tracking-eyebrow);color:var(--mut);font-size:var(--typography-size-small);white-space:nowrap}
-/* `margin-inline-start:auto` keeps the byline + menu button on the end edge
-   even when the title wraps the row (mobile), so the hamburger stays under the
-   thumb instead of drifting to the middle of a second row. */
-.hright{display:flex;align-items:center;gap:var(--spacing-10);margin-inline-start:auto}
-h1{font-size:var(--typography-size-h1);letter-spacing:var(--tracking-tight)}.sub{color:var(--mut);font-size:var(--typography-size-body);margin:var(--spacing-2xs) 0 0}
-.sub a{color:var(--acc);transition:background var(--motion-duration-hover) var(--motion-easing-standard), color var(--motion-duration-hover) var(--motion-easing-standard), border-color var(--motion-duration-hover) var(--motion-easing-standard)}
 /* rail chrome: the field and the count carry the item's 2px transparent slot and
    `layout.rail.inset` start padding, so input edge, count and every item label
    land on one text axis (22px at the shipped 208px rail). */
@@ -110,17 +110,11 @@ p{font-size:var(--typography-size-body);color:var(--body)}.ad{margin-top:var(--s
 .yt img{width:100%;height:100%;object-fit:cover;opacity:var(--opacity-media)}
 .yt span{position:absolute;inset:0;margin:auto;width:60px;height:60px;border-radius:var(--radius-circle);background:var(--acc);color:var(--acc-ink);display:flex;align-items:center;justify-content:center;font-size:22px}
 .yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-/* surfaces: the cross-page roster now that the rail carries entries only —
-   inline hero links with a 24px floor, the same move the gallery made */
-.surfaces{display:flex;flex-wrap:wrap;align-items:center;gap:var(--spacing-2xs) var(--spacing-sm);color:var(--mut);font-size:var(--typography-size-small);margin:var(--spacing-sm) 0 0}
-.surfaces__label{font-family:var(--typography-family-mono);font-size:var(--typography-size-eyebrow);font-weight:var(--weight-bold);letter-spacing:var(--tracking-eyebrow);text-transform:uppercase}
-.surfaces a{display:inline-flex;align-items:center;min-block-size:var(--spacing-lg);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:0.16em}
-.surfaces [aria-current="page"]{display:inline-flex;align-items:center;min-block-size:var(--spacing-lg);color:var(--ink);font-weight:var(--weight-medium)}
-/* persistent surfaces menu at the inline end of the sticky header — the shared
-   shell tabbar/menu (design-system/shell.css `.ds-smenu`): the hero Surfaces
-   links scroll away, this one stays reachable. The panel is the shipped
-   .ds-menu, CSS-anchored to its own box, so no MenuButton anchor math runs;
-   the page script binds it with DS.menu (data-ds-manual opts out of
+/* cross-surface nav lives in the mast-top menu only (no inline hero roster):
+   the persistent surfaces menu at the inline end of the masthead — the shared
+   shell tabbar/menu (design-system/shell.css `.ds-smenu`). The panel is the
+   shipped .ds-menu, CSS-anchored to its own box, so no MenuButton anchor math
+   runs; the page script binds it with DS.menu (data-ds-manual opts out of
    auto-init). */
 footer{margin:var(--spacing-xl) 0 var(--spacing-md);color:var(--mut);font-size:var(--typography-size-meta)}
 /* ≤--breakpoint-lg: the rail leaves the grid and becomes the off-canvas menu
@@ -129,7 +123,6 @@ footer{margin:var(--spacing-xl) 0 var(--spacing-md);color:var(--mut);font-size:v
    and the pinned foot are the shared layer's job. */
 @media(max-width:900px){
 .page{display:flex;flex-direction:column}
-.top__in{align-items:center}
 /* one column: the rail is either the drawer (JS stamps the mode) or, with
    no JS, a plain list stacked above the card panel */
 .w-panelbody{display:block}
@@ -171,11 +164,9 @@ footer{margin:var(--spacing-xl) 0 var(--spacing-md);color:var(--mut);font-size:v
 <link rel="stylesheet" href="design-system/shell.css"></head><body>
 <a class="ds-skip-link" href="#main">Skip to content</a>
 <div class="page">
-<header class="top"><div class="top__in ds-shell"><h1>Cinematography and Direction Wiki</h1><div class="hright"><span class="by">by irfan</span><div class="ds-smenu"><button class="ds-btn ds-smenu__btn" type="button" data-ds-menu-trigger aria-controls="w-surfaces-menu" aria-expanded="false" aria-haspopup="menu"><span class="ds-btn__label">Surfaces</span><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-chevron-down"></use></svg></button><div class="ds-menu" id="w-surfaces-menu" role="menu" aria-label="Surfaces" hidden><a class="ds-menu__item" role="menuitem" href="index.html" aria-current="page">Wiki</a><a class="ds-menu__item" role="menuitem" href="pitch.html">Pitch</a><a class="ds-menu__item" role="menuitem" href="engine.html">Engine</a><a class="ds-menu__item" role="menuitem" href="design-system/index.html">Design System</a></div></div><button type="button" class="ds-navtoggle" data-ds-nav-toggle="nav-drawer" aria-controls="nav-drawer" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-menu"></use></svg></button></div></div></header>
+<header class="masthead"><div class="ds-shell"><div class="mast-top"><p class="kicker">by irfan</p><div class="mast-menu"><div class="ds-smenu"><button class="ds-btn ds-smenu__btn" type="button" data-ds-menu-trigger aria-controls="w-surfaces-menu" aria-expanded="false" aria-haspopup="menu"><span class="ds-btn__label">Surfaces</span><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-chevron-down"></use></svg></button><div class="ds-menu" id="w-surfaces-menu" role="menu" aria-label="Surfaces" hidden><a class="ds-menu__item" role="menuitem" href="index.html" aria-current="page">Wiki</a><a class="ds-menu__item" role="menuitem" href="pitch.html">Pitch</a><a class="ds-menu__item" role="menuitem" href="engine.html">Engine</a><a class="ds-menu__item" role="menuitem" href="design-system/index.html">Design System</a></div></div><button type="button" class="ds-navtoggle" data-ds-nav-toggle="nav-drawer" aria-controls="nav-drawer" aria-expanded="false" aria-label="Open menu" hidden><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-menu"></use></svg></button></div></div><h1>Cinematography and Direction Wiki</h1><p class="mast-lede">A working reference for how films are shot and directed. Pick a concept, see what it does for the story, watch it explained, and copy the prompt phrase to use it.</p></div></header>
 <div class="page__main ds-shell">
 <main id="main" tabindex="-1">
-<p class="sub">A working reference for how films are shot and directed. Pick a concept, see what it does for the story, watch it explained, and copy the prompt phrase to use it.</p>
-<p class="surfaces"><span class="surfaces__label">Surfaces</span><span aria-current="page">Wiki</span><a href="pitch.html">Pitch</a><a href="engine.html">Engine</a><a href="design-system/index.html">Design System</a></p>
 <div class="w-tabbar"><div class="ds-tabs" id="steps" data-variant="underline" role="tablist" aria-label="Categories"></div></div>
 <p class="blurb" id="blurb"></p>
 <div class="ds-tabs" id="tabs" data-variant="pill"></div>

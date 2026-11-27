@@ -40,18 +40,18 @@
     "tokensAliasNoRef": 3,
     "tokensNoRef": 9,
     "tokensAlias": 8,
-    "customPropertyRefs": 3018,
+    "customPropertyRefs": 3027,
     "customPropertyRefsByKind": {
-      "token": 2103,
+      "token": 2111,
       "roleVar": 179,
-      "localVar": 674,
+      "localVar": 675,
       "canvas": 62
     },
     "localVarDetail": {
       "componentLocal": 36,
-      "pageAlias": 638
+      "pageAlias": 639
     },
-    "tokenRefs": 2165,
+    "tokenRefs": 2173,
     "tokenRefsByFile": {
       "design-system/base.css": 26,
       "design-system/components.css": 350,
@@ -62,7 +62,7 @@
       "engine-pitch.css": 24,
       "engine.html": 695,
       "index.html": 170,
-      "pitch.html": 381
+      "pitch.html": 389
     },
     "refsByFile": {
       "design-system/base.css": 31,
@@ -74,7 +74,7 @@
       "engine-pitch.css": 24,
       "engine.html": 944,
       "index.html": 274,
-      "pitch.html": 510
+      "pitch.html": 519
     },
     "canvasReads": 62,
     "components": 42,
@@ -200,13 +200,13 @@
       "aliasedBy": [],
       "bySurface": {
         "wiki": 45,
-        "pitch": 62,
+        "pitch": 63,
         "engine": 99,
         "gallery": 64
       },
       "direct": {
         "wiki": 8,
-        "pitch": 30,
+        "pitch": 31,
         "engine": 63,
         "gallery": 21
       },
@@ -271,11 +271,11 @@
         },
         {
           "file": "pitch.html",
-          "count": 30
+          "count": 31
         }
       ],
-      "refCount": 165,
-      "productRefCount": 206,
+      "refCount": 166,
+      "productRefCount": 207,
       "galleryRefs": 64,
       "reach": "product",
       "hasProductRef": true
@@ -1856,13 +1856,13 @@
       "aliasedBy": [],
       "bySurface": {
         "wiki": 0,
-        "pitch": 1,
+        "pitch": 2,
         "engine": 0,
         "gallery": 1
       },
       "direct": {
         "wiki": 0,
-        "pitch": 1,
+        "pitch": 2,
         "engine": 0,
         "gallery": 1
       },
@@ -1877,11 +1877,11 @@
         },
         {
           "file": "pitch.html",
-          "count": 1
+          "count": 2
         }
       ],
-      "refCount": 2,
-      "productRefCount": 1,
+      "refCount": 3,
+      "productRefCount": 2,
       "galleryRefs": 1,
       "reach": "product",
       "hasProductRef": true
@@ -4344,7 +4344,7 @@
       "jsonKey": "layout.drawer.pitch.width",
       "group": "layout",
       "type": "dimension",
-      "value": "min(720px, 100vw)",
+      "value": "min(800px, 100vw)",
       "aliasOf": null,
       "aliasedBy": [],
       "bySurface": {
@@ -6158,13 +6158,13 @@
       "aliasedBy": [],
       "bySurface": {
         "wiki": 14,
-        "pitch": 15,
+        "pitch": 17,
         "engine": 24,
         "gallery": 14
       },
       "direct": {
         "wiki": 2,
-        "pitch": 3,
+        "pitch": 5,
         "engine": 12,
         "gallery": 2
       },
@@ -6199,11 +6199,11 @@
         },
         {
           "file": "pitch.html",
-          "count": 3
+          "count": 5
         }
       ],
-      "refCount": 31,
-      "productRefCount": 53,
+      "refCount": 33,
+      "productRefCount": 55,
       "galleryRefs": 14,
       "reach": "product",
       "hasProductRef": true
@@ -6329,13 +6329,13 @@
       ],
       "bySurface": {
         "wiki": 15,
-        "pitch": 23,
+        "pitch": 25,
         "engine": 46,
         "gallery": 34
       },
       "direct": {
         "wiki": 4,
-        "pitch": 13,
+        "pitch": 15,
         "engine": 35,
         "gallery": 13
       },
@@ -6385,11 +6385,11 @@
         },
         {
           "file": "pitch.html",
-          "count": 13
+          "count": 15
         }
       ],
-      "refCount": 86,
-      "productRefCount": 84,
+      "refCount": 88,
+      "productRefCount": 86,
       "galleryRefs": 34,
       "reach": "product",
       "hasProductRef": true
@@ -6404,13 +6404,13 @@
       "aliasedBy": [],
       "bySurface": {
         "wiki": 10,
-        "pitch": 24,
+        "pitch": 22,
         "engine": 46,
         "gallery": 3
       },
       "direct": {
         "wiki": 7,
-        "pitch": 21,
+        "pitch": 19,
         "engine": 43,
         "gallery": 0
       },
@@ -6438,11 +6438,11 @@
         },
         {
           "file": "pitch.html",
-          "count": 21
+          "count": 19
         }
       ],
-      "refCount": 74,
-      "productRefCount": 80,
+      "refCount": 72,
+      "productRefCount": 78,
       "galleryRefs": 3,
       "reach": "product",
       "hasProductRef": true
@@ -6524,13 +6524,13 @@
       "aliasedBy": [],
       "bySurface": {
         "wiki": 16,
-        "pitch": 23,
+        "pitch": 27,
         "engine": 13,
         "gallery": 35
       },
       "direct": {
         "wiki": 3,
-        "pitch": 11,
+        "pitch": 15,
         "engine": 0,
         "gallery": 15
       },
@@ -6578,11 +6578,11 @@
         },
         {
           "file": "pitch.html",
-          "count": 11
+          "count": 15
         }
       ],
-      "refCount": 49,
-      "productRefCount": 52,
+      "refCount": 53,
+      "productRefCount": 56,
       "galleryRefs": 35,
       "reach": "product",
       "hasProductRef": true
@@ -6673,13 +6673,13 @@
       "aliasedBy": [],
       "bySurface": {
         "wiki": 24,
-        "pitch": 41,
+        "pitch": 42,
         "engine": 47,
         "gallery": 38
       },
       "direct": {
         "wiki": 8,
-        "pitch": 26,
+        "pitch": 27,
         "engine": 31,
         "gallery": 17
       },
@@ -6727,11 +6727,11 @@
         },
         {
           "file": "pitch.html",
-          "count": 26
+          "count": 27
         }
       ],
-      "refCount": 103,
-      "productRefCount": 112,
+      "refCount": 104,
+      "productRefCount": 113,
       "galleryRefs": 38,
       "reach": "product",
       "hasProductRef": true
@@ -6790,13 +6790,13 @@
       "aliasedBy": [],
       "bySurface": {
         "wiki": 25,
-        "pitch": 33,
+        "pitch": 31,
         "engine": 73,
         "gallery": 32
       },
       "direct": {
         "wiki": 9,
-        "pitch": 19,
+        "pitch": 17,
         "engine": 57,
         "gallery": 9
       },
@@ -6848,11 +6848,11 @@
         },
         {
           "file": "pitch.html",
-          "count": 19
+          "count": 17
         }
       ],
-      "refCount": 117,
-      "productRefCount": 131,
+      "refCount": 115,
+      "productRefCount": 129,
       "galleryRefs": 32,
       "reach": "product",
       "hasProductRef": true
@@ -7649,13 +7649,13 @@
       "aliasedBy": [],
       "bySurface": {
         "wiki": 9,
-        "pitch": 22,
+        "pitch": 21,
         "engine": 30,
         "gallery": 12
       },
       "direct": {
         "wiki": 3,
-        "pitch": 16,
+        "pitch": 15,
         "engine": 24,
         "gallery": 5
       },
@@ -7696,11 +7696,11 @@
         },
         {
           "file": "pitch.html",
-          "count": 16
+          "count": 15
         }
       ],
-      "refCount": 55,
-      "productRefCount": 61,
+      "refCount": 54,
+      "productRefCount": 60,
       "galleryRefs": 12,
       "reach": "product",
       "hasProductRef": true
@@ -7790,13 +7790,13 @@
       "aliasedBy": [],
       "bySurface": {
         "wiki": 3,
-        "pitch": 3,
+        "pitch": 4,
         "engine": 16,
         "gallery": 2
       },
       "direct": {
         "wiki": 2,
-        "pitch": 2,
+        "pitch": 3,
         "engine": 15,
         "gallery": 1
       },
@@ -7827,11 +7827,11 @@
         },
         {
           "file": "pitch.html",
-          "count": 2
+          "count": 3
         }
       ],
-      "refCount": 21,
-      "productRefCount": 22,
+      "refCount": 22,
+      "productRefCount": 23,
       "galleryRefs": 2,
       "reach": "product",
       "hasProductRef": true
@@ -8676,13 +8676,13 @@
       "aliasedBy": [],
       "bySurface": {
         "wiki": 1,
-        "pitch": 3,
+        "pitch": 4,
         "engine": 2,
         "gallery": 1
       },
       "direct": {
         "wiki": 1,
-        "pitch": 3,
+        "pitch": 4,
         "engine": 2,
         "gallery": 1
       },
@@ -8705,11 +8705,11 @@
         },
         {
           "file": "pitch.html",
-          "count": 3
+          "count": 4
         }
       ],
-      "refCount": 7,
-      "productRefCount": 6,
+      "refCount": 8,
+      "productRefCount": 7,
       "galleryRefs": 1,
       "reach": "product",
       "hasProductRef": true
@@ -11235,10 +11235,10 @@
         "design-system/shell.css"
       ],
       "refs": {
-        "customProperties": 510,
-        "tokens": 381,
+        "customProperties": 519,
+        "tokens": 389,
         "roleVars": 0,
-        "localVars": 129,
+        "localVars": 130,
         "canvas": 0
       },
       "tokens": {

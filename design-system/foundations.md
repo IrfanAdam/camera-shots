@@ -28,7 +28,7 @@ Read order: [README](README.md) → this file → [components](components.md) �
 
 It is a **count of occurrences**, not the T8 presence test: T8 asks only whether a product page, a theme cell, `components.css`, or the linked-last shared `shell.css` names a token at all, and excludes the gallery. So a key can be T8-unconsumed and still show a non-zero count here — read the breakdown the gate prints, not this column, when judging orphans.
 
-Totals at committed HEAD: **1352 consumer references** across 188 keys, **26** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `color.pro.tool.hover`, `color.status.danger.ink.light`, `color.wiki.dark.accent.ink`, `control.height.compact`, `dot.size`, `elevation.1`, `elevation.float`, `elevation.inset`, `elevation.ring`, `focus.color`, `hover.lift`, `icon.size.lg`, `icon.size.md`, `layout.max.pitch`, `layout.max.wiki`, `layout.nav.drawer.width`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `tracking.label`).
+Totals at committed HEAD: **1365 consumer references** across 188 keys, **26** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `color.pro.tool.hover`, `color.status.danger.ink.light`, `color.wiki.dark.accent.ink`, `control.height.compact`, `dot.size`, `elevation.1`, `elevation.float`, `elevation.inset`, `elevation.ring`, `focus.color`, `hover.lift`, `icon.size.lg`, `icon.size.md`, `layout.max.pitch`, `layout.max.wiki`, `layout.nav.drawer.width`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `tracking.label`).
 
 Under the gate's narrower **T8** scope — `var()` in the three product pages plus theme-map cells plus `components.css` plus linked-last `shell.css`, gallery excluded, aliases and `breakpoint.*` exempt — **9** key(s) are unconsumed: `color.engine.track.audio`, `color.engine.track.fx`, `color.engine.track.title`, `elevation.float`, `elevation.inset`, `elevation.ring`, `icon.size.lg`, `radius.lg`, `tracking.label`. Keys that differ between the two views are canvas-only (`CT()`/`WA()` strings the gate cannot see) or gallery-only consumers; `scripts/lint-tokens.mjs` prints the authoritative list and its budget note.
 
@@ -140,7 +140,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
 | `border.width.accent` | `3px` | dimension | — | 1 (1/0/0) |
-| `border.width.hairline` | `1px` | dimension | — | 101 (101/0/0) |
+| `border.width.hairline` | `1px` | dimension | — | 102 (102/0/0) |
 | `border.width.strong` | `2px` | dimension | — | 9 (9/0/0) |
 
 ### breakpoint
@@ -192,7 +192,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `color.pitch.muted` | `#A7A5A0` | color | fg.muted | 7 (5/1/1) |
 | `color.pitch.muted.2` | `#8E8C86` | color | fg.faint | 5 (3/1/1) |
 | `color.pitch.overlay.bg` | `rgba(10,10,11,.92)` | color | — | 3 (2/0/1) |
-| `color.pitch.overlay.surface` | `rgba(20,20,22,.92)` | color | — | 2 (1/0/1) |
+| `color.pitch.overlay.surface` | `rgba(20,20,22,.92)` | color | — | 3 (2/0/1) |
 | `color.pitch.positive` | `#10B981` | color | status.success | 10 (6/3/1) |
 | `color.pitch.positive.ink` | `#06110C` | color | — | 2 (1/0/1) |
 | `color.pitch.rule` | `#26262B` | color | line.default | 7 (5/1/1) |
@@ -299,7 +299,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
 | `layout.drawer.engine.width` | `min(360px, 92vw)` | dimension | — | 1 (1/0/0) |
-| `layout.drawer.pitch.width` | `min(720px, 100vw)` | dimension | — | 1 (1/0/0) |
+| `layout.drawer.pitch.width` | `min(800px, 100vw)` | dimension | — | 1 (1/0/0) |
 | `layout.max.pitch` | `1080px` | dimension | — | 0 (0/0/0) |
 | `layout.max.wiki` | `980px` | dimension | — | 0 (0/0/0) |
 | `layout.nav.drawer.width` | `min(20rem, 86vw)` | dimension | — | 0 (0/0/0) |
@@ -372,16 +372,16 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `spacing.10` | `10px` | dimension | — | 42 (42/0/0) |
 | `spacing.14` | `14px` | dimension | — | 18 (18/0/0) |
 | `spacing.18` | `18px` | dimension | — | 16 (16/0/0) |
-| `spacing.2` | `2px` | dimension | — | 17 (17/0/0) |
+| `spacing.2` | `2px` | dimension | — | 19 (19/0/0) |
 | `spacing.20` | `20px` | dimension | — | 8 (8/0/0) |
 | `spacing.2xl` | `48px` | dimension | — | 6 (6/0/0) |
-| `spacing.2xs` | `4px` | dimension | — | 52 (52/0/0) |
+| `spacing.2xs` | `4px` | dimension | — | 54 (54/0/0) |
 | `spacing.6` | `6px` | dimension | — | 69 (69/0/0) |
 | `spacing.base` | `var(--spacing-2xs)` | dimension | — · alias → --spacing-2xs | 0 (0/0/0) |
 | `spacing.gutter.pro` | `var(--spacing-md)` | dimension | — · alias → --spacing-md | 0 (0/0/0) |
-| `spacing.lg` | `24px` | dimension | — | 14 (14/0/0) |
+| `spacing.lg` | `24px` | dimension | — | 18 (18/0/0) |
 | `spacing.md` | `16px` | dimension | — | 30 (30/0/0) |
-| `spacing.sm` | `12px` | dimension | — | 65 (65/0/0) |
+| `spacing.sm` | `12px` | dimension | — | 66 (66/0/0) |
 | `spacing.xl` | `32px` | dimension | — | 8 (8/0/0) |
 | `spacing.xs` | `8px` | dimension | — | 83 (83/0/0) |
 
@@ -422,7 +422,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `typography.size.lede` | `1.05rem` | fontSize | — | 3 (3/0/0) |
 | `typography.size.meta` | `0.8rem` | fontSize | — | 42 (42/0/0) |
 | `typography.size.small` | `0.85rem` | fontSize | — | 34 (34/0/0) |
-| `typography.size.timecode` | `0.75rem` | fontSize | — | 19 (19/0/0) |
+| `typography.size.timecode` | `0.75rem` | fontSize | — | 20 (20/0/0) |
 | `typography.size.ui` | `1rem` | fontSize | — | 7 (7/0/0) |
 
 ### weight
@@ -456,7 +456,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `z.popover` | `72` | number | — | 1 (1/0/0) |
 | `z.raise` | `1` | number | — | 1 (1/0/0) |
 | `z.sheet` | `65` | number | — | 1 (1/0/0) |
-| `z.sticky` | `40` | number | — | 6 (6/0/0) |
+| `z.sticky` | `40` | number | — | 7 (7/0/0) |
 | `z.sticky.rail` | `41` | number | — | 1 (1/0/0) |
 | `z.toast` | `120` | number | — | 1 (1/0/0) |
 | `z.tooltip` | `5` | number | — | 1 (1/0/0) |
