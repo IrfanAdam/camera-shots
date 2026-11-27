@@ -107,6 +107,20 @@ code,.mono{font-family:var(--typography-family-mono);font-size:var(--typography-
 }
 .g-tabbar:has(.ds-tabs[data-variant="underline"])::after{display:none}
 
+/* persistent surfaces menu at the right end of the sticky category bar.
+   The bar is flex: the underline tablist takes the free axis (and scrolls it
+   on a phone), the menu keeps its own width at the inline end, so it stays
+   reachable after the masthead — and its Surfaces links — scroll away. The
+   panel is the shipped .ds-menu, CSS-anchored to its own .g-surfaces box, so
+   no MenuButton anchor math runs; the only new geometry is one spacing step. */
+.g-tabbar{display:flex;align-items:center;gap:var(--spacing-md)}
+.g-tabbar .ds-tabs{flex:1 1 auto;min-inline-size:0}
+.g-surfaces{position:relative;flex:0 0 auto;margin-inline-start:auto}
+.g-surfaces__btn svg{inline-size:var(--icon-size-sm);block-size:var(--icon-size-sm)}
+.g-surfaces .ds-menu{inset-inline-end:0;inset-block-start:calc(100% + var(--spacing-2xs))}
+.g-surfaces .ds-menu__item{text-decoration:none}
+.g-surfaces .ds-menu__item[aria-current="page"]{font-weight:var(--weight-semibold)}
+
 /* one panel at a time (the shipped .ds-tabpanel[hidden] hides the rest);
    a panel or sub-anchor lands below the sticky bar instead of under it */
 section.ds-tabpanel,
@@ -408,6 +422,15 @@ footer code{color:var(--g-ink)}
         <button class="ds-tab" type="button" role="tab" id="tab-type" aria-controls="type" aria-selected="false" tabindex="-1">Type</button>
         <button class="ds-tab" type="button" role="tab" id="tab-space-consistency" aria-controls="space-consistency" aria-selected="false" tabindex="-1">Space &amp; consistency</button>
         <button class="ds-tab" type="button" role="tab" id="tab-specimens" aria-controls="specimens" aria-selected="false" tabindex="-1">Components</button>
+      </div>
+      <div class="g-surfaces">
+        <button class="ds-btn g-surfaces__btn" type="button" data-ds-menu-trigger aria-controls="g-surfaces-menu" aria-expanded="false" aria-haspopup="menu"><span class="ds-btn__label">Surfaces</span><svg aria-hidden="true" focusable="false"><use href="icons.svg#ds-icon-chevron-down"/></svg></button>
+        <div class="ds-menu" id="g-surfaces-menu" role="menu" aria-label="Surfaces" hidden>
+          <a class="ds-menu__item" role="menuitem" href="../index.html">Wiki</a>
+          <a class="ds-menu__item" role="menuitem" href="../pitch.html">Pitch</a>
+          <a class="ds-menu__item" role="menuitem" href="../engine.html">Engine</a>
+          <a class="ds-menu__item" role="menuitem" href="./index.html" aria-current="page">Design System</a>
+        </div>
       </div>
     </div>
 
@@ -2989,6 +3012,16 @@ footer code{color:var(--g-ink)}
 
   if (window.DS && typeof DS.tabs === 'function' && tablist) {
     tabsApi = DS.tabs(tablist, { panelScope: '#main' });
+  }
+
+  /* persistent surfaces menu at the bar's inline end: the shipped MenuButton
+     owns the trigger, the roving items, Escape, outside close and focus
+     return. No anchor math — the panel is CSS-anchored to its .g-surfaces
+     box, and the stats block keeps its own Surfaces links untouched. */
+  var surfacesTrigger = document.querySelector('[data-ds-menu-trigger][aria-controls="g-surfaces-menu"]');
+  var surfacesPanel = document.getElementById('g-surfaces-menu');
+  if (window.DS && typeof DS.menu === 'function' && surfacesTrigger && surfacesPanel) {
+    DS.menu(surfacesTrigger, surfacesPanel);
   }
 
   /* per-component theme pills: one theme at a time. DS.tabs owns the roving
