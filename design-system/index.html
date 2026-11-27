@@ -407,8 +407,7 @@ footer code{color:var(--g-ink)}
         <button class="ds-tab" type="button" role="tab" id="tab-color" aria-controls="color" aria-selected="true" tabindex="0">Color</button>
         <button class="ds-tab" type="button" role="tab" id="tab-type" aria-controls="type" aria-selected="false" tabindex="-1">Type</button>
         <button class="ds-tab" type="button" role="tab" id="tab-space-consistency" aria-controls="space-consistency" aria-selected="false" tabindex="-1">Space &amp; consistency</button>
-        <button class="ds-tab" type="button" role="tab" id="tab-motion" aria-controls="motion" aria-selected="false" tabindex="-1">Motion</button>
-        <button class="ds-tab" type="button" role="tab" id="tab-specimens" aria-controls="specimens" aria-selected="false" tabindex="-1">Component specimens</button>
+        <button class="ds-tab" type="button" role="tab" id="tab-specimens" aria-controls="specimens" aria-selected="false" tabindex="-1">Components</button>
       </div>
     </div>
 
@@ -649,9 +648,9 @@ footer code{color:var(--g-ink)}
     </section>
 
     <!-- ============ 03 SPACE & CONSISTENCY ============ -->
-    <!-- merged panel: the old Space & shape, Touch and Consistency panels now
+    <!-- merged panel: the old Space & shape, Touch, Motion and Consistency panels now
          live here as anchored subsections. Their old panel ids (#space,
-         #touch, #matrix) are retained on the subsection headings, so existing
+         #touch, #motion, #matrix) are retained on the subsection headings, so existing
          deep links keep resolving to this panel through the hash route. -->
     <section class="ds-tabpanel" id="space-consistency" role="tabpanel" aria-labelledby="tab-space-consistency" tabindex="0" hidden>
       <div class="g-panelbody">
@@ -663,6 +662,7 @@ footer code{color:var(--g-ink)}
             <a class="ds-nav-item ds-rail__item" href="#space-shape">Shape / Radius</a>
             <a class="ds-nav-item ds-rail__item" href="#space-layering">Layering</a>
             <a class="ds-nav-item ds-rail__item" href="#touch">Touch</a>
+            <a class="ds-nav-item ds-rail__item" href="#motion">Motion</a>
             <a class="ds-nav-item ds-rail__item" href="#matrix">Consistency matrix</a>
           </div>
         </div>
@@ -744,87 +744,10 @@ footer code{color:var(--g-ink)}
         </div>
       </div>
 
-      <!-- the deviation flag is the one ds- component on page chrome; the light
-           map resolves --ds-badge-ink to the measured 5.37:1 pair -->
-      <div data-ds-theme="wiki-light">
-      <h3 class="sub-h" id="matrix">Consistency matrix</h3>
-      <p class="sec-intro">Read at render from the shipped pages — an iframe per surface, <code>getComputedStyle</code> on the real selectors. No cell is typed by hand.</p>
-
-      <div class="matrix-wrap" role="region" aria-label="Consistency matrix table" tabindex="0">
-        <table class="matrix">
-          <thead>
-            <tr><th scope="col">Element</th><th scope="col">Wiki</th><th scope="col">Pitch</th><th scope="col">Engine</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">Control radius</th>
-              <td data-k="control" data-m="wiki" data-cite="index.html:26,41"><code>—</code><span class="note">measuring</span></td>
-              <td data-k="control" data-m="pitch" data-cite="pitch.html:98"><code>—</code><span class="note">measuring</span></td>
-              <td data-k="control" data-m="engine" data-cite="engine.html:39"><code>—</code><span class="note">measuring</span></td>
-            </tr>
-            <tr>
-              <th scope="row">Control height</th>
-              <td data-k="height" data-m="wiki" data-cite="index.html:26,41"><code>—</code><span class="note">measuring</span></td>
-              <td data-k="height" data-m="pitch" data-cite="pitch.html:98"><code>—</code><span class="note">measuring</span></td>
-              <td data-k="height" data-m="engine" data-cite="engine.html:39"><code>—</code><span class="note">measuring</span></td>
-            </tr>
-            <tr>
-              <th scope="row">Field radius</th>
-              <td data-k="field" data-m="wiki" data-cite="index.html:23"><code>—</code><span class="note">measuring</span></td>
-              <td data-k="field" data-m="pitch"><code>—</code><span class="note">measuring</span></td>
-              <td data-k="field" data-m="engine"><code>—</code><span class="note">measuring</span></td>
-            </tr>
-            <tr>
-              <th scope="row">Panel radius</th>
-              <td data-k="panel" data-m="wiki" data-cite="index.html:32"><code>—</code><span class="note">measuring</span></td>
-              <td data-k="panel" data-m="pitch" data-cite="pitch.html:103"><code>—</code><span class="note">measuring</span></td>
-              <td data-k="panel" data-m="engine" data-cite="engine.html:117"><code>—</code><span class="note">measuring</span></td>
-            </tr>
-            <tr>
-              <th scope="row">Hairline</th>
-              <td data-k="hairline" data-m="wiki" data-cite="index.html:32"><code>—</code><span class="note">measuring</span></td>
-              <td data-k="hairline" data-m="pitch" data-cite="pitch.html:103"><code>—</code><span class="note">measuring</span></td>
-              <td data-k="hairline" data-m="engine" data-cite="engine.html:117"><code>—</code><span class="note">measuring</span></td>
-            </tr>
-            <tr>
-              <th scope="row">Focus ring</th>
-              <td data-k="focus" data-m="wiki" data-cite="index.html:84"><code>—</code><span class="note">measuring</span></td>
-              <td data-k="focus" data-m="pitch" data-cite="pitch.html:28"><code>—</code><span class="note">measuring</span></td>
-              <td data-k="focus" data-m="engine" data-cite="engine.html:410"><code>—</code><span class="note">measuring</span></td>
-            </tr>
-            <tr>
-              <th scope="row">Body size</th>
-              <td data-k="body" data-m="wiki" data-cite="index.html:11"><code>—</code><span class="note">measuring</span></td>
-              <td data-k="body" data-m="pitch" data-cite="pitch.html:23"><code>—</code><span class="note">measuring</span></td>
-              <td data-k="body" data-m="engine" data-cite="engine.html:32"><code>—</code><span class="note">measuring</span></td>
-            </tr>
-            <tr>
-              <th scope="row">Body family</th>
-              <td data-k="family" data-m="wiki" data-cite="index.html:11"><code>—</code><span class="note">measuring</span></td>
-              <td data-k="family" data-m="pitch" data-cite="pitch.html:23"><code>—</code><span class="note">measuring</span></td>
-              <td data-k="family" data-m="engine" data-cite="engine.html:32"><code>—</code><span class="note">measuring</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="matrix-legend">
-        <span class="ds-badge" data-variant="danger">deviation</span>
-        <span>Computed value departs from the token named in its row; the cite under it is the line to fix. Wiki dark is measured on the same pass and reported in the wiki note where it differs.</span>
-      </div>
-      <p class="matrix-sum">Every cell above is a computed value from the shipped pages at a 1440 viewport, printed at render. Where a surface departs from the token the badge and the <code>file:line</code> are generated from the same measurement, so the worklist cannot drift from the CSS. A cell that reads “none in DOM” means the surface ships no such element — not that it was skipped.</p>
-      </div><!-- [data-ds-theme="wiki-light"] -->
-      </div><!-- /.g-panelcontent -->
-      </div><!-- /.g-panelbody -->
-    </section>
-
-    <!-- ============ 04 MOTION ============ -->
-    <section class="ds-tabpanel" id="motion" role="tabpanel" aria-labelledby="tab-motion" tabindex="0" hidden>
-      <div class="sec-head">
-        <span class="sec-num">04</span>
-        <h2 id="motion-h">Motion</h2>
-        <p>Hover a track (or tab to it) to play that exact curve. Reduced-motion users get no travel.</p>
-      </div>
+      <!-- motion lives here now: the old standalone Motion panel survives as
+           this subsection, keeping #motion so the old hash keeps landing here. -->
+      <h3 class="sub-h" id="motion">Motion</h3>
+      <p class="sec-intro">Hover a track (or tab to it) to play that exact curve. Reduced-motion users get no travel.</p>
       <table class="tok-table">
         <thead><tr><th>Token</th><th>Value</th><th>Specimen</th></tr></thead>
         <tbody>
@@ -900,9 +823,82 @@ footer code{color:var(--g-ink)}
           </tr>
         </tbody>
       </table>
+
+      <!-- the deviation flag is the one ds- component on page chrome; the light
+           map resolves --ds-badge-ink to the measured 5.37:1 pair -->
+      <div data-ds-theme="wiki-light">
+      <h3 class="sub-h" id="matrix">Consistency matrix</h3>
+      <p class="sec-intro">Read at render from the shipped pages — an iframe per surface, <code>getComputedStyle</code> on the real selectors. No cell is typed by hand.</p>
+
+      <div class="matrix-wrap" role="region" aria-label="Consistency matrix table" tabindex="0">
+        <table class="matrix">
+          <thead>
+            <tr><th scope="col">Element</th><th scope="col">Wiki</th><th scope="col">Pitch</th><th scope="col">Engine</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Control radius</th>
+              <td data-k="control" data-m="wiki" data-cite="index.html:26,41"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="control" data-m="pitch" data-cite="pitch.html:98"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="control" data-m="engine" data-cite="engine.html:39"><code>—</code><span class="note">measuring</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Control height</th>
+              <td data-k="height" data-m="wiki" data-cite="index.html:26,41"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="height" data-m="pitch" data-cite="pitch.html:98"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="height" data-m="engine" data-cite="engine.html:39"><code>—</code><span class="note">measuring</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Field radius</th>
+              <td data-k="field" data-m="wiki" data-cite="index.html:23"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="field" data-m="pitch"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="field" data-m="engine"><code>—</code><span class="note">measuring</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Panel radius</th>
+              <td data-k="panel" data-m="wiki" data-cite="index.html:32"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="panel" data-m="pitch" data-cite="pitch.html:103"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="panel" data-m="engine" data-cite="engine.html:117"><code>—</code><span class="note">measuring</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Hairline</th>
+              <td data-k="hairline" data-m="wiki" data-cite="index.html:32"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="hairline" data-m="pitch" data-cite="pitch.html:103"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="hairline" data-m="engine" data-cite="engine.html:117"><code>—</code><span class="note">measuring</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Focus ring</th>
+              <td data-k="focus" data-m="wiki" data-cite="index.html:84"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="focus" data-m="pitch" data-cite="pitch.html:28"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="focus" data-m="engine" data-cite="engine.html:410"><code>—</code><span class="note">measuring</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Body size</th>
+              <td data-k="body" data-m="wiki" data-cite="index.html:11"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="body" data-m="pitch" data-cite="pitch.html:23"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="body" data-m="engine" data-cite="engine.html:32"><code>—</code><span class="note">measuring</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Body family</th>
+              <td data-k="family" data-m="wiki" data-cite="index.html:11"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="family" data-m="pitch" data-cite="pitch.html:23"><code>—</code><span class="note">measuring</span></td>
+              <td data-k="family" data-m="engine" data-cite="engine.html:32"><code>—</code><span class="note">measuring</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="matrix-legend">
+        <span class="ds-badge" data-variant="danger">deviation</span>
+        <span>Computed value departs from the token named in its row; the cite under it is the line to fix. Wiki dark is measured on the same pass and reported in the wiki note where it differs.</span>
+      </div>
+      <p class="matrix-sum">Every cell above is a computed value from the shipped pages at a 1440 viewport, printed at render. Where a surface departs from the token the badge and the <code>file:line</code> are generated from the same measurement, so the worklist cannot drift from the CSS. A cell that reads “none in DOM” means the surface ships no such element — not that it was skipped.</p>
+      </div><!-- [data-ds-theme="wiki-light"] -->
+      </div><!-- /.g-panelcontent -->
+      </div><!-- /.g-panelbody -->
     </section>
 
-    <!-- ============ 05 COMPONENT SPECIMENS ============ -->
+    <!-- ============ 04 COMPONENTS ============ -->
     <section class="ds-tabpanel" id="specimens" role="tabpanel" aria-labelledby="tab-specimens" tabindex="0" hidden>
       <!-- per-panel sub-nav: the flat block list replaces the old top "Jump to"
            index, so the panel reads bar → left nav → blocks. Same 20 anchors,
@@ -937,8 +933,8 @@ footer code{color:var(--g-ink)}
       </nav>
       <div class="g-panelcontent">
       <div class="sec-head">
-        <span class="sec-num">05</span>
-        <h2 id="specimens-h">Component specimens</h2>
+        <span class="sec-num">04</span>
+        <h2 id="specimens-h">Components</h2>
         <p><span class="js-block-count">—</span> blocks · <span class="js-theme-count">—</span> theme wrappers · <span class="js-state-count">—</span> static states</p>
       </div>
 
@@ -2811,7 +2807,7 @@ footer code{color:var(--g-ink)}
        · the scrollspy — aria-current="page" on the visible panel's rail item.
      ======================================================================= */
 
-  var CATS = ['color', 'type', 'space-consistency', 'motion', 'specimens'];
+  var CATS = ['color', 'type', 'space-consistency', 'specimens'];
   var tabbar = document.querySelector('.g-tabbar');
   var tablist = document.getElementById('ds-cats');
   var panelOf = {};
