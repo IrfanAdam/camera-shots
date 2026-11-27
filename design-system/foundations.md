@@ -28,7 +28,7 @@ Read order: [README](README.md) → this file → [components](components.md) �
 
 It is a **count of occurrences**, not the T8 presence test: T8 asks only whether a product page, a theme cell, `components.css`, or the linked-last shared `shell.css` names a token at all, and excludes the gallery. So a key can be T8-unconsumed and still show a non-zero count here — read the breakdown the gate prints, not this column, when judging orphans.
 
-Totals at committed HEAD: **1331 consumer references** across 187 keys, **28** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `color.pro.tool.hover`, `color.status.danger.ink.light`, `color.wiki.dark.accent.ink`, `control.height.compact`, `dot.size`, `elevation.1`, `elevation.float`, `elevation.inset`, `elevation.ring`, `focus.color`, `hover.lift`, `icon.size.lg`, `icon.size.md`, `layout.max.pitch`, `layout.max.wiki`, `layout.nav.drawer.width`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `tracking.label`, `typography.size.h1`, `weight.regular`).
+Totals at committed HEAD: **1341 consumer references** across 187 keys, **28** key(s) with none (`breakpoint.lg`, `breakpoint.md`, `breakpoint.sm`, `breakpoint.xl`, `breakpoint.xs`, `color.pro.tool.hover`, `color.status.danger.ink.light`, `color.wiki.dark.accent.ink`, `control.height.compact`, `dot.size`, `elevation.1`, `elevation.float`, `elevation.inset`, `elevation.ring`, `focus.color`, `hover.lift`, `icon.size.lg`, `icon.size.md`, `layout.max.pitch`, `layout.max.wiki`, `layout.nav.drawer.width`, `opacity.disabled`, `radius.lg`, `spacing.base`, `spacing.gutter.pro`, `tracking.label`, `typography.size.h1`, `weight.regular`).
 
 Under the gate's narrower **T8** scope — `var()` in the three product pages plus theme-map cells plus `components.css` plus linked-last `shell.css`, gallery excluded, aliases and `breakpoint.*` exempt — **10** key(s) are unconsumed: `color.engine.track.audio`, `color.engine.track.fx`, `color.engine.track.title`, `elevation.float`, `elevation.inset`, `elevation.ring`, `icon.size.lg`, `radius.lg`, `tracking.label`, `typography.size.h1`. Keys that differ between the two views are canvas-only (`CT()`/`WA()` strings the gate cannot see) or gallery-only consumers; `scripts/lint-tokens.mjs` prints the authoritative list and its budget note.
 
@@ -140,7 +140,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | Key | Value | Type | Role | Consumers |
 |---|---|---|---|---|
 | `border.width.accent` | `3px` | dimension | — | 1 (1/0/0) |
-| `border.width.hairline` | `1px` | dimension | — | 101 (101/0/0) |
+| `border.width.hairline` | `1px` | dimension | — | 102 (102/0/0) |
 | `border.width.strong` | `2px` | dimension | — | 9 (9/0/0) |
 
 ### breakpoint
@@ -168,7 +168,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `color.engine.canvas` | `#08080A` | color | — | 1 (1/0/0) |
 | `color.engine.divider` | `#2C2C2E` | color | line.default | 3 (1/1/1) |
 | `color.engine.divider.strong` | `#3A3A3C` | color | line.strong | 3 (2/1/0) |
-| `color.engine.overlay.panel` | `rgba(30,30,34,.94)` | color | — | 3 (2/0/1) |
+| `color.engine.overlay.panel` | `rgba(30,30,34,.94)` | color | — | 4 (3/0/1) |
 | `color.engine.overlay.scrim` | `rgba(0,0,0,.9)` | color | — | 7 (7/0/0) |
 | `color.engine.scrim` | `rgba(0,0,0,.45)` | color | — | 3 (2/0/1) |
 | `color.engine.scrim.strong` | `rgba(0,0,0,.55)` | color | — | 2 (1/0/1) |
@@ -359,7 +359,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `radius.md` | `10px` | dimension | — | 1 (1/0/0) |
 | `radius.none` | `0` | dimension | — | 4 (4/0/0) |
 | `radius.pill` | `9999px` | dimension | — | 12 (12/0/0) |
-| `radius.sm` | `8px` | dimension | — | 24 (24/0/0) |
+| `radius.sm` | `8px` | dimension | — | 25 (25/0/0) |
 | `radius.xs` | `4px` | dimension | — | 50 (50/0/0) |
 
 ### spacing
@@ -374,13 +374,13 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `spacing.2` | `2px` | dimension | — | 18 (18/0/0) |
 | `spacing.20` | `20px` | dimension | — | 8 (8/0/0) |
 | `spacing.2xl` | `48px` | dimension | — | 8 (8/0/0) |
-| `spacing.2xs` | `4px` | dimension | — | 51 (51/0/0) |
-| `spacing.6` | `6px` | dimension | — | 68 (68/0/0) |
+| `spacing.2xs` | `4px` | dimension | — | 50 (50/0/0) |
+| `spacing.6` | `6px` | dimension | — | 69 (69/0/0) |
 | `spacing.base` | `var(--spacing-2xs)` | dimension | — · alias → --spacing-2xs | 0 (0/0/0) |
 | `spacing.gutter.pro` | `var(--spacing-md)` | dimension | — · alias → --spacing-md | 0 (0/0/0) |
 | `spacing.lg` | `24px` | dimension | — | 16 (16/0/0) |
 | `spacing.md` | `16px` | dimension | — | 31 (31/0/0) |
-| `spacing.sm` | `12px` | dimension | — | 61 (61/0/0) |
+| `spacing.sm` | `12px` | dimension | — | 67 (67/0/0) |
 | `spacing.xl` | `32px` | dimension | — | 11 (11/0/0) |
 | `spacing.xs` | `8px` | dimension | — | 82 (82/0/0) |
 
@@ -419,7 +419,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `typography.size.h2` | `1.35rem` | fontSize | — | 2 (2/0/0) |
 | `typography.size.h3` | `1.25rem` | fontSize | — | 1 (1/0/0) |
 | `typography.size.lede` | `1.05rem` | fontSize | — | 3 (3/0/0) |
-| `typography.size.meta` | `0.8rem` | fontSize | — | 41 (41/0/0) |
+| `typography.size.meta` | `0.8rem` | fontSize | — | 40 (40/0/0) |
 | `typography.size.small` | `0.85rem` | fontSize | — | 32 (32/0/0) |
 | `typography.size.timecode` | `0.75rem` | fontSize | — | 20 (20/0/0) |
 | `typography.size.ui` | `1rem` | fontSize | — | 6 (6/0/0) |
@@ -455,7 +455,7 @@ Tracking: `tracking.eyebrow` `0.16em` · `tracking.label` `0.05em` · `tracking.
 | `z.popover` | `72` | number | — | 1 (1/0/0) |
 | `z.raise` | `1` | number | — | 1 (1/0/0) |
 | `z.sheet` | `65` | number | — | 1 (1/0/0) |
-| `z.sticky` | `40` | number | — | 5 (5/0/0) |
+| `z.sticky` | `40` | number | — | 7 (7/0/0) |
 | `z.sticky.rail` | `41` | number | — | 1 (1/0/0) |
 | `z.toast` | `120` | number | — | 1 (1/0/0) |
 | `z.tooltip` | `5` | number | — | 1 (1/0/0) |
