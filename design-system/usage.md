@@ -11,14 +11,14 @@ Surfaces: `index.html` · `pitch.html` · `engine.html` · `design-system/index.
 | measure | value |
 |---|---|
 | surfaces | 4 (3 product + 1 quarantined) |
-| tokens defined | 188 |
-| tokens with a product ref | 156 |
+| tokens defined | 187 |
+| tokens with a product ref | 155 |
 | tokens with no product ref | 32 |
-| custom-property refs | 3003 |
-| … token / role-var `--ds-*` / local / canvas read | 2091 / 179 / 671 / 62 |
-| … local split: component `--_*` / page alias | 36 / 635 |
-| component records | 42 (34 styled in components.css) |
-| component instances | 1161 (228 product, 933 gallery) |
+| custom-property refs | 2996 |
+| … token / role-var `--ds-*` / local / canvas read | 2087 / 182 / 665 / 62 |
+| … local split: component `--_*` / page alias | 31 / 634 |
+| component records | 43 (34 styled in components.css) |
+| component instances | 1170 (232 product, 938 gallery) |
 | … authored in JS (flagged dynamic) | 39 |
 | numbered blocks | 21 (16 with a product instance) |
 
@@ -79,20 +79,22 @@ Showing 10 of 17 components.
 
 ### pitch — `pitch.html` (persuade)
 
-88 component instances, 515 custom-property refs in the page source, 87 tokens named by the page and by stylesheets only it loads (87 direct, 0 from its own sheets).
+92 component instances, 500 custom-property refs in the page source, 85 tokens named by the page and by stylesheets only it loads (85 direct, 0 from its own sheets).
 
 | component | instances | share of surface |
 |---|---|---|
-| `.ds-rail` | 36 | 41% |
-| `.ds-nav-item` | 28 | 32% |
+| `.ds-rail` | 36 | 39% |
+| `.ds-nav-item` | 28 | 30% |
 | `.ds-tab` | 8 | 9% |
-| `.ds-menu` | 5 | 6% |
+| `.ds-menu` | 5 | 5% |
+| `.ds-stick` | 4 | 4% |
 | `.ds-tabs` | 3 | 3% |
 | `.ds-btn` | 2 | 2% |
 | `.ds-shell` | 2 | 2% |
 | `.ds-smenu` | 2 | 2% |
 | `.ds-navtoggle` | 1 | 1% |
-| `.ds-tabbar` | 1 | 1% |
+
+Showing 10 of 11 components.
 
 ### engine — `engine.html` (operate)
 
@@ -115,7 +117,7 @@ Showing 10 of 18 components.
 
 ### gallery — `design-system/index.html` (docs, quarantined)
 
-933 component instances, 455 custom-property refs in the page source, 132 tokens named by the page and by stylesheets only it loads (129 direct, 26 from its own sheets).
+938 component instances, 439 custom-property refs in the page source, 130 tokens named by the page and by stylesheets only it loads (127 direct, 26 from its own sheets).
 
 | component | instances | share of surface |
 |---|---|---|
@@ -130,7 +132,7 @@ Showing 10 of 18 components.
 | `.ds-tabsub` | 36 | 4% |
 | `.ds-card` | 32 | 3% |
 
-Showing 10 of 37 components.
+Showing 10 of 38 components.
 
 ## How this is computed
 
