@@ -1102,18 +1102,26 @@ function fundSeries(sc){
 function fundBreakeven(sc){for(var m=1;m<=18;m++){if(mrrAt(sc,m)>=burnAt(sc,m))return m}return null}
 function inr(n){return "\u20B9"+Math.round(n).toLocaleString("en-IN")}
 function usd(n){return "$"+Math.round(n/window.HEAL_FX_rate()).toLocaleString("en-US")}
-/* compact drawer figures: one consistent k/M scheme for both currencies —
-   1-decimal rounding, trailing .0 stripped ($59k style). Full exact values
-   stay in each cell's title tooltip and in the .md export. */
+/* compact drawer figures: currency-specific units — INR uses Indian units
+   (k, L/lakh, Cr/crore: ₹55L, ₹1.9Cr), USD keeps k/M ($59k style).
+   1-decimal rounding, trailing .0 stripped. Full exact values stay in each
+   cell's title tooltip and in the .md export. */
 function cTrim(v){return v>=100?String(Math.round(v)):v.toFixed(1).replace(/\.0$/,"")}
-function compact(n,sym,rate){var v=n/rate,neg=v<0,a=Math.abs(v);
-  var s=a>=1e6?cTrim(a/1e6)+"M":a>=1e3?cTrim(a/1e3)+"k":String(Math.round(a));
-  return (neg?"\u2212":"")+sym+s}
-function cinr(n){return compact(n,"\u20B9",1)}
-function cusd(n){return compact(n,"$",window.HEAL_FX_rate())}
+function cinr(n){var neg=n<0,a=Math.abs(n),s;
+  if(a>=1e7)s=cTrim(a/1e7)+"Cr";
+  else if(a>=1e5)s=cTrim(a/1e5)+"L";
+  else if(a>=1e3)s=cTrim(a/1e3)+"k";
+  else s=String(Math.round(a));
+  return (neg?"\u2212":"")+"\u20B9"+s}
+function cusd(n){var v=n/window.HEAL_FX_rate(),neg=v<0,a=Math.abs(v),s;
+  if(a>=1e6)s=cTrim(a/1e6)+"M";
+  else if(a>=1e3)s=cTrim(a/1e3)+"k";
+  else s=String(Math.round(a));
+  return (neg?"\u2212":"")+"$"+s}
 function fxSpan(n){return '<span data-fx data-inr="'+inr(n)+'" data-usd="'+usd(n)+'">'+(fundCur==="usd"?usd(n):inr(n))+"</span>"}
-/* compact drawer span: shows k/M, carries exact INR+USD for the toggle, and
-   exposes the exact full value of the visible currency as a hover tooltip */
+/* compact drawer span: currency-specific compact (₹55L / $59k style), carries
+   exact INR+USD for the toggle, and exposes the exact full value of the
+   visible currency as a hover tooltip */
 function fxSpanC(n){var c=fundCur==="usd"?cusd(n):cinr(n),t=fundCur==="usd"?usd(n):inr(n);
   return '<span data-fxc data-inr="'+inr(n)+'" data-usd="'+usd(n)+'" data-cinr="'+cinr(n)+'" data-cusd="'+cusd(n)+'" title="'+t+'">'+c+"</span>"}
 function applyFx(root){[].slice.call((root||document).querySelectorAll("[data-fx],[data-fxc]")).forEach(function(s){
@@ -1168,7 +1176,8 @@ function fundRender(id){
         if(a>=1e3)return "$"+(d/1e3).toFixed(1).replace(/\.0$/,"")+"k";
         return "$"+Math.round(d)}
       var a2=Math.abs(v);
-      if(a2>=1e6)return "₹"+(v/1e6).toFixed(1).replace(/\.0$/,"")+"M";
+      if(a2>=1e7)return "₹"+(v/1e7).toFixed(1).replace(/\.0$/,"")+"Cr";
+      if(a2>=1e5)return "₹"+Math.round(v/1e5)+"L";
       if(a2>=1e3)return "₹"+Math.round(v/1e3)+"k";
       return "₹"+Math.round(v);
     }
