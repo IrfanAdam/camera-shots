@@ -14,11 +14,11 @@ Surfaces: `index.html` · `pitch.html` · `engine.html` · `design-system/index.
 | tokens defined | 187 |
 | tokens with a product ref | 155 |
 | tokens with no product ref | 32 |
-| custom-property refs | 2996 |
-| … token / role-var `--ds-*` / local / canvas read | 2087 / 182 / 665 / 62 |
-| … local split: component `--_*` / page alias | 31 / 634 |
+| custom-property refs | 3000 |
+| … token / role-var `--ds-*` / local / canvas read | 2087 / 182 / 669 / 62 |
+| … local split: component `--_*` / page alias | 31 / 638 |
 | component records | 43 (34 styled in components.css) |
-| component instances | 1170 (232 product, 938 gallery) |
+| component instances | 1169 (232 product, 937 gallery) |
 | … authored in JS (flagged dynamic) | 39 |
 | numbered blocks | 21 (16 with a product instance) |
 
@@ -79,7 +79,7 @@ Showing 10 of 17 components.
 
 ### pitch — `pitch.html` (persuade)
 
-92 component instances, 500 custom-property refs in the page source, 85 tokens named by the page and by stylesheets only it loads (85 direct, 0 from its own sheets).
+92 component instances, 504 custom-property refs in the page source, 85 tokens named by the page and by stylesheets only it loads (85 direct, 0 from its own sheets).
 
 | component | instances | share of surface |
 |---|---|---|
@@ -117,7 +117,7 @@ Showing 10 of 18 components.
 
 ### gallery — `design-system/index.html` (docs, quarantined)
 
-938 component instances, 439 custom-property refs in the page source, 130 tokens named by the page and by stylesheets only it loads (127 direct, 26 from its own sheets).
+937 component instances, 439 custom-property refs in the page source, 130 tokens named by the page and by stylesheets only it loads (127 direct, 26 from its own sheets).
 
 | component | instances | share of surface |
 |---|---|---|

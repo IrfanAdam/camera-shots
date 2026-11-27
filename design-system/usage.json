@@ -40,16 +40,16 @@
     "tokensAliasNoRef": 3,
     "tokensNoRef": 9,
     "tokensAlias": 8,
-    "customPropertyRefs": 2996,
+    "customPropertyRefs": 3000,
     "customPropertyRefsByKind": {
       "token": 2087,
       "roleVar": 182,
-      "localVar": 665,
+      "localVar": 669,
       "canvas": 62
     },
     "localVarDetail": {
       "componentLocal": 31,
-      "pageAlias": 634
+      "pageAlias": 638
     },
     "tokenRefs": 2149,
     "tokenRefsByFile": {
@@ -74,7 +74,7 @@
       "engine-pitch.css": 24,
       "engine.html": 944,
       "index.html": 254,
-      "pitch.html": 500
+      "pitch.html": 504
     },
     "canvasReads": 62,
     "components": 43,
@@ -83,14 +83,14 @@
     "componentsStyledWithProductInstances": 19,
     "componentsWithoutProductInstances": 18,
     "componentsWithoutProductInstancesStyled": 15,
-    "componentInstances": 1170,
+    "componentInstances": 1169,
     "componentInstancesProduct": 232,
     "componentInstancesDynamic": 39,
     "componentInstancesBySurface": {
       "wiki": 39,
       "pitch": 92,
       "engine": 101,
-      "gallery": 938
+      "gallery": 937
     },
     "blocks": 21,
     "blocksWithProductInstances": 16,
@@ -9974,23 +9974,23 @@
       "blockTitle": null,
       "kind": "utility",
       "defined": false,
-      "instances": 8,
+      "instances": 7,
       "bySurface": {
         "wiki": 2,
         "pitch": 2,
         "engine": 1,
-        "gallery": 3
+        "gallery": 2
       },
       "dynamic": 0,
-      "staticInstances": 8,
+      "staticInstances": 7,
       "productInstances": 5,
       "productDynamic": 0,
       "productStaticInstances": 5,
-      "galleryInstances": 3,
+      "galleryInstances": 2,
       "files": [
         {
           "file": "design-system/index.html",
-          "count": 3
+          "count": 2
         },
         {
           "file": "engine.html",
@@ -11272,10 +11272,10 @@
         "design-system/shell.css"
       ],
       "refs": {
-        "customProperties": 500,
+        "customProperties": 504,
         "tokens": 373,
         "roleVars": 0,
-        "localVars": 127,
+        "localVars": 131,
         "canvas": 0
       },
       "tokens": {
@@ -11775,7 +11775,7 @@
       },
       "components": {
         "count": 38,
-        "instances": 938,
+        "instances": 937,
         "list": [
           {
             "class": "ds-tab",
@@ -11911,7 +11911,7 @@
           },
           {
             "class": "ds-shell",
-            "instances": 3
+            "instances": 2
           },
           {
             "class": "ds-smenu",
