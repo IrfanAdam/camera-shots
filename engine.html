@@ -133,7 +133,7 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 #cardMenu button{background:transparent;border:0;color:var(--ink);font:inherit;font-size:var(--typography-size-small);text-align:left;padding:var(--spacing-xs) var(--spacing-10);border-radius:var(--radius-xs);cursor:pointer}
 #cardMenu button:hover,#cardMenu button:focus-visible{background:var(--tool)}
 #cardMenu[hidden]{display:none}
-#assetBtn{position:absolute;z-index:var(--z-sticky);top:10px;left:10px;display:inline-flex;align-items:center;justify-content:center;min-height:var(--touch-min);font:inherit;font-size:var(--typography-size-meta);font-weight:var(--weight-medium);color:var(--mut);background:var(--color-engine-overlay-panel);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);padding:var(--spacing-6) var(--spacing-10);cursor:pointer;backdrop-filter:blur(4px)}
+#assetBtn{position:static;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;min-height:var(--touch-min);font:inherit;font-size:var(--typography-size-meta);font-weight:var(--weight-medium);color:var(--mut);background:var(--color-engine-overlay-panel);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-xs);padding:var(--spacing-6) var(--spacing-10);cursor:pointer;backdrop-filter:blur(4px)}
 #assetBtn:hover,#assetBtn:focus-visible{color:var(--ink);border-color:var(--color-engine-text-secondary)}
 #assetBtn[aria-expanded="true"]{color:var(--sel);border-color:var(--sel)}
 #assetPanel{position:absolute;z-index:var(--z-overlay);top:48px;left:10px;width:min(260px,70vw);min-inline-size:0;max-height:min(320px,60vh);overflow:auto;background:var(--panel);border:var(--border-width-hairline) solid var(--border-strong);border-radius:var(--radius-sm);box-shadow:var(--elevation-sheet);padding:5px} /* lint-allow: 5px panel inset sits between 4 and 6; snapping reflows the asset rows */
@@ -223,9 +223,9 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 .proj-wrap{display:flex;border:var(--border-width-hairline) solid var(--border);border-radius:var(--radius-sm);overflow:hidden;min-height:380px;max-height:62vh;background:var(--color-engine-surface-0)}
 .proj-wrap .pm-nav{width:150px;flex:none;background:var(--bg);border-right:var(--border-width-hairline) solid var(--border);padding:var(--spacing-sm) 0;display:flex;flex-direction:column;gap:var(--spacing-2xs);overflow:auto}
 #projNav{display:flex;flex-direction:column;gap:var(--spacing-2xs)}
-/* nav items are .ds-nav-item[data-variant="rail"] built in renderProjectModal():
-   the flat rail rule set owns radius (0), the 2px indicator slot, the padding and
-   the muted/ink colour pair, so the page keeps only the disabled-domain state. */
+/* secondary tabs are the pill tablist (DS §5) built in renderProjectModal():
+   one .ds-tab per domain with aria-selected + roving tabindex owned by
+   DS.tabs; the page keeps only the disabled-domain state below. */
 #projNav button.off{opacity:.55}
 .proj-wrap .pm-mid{flex:1;min-width:0;padding:var(--spacing-14) var(--spacing-md);overflow:auto}
 .proj-codes{width:270px;flex:none;border-left:var(--border-width-hairline) solid var(--border);padding:var(--spacing-sm) var(--spacing-14);overflow:auto;background:var(--color-engine-surface-0)}
@@ -276,11 +276,10 @@ header .by{color:var(--mut);font-size:var(--typography-size-meta)}
 .pm-nav{width:var(--layout-sidebar-engine);flex:none;background:var(--bg);border-right:var(--border-width-hairline) solid var(--border);padding:var(--spacing-sm) 0;display:flex;flex-direction:column;gap:var(--spacing-2xs);overflow:auto}
 .pm-nav .pmtitle{font-size:var(--typography-size-eyebrow);text-transform:uppercase;letter-spacing:.06em;color:var(--mut);line-height:1.5;margin:0 var(--spacing-20) var(--spacing-xs)}
 #pmNav{display:flex;flex-direction:column;gap:var(--spacing-2xs)}
-/* the drawer's reveal animation only — the item box belongs to the flat rail
-   rule set (.ds-nav-item[data-variant="rail"]), which sets radius 0, the 2px
-   indicator slot, padding and the muted/ink colour pair. */
-#pmNav .ds-nav-item{transition:transform var(--motion-duration-slow) var(--motion-easing-emphasized),opacity var(--motion-duration-tab) var(--motion-easing-out);transition-delay:calc(.10s + var(--i,0)*16ms)}
-#drawer:not(.editing) ~ #editPanel #pmNav .ds-nav-item{transform:translateX(-8px);opacity:0;transition-delay:0s}
+/* the drawer's reveal animation only — the pill box itself is the shipped
+   .ds-tabs[data-variant="pill"] shape (DS §5), so nothing here restates it. */
+#pmNav .ds-tab{transition:transform var(--motion-duration-slow) var(--motion-easing-emphasized),opacity var(--motion-duration-tab) var(--motion-easing-out);transition-delay:calc(.10s + var(--i,0)*16ms)}
+#drawer:not(.editing) ~ #editPanel #pmNav .ds-tab{transform:translateX(-8px);opacity:0;transition-delay:0s}
 .pm-mid{flex:1;min-width:0;padding:var(--spacing-20);overflow:auto;transition:transform var(--motion-duration-slow) var(--motion-easing-emphasized),opacity var(--motion-duration-tab) var(--motion-easing-out)}
 #drawer:not(.editing) ~ #editPanel #pmMid{transform:translateX(12px);opacity:0;transition-delay:0s}
 #drawer.editing ~ #editPanel #pmMid{transform:none;opacity:1}
@@ -444,8 +443,8 @@ input.tin.tin-pilled{color:transparent !important}
    density and is excluded deliberately — see engine audit notes.
    -------------------------------------------------------------------------- */
 /* Only non-.ds- controls need this floor now: every `.ds-btn` carries its own
-   40px min-block-size from §1, and #projNav/#pmNav items are .ds-nav-item
-   (40px) whose start alignment must NOT be re-centred by this rule. */
+   40px min-block-size from §1, and #projNav/#pmNav items are pill `.ds-tab`
+   (40px from §5) whose start alignment must NOT be re-centred by this rule. */
 #toastBtn,#assetPanel .aedit,#assetEditList .aeactions button,#refPop #refOpen,
 #refPop #refX,#drawerBack{min-height:var(--touch-min);display:inline-flex;align-items:center;justify-content:center}
 @media (prefers-reduced-motion:reduce){
@@ -475,6 +474,26 @@ input.tin.tin-pilled{color:transparent !important}
 #drawerRoot:not([hidden]){z-index:var(--z-drawer)}
 /* the prompt-editor token code chip is a 14px pill, not a 40px control */
 #editPanel .ds-chip{min-block-size:auto}
+/* --------------------------------------------------------------------------
+   Engine tabbar (DS consistency). One sticky row on top of the stage: the
+   underline parent tablist for the five views on the DS content axis, and the
+   persistent Surfaces menu pinned at the inline end so it stays reachable
+   after the rail foot scrolls away. The bar is full-bleed; only the inner row
+   is capped at the DS shell axis (layout.max.pitch + layout.rail +
+   spacing.2xl, the same axis design-system/index.html builds as --g-shell-max).
+   The canvas below stays full-bleed — it is the operational surface, not
+   content. No @media here: the tablist scrolls on a phone exactly like the
+   DS .g-tabbar strip, and the menu keeps its own width at the row end.
+   -------------------------------------------------------------------------- */
+.eng-tabbar{position:sticky;top:0;z-index:var(--z-sticky);background:var(--panel);border-bottom:var(--border-width-hairline) solid var(--border)}
+.eng-tabbar__row{--eng-shell-max:calc(var(--layout-max-pitch) + var(--layout-rail) + var(--spacing-2xl));display:flex;align-items:center;gap:var(--spacing-md);width:100%;max-width:var(--eng-shell-max);margin-inline:auto;padding:var(--spacing-sm) var(--spacing-md)}
+.eng-tabbar .ds-tabs{flex:1 1 auto;min-inline-size:0}
+.eng-tabbar .ds-tab{white-space:nowrap}
+.eng-surfaces{position:relative;flex:0 0 auto;margin-inline-start:auto}
+.eng-surfaces__btn svg{inline-size:var(--icon-size-sm);block-size:var(--icon-size-sm)}
+.eng-surfaces .ds-menu{inset-inline-end:0;inset-block-start:calc(100% + var(--spacing-2xs))}
+.eng-surfaces .ds-menu__item{text-decoration:none}
+.eng-surfaces .ds-menu__item[aria-current="page"]{font-weight:var(--weight-semibold)}
 </style></head><body>
 <a class="ds-skip-link" href="#main">Skip to content</a>
 <header>
@@ -502,7 +521,7 @@ input.tin.tin-pilled{color:transparent !important}
 <span class="ds-nav-item ds-rail__item" aria-current="page">Engine</span>
 <a class="ds-nav-item ds-rail__item" href="design-system/index.html">Design System</a>
 </div>
-</nav><div id="stage"><div id="chapterbar" hidden><span>Chapter</span><select id="chapterSel" aria-label="Chapter"></select><button id="addChapter" class="ds-btn">+ chapter</button><span class="sp"></span><button id="addLane" class="ds-btn">+ lane</button><button id="addScene" class="ds-btn">+ scene</button></div><canvas id="cv" tabindex="0" role="application" aria-label="Storyboard canvas" aria-describedby="cvHelp"></canvas><p id="cvHelp" class="ds-sr-only">Canvas keyboard: arrow keys move the selection between cards; Enter opens the selected card; N adds a card; Delete removes it after a second press; C starts a link, then arrow keys choose the target and Enter links it; Escape cancels. Every card is also in the assets list for this tab, which opens it.</p><button id="assetBtn" title="List assets in this tab" aria-haspopup="menu" aria-controls="assetPanel" aria-expanded="false" data-ds-menu-trigger>☰</button><div id="assetPanel" class="ds-menu" role="menu" aria-label="Assets in this tab" hidden></div><button id="cardMenuBtn" title="Image and link options" aria-label="Card image and link options" aria-haspopup="menu" aria-controls="cardMenu" aria-expanded="false" data-ds-menu-trigger hidden>⋯</button><div id="cardMenu" class="ds-menu" role="menu" aria-label="Card options" hidden></div></div></main>
+</nav><div id="stage"><div class="eng-tabbar"><div class="eng-tabbar__row"><div class="ds-tabs" id="engTabs" data-variant="underline" role="tablist" aria-label="Views" data-ds-panel-scope="#stage"><button class="ds-tab" type="button" role="tab" data-view="scenes" aria-selected="true" tabindex="0">Scenes</button><button class="ds-tab" type="button" role="tab" data-view="shots" aria-selected="false" tabindex="-1">Shots Composer</button><button class="ds-tab" type="button" role="tab" data-view="locations" aria-selected="false" tabindex="-1">Locations</button><button class="ds-tab" type="button" role="tab" data-view="props" aria-selected="false" tabindex="-1">Props</button><button class="ds-tab" type="button" role="tab" data-view="cast" aria-selected="false" tabindex="-1">Cast</button></div><button id="assetBtn" title="List assets in this tab" aria-haspopup="menu" aria-controls="assetPanel" aria-expanded="false" data-ds-menu-trigger>☰</button><div class="eng-surfaces"><button class="ds-btn eng-surfaces__btn" type="button" data-ds-menu-trigger aria-controls="eng-surfaces-menu" aria-expanded="false" aria-haspopup="menu"><span class="ds-btn__label">Surfaces</span><svg aria-hidden="true" focusable="false"><use href="design-system/icons.svg#ds-icon-chevron-down"/></svg></button><div class="ds-menu" id="eng-surfaces-menu" role="menu" aria-label="Surfaces" hidden><a class="ds-menu__item" role="menuitem" href="index.html">Wiki</a><a class="ds-menu__item" role="menuitem" href="pitch.html">Pitch</a><a class="ds-menu__item" role="menuitem" href="engine.html" aria-current="page">Engine</a><a class="ds-menu__item" role="menuitem" href="design-system/index.html">Design System</a></div></div></div></div><div id="chapterbar" hidden><span>Chapter</span><select id="chapterSel" aria-label="Chapter"></select><button id="addChapter" class="ds-btn">+ chapter</button><span class="sp"></span><button id="addLane" class="ds-btn">+ lane</button><button id="addScene" class="ds-btn">+ scene</button></div><canvas id="cv" tabindex="0" role="application" aria-label="Storyboard canvas" aria-describedby="cvHelp"></canvas><p id="cvHelp" class="ds-sr-only">Canvas keyboard: arrow keys move the selection between cards; Enter opens the selected card; N adds a card; Delete removes it after a second press; C starts a link, then arrow keys choose the target and Enter links it; Escape cancels. Every card is also in the assets list for this tab, which opens it.</p><div id="assetPanel" class="ds-menu" role="menu" aria-label="Assets in this tab" hidden></div><button id="cardMenuBtn" title="Image and link options" aria-label="Card image and link options" aria-haspopup="menu" aria-controls="cardMenu" aria-expanded="false" data-ds-menu-trigger hidden>⋯</button><div id="cardMenu" class="ds-menu" role="menu" aria-label="Card options" hidden></div></div></main>
 <input type="file" id="filePick" accept="image/*" class="filehide" tabindex="-1" aria-hidden="true">
 <input type="file" id="assetImportPick" accept=".json,application/json,image/*" class="filehide" tabindex="-1" aria-hidden="true">
 <div id="arrowpick" role="group" aria-label="Connector ends" hidden>
@@ -792,7 +811,7 @@ function loadImage(n,silent){if(!n.imgUrl){n.img=null;if(n)n.imgErr='';return}co
  im.src=n.imgUrl;n.img=im;draw()}
 
 /* ---- canvas ---- */
-function fit(){DPR=Math.min(2,devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);try{if(view==='scenes')rebuildChapters()}catch(e){}try{/* phone: the asset chip docks under the chapter bar instead of over it */const ab=document.getElementById('assetBtn'),cb=document.getElementById('chapterbar');if(ab){const nt=narrowBoard()?((cb&&!cb.hidden?cb.offsetHeight:0)+8)+'px':'';if(ab.style.top!==nt)ab.style.top=nt}}catch(e){}draw()}
+function fit(){DPR=Math.min(2,devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);try{if(view==='scenes')rebuildChapters()}catch(e){}try{/* the asset chip lives in-flow in the tabbar row, so no docking offset applies; clear any legacy inline top */const ab=document.getElementById('assetBtn');if(ab&&ab.style.top)ab.style.top=''}catch(e){}draw()}
 addEventListener('resize',fit);
 /* the bitmap must match the CSS box. Under --breakpoint-lg the rail becomes a
    drawer and DS.nav hides it after this script's one-shot fit(), so the stage
@@ -1954,6 +1973,10 @@ function rebuildChapters(){const c=activeChapter(),sel=document.getElementById('
  document.getElementById('addLane').textContent='+ lane ('+((selStrip&&selStrip.lanes)||'—')+')'}
 function syncUI(){
  document.querySelectorAll('#nav-drawer button').forEach(b=>{const on=b.dataset.view===view;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+ /* the underline parent tablist mirrors the rail: DS.tabs owns the tab state on
+    pointer/keyboard, and this line re-asserts it when the view changes from the
+    rail, a shortcut or a deep link (selectShot, chapter switches). */
+ document.querySelectorAll('#engTabs .ds-tab').forEach(b=>{const on=b.dataset.view===view;b.setAttribute('aria-selected',on?'true':'false');b.tabIndex=on?0:-1});
  document.getElementById('chapterbar').hidden=view!=='scenes';
  const an=document.getElementById('addNode');
  if(view==='scenes')an.style.display='none';
@@ -1964,6 +1987,9 @@ function syncUI(){
 function setView(v){if(v!==view){if(view==='scenes'){const oc=activeChapter();if(oc)oc.conns=conns}saveView();view=v;selStrip=null;selConn=null;pending=null;selected=null;hidePicker();closeShotPicker();closeCardMenu();
  if(v==='scenes'){const nc=activeChapter();conns=(nc&&nc.conns)||[]}else if(VIEW_META[v])loadView(v)}syncUI();persist();draw()}
 document.querySelectorAll('#nav-drawer button').forEach(b=>{b.onclick=()=>setView(b.dataset.view)});
+/* parent-tab → view: DS.tabs (auto-init) owns selection + roving on #engTabs;
+   the page only reacts to its ds:tabchange and runs the same setView path. */
+document.getElementById('engTabs').addEventListener('ds:tabchange',e=>{const t=e.detail&&e.detail.tab;const v=t&&t.dataset.view;if(v&&v!==view)setView(v)});
 document.getElementById('chapterSel').onchange=e=>{const oc=activeChapter();if(oc)oc.conns=conns;SCENES.active=+e.target.value;selStrip=null;selConn=null;const nc=activeChapter();conns=(nc&&nc.conns)||[];persist();syncUI();draw()};
 document.getElementById('addChapter').onclick=()=>{
  const name=prompt('Chapter name:','Chapter '+(SCENES.chapters.length+1));if(name===null)return;
@@ -2080,14 +2106,24 @@ function tokenPromptFor(n){const t=targetOf(n);if(!t.anchor)return'⚠ no anchor
 function copyText(s,okMsg){const done=()=>flashHint(okMsg||'copied');try{if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(s).then(done,()=>{prompt('Copy:',s);done()})}catch(e){}prompt('Copy:',s);done()}
 /* ---- project modal: 3-pane drawer (nav | toggles | codes) ---- */
 let projTab='camera';
+/* DS.tabs handles for the two secondary pill tablists; each render rebuilds
+   the buttons, so the previous handle is destroyed before a fresh init. */
+let projTabsApi=null,pmTabsApi=null;
 function swEl(on,fn,title,disabled){const l=document.createElement('label');l.className='sw ds-switch';if(title)l.title=title;const cb=document.createElement('input');cb.type='checkbox';cb.className='ds-switch__input';cb.setAttribute('data-ds-compact','');cb.checked=!!on;cb.disabled=!!disabled;cb.onchange=()=>{snap();fn(cb.checked);persist();renderProjectModal();if(drawerSub)renderPromptPreview(drawerSub)};const s=document.createElement('span');s.className='sl ds-switch__track';l.appendChild(cb);l.appendChild(s);return l}
 function projCounts(){let d=0,dt=0,t=0,tt=0,v=0,vt=0;for(const dom of DOMAIN_ORDER){const D=PROJECT&&PROJECT.domains[dom];if(!D)continue;dt++;if(D.enabled)d++;for(const tid of Object.keys(D.tokens||{})){tt++;if(isTokOn(tid))t++;const T=D.tokens[tid];(T.values||[]).forEach((_,i)=>{vt++;if(isValOn(tid,i))v++})}}return{d:d,dt:dt,t:t,tt:tt,v:v,vt:vt}}
 function projCodeRow(tid,i){const T=tokVal(tid).tok;const cr=document.createElement('div');cr.className='code-row';const lb=document.createElement('span');lb.className='code-lab';lb.textContent=T.values[i];lb.title=T.values[i];cr.appendChild(lb);const ci=document.createElement('input');ci.setAttribute('data-ds-compact','');ci.value=(T.codes&&T.codes[i]!=null)?T.codes[i]:'';ci.placeholder='CODE';ci.maxLength=12;ci.setAttribute('spellcheck','false');ci.setAttribute('autocomplete','off');ci.onchange=()=>{const em=codeError(ci.value);if(em){flashHint(em);const ff=tokVal(tid);ci.value=(ff.tok.codes&&ff.tok.codes[i])||'';return}snap();ci.value=setCode(tid,i,ci.value);persist();renderProjectModal();if(drawerSub)renderPromptPreview(drawerSub)};cr.appendChild(ci);return cr}
 const PROJ_EXTRA_TABS=[['gen','Generate']];
 function renderProjectModal(){if(!PROJECT||!PROJECT.domains)return;if(projTab!=='gen'&&!PROJECT.domains[projTab])projTab=DOMAIN_ORDER[0];
  const nav=document.getElementById('projNav'),mid=document.getElementById('projToks'),codeHost=document.getElementById('projCodes');nav.innerHTML='';mid.innerHTML='';codeHost.innerHTML='';
- DOMAIN_ORDER.forEach((d,i)=>{const D=PROJECT.domains[d];if(!D)return;const b=document.createElement('button');b.className='ds-nav-item';b.dataset.variant='rail';b.textContent=D.label;b.style.setProperty('--i',i);if(d===projTab){b.classList.add('on');b.setAttribute('aria-current','page')}if(!D.enabled)b.classList.add('off');b.title=D.enabled?D.label+' — enabled':D.label+' — disabled';b.onclick=()=>{projTab=d;renderProjectModal()};nav.appendChild(b)});
- PROJ_EXTRA_TABS.forEach(([id,label],k)=>{const b=document.createElement('button');b.className='ds-nav-item';b.dataset.variant='rail';b.textContent=label;b.style.setProperty('--i',DOMAIN_ORDER.length+k);if(id===projTab){b.classList.add('on');b.setAttribute('aria-current','page')}b.title=label;b.onclick=()=>{projTab=id;renderProjectModal()};nav.appendChild(b)});
+ /* the domain nav is the secondary pill tablist (DS §5): vertical pills, one
+    .ds-tab per domain, selection + roving owned by DS.tabs with onChange
+    re-rendering the mid pane — never rail links with aria-current. */
+ nav.classList.add('ds-tabs');nav.dataset.variant='pill';nav.setAttribute('role','tablist');nav.setAttribute('aria-label','Project domains');
+ function projTabBtn(key,label,title,disabled,selected,idx){const b=document.createElement('button');b.type='button';b.className='ds-tab';b.setAttribute('role','tab');b.textContent=label;b.style.setProperty('--i',idx);b.setAttribute('aria-selected',selected?'true':'false');b.tabIndex=selected?0:-1;if(disabled)b.classList.add('off');b.title=title;b.dataset.dom=key;nav.appendChild(b);return b}
+ DOMAIN_ORDER.forEach((d,i)=>{const D=PROJECT.domains[d];if(!D)return;projTabBtn(d,D.label,D.label+(D.enabled?' — enabled':' — disabled'),!D.enabled,d===projTab,i)});
+ PROJ_EXTRA_TABS.forEach(([id,label],k)=>{projTabBtn(id,label,label,false,id===projTab,DOMAIN_ORDER.length+k)});
+ try{if(projTabsApi)projTabsApi.destroy()}catch(e){}
+ try{projTabsApi=DS.tabs(nav,{orientation:'vertical',onChange:tab=>{const id=tab&&tab.dataset.dom;if(id&&id!==projTab){projTab=id;renderProjectModal()}}})}catch(e){projTabsApi=null}
  if(projTab==='gen'){genRenderProjTab(mid,codeHost);const _c=projCounts();document.getElementById('projNote').textContent=_c.d+' of '+_c.dt+' domains · '+_c.t+' of '+_c.tt+' tokens · '+_c.v+' of '+_c.vt+' values enabled';return}
  const D=PROJECT.domains[projTab];
  const dh=document.createElement('div');dh.className='proj-dom-h';const dt=document.createElement('span');dt.textContent=D.label;dt.style.flex='1';dh.appendChild(dt);dh.appendChild(swEl(!!D.enabled,v=>{D.enabled=v},D.label+' domain'));mid.appendChild(dh);
@@ -2176,7 +2212,12 @@ function pmDiv(host){const h=document.createElement('hr');h.className='pmdiv';ho
 function pmSub(host,t){const d=document.createElement('div');d.className='subh';d.textContent=t;host.appendChild(d)}
 function renderPmFields(){const host=document.getElementById('pmFields');host.innerHTML='';if(!pmTarget)return;
  const nav=document.getElementById('pmNav');nav.innerHTML='';
- PM_TABS.forEach(([id,lab],i)=>{const b=document.createElement('button');b.className='ds-nav-item';b.dataset.variant='rail';b.textContent=lab;b.style.setProperty('--i',i);if(pmTab===id){b.classList.add('on');b.setAttribute('aria-current','page')}b.onclick=()=>{pmTab=id;renderPmFields()};nav.appendChild(b)});
+ /* the prompt sections are the secondary pill tablist (DS §5), like the
+    project domains above: .ds-tab pills, DS.tabs owns selection + roving. */
+ nav.classList.add('ds-tabs');nav.dataset.variant='pill';nav.setAttribute('role','tablist');nav.setAttribute('aria-label','Prompt sections');
+ PM_TABS.forEach(([id,lab],i)=>{const b=document.createElement('button');b.type='button';b.className='ds-tab';b.setAttribute('role','tab');b.textContent=lab;b.style.setProperty('--i',i);b.setAttribute('aria-selected',pmTab===id?'true':'false');b.tabIndex=pmTab===id?0:-1;b.dataset.pm=id;nav.appendChild(b)});
+ try{if(pmTabsApi)pmTabsApi.destroy()}catch(e){}
+ try{pmTabsApi=DS.tabs(nav,{orientation:'vertical',onChange:tab=>{const id=tab&&tab.dataset.pm;if(id&&id!==pmTab){pmTab=id;renderPmFields()}}})}catch(e){pmTabsApi=null}
  const g=document.createElement('div');host.appendChild(g);
  if(pmTab==='subject'){pmFieldText(g,'descriptor','subject descriptor','East Asian woman, Tibetan highland features…');pmFieldText(g,'expression','expression','quiet confidence');pmDiv(g);pmSub(g,'wardrobe');pmFieldText(g,'wardrobe_top','top','oversized sage cashmere sweater');pmFieldText(g,'wardrobe_bottom','bottom','charcoal wide-leg trousers');pmFieldText(g,'wardrobe_feet','footwear','natural understated footwear');pmDiv(g);pmSub(g,'pose');pmFieldText(g,'action','action','one hand in pocket, body slightly turned');pmFieldText(g,'mood','mood','understated elegance')}
  else if(pmTab==='cine'){pmSub(g,'framing');pmFieldTok(g,'shot_scale');pmFieldExtra(g,'aspect_ratio');pmFieldText(g,'subject_scale','subject scale','occupies 65–70% of image height');pmFieldText(g,'visibility','visibility','both legs, feet, shoes fully visible');pmFieldTok(g,'composition');pmDiv(g);pmSub(g,'camera');pmFieldText(g,'camera_position','camera position','pulled back several meters');pmFieldTok(g,'camera_angle');pmFieldTok(g,'lens_type');pmFieldTok(g,'focal_length');pmFieldTok(g,'aperture');pmFieldText(g,'movement','movement (video-deferred)','');pmFieldText(g,'duration','duration (video-deferred)','')}
